@@ -3,26 +3,43 @@ import { Reveal } from "./Reveal";
 import catGrossesse from "@/assets/portfolio/grossesse.webp";
 import catGrossesseSm from "@/assets/portfolio/grossesse-350.webp";
 import catGrossesseMd from "@/assets/portfolio/grossesse-500.webp";
+import catGrossesseLg from "@/assets/portfolio/grossesse-800.webp";
+import catGrossesseXl from "@/assets/portfolio/grossesse-1200.webp";
+import catGrossesseXxl from "@/assets/portfolio/grossesse-1800.webp";
 import catFamille from "@/assets/portfolio/famille.webp";
 import catFamilleSm from "@/assets/portfolio/famille-350.webp";
 import catFamilleMd from "@/assets/portfolio/famille-500.webp";
+import catFamilleLg from "@/assets/portfolio/famille-800.webp";
+import catFamilleXl from "@/assets/portfolio/famille-1200.webp";
+import catFamilleXxl from "@/assets/portfolio/famille-1800.webp";
 import catCouple from "@/assets/portfolio/couple.webp";
 import catCoupleSm from "@/assets/portfolio/couple-350.webp";
 import catCoupleMd from "@/assets/portfolio/couple-500.webp";
+import catCoupleLg from "@/assets/portfolio/couple-800.webp";
+import catCoupleXl from "@/assets/portfolio/couple-1200.webp";
+import catCoupleXxl from "@/assets/portfolio/couple-1800.webp";
 import catPortrait from "@/assets/portfolio/portrait.webp";
 import catPortraitSm from "@/assets/portfolio/portrait-350.webp";
 import catPortraitMd from "@/assets/portfolio/portrait-500.webp";
+import catPortraitLg from "@/assets/portfolio/portrait-800.webp";
+import catPortraitXl from "@/assets/portfolio/portrait-1200.webp";
+import catPortraitXxl from "@/assets/portfolio/portrait-1800.webp";
 
 type PortfolioEditorialItem = {
   id: string;
   src: string;
   imgSmall: string;
   imgMedium: string;
+  imgLarge: string;
+  imgXLarge: string;
+  imgXXLarge: string;
   alt: string;
   category: string;
   categorySlug: string;
   positionClass: string;
-  objectPosition?: string;
+  // Tailwind arbitrary-value class(es), e.g. "object-[50%_22%]" — never a
+  // calc() with a raw px term (see the note on the grossesse entry below).
+  objectClass?: string;
 };
 
 const categories = [
@@ -32,13 +49,19 @@ const categories = [
     img: catGrossesse,
     imgSmall: catGrossesseSm,
     imgMedium: catGrossesseMd,
+    imgLarge: catGrossesseLg,
+    imgXLarge: catGrossesseXl,
+    imgXXLarge: catGrossesseXxl,
     alt: "Séance grossesse naturelle et lumineuse à Marseille",
     positionClass: "lg:col-span-6 lg:row-span-2",
-    // Plain percentage only — a calc() value here triggers a Chrome
-    // rendering bug with object-fit: cover (see AUDIT.md). Currently this
-    // field isn't even read by the render below (separate pre-existing
-    // objectClass/objectPosition mismatch, out of scope here); kept correct
-    // so it doesn't reintroduce the bug if that gets fixed later.
+    // Plain percentage only — never calc() with a raw px term:
+    // object-position resolves as (containerSize - objectSize) * percentage
+    // + pxOffset, and this image's aspect ratio makes object-fit: cover
+    // always width-driven with zero horizontal overflow (at every box
+    // shape this component uses, below "lg" and at "lg" alike), so a px
+    // term would apply in full and shift the image straight out of the
+    // box. Percentages alone always scale safely with that (zero)
+    // overflow. Same value as the homepage card — do not change.
     objectClass: "object-[58%_48%]",
   },
   {
@@ -47,9 +70,12 @@ const categories = [
     img: catFamille,
     imgSmall: catFamilleSm,
     imgMedium: catFamilleMd,
+    imgLarge: catFamilleLg,
+    imgXLarge: catFamilleXl,
+    imgXXLarge: catFamilleXxl,
     alt: "Séance famille douce et lumineuse en extérieur à Marseille",
     positionClass: "lg:col-span-6 lg:row-span-2",
-    objectPosition: "68% 48%",
+    objectClass: "object-[68%_48%]",
   },
   {
     slug: "couple",
@@ -57,9 +83,17 @@ const categories = [
     img: catCouple,
     imgSmall: catCoupleSm,
     imgMedium: catCoupleMd,
+    imgLarge: catCoupleLg,
+    imgXLarge: catCoupleXl,
+    imgXXLarge: catCoupleXxl,
     alt: "Séance couple naturelle et lumineuse à Marseille",
     positionClass: "lg:col-span-7 lg:row-span-2",
-    objectPosition: "50% 22%",
+    // Frame on the top to keep both faces/the kiss in view. This card's
+    // box is far wider than aspect-[3/4] at "lg" (col-span-7 vs. the
+    // default), which crops far more of the image height — verified this
+    // single value still keeps the full kiss in frame in both the
+    // aspect-[3/4] regime (below "lg") and the wide "lg" box.
+    objectClass: "object-[50%_22%]",
   },
   {
     slug: "portrait",
@@ -67,56 +101,31 @@ const categories = [
     img: catPortrait,
     imgSmall: catPortraitSm,
     imgMedium: catPortraitMd,
+    imgLarge: catPortraitLg,
+    imgXLarge: catPortraitXl,
+    imgXXLarge: catPortraitXxl,
     alt: "Portrait naturel et élégant en lumière naturelle à Marseille",
     positionClass: "lg:col-span-5 lg:row-span-2",
+    // Subject is already close to horizontally centered in the source
+    // photo; the default (centered) object-position already frames her
+    // correctly, no override needed.
   },
 ] as const;
 
-const portfolioItems: PortfolioEditorialItem[] = [
-  {
-    id: "grossesse",
-    src: categories[0].img,
-    imgSmall: categories[0].imgSmall,
-    imgMedium: categories[0].imgMedium,
-    alt: categories[0].alt,
-    category: categories[0].label,
-    categorySlug: categories[0].slug,
-    positionClass: categories[0].positionClass,
-    objectPosition: categories[0].objectPosition,
-  },
-  {
-    id: "famille",
-    src: categories[1].img,
-    imgSmall: categories[1].imgSmall,
-    imgMedium: categories[1].imgMedium,
-    alt: categories[1].alt,
-    category: categories[1].label,
-    categorySlug: categories[1].slug,
-    positionClass: categories[1].positionClass,
-    objectPosition: categories[1].objectPosition,
-  },
-  {
-    id: "couple",
-    src: categories[2].img,
-    imgSmall: categories[2].imgSmall,
-    imgMedium: categories[2].imgMedium,
-    alt: categories[2].alt,
-    category: categories[2].label,
-    categorySlug: categories[2].slug,
-    positionClass: categories[2].positionClass,
-    objectPosition: categories[2].objectPosition,
-  },
-  {
-    id: "portrait",
-    src: categories[3].img,
-    imgSmall: categories[3].imgSmall,
-    imgMedium: categories[3].imgMedium,
-    alt: categories[3].alt,
-    category: categories[3].label,
-    categorySlug: categories[3].slug,
-    positionClass: categories[3].positionClass,
-  },
-];
+const portfolioItems: PortfolioEditorialItem[] = categories.map((c) => ({
+  id: c.slug,
+  src: c.img,
+  imgSmall: c.imgSmall,
+  imgMedium: c.imgMedium,
+  imgLarge: c.imgLarge,
+  imgXLarge: c.imgXLarge,
+  imgXXLarge: c.imgXXLarge,
+  alt: c.alt,
+  category: c.label,
+  categorySlug: c.slug,
+  positionClass: c.positionClass,
+  objectClass: "objectClass" in c ? c.objectClass : undefined,
+}));
 
 export function PortfolioEditorialSection() {
   return (
@@ -154,7 +163,14 @@ export function PortfolioEditorialSection() {
                 </div>
                 <img
                   src={item.src}
-                  srcSet={`${item.imgSmall} 350w, ${item.imgMedium} 500w, ${item.src} 700w`}
+                  srcSet={[
+                    `${item.imgSmall} 350w`,
+                    `${item.imgMedium} 500w`,
+                    `${item.src} 700w`,
+                    `${item.imgLarge} 800w`,
+                    `${item.imgXLarge} 1200w`,
+                    `${item.imgXXLarge} 1800w`,
+                  ].join(", ")}
                   sizes="(min-width: 1024px) 50vw, (min-width: 768px) 50vw, 100vw"
                   alt={item.alt}
                   width={1600}

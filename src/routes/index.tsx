@@ -17,12 +17,18 @@ import catGrossesseXl from "@/assets/portfolio/grossesse-1200.webp";
 import catFamille from "@/assets/portfolio/famille.webp";
 import catFamilleSm from "@/assets/portfolio/famille-350.webp";
 import catFamilleMd from "@/assets/portfolio/famille-500.webp";
+import catFamilleLg from "@/assets/portfolio/famille-800.webp";
+import catFamilleXl from "@/assets/portfolio/famille-1200.webp";
 import catCouple from "@/assets/portfolio/couple.webp";
 import catCoupleSm from "@/assets/portfolio/couple-350.webp";
 import catCoupleMd from "@/assets/portfolio/couple-500.webp";
+import catCoupleLg from "@/assets/portfolio/couple-800.webp";
+import catCoupleXl from "@/assets/portfolio/couple-1200.webp";
 import catPortrait from "@/assets/portfolio/portrait.webp";
 import catPortraitSm from "@/assets/portfolio/portrait-350.webp";
 import catPortraitMd from "@/assets/portfolio/portrait-500.webp";
+import catPortraitLg from "@/assets/portfolio/portrait-800.webp";
+import catPortraitXl from "@/assets/portfolio/portrait-1200.webp";
 import aboutPortrait from "@/assets/accueil/anais_1.webp";
 import logoSoleana180 from "@/assets/logo-soleana-180.webp";
 import logoSoleana280 from "@/assets/logo-soleana-280.webp";
@@ -99,12 +105,14 @@ const categories = [
     imgLarge: catGrossesseLg,
     imgXLarge: catGrossesseXl,
     offset: false,
-    // Plain percentage only: a calc() value here triggers a Chrome rendering
-    // bug where object-fit: cover leaves a gap instead of covering the box
-    // (reproduced in isolation, see AUDIT.md / commit message). The x value
-    // has no visible effect anyway — this image's aspect ratio makes cover
-    // always width-driven with zero horizontal crop room, at every
-    // breakpoint, so any x percentage renders identically.
+    // Plain percentage only — DO NOT use calc(). object-position resolves
+    // as (containerSize - objectSize) * percentage + pxOffset. This image's
+    // aspect ratio makes object-fit: cover always width-driven with zero
+    // horizontal overflow at every breakpoint, so (containerSize -
+    // objectSize) is 0 and any percentage term is multiplied away — but a
+    // raw px term in a calc() still applies in full, shifting the image
+    // straight out of the box and exposing its background. Percentage-only
+    // values are always safe here since they scale with the (zero) overflow.
     objectClass: "object-[58%_48%]",
   },
   {
@@ -113,6 +121,8 @@ const categories = [
     img: catFamille,
     imgSmall: catFamilleSm,
     imgMedium: catFamilleMd,
+    imgLarge: catFamilleLg,
+    imgXLarge: catFamilleXl,
     offset: true,
   },
   {
@@ -121,7 +131,13 @@ const categories = [
     img: catCouple,
     imgSmall: catCoupleSm,
     imgMedium: catCoupleMd,
+    imgLarge: catCoupleLg,
+    imgXLarge: catCoupleXl,
     offset: false,
+    // Frame on the top of the photo to keep both faces/the kiss in view —
+    // this box is also width-driven cover (portrait image, see grossesse's
+    // note), so only the y value has any visible effect.
+    objectClass: "object-[50%_22%]",
   },
   {
     slug: "portrait",
@@ -129,7 +145,12 @@ const categories = [
     img: catPortrait,
     imgSmall: catPortraitSm,
     imgMedium: catPortraitMd,
+    imgLarge: catPortraitLg,
+    imgXLarge: catPortraitXl,
     offset: true,
+    // Subject is already close to horizontally centered in the source
+    // photo; the default (centered) object-position already frames her
+    // correctly, no override needed.
   },
 ];
 
