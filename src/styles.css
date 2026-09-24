@@ -1,0 +1,290 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url("./assets/fonts/Inter-300.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("./assets/fonts/Inter-400.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("./assets/fonts/Inter-500.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("./assets/fonts/Inter-600.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Playfair Display";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("./assets/fonts/PlayfairDisplay-500.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Playfair Display";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("./assets/fonts/PlayfairDisplay-600.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Playfair Display";
+  font-style: italic;
+  font-weight: 500;
+  font-display: swap;
+  src: url("./assets/fonts/PlayfairDisplay-500Italic.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Playfair Display";
+  font-style: italic;
+  font-weight: 600;
+  font-display: swap;
+  src: url("./assets/fonts/PlayfairDisplay-600Italic.woff2") format("woff2");
+}
+
+/* Soleana Studio — Editorial Provence palette */
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --font-display: "Playfair Display", ui-serif, Georgia, serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+
+  --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+:root {
+  /* Soft Provence palette */
+  --background: #faf6ef;
+  --surface: #fffdf8;
+  --foreground: #3e2f28;
+  --card: #fffdf8;
+  --card-foreground: #3e2f28;
+  --popover: #fffdf8;
+  --popover-foreground: #3e2f28;
+  --primary: #8a5a44;
+  --primary-foreground: #fffdf8;
+  --secondary: #c89b7b;
+  --secondary-foreground: #3e2f28;
+  --accent: #c6966f;
+  --accent-foreground: #fffdf8;
+  --muted: #f2ebe0;
+  --muted-foreground: #7a6a61;
+  --destructive: #b5462c;
+  --destructive-foreground: #fffdf8;
+  --border: #e8dccf;
+  --input: #e8dccf;
+  --ring: #c89b7b;
+}
+
+.dark {
+  /* admin keeps same palette */
+  --background: #3e2f28;
+  --surface: #4a3a30;
+  --foreground: #faf6ef;
+  --card: #4a3a30;
+  --card-foreground: #faf6ef;
+  --popover: #4a3a30;
+  --popover-foreground: #faf6ef;
+  --primary: #d8a15d;
+  --primary-foreground: #3e2f28;
+  --secondary: #c89b7b;
+  --secondary-foreground: #3e2f28;
+  --accent: #c6966f;
+  --accent-foreground: #3e2f28;
+  --muted: #5a4a40;
+  --muted-foreground: #c9b9ac;
+  --destructive: #b5462c;
+  --destructive-foreground: #faf6ef;
+  --border: #5a4a40;
+  --input: #5a4a40;
+  --ring: #d8a15d;
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    font-weight: 300;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  ::selection {
+    background: color-mix(in oklab, var(--accent) 30%, transparent);
+  }
+}
+
+/* Animations */
+@keyframes slowZoom {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.03);
+  }
+}
+@keyframes heroFade {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  8%,
+  92% {
+    opacity: 1;
+  }
+}
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-slow-zoom {
+  animation: slowZoom 18s var(--ease-out-expo) infinite alternate;
+}
+.animate-hero-fade {
+  animation: heroFade var(--hero-duration, 18s) ease-in-out infinite;
+}
+.animate-slide-up {
+  animation: slideUp 0.9s var(--ease-out-expo) both;
+}
+.animate-fade-in {
+  animation: fadeIn 0.8s ease-out both;
+}
+
+/* Reveal on scroll */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 1s var(--ease-out-expo),
+    transform 1s var(--ease-out-expo);
+  will-change: opacity, transform;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Subtle underline link */
+.story-link {
+  position: relative;
+  display: inline-block;
+}
+.story-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 1px;
+  background-color: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.4s var(--ease-out-expo);
+}
+.story-link:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+body[data-gallery-open="true"] {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+body[data-gallery-open="true"] .site-floating-actions {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
