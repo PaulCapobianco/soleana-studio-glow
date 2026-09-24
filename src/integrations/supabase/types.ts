@@ -166,10 +166,11 @@ export type Database = {
           created_at: string;
           display_order: number;
           first_name: string;
+          google_review_url: string | null;
           id: string;
           published: boolean;
           rating: number;
-          review_date: string;
+          review_date: string | null;
           session_type: string | null;
         };
         Insert: {
@@ -177,10 +178,11 @@ export type Database = {
           created_at?: string;
           display_order?: number;
           first_name: string;
+          google_review_url?: string | null;
           id?: string;
           published?: boolean;
           rating?: number;
-          review_date?: string;
+          review_date?: string | null;
           session_type?: string | null;
         };
         Update: {
@@ -188,10 +190,11 @@ export type Database = {
           created_at?: string;
           display_order?: number;
           first_name?: string;
+          google_review_url?: string | null;
           id?: string;
           published?: boolean;
           rating?: number;
-          review_date?: string;
+          review_date?: string | null;
           session_type?: string | null;
         };
         Relationships: [];

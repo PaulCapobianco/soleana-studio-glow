@@ -32,6 +32,8 @@ import catPortraitXl from "@/assets/portfolio/portrait-1200.webp";
 import aboutPortrait from "@/assets/accueil/anais_1.webp";
 import logoSoleana180 from "@/assets/logo-soleana-180.webp";
 import logoSoleana280 from "@/assets/logo-soleana-280.webp";
+import type { Database } from "@/integrations/supabase/types";
+import { isGoogleReviewUrl } from "@/lib/google-review-url";
 import { absoluteUrl, buildPageSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/")({
@@ -41,25 +43,32 @@ export const Route = createFileRoute("/")({
 
     if (!supabaseUrl || !supabaseKey) {
       console.error("[home.services] Missing Supabase public env vars.");
-      return [];
+      return { services: [], reviews: [] };
     }
 
-    const response = await fetch(
-      `${supabaseUrl}/rest/v1/services?select=id,name,description,price_eur,featured,features,active,display_order&active=eq.true&order=display_order.asc`,
-      {
-        headers: {
-          apikey: supabaseKey,
-          Authorization: `Bearer ${supabaseKey}`,
-        },
-      },
-    );
+    const headers = {
+      apikey: supabaseKey,
+      Authorization: `Bearer ${supabaseKey}`,
+    };
+    const reviewsPromise = loadPublishedReviews(supabaseUrl, headers);
+    let services: HomeService[] = [];
 
-    if (!response.ok) {
-      console.error("[home.services] Failed to fetch services:", response.status);
-      return [];
+    try {
+      const response = await fetch(
+        `${supabaseUrl}/rest/v1/services?select=id,name,description,price_eur,featured,features,active,display_order&active=eq.true&order=display_order.asc`,
+        { headers },
+      );
+
+      if (response.ok) {
+        services = (await response.json()) as HomeService[];
+      } else {
+        console.error("[home.services] Failed to fetch services:", response.status);
+      }
+    } catch (error) {
+      console.error("[home.services] Failed to fetch services:", error);
     }
 
-    return (await response.json()) as HomeService[];
+    return { services, reviews: await reviewsPromise };
   },
   head: () => {
     const seo = buildPageSeo({
@@ -94,6 +103,35 @@ type HomeService = {
   active: boolean;
   display_order: number;
 };
+
+type HomeReview = Pick<
+  Database["public"]["Tables"]["reviews"]["Row"],
+  "id" | "first_name" | "comment" | "rating" | "google_review_url" | "display_order"
+>;
+
+async function loadPublishedReviews(
+  supabaseUrl: string,
+  headers: { apikey: string; Authorization: string },
+): Promise<HomeReview[]> {
+  const url = new URL("/rest/v1/reviews", supabaseUrl);
+  url.searchParams.set("select", "id,first_name,comment,rating,google_review_url,display_order");
+  url.searchParams.set("published", "eq.true");
+  url.searchParams.set("order", "display_order.asc,id.asc");
+
+  try {
+    const response = await fetch(url, { headers });
+    if (!response.ok) {
+      console.error("[home.reviews] Failed to fetch reviews:", response.status);
+      return [];
+    }
+
+    const reviews: unknown = await response.json();
+    return Array.isArray(reviews) ? (reviews as HomeReview[]) : [];
+  } catch (error) {
+    console.error("[home.reviews] Failed to fetch reviews:", error);
+    return [];
+  }
+}
 
 const categories = [
   {
@@ -161,56 +199,11 @@ const seoMap: Record<string, string> = {
   portrait: "photographe-portrait-marseille",
 };
 
-const googleReviews = [
-  {
-    name: "Diane Schambill",
-    comment:
-      "Séance en famille très réussie, avec une ambiance détendue et un résultat naturel, lumineux et plein d’émotion.",
-    link: "https://share.google/MHYeVGTwKAmdIckcc",
-  },
-  {
-    name: "Guilbert Quentin",
-    comment:
-      "Photographe passionnée, rassurante et très professionnelle, avec une préparation de séance claire et soignée.",
-    link: "https://share.google/kuxPjT9N3LgnJDY88",
-  },
-  {
-    name: "Maëva Bevilacqua",
-    comment:
-      "Un moment convivial et naturel, avec une photographe qui sait mettre à l’aise et faire ressortir des images sublimes.",
-    link: "https://share.google/no0jgjTmoMmaD50Vq",
-  },
-  {
-    name: "Coralie Oller",
-    comment:
-      "Une séance douce, chaleureuse et très professionnelle, portée par une écoute attentive et une vraie implication.",
-    link: "https://share.google/KqRGX1N5YfCXGol9V",
-  },
-  {
-    name: "Maxence Guenette",
-    comment:
-      "Un accompagnement humain et très professionnel pour des fiançailles surprises rendues inoubliables.",
-    link: "https://share.google/Xxv2St7JiDVXm4K1C",
-  },
-  {
-    name: "Laurie Bechemin",
-    comment:
-      "Une séance agréable et bienveillante, avec une photographe très douce qui met immédiatement à l’aise.",
-    link: "https://share.google/jDQrgSEnV3b3io1Bo",
-  },
-  {
-    name: "Claire Desalverte",
-    comment:
-      "Une expérience magnifique avec Anaïs ! C’est une photographe très professionnelle, douce et à l’écoute. Elle a su capturer avec beaucoup de sensibilité les émotions, l’amour et la lumière de chaque instant. Le résultat est tout simplement superbe, avec des photos naturelles et pleines de vie. Je la recommande les yeux fermés à toutes les personnes qui souhaitent garder des souvenirs authentiques et intemporels. Merci encore pour ton talent !",
-    link: "https://maps.app.goo.gl/oh3kbw1YJKuDgHrm9",
-  },
-] as const;
-
 const googleReviewUrl = "https://g.page/r/CRyE27TfkuhmEBM/review";
 
 function Home() {
   const [scrolled, setScrolled] = useState(false);
-  const services = Route.useLoaderData();
+  const { services, reviews } = Route.useLoaderData();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -240,13 +233,13 @@ function Home() {
           }`}
           aria-hidden={scrolled}
         >
-            <img
-              src={logoSoleana280}
-              srcSet={`${logoSoleana180} 180w, ${logoSoleana280} 280w, ${logoSoleana} 404w`}
-              sizes="(min-width: 1280px) 350px, 280px"
-              alt="Soleana Studio"
-              width={360}
-              height={180}
+          <img
+            src={logoSoleana280}
+            srcSet={`${logoSoleana180} 180w, ${logoSoleana280} 280w, ${logoSoleana} 404w`}
+            sizes="(min-width: 1280px) 350px, 280px"
+            alt="Soleana Studio"
+            width={360}
+            height={180}
             className="w-[260px] max-w-[24vw] h-auto object-contain drop-shadow-[0_14px_24px_rgba(0,0,0,0.22)] xl:w-[350px] xl:max-w-[35vw]"
             loading="eager"
             fetchPriority="high"
@@ -500,54 +493,60 @@ function Home() {
       </section>
 
       {/* AVIS */}
-      <section className="bg-surface py-32 px-6 border-y border-border [content-visibility:auto] [contain-intrinsic-size:1px_1200px]">
-        <div className="max-w-6xl mx-auto">
-          <Reveal className="text-center mb-16">
-            <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent mb-4">
-              Ils en parlent
-            </p>
-            <h2 className="font-display text-4xl md:text-5xl italic">Avis sincères</h2>
-          </Reveal>
-          <Reveal className="mb-12 flex justify-center" delay={90}>
-            <a
-              href={googleReviewUrl}
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Laisser un avis Google pour Soleana Studio"
-              className="inline-flex items-center gap-3 rounded-full border border-[#D9C3AF] bg-[#FFFDF8] px-6 py-3.5 text-sm font-semibold text-foreground shadow-[0_16px_40px_-28px_rgba(62,47,40,0.22)] transition-all hover:-translate-y-0.5 hover:border-[#C6966F] hover:shadow-[0_18px_44px_-28px_rgba(198,150,111,0.35)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C6966F] focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-            >
-              <GoogleIcon className="h-7 w-7 shrink-0" />
-              <span>Laisser un avis Google</span>
-            </a>
-          </Reveal>
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-            {googleReviews.map((review, i) => (
-              <Reveal key={review.link} delay={i * 90}>
-                <article className="flex h-full flex-col rounded-[28px] border border-border bg-background p-8 shadow-[0_18px_50px_-38px_rgba(62,47,40,0.28)]">
-                  <p className="text-accent text-sm tracking-widest">{"★".repeat(5)}</p>
-                  <p className="mt-5 flex-1 font-display text-xl italic text-foreground leading-relaxed">
-                    {review.comment}
-                  </p>
-                  <div className="mt-6 flex items-center justify-between gap-4 border-t border-border pt-5">
-                    <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
-                      {review.name}
+      {reviews.length > 0 && (
+        <section className="bg-surface py-32 px-6 border-y border-border [content-visibility:auto] [contain-intrinsic-size:1px_1200px]">
+          <div className="max-w-6xl mx-auto">
+            <Reveal className="text-center mb-16">
+              <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent mb-4">
+                Ils en parlent
+              </p>
+              <h2 className="font-display text-4xl md:text-5xl italic">Avis sincères</h2>
+            </Reveal>
+            <Reveal className="mb-12 flex justify-center" delay={90}>
+              <a
+                href={googleReviewUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Laisser un avis Google pour Soleana Studio"
+                className="inline-flex items-center gap-3 rounded-full border border-[#D9C3AF] bg-[#FFFDF8] px-6 py-3.5 text-sm font-semibold text-foreground shadow-[0_16px_40px_-28px_rgba(62,47,40,0.22)] transition-all hover:-translate-y-0.5 hover:border-[#C6966F] hover:shadow-[0_18px_44px_-28px_rgba(198,150,111,0.35)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C6966F] focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              >
+                <GoogleIcon className="h-7 w-7 shrink-0" />
+                <span>Laisser un avis Google</span>
+              </a>
+            </Reveal>
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+              {reviews.map((review, i) => (
+                <Reveal key={review.id} delay={i * 90}>
+                  <article className="flex h-full flex-col rounded-[28px] border border-border bg-background p-8 shadow-[0_18px_50px_-38px_rgba(62,47,40,0.28)]">
+                    <p className="text-accent text-sm tracking-widest">
+                      {"★".repeat(review.rating)}
                     </p>
-                    <a
-                      href={review.link}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex items-center justify-end text-accent transition-transform hover:scale-105"
-                      aria-label={`Lire l'avis Google de ${review.name}`}
-                    >
-                      <GoogleIcon className="h-4 w-4" />
-                    </a>
-                  </div>
-                </article>
-              </Reveal>
-            ))}
+                    <p className="mt-5 flex-1 font-display text-xl italic text-foreground leading-relaxed">
+                      {review.comment}
+                    </p>
+                    <div className="mt-6 flex items-center justify-between gap-4 border-t border-border pt-5">
+                      <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
+                        {review.first_name}
+                      </p>
+                      {isGoogleReviewUrl(review.google_review_url) && (
+                        <a
+                          href={review.google_review_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center justify-end text-accent transition-transform hover:scale-105"
+                          aria-label={`Lire l'avis Google de ${review.first_name}`}
+                        >
+                          <GoogleIcon className="h-4 w-4" />
+                        </a>
+                      )}
+                    </div>
+                  </article>
+                </Reveal>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* CTA */}
       <section className="bg-foreground text-background py-32 px-6">
