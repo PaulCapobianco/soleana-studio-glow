@@ -47,7 +47,7 @@ function PortraitPage() {
     { label: "Couple", slug: "couple" },
     { label: "Maternité", slug: "grossesse" },
     { label: "Famille", slug: "famille" },
-  ];
+  ] as const;
 
   return (
     <SiteShell>

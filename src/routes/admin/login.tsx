@@ -4,7 +4,14 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/admin/login")({
-  validateSearch: (s: Record<string, unknown>) => ({ reason: typeof s.reason === "string" ? s.reason : undefined }),
+  // Explicit `{ reason?: string }` return type (an optional key), not the
+  // inferred `{ reason: string | undefined }` (a required key whose value
+  // can be undefined) — the latter makes TanStack Router require `search`
+  // at every `redirect`/`navigate` call site, even when there's no reason
+  // to pass, which is why callers elsewhere were missing it.
+  validateSearch: (s: Record<string, unknown>): { reason?: string } => ({
+    reason: typeof s.reason === "string" ? s.reason : undefined,
+  }),
   head: () => ({ meta: [{ title: "Admin — Soleana Studio" }, { name: "robots", content: "noindex,nofollow" }] }),
   component: AdminLogin,
 });

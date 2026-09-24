@@ -47,7 +47,7 @@ function CouplePage() {
     { label: "Maternité", slug: "grossesse" },
     { label: "Famille", slug: "famille" },
     { label: "Portrait", slug: "portrait" },
-  ];
+  ] as const;
 
   return (
     <SiteShell>

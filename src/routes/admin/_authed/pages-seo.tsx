@@ -12,7 +12,6 @@ function SeoAdmin() {
   const { data: pages } = useQuery({
     queryKey: ["admin-seo"],
     queryFn: async () => {
-      const supabase = await loadSupabaseClient();
       return (await supabase.from("seo_pages").select("*").order("slug")).data ?? [];
     },
   });

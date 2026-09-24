@@ -47,7 +47,7 @@ function FamillePage() {
     { label: "Couple", slug: "couple" },
     { label: "Maternité", slug: "grossesse" },
     { label: "Portrait", slug: "portrait" },
-  ];
+  ] as const;
 
   return (
     <SiteShell>

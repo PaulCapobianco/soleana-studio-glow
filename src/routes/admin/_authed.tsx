@@ -35,13 +35,10 @@ function AdminLayout() {
   const [email, setEmail] = useState<string>("");
 
   useEffect(() => {
-    void loadSupabaseClient().then((supabase) =>
-      supabase.auth.getUser().then(({ data }) => setEmail(data.user?.email ?? "")),
-    );
+    void supabase.auth.getUser().then(({ data }) => setEmail(data.user?.email ?? ""));
   }, []);
 
   async function signOut() {
-    const supabase = await loadSupabaseClient();
     await supabase.auth.signOut();
     router.navigate({ to: "/admin/login" });
   }

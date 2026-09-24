@@ -2,6 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
+
+type ReviewUpdate = Database["public"]["Tables"]["reviews"]["Update"];
 
 export const Route = createFileRoute("/admin/_authed/avis")({
   head: () => ({ meta: [{ title: "Avis — Admin" }, { name: "robots", content: "noindex,nofollow" }] }),
@@ -13,7 +16,6 @@ function Reviews() {
   const { data: items } = useQuery({
     queryKey: ["admin-reviews"],
     queryFn: async () => {
-      const supabase = await loadSupabaseClient();
       return (await supabase.from("reviews").select("*").order("display_order")).data ?? [];
     },
   });
@@ -23,14 +25,12 @@ function Reviews() {
     if (error) toast.error(error.message);
     qc.invalidateQueries({ queryKey: ["admin-reviews"] });
   }
-  async function update(id: string, patch: Record<string, unknown>) {
-    const supabase = await loadSupabaseClient();
+  async function update(id: string, patch: ReviewUpdate) {
     await supabase.from("reviews").update(patch).eq("id", id);
     qc.invalidateQueries({ queryKey: ["admin-reviews"] });
   }
   async function remove(id: string) {
     if (!confirm("Supprimer ?")) return;
-    const supabase = await loadSupabaseClient();
     await supabase.from("reviews").delete().eq("id", id);
     qc.invalidateQueries({ queryKey: ["admin-reviews"] });
   }

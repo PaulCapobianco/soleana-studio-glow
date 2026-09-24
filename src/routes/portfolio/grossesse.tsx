@@ -47,7 +47,7 @@ function GrossessePage() {
     { label: "Couple", slug: "couple" },
     { label: "Famille", slug: "famille" },
     { label: "Portrait", slug: "portrait" },
-  ];
+  ] as const;
 
   return (
     <SiteShell>

@@ -1,6 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
+
+type FaqUpdate = Database["public"]["Tables"]["faq"]["Update"];
 
 export const Route = createFileRoute("/admin/_authed/faq")({
   head: () => ({ meta: [{ title: "FAQ — Admin" }, { name: "robots", content: "noindex,nofollow" }] }),
@@ -12,7 +15,6 @@ function FaqAdmin() {
   const { data: items } = useQuery({
     queryKey: ["admin-faq"],
     queryFn: async () => {
-      const supabase = await loadSupabaseClient();
       return (await supabase.from("faq").select("*").order("display_order")).data ?? [];
     },
   });
@@ -20,14 +22,12 @@ function FaqAdmin() {
     await supabase.from("faq").insert({ question: "Nouvelle question", answer: "Réponse à compléter…" });
     qc.invalidateQueries({ queryKey: ["admin-faq"] });
   }
-  async function update(id: string, patch: Record<string, unknown>) {
-    const supabase = await loadSupabaseClient();
+  async function update(id: string, patch: FaqUpdate) {
     await supabase.from("faq").update(patch).eq("id", id);
     qc.invalidateQueries({ queryKey: ["admin-faq"] });
   }
   async function remove(id: string) {
     if (!confirm("Supprimer ?")) return;
-    const supabase = await loadSupabaseClient();
     await supabase.from("faq").delete().eq("id", id);
     qc.invalidateQueries({ queryKey: ["admin-faq"] });
   }

@@ -2,29 +2,40 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
 
-function makeCrud(table: string, queryKey: string) {
-  return function Module() {
-    const qc = useQueryClient();
-    const { data } = useQuery({
-      queryKey: [queryKey],
-      queryFn: async () => {
-        return (await supabase.from(table).select("*").order("display_order")).data ?? [];
-      },
-    });
-    async function update(id: string, patch: Record<string, unknown>) {
-      const supabase = await loadSupabaseClient();
-      const { error } = await supabase.from(table).update(patch).eq("id", id);
-      if (error) toast.error(error.message); else { toast.success("Enregistré"); qc.invalidateQueries({ queryKey: [queryKey] }); }
+// Was a generic makeCrud(table, queryKey) factory, but it only ever had one
+// caller (the "services" table below) and making it properly type-safe
+// across an arbitrary table fights supabase-js's overloaded `.from()` —
+// the generic type parameter isn't resolved to a literal consistently
+// across the two `.from(table)` calls (select + update) in the same
+// closure, so TypeScript falls back to comparing against the whole
+// Database shape instead of the one table. Specializing it for "services"
+// (its only real use) is honest and keeps everything typed correctly;
+// reintroduce genericity if a second table needs the same shape.
+function useServicesCrud() {
+  const qc = useQueryClient();
+  const { data } = useQuery({
+    queryKey: ["admin-services"],
+    queryFn: async () => {
+      return (await supabase.from("services").select("*").order("display_order")).data ?? [];
+    },
+  });
+  async function update(id: string, patch: Database["public"]["Tables"]["services"]["Update"]) {
+    const { error } = await supabase.from("services").update(patch).eq("id", id);
+    if (error) toast.error(error.message);
+    else {
+      toast.success("Enregistré");
+      qc.invalidateQueries({ queryKey: ["admin-services"] });
     }
-    return { items: data ?? [], update, qc };
-  };
+  }
+  return { items: data ?? [], update };
 }
 
 export const Route = createFileRoute("/admin/_authed/prestations")({
   head: () => ({ meta: [{ title: "Prestations — Admin" }, { name: "robots", content: "noindex,nofollow" }] }),
   component: () => {
-    const { items, update } = makeCrud("services", "admin-services")();
+    const { items, update } = useServicesCrud();
     return (
       <div className="space-y-8">
         <h1 className="font-display text-4xl italic text-primary">Prestations</h1>

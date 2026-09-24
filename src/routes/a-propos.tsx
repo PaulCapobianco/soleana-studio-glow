@@ -33,7 +33,20 @@ const photographyNotes = [
   },
 ];
 
-const collageItems = [
+type CollageItem = {
+  src: string;
+  alt: string;
+  className: string;
+  aspectClassName: string;
+  imageClassName?: string;
+  // Not set by any item below — every collage tile currently keeps the
+  // default hover-zoom + gradient overlay. Kept as opt-outs for a future
+  // item that shouldn't animate or darken on hover.
+  disableHoverZoom?: boolean;
+  noOverlay?: boolean;
+};
+
+const collageItems: CollageItem[] = [
   {
     src: landscape2,
     alt: "Séance lifestyle lumineuse en extérieur",

@@ -95,6 +95,10 @@ export function TurnstileWidget({
     if (!siteKey || !containerRef.current) {
       return undefined;
     }
+    // Narrowing a function parameter (`siteKey?: string`) doesn't carry
+    // into a nested function's closure, even after this guard — capture it
+    // in a local const so TypeScript can see it's definitely a string below.
+    const resolvedSiteKey = siteKey;
 
     async function renderWidget() {
       try {
@@ -105,7 +109,7 @@ export function TurnstileWidget({
         }
 
         widgetIdRef.current = window.turnstile.render(containerRef.current, {
-          sitekey: siteKey,
+          sitekey: resolvedSiteKey,
           theme: "light",
           callback: (token: string) => {
             callbacksRef.current.onTokenChange(token);

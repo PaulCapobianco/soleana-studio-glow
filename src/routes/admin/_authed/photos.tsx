@@ -3,6 +3,9 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
+
+type PhotoUpdate = Database["public"]["Tables"]["photos"]["Update"];
 
 export const Route = createFileRoute("/admin/_authed/photos")({
   head: () => ({ meta: [{ title: "Photos — Admin" }, { name: "robots", content: "noindex,nofollow" }] }),
@@ -16,7 +19,6 @@ function PhotosAdmin() {
   const { data: photos } = useQuery({
     queryKey: ["admin-photos"],
     queryFn: async () => {
-      const supabase = await loadSupabaseClient();
       const { data } = await supabase.from("photos").select("*, category:categories(name, slug)").order("display_order");
       return data ?? [];
     },
@@ -25,7 +27,6 @@ function PhotosAdmin() {
   const { data: cats } = useQuery({
     queryKey: ["admin-cats"],
     queryFn: async () => {
-      const supabase = await loadSupabaseClient();
       return (await supabase.from("categories").select("*").order("display_order")).data ?? [];
     },
   });
@@ -49,15 +50,13 @@ function PhotosAdmin() {
     if (fileRef.current) fileRef.current.value = "";
   }
 
-  async function update(id: string, patch: Record<string, unknown>) {
-    const supabase = await loadSupabaseClient();
+  async function update(id: string, patch: PhotoUpdate) {
     await supabase.from("photos").update(patch).eq("id", id);
     qc.invalidateQueries({ queryKey: ["admin-photos"] });
   }
 
   async function remove(id: string) {
     if (!confirm("Supprimer cette photo ?")) return;
-    const supabase = await loadSupabaseClient();
     await supabase.from("photos").delete().eq("id", id);
     qc.invalidateQueries({ queryKey: ["admin-photos"] });
   }

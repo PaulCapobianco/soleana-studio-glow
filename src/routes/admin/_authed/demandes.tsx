@@ -17,7 +17,6 @@ function Demandes() {
   const { data: items } = useQuery({
     queryKey: ["admin-demandes"],
     queryFn: async () => {
-      const supabase = await loadSupabaseClient();
       const { data } = await supabase
         .from("contact_requests")
         .select("*")
@@ -26,7 +25,7 @@ function Demandes() {
     },
   });
 
-  async function updateStatus(id: string, status: string) {
+  async function updateStatus(id: string, status: (typeof STATUSES)[number]) {
     const { error } = await supabase.from("contact_requests").update({ status }).eq("id", id);
     if (error) return toast.error(error.message);
     toast.success("Statut mis à jour");
@@ -35,7 +34,6 @@ function Demandes() {
 
   async function remove(id: string) {
     if (!confirm("Supprimer cette demande ?")) return;
-    const supabase = await loadSupabaseClient();
     await supabase.from("contact_requests").delete().eq("id", id);
     qc.invalidateQueries({ queryKey: ["admin-demandes"] });
   }
@@ -60,7 +58,9 @@ function Demandes() {
               </div>
               <select
                 value={r.status}
-                onChange={(e) => updateStatus(r.id, e.target.value)}
+                onChange={(e) =>
+                  updateStatus(r.id, e.target.value as (typeof STATUSES)[number])
+                }
                 className="bg-background border border-border px-3 py-1 text-xs"
               >
                 {STATUSES.map((s) => (

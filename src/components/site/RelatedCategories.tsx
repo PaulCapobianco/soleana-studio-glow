@@ -1,15 +1,28 @@
 import { Link } from "@tanstack/react-router";
 import { Reveal } from "./Reveal";
 
+// The four portfolio category pages are separate static routes (not a
+// dynamic /portfolio/$slug route), so `to` must be one of these exact
+// literals for TanStack Router's typed Link — a template string like
+// `/portfolio/${slug}` doesn't match any registered route.
+const portfolioRoutes = {
+  grossesse: "/portfolio/grossesse",
+  famille: "/portfolio/famille",
+  couple: "/portfolio/couple",
+  portrait: "/portfolio/portrait",
+} as const;
+
+type PortfolioCategorySlug = keyof typeof portfolioRoutes;
+
 interface RelatedCategory {
   label: string;
-  slug: string;
+  slug: PortfolioCategorySlug;
   icon?: string;
 }
 
 interface RelatedCategoriesProps {
-  categories: RelatedCategory[];
-  currentSlug: string;
+  categories: readonly RelatedCategory[];
+  currentSlug: PortfolioCategorySlug;
 }
 
 export function RelatedCategories({ categories, currentSlug }: RelatedCategoriesProps) {
@@ -28,7 +41,7 @@ export function RelatedCategories({ categories, currentSlug }: RelatedCategories
           {filtered.map((category) => (
             <Reveal key={category.slug} delay={100}>
               <Link
-                to={`/portfolio/${category.slug}`}
+                to={portfolioRoutes[category.slug]}
                 className="relative group overflow-hidden rounded-lg aspect-video bg-muted border border-border transition-all duration-500 hover:-translate-y-0.5 hover:shadow-lg flex items-center justify-center"
               >
                 <span className="text-sm md:text-base font-display italic text-foreground text-center px-4">

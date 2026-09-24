@@ -13,7 +13,6 @@ function Params() {
   const { data: s } = useQuery({
     queryKey: ["admin-settings"],
     queryFn: async () => {
-      const supabase = await loadSupabaseClient();
       return (await supabase.from("site_settings").select("*").eq("id", 1).single()).data;
     },
   });
