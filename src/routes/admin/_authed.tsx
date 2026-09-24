@@ -1,6 +1,6 @@
 import { createFileRoute, Link, Outlet, redirect, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { LayoutDashboard, Images, ListChecks, Star, HelpCircle, Inbox, FileText, Settings, LogOut } from "lucide-react";
+import { LayoutDashboard, Images, ListChecks, Star, HelpCircle, Inbox, FileText, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -27,7 +27,6 @@ const nav = [
   { to: "/admin/avis", label: "Avis", icon: Star },
   { to: "/admin/faq", label: "FAQ", icon: HelpCircle },
   { to: "/admin/pages-seo", label: "Pages SEO", icon: FileText },
-  { to: "/admin/parametres", label: "Paramètres", icon: Settings },
 ];
 
 function AdminLayout() {
