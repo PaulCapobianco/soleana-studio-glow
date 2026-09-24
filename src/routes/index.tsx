@@ -12,6 +12,8 @@ import logoSoleana from "@/assets/logo-soleana.webp";
 import catGrossesse from "@/assets/portfolio/grossesse.webp";
 import catGrossesseSm from "@/assets/portfolio/grossesse-350.webp";
 import catGrossesseMd from "@/assets/portfolio/grossesse-500.webp";
+import catGrossesseLg from "@/assets/portfolio/grossesse-800.webp";
+import catGrossesseXl from "@/assets/portfolio/grossesse-1200.webp";
 import catFamille from "@/assets/portfolio/famille.webp";
 import catFamilleSm from "@/assets/portfolio/famille-350.webp";
 import catFamilleMd from "@/assets/portfolio/famille-500.webp";
@@ -94,8 +96,16 @@ const categories = [
     img: catGrossesse,
     imgSmall: catGrossesseSm,
     imgMedium: catGrossesseMd,
+    imgLarge: catGrossesseLg,
+    imgXLarge: catGrossesseXl,
     offset: false,
-    objectClass: "object-[58%_48%] md:object-[calc(70%_-_50px)_48%]",
+    // Plain percentage only: a calc() value here triggers a Chrome rendering
+    // bug where object-fit: cover leaves a gap instead of covering the box
+    // (reproduced in isolation, see AUDIT.md / commit message). The x value
+    // has no visible effect anyway — this image's aspect ratio makes cover
+    // always width-driven with zero horizontal crop room, at every
+    // breakpoint, so any x percentage renders identically.
+    objectClass: "object-[58%_48%]",
   },
   {
     slug: "famille",
@@ -311,7 +321,15 @@ function Home() {
               >
                 <img
                   src={c.img}
-                  srcSet={`${c.imgSmall} 350w, ${c.imgMedium} 500w, ${c.img} 700w`}
+                  srcSet={[
+                    `${c.imgSmall} 350w`,
+                    `${c.imgMedium} 500w`,
+                    `${c.img} 700w`,
+                    "imgLarge" in c ? `${c.imgLarge} 800w` : null,
+                    "imgXLarge" in c ? `${c.imgXLarge} 1200w` : null,
+                  ]
+                    .filter(Boolean)
+                    .join(", ")}
                   sizes="(min-width: 768px) 25vw, 42vw"
                   alt={`Photographe ${c.label.toLowerCase()} à Marseille`}
                   width={1200}

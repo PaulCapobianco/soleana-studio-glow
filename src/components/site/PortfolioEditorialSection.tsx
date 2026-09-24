@@ -34,7 +34,12 @@ const categories = [
     imgMedium: catGrossesseMd,
     alt: "Séance grossesse naturelle et lumineuse à Marseille",
     positionClass: "lg:col-span-6 lg:row-span-2",
-    objectClass: "object-[58%_48%] md:object-[calc(70%_-_50px)_48%]",
+    // Plain percentage only — a calc() value here triggers a Chrome
+    // rendering bug with object-fit: cover (see AUDIT.md). Currently this
+    // field isn't even read by the render below (separate pre-existing
+    // objectClass/objectPosition mismatch, out of scope here); kept correct
+    // so it doesn't reintroduce the bug if that gets fixed later.
+    objectClass: "object-[58%_48%]",
   },
   {
     slug: "famille",
