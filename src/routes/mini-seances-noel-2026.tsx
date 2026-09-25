@@ -3,6 +3,7 @@ import { SiteShell } from "@/components/site/SiteShell";
 import { Reveal } from "@/components/site/Reveal";
 import { NoelGallery } from "@/components/site/NoelGallery";
 import { absoluteUrl, buildPageSeo } from "@/lib/seo";
+import { getNoel2026EditionState } from "@/lib/noel-2026.functions";
 import {
   NOEL_2026_ACTIVE_HERO,
   NOEL_2026_COLORS,
@@ -12,27 +13,21 @@ import {
   NOEL_2026_LOCATION,
   NOEL_2026_SESSION_DATES,
   NOEL_2026_TEXTS,
-  isNoel2026EditionOver,
+  NOEL_2026_SEO,
+  NOEL_2026_PAGE_COPY,
 } from "@/data/noel-2026";
 
 export const Route = createFileRoute("/mini-seances-noel-2026")({
-  loader: async () => {
-    return { isEditionOver: isNoel2026EditionOver(new Date()) };
-  },
+  loader: () => getNoel2026EditionState(),
   head: () => {
-    const seo = buildPageSeo({
-      title: "Mini-séances photo de Noël 2026 près de Marseille | Soleana Studio",
-      description:
-        "Mini-séances photo de Noël en extérieur les 7 et 11 novembre 2026, à Plan-d'Aups-Sainte-Baume. Deux formules, places limitées. Réservez votre créneau.",
-      path: "/mini-seances-noel-2026",
-      ogTitle: "Mini-séances de Noël 2026 — Soleana Studio",
-      ogDescription:
-        "Une parenthèse de Noël en famille, au cœur de la Sainte-Baume. 7 & 11 novembre 2026, places limitées.",
-    });
+    const seo = buildPageSeo(NOEL_2026_SEO);
 
     return {
       ...seo,
-      meta: [...seo.meta, { property: "og:image", content: absoluteUrl(NOEL_2026_ACTIVE_HERO.src1600) }],
+      meta: [
+        ...seo.meta,
+        { property: "og:image", content: absoluteUrl(NOEL_2026_ACTIVE_HERO.src1600) },
+      ],
     };
   },
   component: NoelPage,
@@ -50,11 +45,12 @@ function NoelPage() {
               className="font-mono text-[10px] uppercase tracking-[0.4em] mb-4"
               style={{ color: NOEL_2026_COLORS.deepRed }}
             >
-              Mini-séances de Noël
+              {NOEL_2026_PAGE_COPY.editionStatus}
             </p>
             <h1 className="font-display text-4xl md:text-5xl italic text-primary mb-6">
-              {NOEL_2026_TEXTS.editionOverTitle}
+              {NOEL_2026_TEXTS.heroTitle}
             </h1>
+            <p className="mb-4 text-lg">{NOEL_2026_TEXTS.editionOverTitle}</p>
             <p className="max-w-xl mx-auto text-foreground/90 text-lg leading-relaxed mb-10">
               {NOEL_2026_TEXTS.editionOverText}
             </p>
@@ -75,7 +71,7 @@ function NoelPage() {
     <SiteShell>
       {/* HERO */}
       <section className="relative overflow-hidden">
-        <div className="relative aspect-[3/4] sm:aspect-[16/10] md:aspect-[21/9] w-full">
+        <div className="relative w-full">
           <img
             src={NOEL_2026_ACTIVE_HERO.src}
             srcSet={`${NOEL_2026_ACTIVE_HERO.src} 800w, ${NOEL_2026_ACTIVE_HERO.src1600} 1600w, ${NOEL_2026_ACTIVE_HERO.src2400} 2400w`}
@@ -86,9 +82,10 @@ function NoelPage() {
             fetchPriority="high"
             decoding="async"
             className="absolute inset-0 h-full w-full object-cover"
+            style={{ objectPosition: NOEL_2026_ACTIVE_HERO.objectPosition }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/15 to-black/10" />
-          <div className="absolute inset-0 flex flex-col items-center justify-end px-6 pb-12 text-center sm:justify-center sm:pb-0">
+          <div className="relative px-6 pb-16 pt-40 text-center sm:pb-20 sm:pt-44 lg:py-44">
             <Reveal>
               <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-white/80 mb-4">
                 Soleana Studio
@@ -119,7 +116,10 @@ function NoelPage() {
         <div className="mx-auto max-w-2xl text-center">
           <Reveal>
             {NOEL_2026_TEXTS.experience.map((paragraph) => (
-              <p key={paragraph} className="text-lg leading-relaxed text-foreground/90 mb-6 last:mb-0">
+              <p
+                key={paragraph}
+                className="text-lg leading-relaxed text-foreground/90 mb-6 last:mb-0"
+              >
                 {paragraph}
               </p>
             ))}
@@ -144,15 +144,10 @@ function NoelPage() {
         <div className="mx-auto max-w-4xl">
           <Reveal>
             <h2 className="font-display text-3xl md:text-4xl italic text-primary text-center mb-12">
-              Le déroulement de la séance
+              {NOEL_2026_PAGE_COPY.experienceTitle}
             </h2>
             <div className="grid gap-4 sm:grid-cols-2">
-              {[
-                "25 à 30 minutes de séance",
-                "En extérieur, à " + NOEL_2026_LOCATION,
-                "Une ambiance de Noël avec décor, musique d'ambiance et petites douceurs",
-                "Pour les couples, futurs parents, familles et enfants",
-              ].map((item) => (
+              {NOEL_2026_PAGE_COPY.experienceItems.map((item) => (
                 <div key={item} className="rounded-[24px] border border-border bg-background p-5">
                   <p className="text-sm leading-relaxed text-foreground/88">{item}</p>
                 </div>
@@ -163,14 +158,14 @@ function NoelPage() {
       </section>
 
       {/* FORMULES */}
-      <section id="formules" className="px-6 py-24 md:py-28">
+      <section id="formules" className="scroll-mt-28 px-6 py-24 md:py-28">
         <div className="mx-auto max-w-5xl">
           <Reveal>
             <h2 className="font-display text-3xl md:text-4xl italic text-primary text-center mb-4">
-              Les formules
+              {NOEL_2026_PAGE_COPY.formulesTitle}
             </h2>
             <p className="text-center text-sm text-muted-foreground mb-14">
-              Réservation via les liens dédiés — un lien par formule.
+              {NOEL_2026_PAGE_COPY.formulesIntro}
             </p>
           </Reveal>
           <div className="grid gap-6 md:grid-cols-2">
@@ -178,7 +173,10 @@ function NoelPage() {
               <Reveal key={formule.id} delay={i * 80}>
                 <div className="flex h-full flex-col border border-border bg-surface p-8 lg:p-10">
                   <h3 className="font-display text-2xl italic text-primary mb-1">{formule.name}</h3>
-                  <p className="font-mono text-2xl mb-6" style={{ color: NOEL_2026_COLORS.deepRed }}>
+                  <p
+                    className="font-mono text-2xl mb-6"
+                    style={{ color: NOEL_2026_COLORS.deepRed }}
+                  >
                     {formule.priceEur} €
                   </p>
                   <ul className="text-sm text-foreground/85 space-y-3 border-t border-border pt-6 flex-1">
@@ -196,7 +194,7 @@ function NoelPage() {
                     className="mt-8 inline-flex items-center justify-center px-6 py-3 text-xs uppercase tracking-widest text-white transition-colors"
                     style={{ backgroundColor: NOEL_2026_COLORS.pineGreen }}
                   >
-                    Réserver cette formule
+                    {NOEL_2026_PAGE_COPY.formuleCta}
                   </a>
                 </div>
               </Reveal>
@@ -209,7 +207,9 @@ function NoelPage() {
       <section className="px-6 py-24 md:py-28" style={{ backgroundColor: "var(--surface)" }}>
         <div className="mx-auto max-w-3xl text-center">
           <Reveal>
-            <h2 className="font-display text-3xl md:text-4xl italic text-primary mb-10">Les dates</h2>
+            <h2 className="font-display text-3xl md:text-4xl italic text-primary mb-10">
+              {NOEL_2026_PAGE_COPY.datesTitle}
+            </h2>
             <div className="grid gap-4 sm:grid-cols-2">
               {NOEL_2026_SESSION_DATES.map((d) => (
                 <div key={d.iso} className="border border-border bg-background p-6">
@@ -218,7 +218,7 @@ function NoelPage() {
               ))}
             </div>
             <p className="mt-8 text-sm text-muted-foreground">
-              Deux journées seulement : les places sont limitées.
+              {NOEL_2026_PAGE_COPY.limitedPlaces}
             </p>
           </Reveal>
         </div>
@@ -229,12 +229,12 @@ function NoelPage() {
         <div className="mx-auto max-w-3xl">
           <Reveal>
             <h2 className="font-display text-3xl md:text-4xl italic text-primary text-center mb-12">
-              Questions fréquentes
+              {NOEL_2026_PAGE_COPY.faqTitle}
             </h2>
             <div className="space-y-8">
               {NOEL_2026_FAQ.map((item) => (
                 <div key={item.question}>
-                  <p className="font-display text-lg italic text-primary mb-2">{item.question}</p>
+                  <h3 className="font-display text-lg italic text-primary mb-2">{item.question}</h3>
                   <p className="text-sm leading-relaxed text-foreground/85">{item.answer}</p>
                 </div>
               ))}
@@ -256,7 +256,9 @@ function NoelPage() {
         <div className="absolute inset-0 bg-black/55" />
         <div className="relative mx-auto max-w-2xl text-center text-white">
           <Reveal>
-            <h2 className="font-display text-3xl md:text-4xl italic mb-8">{NOEL_2026_TEXTS.ctaFinalTitle}</h2>
+            <h2 className="font-display text-3xl md:text-4xl italic mb-8">
+              {NOEL_2026_TEXTS.ctaFinalTitle}
+            </h2>
             <a
               href="#formules"
               className="inline-flex items-center justify-center px-10 py-4 text-xs uppercase tracking-widest text-white transition-colors"

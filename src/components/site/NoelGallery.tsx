@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import type { NoelGalleryPhoto } from "@/data/noel-2026";
+import { useEffect, useRef, useState } from "react";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { NOEL_2026_PAGE_COPY, type NoelGalleryPhoto } from "@/data/noel-2026";
 
 export function NoelGallery({ photos }: { photos: NoelGalleryPhoto[] }) {
+  const triggerRef = useRef<HTMLButtonElement | null>(null);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const current = lightboxIndex !== null ? (photos[lightboxIndex] ?? null) : null;
 
@@ -16,7 +17,9 @@ export function NoelGallery({ photos }: { photos: NoelGalleryPhoto[] }) {
       }
       if (event.key === "ArrowLeft" && photos.length > 1) {
         event.preventDefault();
-        setLightboxIndex((i) => (i === null ? photos.length - 1 : (i - 1 + photos.length) % photos.length));
+        setLightboxIndex((i) =>
+          i === null ? photos.length - 1 : (i - 1 + photos.length) % photos.length,
+        );
       }
     };
 
@@ -42,14 +45,23 @@ export function NoelGallery({ photos }: { photos: NoelGalleryPhoto[] }) {
           <button
             key={photo.id}
             type="button"
-            onClick={() => setLightboxIndex(index)}
+            onClick={(event) => {
+              triggerRef.current = event.currentTarget;
+              setLightboxIndex(index);
+            }}
             className={`group relative block overflow-hidden rounded-[20px] border border-border bg-muted transition-all duration-700 hover:-translate-y-1 hover:shadow-[0_24px_70px_-44px_rgba(62,47,40,0.3)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C6966F] focus-visible:ring-offset-2 ${
-              index % 5 === 0 ? "col-span-2 aspect-[16/10] sm:col-span-1 sm:aspect-[4/5]" : "aspect-[4/5]"
+              index % 5 === 0
+                ? "col-span-2 aspect-[16/10] sm:col-span-1 sm:aspect-[4/5]"
+                : "aspect-[4/5]"
             }`}
             aria-label={`Agrandir la photo : ${photo.alt}`}
           >
             <img
               src={photo.src}
+              srcSet={`${photo.src} 700w, ${photo.srcLarge} 1600w`}
+              sizes="(min-width: 1200px) 368px, (min-width: 640px) calc((100vw - 80px) / 3), 100vw"
+              width={photo.width}
+              height={photo.height}
               alt={photo.alt}
               loading="lazy"
               decoding="async"
@@ -59,8 +71,19 @@ export function NoelGallery({ photos }: { photos: NoelGalleryPhoto[] }) {
         ))}
       </div>
 
-      <Dialog open={lightboxIndex !== null} onOpenChange={(open) => !open && setLightboxIndex(null)}>
-        <DialogContent className="!left-0 !top-0 !h-[100svh] !w-[100svw] !max-w-none !translate-x-0 !translate-y-0 !rounded-none !border-0 !bg-black/95 !p-0 !shadow-none !overflow-hidden">
+      <Dialog
+        open={lightboxIndex !== null}
+        onOpenChange={(open) => !open && setLightboxIndex(null)}
+      >
+        <DialogContent
+          onCloseAutoFocus={(event) => {
+            event.preventDefault();
+            triggerRef.current?.focus();
+          }}
+          className="!left-0 !top-0 !h-[100svh] !w-[100svw] !max-w-none !translate-x-0 !translate-y-0 !rounded-none !border-0 !bg-black/95 !p-0 !shadow-none !overflow-hidden"
+        >
+          <DialogTitle className="sr-only">{NOEL_2026_PAGE_COPY.galleryTitle}</DialogTitle>
+          <DialogDescription className="sr-only">{current?.alt}</DialogDescription>
           {current && (
             <div className="flex h-[100svh] w-full flex-col text-white">
               <div className="relative flex min-h-0 min-w-0 flex-1 items-center justify-center overflow-hidden px-4 py-4 sm:px-6 sm:py-6 md:px-8 md:py-8">
@@ -80,7 +103,11 @@ export function NoelGallery({ photos }: { photos: NoelGalleryPhoto[] }) {
                     <button
                       type="button"
                       onClick={() =>
-                        setLightboxIndex(lightboxIndex === null ? 0 : (lightboxIndex - 1 + photos.length) % photos.length)
+                        setLightboxIndex(
+                          lightboxIndex === null
+                            ? 0
+                            : (lightboxIndex - 1 + photos.length) % photos.length,
+                        )
                       }
                       className="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/10 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-white backdrop-blur-sm transition hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
                       aria-label="Photo précédente"
@@ -92,7 +119,11 @@ export function NoelGallery({ photos }: { photos: NoelGalleryPhoto[] }) {
                     </p>
                     <button
                       type="button"
-                      onClick={() => setLightboxIndex(lightboxIndex === null ? 0 : (lightboxIndex + 1) % photos.length)}
+                      onClick={() =>
+                        setLightboxIndex(
+                          lightboxIndex === null ? 0 : (lightboxIndex + 1) % photos.length,
+                        )
+                      }
                       className="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/10 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-white backdrop-blur-sm transition hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
                       aria-label="Photo suivante"
                     >

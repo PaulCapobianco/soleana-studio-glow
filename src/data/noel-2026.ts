@@ -20,7 +20,7 @@ import gallery06Lg from "@/assets/noel-2026/noel-gallery-06-1600.webp";
 import gallery07 from "@/assets/noel-2026/noel-gallery-07.webp";
 import gallery07Lg from "@/assets/noel-2026/noel-gallery-07-1600.webp";
 
-// Shared with the future homepage teaser — defined once here so both
+// Shared with the homepage teaser — defined once here so both
 // consumers stay in sync instead of duplicating hex codes.
 export const NOEL_2026_COLORS = {
   pineGreen: "#2F4A3D",
@@ -116,7 +116,8 @@ export const NOEL_2026_FAQ: NoelFaqItem[] = [
   },
   {
     question: "Comment réserver ma date ?",
-    answer: "Un acompte de 30 % permet de bloquer votre créneau. Sans acompte versé, la date n'est pas garantie.",
+    answer:
+      "Un acompte de 30 % permet de bloquer votre créneau. Sans acompte versé, la date n'est pas garantie.",
   },
 ];
 
@@ -130,7 +131,8 @@ export const NOEL_2026_TEXTS = {
     "Pour les couples, les futurs parents, les familles et les enfants.",
     "À moins d'une heure de Marseille et de Toulon, à Plan d'Aups Sainte-Baume : dépaysement garanti, le temps d'une escapade.",
   ],
-  galleryMention: "Photos des précédentes éditions — l'univers 2026 se prépare avec beaucoup de magie.",
+  galleryMention:
+    "Photos des précédentes éditions — l'univers 2026 se prépare avec beaucoup de magie.",
   ctaFinalTitle: "Envie de vivre votre propre parenthèse de Noël ?",
   ctaFinalButton: "Réserver ma séance",
   editionOverTitle: "Mini-séances de Noël 2026 — l'édition est terminée",
@@ -144,6 +146,7 @@ export type NoelHeroCandidate = {
   src: string;
   src1600: string;
   src2400: string;
+  objectPosition: string;
   alt: string;
 };
 
@@ -153,6 +156,7 @@ export const NOEL_2026_HERO_CANDIDATES: Record<"a" | "b", NoelHeroCandidate> = {
     src: noelHeroA,
     src1600: noelHeroA1600,
     src2400: noelHeroA2400,
+    objectPosition: "50% 20%",
     alt: "Couple enlacé lors d'une mini-séance de Noël en extérieur, lumière dorée de fin de journée",
   },
   b: {
@@ -160,18 +164,20 @@ export const NOEL_2026_HERO_CANDIDATES: Record<"a" | "b", NoelHeroCandidate> = {
     src: noelHeroB,
     src1600: noelHeroB1600,
     src2400: noelHeroB2400,
+    objectPosition: "50% 50%",
     alt: "Couple lors d'une mini-séance de Noël, instant complice en pleine lumière dorée",
   },
 };
 
-// Photographer's pick pending — candidate A for now. The other candidate's
-// files get deleted (not renamed) once the final choice is made.
+// Photographer's pick pending — candidate A for now; keep both candidates available.
 export const NOEL_2026_ACTIVE_HERO: NoelHeroCandidate = NOEL_2026_HERO_CANDIDATES.a;
 
 export type NoelGalleryPhoto = {
   id: string;
   src: string;
   srcLarge: string;
+  width: number;
+  height: number;
   alt: string;
 };
 
@@ -182,42 +188,94 @@ export const NOEL_2026_GALLERY_PHOTOS: NoelGalleryPhoto[] = [
     id: "noel-gallery-01",
     src: gallery01,
     srcLarge: gallery01Lg,
+    width: 700,
+    height: 1050,
     alt: "Couple lors d'une mini-séance de Noël en extérieur, ambiance chaleureuse au milieu de la nature",
   },
   {
     id: "noel-gallery-02",
     src: gallery02,
     srcLarge: gallery02Lg,
+    width: 700,
+    height: 467,
     alt: "Couple tenant un coussin de Noël, moment complice en extérieur",
   },
   {
     id: "noel-gallery-03",
     src: gallery03,
     srcLarge: gallery03Lg,
+    width: 700,
+    height: 1050,
     alt: "Cadeaux de Noël emballés et guirlande lumineuse, décor de la séance à la tombée du jour",
   },
   {
     id: "noel-gallery-04",
     src: gallery04,
     srcLarge: gallery04Lg,
+    width: 700,
+    height: 467,
     alt: "Installation cocooning de Noël en extérieur, plaid, coussins et guirlandes lumineuses",
   },
   {
     id: "noel-gallery-05",
     src: gallery05,
     srcLarge: gallery05Lg,
+    width: 700,
+    height: 1050,
     alt: "Ambiance de Noël en extérieur, lumières scintillantes et douceurs sur un plaid",
   },
   {
     id: "noel-gallery-06",
     src: gallery06,
     srcLarge: gallery06Lg,
+    width: 700,
+    height: 1050,
     alt: "Étoile lumineuse suspendue sous les sapins, décor de Noël en pleine nature",
   },
   {
     id: "noel-gallery-07",
     src: gallery07,
     srcLarge: gallery07Lg,
+    width: 700,
+    height: 1050,
     alt: "Étoile de Noël suspendue sous le ciel du soir, traîneau et guirlandes lumineuses",
   },
 ];
+
+export const NOEL_2026_SEO = {
+  title: "Mini-séances photo de Noël 2026 près de Marseille | Soleana Studio",
+  description:
+    "Mini-séances photo de Noël en extérieur les 7 et 11 novembre 2026, à Plan-d'Aups-Sainte-Baume. Deux formules, places limitées. Réservez votre créneau.",
+  path: "/mini-seances-noel-2026",
+  ogTitle: "Mini-séances de Noël 2026 — Soleana Studio",
+  ogDescription:
+    "Une parenthèse de Noël en famille, au cœur de la Sainte-Baume. 7 & 11 novembre 2026, places limitées.",
+} as const;
+
+export const NOEL_2026_PAGE_COPY = {
+  editionStatus: "Édition terminée",
+  experienceTitle: "Le déroulement de la séance",
+  experienceItems: [
+    NOEL_2026_FORMULES[0].features[0],
+    "En extérieur, à " + NOEL_2026_LOCATION,
+    "Une ambiance de Noël avec décor, musique d'ambiance et petites douceurs",
+    "Pour les couples, futurs parents, familles et enfants",
+  ],
+  formulesTitle: "Les formules",
+  formulesIntro: "Réservation via les liens dédiés — un lien par formule.",
+  formuleCta: "Réserver cette formule",
+  datesTitle: "Les dates",
+  limitedPlaces: "Deux journées seulement : les places sont limitées.",
+  faqTitle: "Questions fréquentes",
+  galleryTitle: "Photos des mini-séances de Noël",
+} as const;
+
+export const NOEL_2026_TEASER = {
+  label: "Édition limitée",
+  title: NOEL_2026_TEXTS.heroTitle,
+  datesLabel:
+    NOEL_2026_SESSION_DATES.map((date) => Number(date.iso.split("-")[2])).join(" & ") + " novembre",
+  text: "Une parenthèse de Noël en pleine nature, au milieu des sapins — deux journées seulement, places limitées.",
+  cta: "Découvrir les mini-séances",
+  photo: NOEL_2026_HERO_CANDIDATES[NOEL_2026_ACTIVE_HERO.id === "a" ? "b" : "a"],
+} as const;

@@ -37,20 +37,20 @@ import { isGoogleReviewUrl } from "@/lib/google-review-url";
 import { absoluteUrl, buildPageSeo } from "@/lib/seo";
 import {
   NOEL_2026_COLORS,
-  NOEL_2026_HERO_CANDIDATES,
+  NOEL_2026_TEASER,
   NOEL_2026_LOCATION,
-  NOEL_2026_SESSION_DATES,
-  isNoel2026EditionOver,
 } from "@/data/noel-2026";
+import { getNoel2026EditionState } from "@/lib/noel-2026.functions";
 
 export const Route = createFileRoute("/")({
   loader: async () => {
+    const { isEditionOver } = await getNoel2026EditionState();
     const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
     const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
     if (!supabaseUrl || !supabaseKey) {
       console.error("[home.services] Missing Supabase public env vars.");
-      return { services: [], reviews: [], isNoelTeaserVisible: !isNoel2026EditionOver(new Date()) };
+      return { services: [], reviews: [], isNoelTeaserVisible: !isEditionOver };
     }
 
     const headers = {
@@ -78,7 +78,7 @@ export const Route = createFileRoute("/")({
     return {
       services,
       reviews: await reviewsPromise,
-      isNoelTeaserVisible: !isNoel2026EditionOver(new Date()),
+      isNoelTeaserVisible: !isEditionOver,
     };
   },
   head: () => {
@@ -317,14 +317,14 @@ function Home() {
 
       {/* TEASER — MINI-SÉANCES DE NOËL 2026 */}
       {isNoelTeaserVisible && (
-        <section className="[content-visibility:auto] [contain-intrinsic-size:1px_500px]">
-          <div className="grid md:grid-cols-2">
+        <section className="px-6 py-20 md:py-28 [content-visibility:auto] [contain-intrinsic-size:1px_700px]">
+          <div className="mx-auto grid max-w-6xl overflow-hidden rounded-[32px] border border-border shadow-[0_24px_70px_-50px_rgba(62,47,40,0.28)] md:grid-cols-2">
             <div className="relative aspect-[16/10] md:aspect-auto md:min-h-[420px]">
               <img
-                src={NOEL_2026_HERO_CANDIDATES.b.src}
-                srcSet={`${NOEL_2026_HERO_CANDIDATES.b.src} 800w, ${NOEL_2026_HERO_CANDIDATES.b.src1600} 1600w`}
-                sizes="(min-width: 768px) 50vw, 100vw"
-                alt={NOEL_2026_HERO_CANDIDATES.b.alt}
+                src={NOEL_2026_TEASER.photo.src}
+                srcSet={`${NOEL_2026_TEASER.photo.src} 800w, ${NOEL_2026_TEASER.photo.src1600} 1600w`}
+                sizes="(min-width: 1200px) 576px, (min-width: 768px) calc((100vw - 48px) / 2), calc(100vw - 48px)"
+                alt={NOEL_2026_TEASER.photo.alt}
                 width={1600}
                 height={1067}
                 loading="lazy"
@@ -334,32 +334,31 @@ function Home() {
             </div>
             <div
               className="flex flex-col items-center justify-center px-6 py-16 text-center md:px-12"
-              style={{ backgroundColor: "var(--background)" }}
+              style={{ backgroundColor: "var(--surface)" }}
             >
               <Reveal>
                 <p
                   className="font-mono text-[10px] uppercase tracking-[0.4em] mb-4"
                   style={{ color: NOEL_2026_COLORS.deepRed }}
                 >
-                  Édition limitée
+                  {NOEL_2026_TEASER.label}
                 </p>
                 <h2 className="font-display text-3xl md:text-4xl italic text-primary mb-4 leading-tight">
-                  Mini-séances de Noël 2026
+                  {NOEL_2026_TEASER.title}
                 </h2>
                 <p className="font-mono text-xs uppercase tracking-[0.3em] text-muted-foreground mb-6">
-                  {NOEL_2026_SESSION_DATES.map((d) => Number(d.iso.split("-")[2])).join(" & ")} novembre —{" "}
+                  {NOEL_2026_TEASER.datesLabel} —{" "}
                   {NOEL_2026_LOCATION}
                 </p>
                 <p className="max-w-sm text-base leading-relaxed text-foreground/85 mb-8">
-                  Une parenthèse de Noël en pleine nature, au milieu des sapins — deux journées
-                  seulement, places limitées.
+                  {NOEL_2026_TEASER.text}
                 </p>
                 <Link
                   to="/mini-seances-noel-2026"
                   className="inline-flex items-center justify-center px-8 py-3 text-xs uppercase tracking-widest text-white transition-colors"
                   style={{ backgroundColor: NOEL_2026_COLORS.pineGreen }}
                 >
-                  Découvrir les mini-séances
+                  {NOEL_2026_TEASER.cta}
                 </Link>
               </Reveal>
             </div>
