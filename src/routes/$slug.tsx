@@ -296,7 +296,8 @@ export const Route = createFileRoute("/$slug")({
       .maybeSingle();
 
     if (error) {
-      throw new Error(`Échec du chargement de la page SEO "${params.slug}": ${error.message}`);
+      console.error(`[seo_pages] Échec du chargement de la page "${params.slug}":`, error);
+      throw new Error("Erreur de chargement de la page");
     }
     if (!data) throw notFound();
     return data;
@@ -325,13 +326,24 @@ export const Route = createFileRoute("/$slug")({
     });
   },
   component: SeoPage,
-  errorComponent: ({ error }) => (
-    <SiteShell>
-      <div className="px-6 pt-40 pb-32 text-center">
-        <p>Erreur : {error.message}</p>
-      </div>
-    </SiteShell>
-  ),
+  errorComponent: ({ error }) => {
+    console.error(error);
+    return (
+      <SiteShell>
+        <div className="px-6 pt-40 pb-32 text-center">
+          <p>Cette page est momentanément indisponible, merci de réessayer dans quelques instants.</p>
+          <div className="mt-8">
+            <Link
+              to="/"
+              className="inline-flex items-center justify-center bg-[#C6966F] px-8 py-3 text-xs uppercase tracking-widest text-white transition-colors hover:bg-[#b8845f]"
+            >
+              Retour à l'accueil
+            </Link>
+          </div>
+        </div>
+      </SiteShell>
+    );
+  },
   notFoundComponent: () => (
     <SiteShell>
       <div className="px-6 pt-40 pb-32 text-center">
