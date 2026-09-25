@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { friendlySupabaseError } from "./friendly-error";
 
-type SaveResult = { error: unknown } | void;
+type SaveResult<T> = { error: unknown; record?: T } | void;
 
 /**
  * Shared "edit one record, save it explicitly" behavior for every admin
@@ -14,19 +14,29 @@ type SaveResult = { error: unknown } | void;
  */
 export function useEditableRecord<T extends Record<string, unknown>>(
   record: T,
-  onSave: (patch: Partial<T>) => Promise<SaveResult>,
+  onSave: (patch: Partial<T>) => Promise<SaveResult<T>>,
   onDirtyChange?: (isDirty: boolean) => void,
 ) {
   const [draft, setDraft] = useState<T>(record);
+  const [baseline, setBaseline] = useState<T>(record);
+  const previousRecord = useRef(record);
+  const savingRef = useRef(false);
   const [isSaving, setIsSaving] = useState(false);
-  const isDirty = Object.keys(draft).some((key) => draft[key] !== record[key]);
+  const isDirty = Object.keys(draft).some((key) => draft[key] !== baseline[key]);
 
-  // If the underlying record changes from outside (another row's save
-  // triggered a refetch, etc.) and this row has no pending edits, adopt the
-  // fresh value instead of silently overwriting it on the next save.
+  // Refresh untouched fields while preserving edits made in this tab.
   useEffect(() => {
-    if (!isDirty) setDraft(record);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const previous = previousRecord.current;
+    if (Object.keys(record).every((key) => record[key] === previous[key])) return;
+    previousRecord.current = record;
+    setDraft((current) => {
+      const next = { ...current };
+      for (const key of Object.keys(record) as (keyof T)[]) {
+        if (current[key] === previous[key]) next[key] = record[key];
+      }
+      return next;
+    });
+    setBaseline(record);
   }, [record]);
 
   useEffect(() => {
@@ -39,12 +49,15 @@ export function useEditableRecord<T extends Record<string, unknown>>(
   }
 
   async function save() {
+    if (savingRef.current) return false;
+    const submitted = draft;
     const patch: Partial<T> = {};
     for (const key of Object.keys(draft) as (keyof T)[]) {
-      if (draft[key] !== record[key]) patch[key] = draft[key];
+      if (draft[key] !== baseline[key]) patch[key] = draft[key];
     }
     if (Object.keys(patch).length === 0) return true;
 
+    savingRef.current = true;
     setIsSaving(true);
     try {
       const result = await onSave(patch);
@@ -52,18 +65,28 @@ export function useEditableRecord<T extends Record<string, unknown>>(
         toast.error(friendlySupabaseError(result.error));
         return false;
       }
+      const saved = result?.record ?? submitted;
+      setBaseline(saved);
+      setDraft((current) => {
+        const next = { ...current };
+        for (const key of Object.keys(saved) as (keyof T)[]) {
+          if (current[key] === submitted[key]) next[key] = saved[key];
+        }
+        return next;
+      });
       toast.success("Modifications enregistrées");
       return true;
     } catch (err) {
       toast.error(friendlySupabaseError(err));
       return false;
     } finally {
+      savingRef.current = false;
       setIsSaving(false);
     }
   }
 
   function discard() {
-    setDraft(record);
+    setDraft(baseline);
   }
 
   return { draft, setField, isDirty, isSaving, save, discard };

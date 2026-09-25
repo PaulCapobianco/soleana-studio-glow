@@ -1,3 +1,5 @@
+import { useId } from "react";
+import { friendlySupabaseError } from "@/lib/admin/friendly-error";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -18,16 +20,39 @@ export const Route = createFileRoute("/admin/_authed/pages-seo")({
 
 function SeoAdmin() {
   const setDirty = useDirtySet();
-  const { data: pages } = useQuery({
+  const {
+    data: pages,
+    isPending,
+    error,
+    refetch,
+    isFetching,
+  } = useQuery({
     queryKey: ["admin-seo"],
     queryFn: async () => {
-      return (await supabase.from("seo_pages").select("*").order("slug")).data ?? [];
+      const { data, error } = await supabase.from("seo_pages").select("*").order("slug");
+      if (error) throw error;
+      return data ?? [];
     },
   });
 
   return (
     <div className="space-y-6">
       <h1 className="font-display text-4xl italic text-primary">Pages SEO locales</h1>
+      {isPending && <p role="status">Chargement des pages…</p>}
+      {error && (
+        <div role="alert">
+          <p>{friendlySupabaseError(error)}</p>
+          <button
+            type="button"
+            disabled={isFetching}
+            onClick={() => void refetch()}
+            className="mt-2 underline"
+          >
+            Réessayer
+          </button>
+        </div>
+      )}
+      {!isPending && !error && pages?.length === 0 && <p>Aucune page SEO.</p>}
       <div className="space-y-3">
         {(pages ?? []).map((p) => (
           <SeoPageCard key={p.id} item={p} onDirtyChange={(dirty) => setDirty(p.id, dirty)} />
@@ -53,12 +78,17 @@ function SeoPageCard({
       if (patch.og_description !== undefined)
         normalizedPatch.og_description = patch.og_description?.trim() || null;
 
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from("seo_pages")
         .update({ ...normalizedPatch, updated_at: new Date().toISOString() })
-        .eq("id", item.id);
-      qc.invalidateQueries({ queryKey: ["admin-seo"] });
-      return { error };
+        .eq("id", item.id)
+        .select("*")
+        .single();
+      if (error) return { error };
+      qc.setQueryData<SeoPageRow[]>(["admin-seo"], (pages) =>
+        pages?.map((page) => (page.id === item.id ? data : page)),
+      );
+      return { error: null, record: data };
     },
     onDirtyChange,
   );
@@ -67,6 +97,7 @@ function SeoPageCard({
     <details className="bg-surface border border-border">
       <summary className="p-4 cursor-pointer font-display italic">{item.h1}</summary>
       <div className="p-4 border-t border-border grid gap-3">
+        <p className="break-all text-sm text-muted-foreground">URL : /{item.slug}</p>
         <Field label="H1" value={draft.h1} onChange={(v) => setField("h1", v)} />
         <Field
           label="Meta title"
@@ -127,13 +158,18 @@ function Field({
   textarea?: boolean;
   rows?: number;
 }) {
+  const id = useId();
   return (
     <div>
-      <label className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+      <label
+        htmlFor={id}
+        className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground"
+      >
         {label}
       </label>
       {textarea ? (
         <textarea
+          id={id}
           value={value}
           rows={rows}
           onChange={(e) => onChange(e.target.value)}
@@ -141,6 +177,7 @@ function Field({
         />
       ) : (
         <input
+          id={id}
           value={value}
           onChange={(e) => onChange(e.target.value)}
           className="mt-1 w-full bg-background border border-border px-3 py-2 text-sm"
