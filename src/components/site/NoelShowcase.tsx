@@ -4,6 +4,7 @@ import {
   NOEL_2026_CAMPAIGN,
   NOEL_2026_COLORS,
   NOEL_2026_LOCATION,
+  NOEL_2026_SESSION_DATES,
   NOEL_2026_TEASER,
 } from "@/data/noel-2026";
 import styles from "./NoelCampaign.module.css";
@@ -34,7 +35,24 @@ export function NoelShowcase() {
             </h2>
           </div>
           <div>
-            <p className={styles.showcaseDates}>{NOEL_2026_TEASER.datesLabel}</p>
+            <p className={styles.showcaseDates}>
+              <span className="sr-only">{NOEL_2026_TEASER.datesLabel}</span>
+              <span className={styles.dateNumbers} aria-hidden="true">
+                {NOEL_2026_SESSION_DATES.map((date, index) => (
+                  <span key={date.iso}>
+                    {index > 0 && <i>&</i>}
+                    {date.iso.slice(-2)}
+                  </span>
+                ))}
+              </span>
+              <span className={styles.dateMonth} aria-hidden="true">
+                {new Intl.DateTimeFormat("fr-FR", {
+                  month: "long",
+                  year: "numeric",
+                  timeZone: "UTC",
+                }).format(new Date(NOEL_2026_SESSION_DATES[0].iso))}
+              </span>
+            </p>
             <p className={styles.showcaseLocation}>{NOEL_2026_LOCATION}</p>
           </div>
         </div>
@@ -64,9 +82,9 @@ export function NoelShowcase() {
         </div>
         <div className={styles.showcaseBottom}>
           <p className={styles.showcaseText}>{NOEL_2026_TEASER.text}</p>
-          <Link to="/mini-seances-noel-2026" className={styles.button}>
+          <Link to="/mini-seances-noel-2026" className={styles.editorialLink}>
             {NOEL_2026_TEASER.cta}
-            <span aria-hidden="true">↗</span>
+            <span aria-hidden="true">→</span>
           </Link>
         </div>
       </div>

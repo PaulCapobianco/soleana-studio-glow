@@ -1,4 +1,5 @@
 .campaign {
+  --noel-rule: color-mix(in srgb, var(--noel-pine) 20%, transparent);
   color: var(--noel-pine);
 }
 .campaign :is(a, button):focus-visible {
@@ -63,9 +64,50 @@
   font-size: clamp(2.9rem, 5.8vw, 5.75rem);
 }
 .showcaseDates {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+.dateNumbers {
+  display: flex;
   font-family: var(--font-display);
-  font-size: clamp(1.5rem, 2.5vw, 2rem);
-  line-height: 1.4;
+  font-size: clamp(2.5rem, 4vw, 4rem);
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+.dateNumbers i {
+  padding-inline: 0.35em;
+  font-size: 0.5em;
+  font-weight: 400;
+  color: var(--noel-red);
+}
+.dateMonth {
+  max-width: 8ch;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  line-height: 1.7;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.editorialLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  min-height: 3.5rem;
+  padding-block: 0.9rem;
+  border-bottom: 1px solid currentColor;
+  color: inherit;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  justify-self: start;
+}
+.editorialLink > span {
+  display: inline-block;
+  transition: transform 220ms;
+}
+.editorialLink:hover > span {
+  transform: translateX(0.3rem);
 }
 .showcaseLocation {
   margin-top: 0.4rem;
@@ -88,7 +130,7 @@
   height: 100%;
   width: 100%;
   object-fit: cover;
-  object-position: 45% 45%;
+  object-position: 48% 42%;
   transition: transform 800ms;
 }
 .showcaseDetail {
@@ -97,8 +139,8 @@
   grid-row: 1;
   transform: translateY(2rem);
   border: 0.4rem solid var(--background);
-  border-right: 0;
-  aspect-ratio: 3 / 4;
+  aspect-ratio: 2 / 3;
+  box-shadow: 0 12px 30px -22px #18291f55;
   background: var(--background);
 }
 .showcaseDetail img {
@@ -109,13 +151,29 @@
 .showcaseBottom {
   display: grid;
   gap: 1.75rem;
-  padding-block: 1.75rem 2.5rem;
-  border-bottom: 1px solid var(--border);
+  padding-block: 2.25rem 1rem;
 }
 .showcaseText {
-  max-width: 36rem;
+  max-width: 32rem;
   font-size: 1.05rem;
   line-height: 1.8;
+}
+.showcase::after {
+  content: "";
+  display: block;
+  height: 3rem;
+  width: 1px;
+  margin: 3.5rem auto 0;
+  background: var(--noel-rule);
+}
+@media (max-width: 639px) {
+  .showcaseBottom .editorialLink {
+    margin-right: 2rem;
+    gap: 0.75rem;
+  }
+  .showcaseDetail {
+    grid-column: 10 / 13;
+  }
 }
 @media (min-width: 640px) {
   .showcase {
@@ -138,7 +196,7 @@
     grid-template-columns: 1.4fr 1fr;
     align-items: center;
   }
-  .showcaseBottom .button {
+  .showcaseBottom .editorialLink {
     justify-self: end;
   }
 }
@@ -149,24 +207,28 @@
   .showcaseHeader {
     margin-bottom: 3rem;
     grid-template-columns: 1.8fr 1fr;
+    align-items: center;
   }
   .showcaseMain {
     grid-column: 1 / 11;
-    aspect-ratio: 16 / 9;
+    aspect-ratio: 8 / 5;
   }
   .showcaseDetail {
     grid-column: 10 / 13;
-    transform: translateY(3rem);
+    transform: translateY(4rem);
     border-width: 0.8rem;
   }
   .showcaseStage {
-    padding-bottom: 3rem;
+    padding-bottom: 4rem;
   }
   .showcaseBottom {
-    padding-block: 2.5rem 3rem;
+    padding-block: 3rem 1rem;
+    grid-template-columns: 1.3fr 1fr;
+    padding-left: 8.333%;
   }
   .showcaseText {
-    font-size: 1.15rem;
+    font-size: 1.2rem;
+    font-family: var(--font-display);
   }
 }
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
