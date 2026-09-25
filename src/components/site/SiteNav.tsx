@@ -42,6 +42,7 @@ export function SiteNav({ overlay = false }: { overlay?: boolean }) {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setOpen(false);
+        buttonRef.current?.focus();
       }
     };
 
@@ -98,7 +99,7 @@ export function SiteNav({ overlay = false }: { overlay?: boolean }) {
             />
           )}
 
-          <div className="hidden md:flex items-center gap-9 text-[11px] uppercase tracking-[0.25em]">
+          <div className="hidden lg:flex items-center gap-9 text-[11px] uppercase tracking-[0.25em]">
             {links.map((l) => (
               <Link
                 key={l.to}
@@ -128,8 +129,8 @@ export function SiteNav({ overlay = false }: { overlay?: boolean }) {
 
           <button
             ref={buttonRef}
-            className="md:hidden p-2"
-            aria-label="Ouvrir le menu"
+            className="lg:hidden p-2"
+            aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
             onClick={() => setOpen((v) => !v)}
             aria-expanded={open}
             aria-controls="mobile-menu"
@@ -142,12 +143,13 @@ export function SiteNav({ overlay = false }: { overlay?: boolean }) {
           id="mobile-menu"
           ref={menuRef}
           className={cn(
-            "md:hidden absolute right-0 top-[calc(100%-0.9rem)] z-50 w-[min(calc(12rem-13px),100vw)] origin-top overflow-hidden transition-[max-height,opacity,transform] duration-450 ease-out will-change-[opacity,transform,max-height]",
+            "lg:hidden absolute right-0 top-[calc(100%-0.9rem)] z-50 w-[min(calc(12rem-13px),100vw)] origin-top overflow-hidden transition-[max-height,opacity,transform] duration-450 ease-out will-change-[opacity,transform,max-height]",
             open
               ? "pointer-events-auto max-h-[calc(100svh-7rem)] opacity-100 translate-y-0 scale-100"
               : "pointer-events-none max-h-0 opacity-0 -translate-y-1 scale-[0.985]",
           )}
           aria-hidden={!open}
+          inert={!open}
         >
           <div className="rounded-[26px] border border-[#E8DCCF] bg-[#FAF6EF]/90 backdrop-blur-xl px-0 py-1 shadow-[0_16px_32px_-24px_rgba(62,47,40,0.24)]">
             <nav className="flex flex-col items-center gap-px text-center">

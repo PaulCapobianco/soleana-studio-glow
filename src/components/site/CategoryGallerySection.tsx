@@ -1,9 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 
 type GalleryPhoto = {
@@ -46,6 +45,7 @@ export function CategoryGallerySection({
   compact = false,
   id,
 }: CategoryGallerySectionProps) {
+  const triggerRef = useRef<HTMLButtonElement | null>(null);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const normalizedCategorySlugs = useMemo(
     () => [...new Set(categorySlugs.map((slug) => slug.trim()).filter(Boolean))],
@@ -78,6 +78,8 @@ export function CategoryGallerySection({
     enabled: normalizedCategorySlugs.length > 0 && manualPhotos.length === 0,
   });
 
+  const photos = manualPhotos.length > 0 ? manualPhotos : fetchedPhotos;
+
   useEffect(() => {
     if (lightboxIndex === null) return;
 
@@ -97,7 +99,7 @@ export function CategoryGallerySection({
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [lightboxIndex, fetchedPhotos.length]);
+  }, [lightboxIndex, photos.length]);
 
   useEffect(() => {
     if (lightboxIndex === null) {
@@ -111,7 +113,6 @@ export function CategoryGallerySection({
     };
   }, [lightboxIndex]);
 
-  const photos = manualPhotos.length > 0 ? manualPhotos : fetchedPhotos;
   const featuredPhoto = photos[0];
   const galleryPhotos = photos.slice(1);
   const isSingle = variant === "single";
@@ -168,7 +169,10 @@ export function CategoryGallerySection({
           {mainPhoto ? (
             <button
               type="button"
-              onClick={() => setLightboxIndex(0)}
+              onClick={(event) => {
+                triggerRef.current = event.currentTarget;
+                setLightboxIndex(0);
+              }}
               className="group relative block w-full overflow-hidden rounded-[30px] border border-border bg-muted aspect-[4/5] md:aspect-[16/10] transition-all duration-700 hover:-translate-y-1 hover:shadow-[0_28px_80px_-44px_rgba(62,47,40,0.32)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C6966F] focus-visible:ring-offset-2"
               aria-label={`Ouvrir la photo ${mainPhoto.title ?? mainPhoto.alt_text}`}
             >
@@ -200,7 +204,10 @@ export function CategoryGallerySection({
           {featuredPhoto && (
             <button
               type="button"
-              onClick={() => setLightboxIndex(0)}
+              onClick={(event) => {
+                triggerRef.current = event.currentTarget;
+                setLightboxIndex(0);
+              }}
               className="group relative block w-full overflow-hidden rounded-[28px] border border-border bg-muted aspect-[16/10] md:aspect-[16/8] transition-all duration-700 hover:-translate-y-1 hover:shadow-[0_28px_80px_-44px_rgba(62,47,40,0.32)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C6966F] focus-visible:ring-offset-2"
               aria-label={`Ouvrir la photo ${featuredPhoto.title ?? featuredPhoto.alt_text}`}
             >
@@ -231,7 +238,10 @@ export function CategoryGallerySection({
                   <button
                     key={photo.id}
                     type="button"
-                    onClick={() => setLightboxIndex(galleryIndex)}
+                    onClick={(event) => {
+                      triggerRef.current = event.currentTarget;
+                      setLightboxIndex(galleryIndex);
+                    }}
                     className="group relative block overflow-hidden rounded-[24px] border border-border bg-muted aspect-[4/5] transition-all duration-700 hover:-translate-y-1 hover:shadow-[0_24px_70px_-44px_rgba(62,47,40,0.3)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C6966F] focus-visible:ring-offset-2"
                     aria-label={`Ouvrir la photo ${photo.title ?? photo.alt_text}`}
                   >
@@ -244,7 +254,7 @@ export function CategoryGallerySection({
                       decoding="async"
                       fetchPriority="low"
                       className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                      />
+                    />
                     <div className="absolute inset-0 bg-black/0 transition duration-700 group-hover:bg-black/10" />
                     <div className="absolute inset-x-0 bottom-0 flex items-end justify-center p-4">
                       <span className="rounded-full bg-white/90 px-4 py-2 text-[10px] uppercase tracking-[0.32em] text-foreground shadow-sm backdrop-blur-sm">
@@ -274,7 +284,15 @@ export function CategoryGallerySection({
         open={lightboxIndex !== null}
         onOpenChange={(open) => !open && setLightboxIndex(null)}
       >
-        <DialogContent className="!left-0 !top-0 !h-[100svh] !w-[100svw] !max-w-none !translate-x-0 !translate-y-0 !rounded-none !border-0 !bg-black/95 !p-0 !shadow-none !overflow-hidden">
+        <DialogContent
+          onCloseAutoFocus={(event) => {
+            event.preventDefault();
+            triggerRef.current?.focus();
+          }}
+          className="!left-0 !top-0 !h-[100svh] !w-[100svw] !max-w-none !translate-x-0 !translate-y-0 !rounded-none !border-0 !bg-black/95 !p-0 !shadow-none !overflow-hidden"
+        >
+          <DialogTitle className="sr-only">{title}</DialogTitle>
+          <DialogDescription className="sr-only">{currentPhoto?.alt_text}</DialogDescription>
           {currentPhoto && (
             <div className="flex h-[100svh] w-full flex-col text-white">
               <div className="flex-none px-4 pb-2 pt-5 sm:px-6 sm:pb-3 sm:pt-6 md:px-8 md:pt-8">

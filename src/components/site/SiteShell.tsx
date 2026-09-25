@@ -21,8 +21,16 @@ export function SiteShell({
 
   return (
     <div className="min-h-screen flex flex-col overflow-x-clip bg-background">
+      <a
+        href="#contenu"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[300] focus:bg-background focus:px-4 focus:py-3 focus:text-foreground"
+      >
+        Aller au contenu principal
+      </a>
       <SiteNav overlay={overlay} />
-      <main className="flex-1 min-w-0">{children}</main>
+      <main id="contenu" tabIndex={-1} className="flex-1 min-w-0 scroll-mt-28">
+        {children}
+      </main>
       <SiteFooter />
       <div className="site-floating-actions fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] right-[calc(1rem+env(safe-area-inset-right))] z-[100] flex flex-col items-end gap-3">
         <a
@@ -36,6 +44,8 @@ export function SiteShell({
           type="button"
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           aria-label="Remonter en haut de page"
+          tabIndex={showBackToTop ? 0 : -1}
+          aria-hidden={!showBackToTop}
           className={`inline-flex size-12 items-center justify-center rounded-full bg-white/90 text-[#8A5A44] shadow-[0_18px_40px_-24px_rgba(0,0,0,0.28)] transition-all hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
             showBackToTop
               ? "opacity-100 translate-y-0"

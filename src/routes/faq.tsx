@@ -65,7 +65,10 @@ function Faq() {
                     <ChevronDown className="w-4 h-4 shrink-0 transition-transform group-data-[state=open]:rotate-180" />
                   </Accordion.Trigger>
                 </Accordion.Header>
-                <Accordion.Content className="overflow-hidden data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up">
+                <Accordion.Content
+                  forceMount
+                  className="data-[state=closed]:hidden overflow-hidden data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up"
+                >
                   <p className="pb-6 text-muted-foreground leading-relaxed">{q.answer}</p>
                 </Accordion.Content>
               </Accordion.Item>

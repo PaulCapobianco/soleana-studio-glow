@@ -2,15 +2,24 @@ import { useEffect, useState } from "react";
 
 export function HeroSlideshow({ images }: { images: { src: string; alt: string }[] }) {
   const [index, setIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(false);
+  useEffect(() => {
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReducedMotion(media.matches);
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
 
   useEffect(() => {
-    if (images.length <= 1) return;
+    if (images.length <= 1 || paused || reducedMotion) return;
     const id = window.setInterval(() => setIndex((i) => (i + 1) % images.length), 5500);
     return () => window.clearInterval(id);
-  }, [images.length]);
+  }, [images.length, paused, reducedMotion]);
 
   useEffect(() => {
-    if (images.length <= 1) return;
+    if (images.length <= 1 || paused || reducedMotion) return;
 
     const nextIndex = (index + 1) % images.length;
     const preloadNextImage = () => {
@@ -38,10 +47,10 @@ export function HeroSlideshow({ images }: { images: { src: string; alt: string }
       window.removeEventListener("load", onLoad);
       cleanupTimeout?.();
     };
-  }, [images, index]);
+  }, [images, index, paused, reducedMotion]);
 
   return (
-    <div className="absolute inset-0 z-0 bg-foreground">
+    <div className="absolute inset-0 bg-foreground">
       <div className="absolute inset-0 transition-opacity duration-[1800ms] ease-in-out opacity-100">
         <img
           key={images[index]?.src}
@@ -50,12 +59,23 @@ export function HeroSlideshow({ images }: { images: { src: string; alt: string }
           width={1600}
           height={900}
           className="h-full w-full object-cover animate-slow-zoom"
+          style={{ animationPlayState: paused || reducedMotion ? "paused" : "running" }}
           loading="eager"
           fetchPriority="high"
           decoding="async"
         />
       </div>
       <div className="absolute inset-0 bg-foreground/30" />
+      {images.length > 1 && !reducedMotion && (
+        <button
+          type="button"
+          onClick={() => setPaused((value) => !value)}
+          aria-pressed={paused}
+          className="absolute bottom-6 left-6 z-20 rounded-full border border-white/50 bg-black/50 px-4 py-2 text-xs text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
+        >
+          {paused ? "Reprendre le diaporama" : "Mettre le diaporama en pause"}
+        </button>
+      )}
     </div>
   );
 }
