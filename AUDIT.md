@@ -7,6 +7,19 @@
 
 ---
 
+## Mise à jour — 25 septembre 2026
+
+**État des migrations, vérifié en production depuis l'audit initial (par requêtes `SELECT` en lecture seule, exécutées par Paul) :**
+
+- `20260601000000_add_consent_to_contact_requests.sql` — **appliquée.**
+- `20260602000000_remove_vieux_quartiers_from_faq.sql` — **non appliquée, et ne doit pas l'être.** Le texte de la question « Où peut se dérouler la séance ? » actuellement en production est plus récent et plus riche que celui que cette migration écrirait. Toute évolution future de ce texte passe par l'admin FAQ, pas par cette migration.
+- `20260924000000_align_reviews_with_public_site.sql` — **appliquée** (commit `ce16761`).
+- `20260924000001_align_seo_pages_with_public_site.sql` — **appliquée** (commit `f80f7f2`, re-vérifiée en direct lors du chantier SEO — voir plus bas).
+
+**Version en production :** Cloudflare Workers, déploiement `7195e1d5`, correspond au commit `f4dd25b` (`fix(seo): hide technical error details from visitors on SEO pages`). Ce déploiement inclut la refonte de la route publique `/$slug` : chargement via `loader` (SSR réel), vraies erreurs 404/500 avec statut HTTP correct, `seo_pages` comme source unique du contenu et des balises `<head>` (suppression de `SEO_PAGE_META`/`SEO_PAGE_COPY_OVERRIDES`), et messages d'erreur neutres côté visiteur.
+
+---
+
 ## Synthèse
 
 Le projet est un **site vitrine SSR** (TanStack Start + React 19 sur Cloudflare Workers) adossé à **Supabase** pour le contenu éditorial et un back-office d'administration. La partie publique est soignée : SEO structuré, images `.webp` avec `srcset`, `alt` renseignés sur les 23 balises `<img>`, `prefers-reduced-motion` géré dans les styles, RLS activée sur toutes les tables. La conception de sécurité côté base de données est correcte dans son principe.
