@@ -7,6 +7,7 @@ import { useDirtySet } from "@/lib/admin/use-dirty-set";
 import { useEditableRecord } from "@/lib/admin/use-editable-record";
 
 type SeoPageRow = Database["public"]["Tables"]["seo_pages"]["Row"];
+type SeoPageUpdate = Database["public"]["Tables"]["seo_pages"]["Update"];
 
 export const Route = createFileRoute("/admin/_authed/pages-seo")({
   head: () => ({
@@ -47,9 +48,14 @@ function SeoPageCard({
   const { draft, setField, isDirty, isSaving, save } = useEditableRecord(
     item,
     async (patch) => {
+      const normalizedPatch: SeoPageUpdate = { ...patch };
+      if (patch.og_title !== undefined) normalizedPatch.og_title = patch.og_title?.trim() || null;
+      if (patch.og_description !== undefined)
+        normalizedPatch.og_description = patch.og_description?.trim() || null;
+
       const { error } = await supabase
         .from("seo_pages")
-        .update({ ...patch, updated_at: new Date().toISOString() })
+        .update({ ...normalizedPatch, updated_at: new Date().toISOString() })
         .eq("id", item.id);
       qc.invalidateQueries({ queryKey: ["admin-seo"] });
       return { error };
@@ -81,6 +87,17 @@ function SeoPageCard({
           rows={8}
         />
         <Field label="CTA" value={draft.cta_label} onChange={(v) => setField("cta_label", v)} />
+        <Field
+          label="OG title (Open Graph, facultatif)"
+          value={draft.og_title ?? ""}
+          onChange={(v) => setField("og_title", v)}
+        />
+        <Field
+          label="OG description (Open Graph, facultative)"
+          value={draft.og_description ?? ""}
+          onChange={(v) => setField("og_description", v)}
+          textarea
+        />
         <label className="flex items-center gap-2 text-sm">
           <input
             type="checkbox"

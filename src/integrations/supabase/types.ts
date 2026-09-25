@@ -210,6 +210,8 @@ export type Database = {
           intro: string;
           meta_description: string;
           meta_title: string;
+          og_description: string | null;
+          og_title: string | null;
           published: boolean;
           slug: string;
           updated_at: string;
@@ -224,6 +226,8 @@ export type Database = {
           intro: string;
           meta_description: string;
           meta_title: string;
+          og_description?: string | null;
+          og_title?: string | null;
           published?: boolean;
           slug: string;
           updated_at?: string;
@@ -238,6 +242,8 @@ export type Database = {
           intro?: string;
           meta_description?: string;
           meta_title?: string;
+          og_description?: string | null;
+          og_title?: string | null;
           published?: boolean;
           slug?: string;
           updated_at?: string;
