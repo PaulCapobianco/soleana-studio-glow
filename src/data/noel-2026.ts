@@ -281,3 +281,9 @@ export const NOEL_2026_TEASER = {
   cta: "Découvrir les mini-séances",
   photo: NOEL_2026_HERO_CANDIDATES[NOEL_2026_ACTIVE_HERO.id === "a" ? "b" : "a"],
 } as const;
+
+export const NOEL_2026_CAMPAIGN = {
+  editionLabel: "Édition Noël 2026",
+  detailPhoto: NOEL_2026_GALLERY_PHOTOS[5],
+  closingPhoto: NOEL_2026_GALLERY_PHOTOS[6],
+} as const;

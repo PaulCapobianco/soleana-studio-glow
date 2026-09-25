@@ -35,11 +35,7 @@ import logoSoleana280 from "@/assets/logo-soleana-280.webp";
 import type { Database } from "@/integrations/supabase/types";
 import { isGoogleReviewUrl } from "@/lib/google-review-url";
 import { absoluteUrl, buildPageSeo } from "@/lib/seo";
-import {
-  NOEL_2026_COLORS,
-  NOEL_2026_TEASER,
-  NOEL_2026_LOCATION,
-} from "@/data/noel-2026";
+import { NoelShowcase } from "@/components/site/NoelShowcase";
 import { getNoel2026EditionState } from "@/lib/noel-2026.functions";
 
 export const Route = createFileRoute("/")({
@@ -316,67 +312,7 @@ function Home() {
       </section>
 
       {/* TEASER — MINI-SÉANCES DE NOËL 2026 */}
-      {isNoelTeaserVisible && (
-        <section
-          aria-labelledby="noel-teaser-title"
-          className="px-5 py-16 sm:px-8 sm:py-20 lg:py-24 [content-visibility:auto] [contain-intrinsic-size:1px_800px]"
-        >
-          <div className="mx-auto grid max-w-7xl overflow-hidden rounded-[28px] border border-border bg-surface shadow-[0_24px_70px_-50px_rgba(62,47,40,0.22)] lg:grid-cols-[1.15fr_1fr]">
-            <div className="relative aspect-[4/3] sm:aspect-[3/2] lg:aspect-auto">
-              <img
-                src={NOEL_2026_TEASER.photo.src}
-                srcSet={`${NOEL_2026_TEASER.photo.src} 800w, ${NOEL_2026_TEASER.photo.src1600} 1600w`}
-                sizes="(min-width: 1344px) 685px, (min-width: 1024px) calc((100vw - 64px) * 0.535), (min-width: 640px) calc(100vw - 64px), calc(100vw - 40px)"
-                alt={NOEL_2026_TEASER.photo.alt}
-                width={1600}
-                height={1067}
-                loading="lazy"
-                decoding="async"
-                className="absolute inset-0 h-full w-full object-cover object-center"
-              />
-            </div>
-            <div className="flex flex-col justify-center px-6 py-9 sm:px-10 sm:py-12 lg:px-12 lg:py-16">
-              <Reveal>
-                <p
-                  className="mb-5 font-mono text-xs uppercase tracking-[0.25em]"
-                  style={{ color: NOEL_2026_COLORS.deepRed }}
-                >
-                  {NOEL_2026_TEASER.label}
-                </p>
-                <h2
-                  id="noel-teaser-title"
-                  className="max-w-lg font-display text-[clamp(2.1rem,3.8vw,3.5rem)] italic leading-[1.12]"
-                  style={{ color: NOEL_2026_COLORS.pineGreen }}
-                >
-                  {NOEL_2026_TEASER.title}
-                </h2>
-                <div className="my-7 border-y border-border py-5">
-                  <p className="font-display text-2xl text-primary sm:text-3xl">
-                    {NOEL_2026_TEASER.datesLabel}
-                  </p>
-                  <p className="mt-2 text-sm leading-relaxed text-foreground/85 sm:text-base">
-                    {NOEL_2026_LOCATION}
-                  </p>
-                </div>
-                <p className="max-w-md text-base leading-relaxed text-foreground/85 sm:text-lg">
-                  {NOEL_2026_TEASER.text}
-                </p>
-                <Link
-                  to="/mini-seances-noel-2026"
-                  className="mt-8 inline-flex min-h-12 w-full items-center justify-center gap-3 rounded-full px-5 py-4 text-center text-sm text-white transition-opacity hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 sm:w-auto sm:px-7"
-                  style={{
-                    backgroundColor: NOEL_2026_COLORS.pineGreen,
-                    outlineColor: NOEL_2026_COLORS.pineGreen,
-                  }}
-                >
-                  {NOEL_2026_TEASER.cta}
-                  <span aria-hidden="true">→</span>
-                </Link>
-              </Reveal>
-            </div>
-          </div>
-        </section>
-      )}
+      {isNoelTeaserVisible && <NoelShowcase />}
 
       {/* INTRO */}
       <section className="py-32 px-6 max-w-4xl mx-auto text-center [content-visibility:auto] [contain-intrinsic-size:1px_900px]">
