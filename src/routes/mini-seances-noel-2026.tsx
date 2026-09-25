@@ -1,3 +1,5 @@
+import type { CSSProperties } from "react";
+import styles from "@/components/site/NoelCampaign.module.css";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteShell } from "@/components/site/SiteShell";
 import { Reveal } from "@/components/site/Reveal";
@@ -6,6 +8,7 @@ import { absoluteUrl, buildPageSeo } from "@/lib/seo";
 import { getNoel2026EditionState } from "@/lib/noel-2026.functions";
 import {
   NOEL_2026_ACTIVE_HERO,
+  NOEL_2026_CAMPAIGN,
   NOEL_2026_COLORS,
   NOEL_2026_FAQ,
   NOEL_2026_FORMULES,
@@ -69,206 +72,186 @@ function NoelPage() {
 
   return (
     <SiteShell>
-      {/* HERO */}
-      <section className="relative overflow-hidden">
-        <div className="relative w-full">
-          <img
-            src={NOEL_2026_ACTIVE_HERO.src}
-            srcSet={`${NOEL_2026_ACTIVE_HERO.src} 800w, ${NOEL_2026_ACTIVE_HERO.src1600} 1600w, ${NOEL_2026_ACTIVE_HERO.src2400} 2400w`}
-            sizes="100vw"
-            alt={NOEL_2026_ACTIVE_HERO.alt}
-            width={2400}
-            height={1600}
-            fetchPriority="high"
-            decoding="async"
-            className="absolute inset-0 h-full w-full object-cover"
-            style={{ objectPosition: NOEL_2026_ACTIVE_HERO.objectPosition }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/15 to-black/10" />
-          <div className="relative px-6 pb-16 pt-40 text-center sm:pb-20 sm:pt-44 lg:py-44">
-            <Reveal>
-              <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-white/80 mb-4">
-                Soleana Studio
-              </p>
-              <h1 className="font-display text-4xl sm:text-5xl md:text-6xl italic text-white leading-tight mx-auto max-w-3xl">
+      <div
+        className={styles.campaign}
+        style={
+          {
+            "--noel-pine": NOEL_2026_COLORS.pineGreen,
+            "--noel-red": NOEL_2026_COLORS.deepRed,
+          } as CSSProperties
+        }
+      >
+        <section className={styles.landingHero}>
+          <div className={`${styles.container} ${styles.heroGrid}`}>
+            <img
+              className={styles.heroPhoto}
+              src={NOEL_2026_ACTIVE_HERO.src}
+              srcSet={`${NOEL_2026_ACTIVE_HERO.src} 800w, ${NOEL_2026_ACTIVE_HERO.src1600} 1600w, ${NOEL_2026_ACTIVE_HERO.src2400} 2400w`}
+              sizes="(min-width: 1024px) 65vw, 100vw"
+              alt={NOEL_2026_ACTIVE_HERO.alt}
+              width={2400}
+              height={1600}
+              fetchPriority="high"
+              decoding="async"
+              style={{ objectPosition: NOEL_2026_ACTIVE_HERO.objectPosition }}
+            />
+            <div className={styles.heroCopy}>
+              <p className={styles.eyebrow}>{NOEL_2026_CAMPAIGN.editionLabel} · Soleana Studio</p>
+              <h1 className={`${styles.display} ${styles.heroTitle}`}>
                 {NOEL_2026_TEXTS.heroTitle}
               </h1>
-              <p className="mt-6 mx-auto max-w-xl text-base sm:text-lg italic text-white/90">
-                {NOEL_2026_TEXTS.heroSubtitle}
+              <p className={styles.heroSubtitle}>{NOEL_2026_TEXTS.heroSubtitle}</p>
+              <p className={styles.heroDates}>
+                {NOEL_2026_TEXTS.heroDatesLabel}
+                <br />
+                {NOEL_2026_LOCATION}
               </p>
-              <p className="mt-6 font-mono text-xs uppercase tracking-[0.3em] text-white/80">
-                {NOEL_2026_TEXTS.heroDatesLabel} — {NOEL_2026_LOCATION}
-              </p>
-              <a
-                href="#formules"
-                className="mt-10 inline-flex items-center justify-center px-8 py-3 text-xs uppercase tracking-widest text-white transition-colors"
-                style={{ backgroundColor: NOEL_2026_COLORS.pineGreen }}
-              >
+              <a href="#formules" className={styles.button}>
                 {NOEL_2026_TEXTS.heroCta}
               </a>
-            </Reveal>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* EXPÉRIENCE */}
-      <section className="px-6 py-24 md:py-28">
-        <div className="mx-auto max-w-2xl text-center">
-          <Reveal>
+        <section className={styles.section}>
+          <div className={`${styles.container} ${styles.intro}`}>
             {NOEL_2026_TEXTS.experience.map((paragraph) => (
-              <p
-                key={paragraph}
-                className="text-lg leading-relaxed text-foreground/90 mb-6 last:mb-0"
-              >
-                {paragraph}
-              </p>
+              <p key={paragraph}>{paragraph}</p>
             ))}
-          </Reveal>
-        </div>
-      </section>
+          </div>
+        </section>
 
-      {/* GALERIE */}
-      <section className="px-6 pb-24 md:pb-28">
-        <div className="mx-auto max-w-6xl">
-          <Reveal>
-            <p className="text-center text-sm italic text-muted-foreground mb-10">
-              {NOEL_2026_TEXTS.galleryMention}
-            </p>
-          </Reveal>
-          <NoelGallery photos={NOEL_2026_GALLERY_PHOTOS} />
-        </div>
-      </section>
+        <section className={styles.gallerySection}>
+          <div className={styles.container}>
+            <div className={styles.sectionHeading}>
+              <h2 className={`${styles.display} ${styles.sectionTitle}`}>
+                {NOEL_2026_PAGE_COPY.galleryTitle}
+              </h2>
+              <p>{NOEL_2026_TEXTS.galleryMention}</p>
+            </div>
+            <NoelGallery photos={NOEL_2026_GALLERY_PHOTOS} />
+          </div>
+        </section>
 
-      {/* DÉROULEMENT */}
-      <section className="px-6 py-24 md:py-28" style={{ backgroundColor: "var(--surface)" }}>
-        <div className="mx-auto max-w-4xl">
-          <Reveal>
-            <h2 className="font-display text-3xl md:text-4xl italic text-primary text-center mb-12">
+        <section className={styles.experience}>
+          <img
+            src={NOEL_2026_GALLERY_PHOTOS[3].src}
+            srcSet={`${NOEL_2026_GALLERY_PHOTOS[3].src} 700w, ${NOEL_2026_GALLERY_PHOTOS[3].srcLarge} 1600w`}
+            sizes="(min-width: 768px) 45vw, 100vw"
+            width={700}
+            height={467}
+            alt={NOEL_2026_GALLERY_PHOTOS[3].alt}
+            loading="lazy"
+            decoding="async"
+          />
+          <div className={styles.experienceCopy}>
+            <h2 className={`${styles.display} ${styles.sectionTitle}`}>
               {NOEL_2026_PAGE_COPY.experienceTitle}
             </h2>
-            <div className="grid gap-4 sm:grid-cols-2">
-              {NOEL_2026_PAGE_COPY.experienceItems.map((item) => (
-                <div key={item} className="rounded-[24px] border border-border bg-background p-5">
-                  <p className="text-sm leading-relaxed text-foreground/88">{item}</p>
+            <ol>
+              {NOEL_2026_PAGE_COPY.experienceItems.map((item, index) => (
+                <li key={item}>
+                  <span aria-hidden="true">0{index + 1}</span>
+                  <p>{item}</p>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </section>
+
+        <section className={styles.section}>
+          <div className={styles.container}>
+            <h2 className={`${styles.display} ${styles.sectionTitle}`}>
+              {NOEL_2026_PAGE_COPY.datesTitle}
+            </h2>
+            <div className={styles.dates}>
+              {NOEL_2026_SESSION_DATES.map((date) => (
+                <div key={date.iso}>
+                  <span aria-hidden="true">{date.iso.slice(-2)}</span>
+                  <p>{date.label}</p>
                 </div>
               ))}
             </div>
-          </Reveal>
-        </div>
-      </section>
+            <p className={styles.note}>{NOEL_2026_PAGE_COPY.limitedPlaces}</p>
+          </div>
+        </section>
 
-      {/* FORMULES */}
-      <section id="formules" className="scroll-mt-28 px-6 py-24 md:py-28">
-        <div className="mx-auto max-w-5xl">
-          <Reveal>
-            <h2 className="font-display text-3xl md:text-4xl italic text-primary text-center mb-4">
-              {NOEL_2026_PAGE_COPY.formulesTitle}
-            </h2>
-            <p className="text-center text-sm text-muted-foreground mb-14">
-              {NOEL_2026_PAGE_COPY.formulesIntro}
-            </p>
-          </Reveal>
-          <div className="grid gap-6 md:grid-cols-2">
-            {NOEL_2026_FORMULES.map((formule, i) => (
-              <Reveal key={formule.id} delay={i * 80}>
-                <div className="flex h-full flex-col border border-border bg-surface p-8 lg:p-10">
-                  <h3 className="font-display text-2xl italic text-primary mb-1">{formule.name}</h3>
-                  <p
-                    className="font-mono text-2xl mb-6"
-                    style={{ color: NOEL_2026_COLORS.deepRed }}
-                  >
-                    {formule.priceEur} €
+        <section id="formules" className={`${styles.section} ${styles.formulesSection}`}>
+          <div className={styles.container}>
+            <div className={styles.sectionHeading}>
+              <h2 className={`${styles.display} ${styles.sectionTitle}`}>
+                {NOEL_2026_PAGE_COPY.formulesTitle}
+              </h2>
+              <p>{NOEL_2026_PAGE_COPY.formulesIntro}</p>
+            </div>
+            <div className={styles.formules}>
+              {NOEL_2026_FORMULES.map((formule, index) => (
+                <article key={formule.id}>
+                  <p className={styles.eyebrow} aria-hidden="true">
+                    0{index + 1}
                   </p>
-                  <ul className="text-sm text-foreground/85 space-y-3 border-t border-border pt-6 flex-1">
-                    {formule.features.map((f) => (
-                      <li key={f} className="flex gap-2">
-                        <span style={{ color: NOEL_2026_COLORS.pineGreen }}>·</span>
-                        <span>{f}</span>
-                      </li>
+                  <h3 className={styles.formuleName}>{formule.name}</h3>
+                  <p className={styles.price}>
+                    {formule.priceEur} <span>€</span>
+                  </p>
+                  <ul>
+                    {formule.features.map((feature) => (
+                      <li key={feature}>{feature}</li>
                     ))}
                   </ul>
                   <a
                     href={formule.pelliUrl}
                     target="_blank"
                     rel="noopener"
-                    className="mt-8 inline-flex items-center justify-center px-6 py-3 text-xs uppercase tracking-widest text-white transition-colors"
-                    style={{ backgroundColor: NOEL_2026_COLORS.pineGreen }}
+                    className={styles.button}
                   >
                     {NOEL_2026_PAGE_COPY.formuleCta}
                   </a>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* DATES */}
-      <section className="px-6 py-24 md:py-28" style={{ backgroundColor: "var(--surface)" }}>
-        <div className="mx-auto max-w-3xl text-center">
-          <Reveal>
-            <h2 className="font-display text-3xl md:text-4xl italic text-primary mb-10">
-              {NOEL_2026_PAGE_COPY.datesTitle}
-            </h2>
-            <div className="grid gap-4 sm:grid-cols-2">
-              {NOEL_2026_SESSION_DATES.map((d) => (
-                <div key={d.iso} className="border border-border bg-background p-6">
-                  <p className="font-display text-xl italic text-primary">{d.label}</p>
-                </div>
+                </article>
               ))}
             </div>
-            <p className="mt-8 text-sm text-muted-foreground">
-              {NOEL_2026_PAGE_COPY.limitedPlaces}
-            </p>
-          </Reveal>
-        </div>
-      </section>
+          </div>
+        </section>
 
-      {/* FAQ */}
-      <section className="px-6 py-24 md:py-28">
-        <div className="mx-auto max-w-3xl">
-          <Reveal>
-            <h2 className="font-display text-3xl md:text-4xl italic text-primary text-center mb-12">
+        <section className={styles.section}>
+          <div className={`${styles.container} ${styles.faq}`}>
+            <h2 className={`${styles.display} ${styles.sectionTitle}`}>
               {NOEL_2026_PAGE_COPY.faqTitle}
             </h2>
-            <div className="space-y-8">
+            <div>
               {NOEL_2026_FAQ.map((item) => (
-                <div key={item.question}>
-                  <h3 className="font-display text-lg italic text-primary mb-2">{item.question}</h3>
-                  <p className="text-sm leading-relaxed text-foreground/85">{item.answer}</p>
+                <div className={styles.faqItem} key={item.question}>
+                  <h3>{item.question}</h3>
+                  <p>{item.answer}</p>
                 </div>
               ))}
             </div>
-          </Reveal>
-        </div>
-      </section>
+          </div>
+        </section>
 
-      {/* CTA FINAL */}
-      <section className="relative px-6 py-28 md:py-32 overflow-hidden">
-        <img
-          src={NOEL_2026_GALLERY_PHOTOS[NOEL_2026_GALLERY_PHOTOS.length - 1].srcLarge}
-          alt=""
-          aria-hidden="true"
-          loading="lazy"
-          decoding="async"
-          className="absolute inset-0 h-full w-full object-cover"
-        />
-        <div className="absolute inset-0 bg-black/55" />
-        <div className="relative mx-auto max-w-2xl text-center text-white">
-          <Reveal>
-            <h2 className="font-display text-3xl md:text-4xl italic mb-8">
+        <section className={styles.closing}>
+          <img
+            src={NOEL_2026_CAMPAIGN.closingPhoto.src}
+            srcSet={`${NOEL_2026_CAMPAIGN.closingPhoto.src} 700w, ${NOEL_2026_CAMPAIGN.closingPhoto.srcLarge} 1600w`}
+            sizes="(min-width: 768px) 40vw, 100vw"
+            width={700}
+            height={1050}
+            alt=""
+            loading="lazy"
+            decoding="async"
+          />
+          <div>
+            <p className={styles.eyebrow}>{NOEL_2026_CAMPAIGN.editionLabel}</p>
+            <h2 className={`${styles.display} ${styles.sectionTitle}`}>
               {NOEL_2026_TEXTS.ctaFinalTitle}
             </h2>
-            <a
-              href="#formules"
-              className="inline-flex items-center justify-center px-10 py-4 text-xs uppercase tracking-widest text-white transition-colors"
-              style={{ backgroundColor: NOEL_2026_COLORS.pineGreen }}
-            >
+            <p className={styles.closingPhrase}>{NOEL_2026_TEXTS.heroSubtitle}</p>
+            <a href="#formules" className={`${styles.button} ${styles.inverseButton}`}>
               {NOEL_2026_TEXTS.ctaFinalButton}
             </a>
-          </Reveal>
-        </div>
-      </section>
+          </div>
+        </section>
+      </div>
     </SiteShell>
   );
 }
