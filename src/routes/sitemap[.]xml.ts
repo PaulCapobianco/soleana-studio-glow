@@ -11,6 +11,7 @@ const PATHS = [
   "/portfolio/couple",
   "/portfolio/portrait",
   "/prestations",
+  "/mini-seances-noel-2026",
   "/reservation",
   "/a-propos",
   "/faq",

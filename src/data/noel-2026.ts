@@ -1,0 +1,223 @@
+import noelHeroA from "@/assets/noel-2026/noel-hero-a.webp";
+import noelHeroA1600 from "@/assets/noel-2026/noel-hero-a-1600.webp";
+import noelHeroA2400 from "@/assets/noel-2026/noel-hero-a-2400.webp";
+import noelHeroB from "@/assets/noel-2026/noel-hero-b.webp";
+import noelHeroB1600 from "@/assets/noel-2026/noel-hero-b-1600.webp";
+import noelHeroB2400 from "@/assets/noel-2026/noel-hero-b-2400.webp";
+
+import gallery01 from "@/assets/noel-2026/noel-gallery-01.webp";
+import gallery01Lg from "@/assets/noel-2026/noel-gallery-01-1600.webp";
+import gallery02 from "@/assets/noel-2026/noel-gallery-02.webp";
+import gallery02Lg from "@/assets/noel-2026/noel-gallery-02-1600.webp";
+import gallery03 from "@/assets/noel-2026/noel-gallery-03.webp";
+import gallery03Lg from "@/assets/noel-2026/noel-gallery-03-1600.webp";
+import gallery04 from "@/assets/noel-2026/noel-gallery-04.webp";
+import gallery04Lg from "@/assets/noel-2026/noel-gallery-04-1600.webp";
+import gallery05 from "@/assets/noel-2026/noel-gallery-05.webp";
+import gallery05Lg from "@/assets/noel-2026/noel-gallery-05-1600.webp";
+import gallery06 from "@/assets/noel-2026/noel-gallery-06.webp";
+import gallery06Lg from "@/assets/noel-2026/noel-gallery-06-1600.webp";
+import gallery07 from "@/assets/noel-2026/noel-gallery-07.webp";
+import gallery07Lg from "@/assets/noel-2026/noel-gallery-07-1600.webp";
+
+// Shared with the future homepage teaser — defined once here so both
+// consumers stay in sync instead of duplicating hex codes.
+export const NOEL_2026_COLORS = {
+  pineGreen: "#2F4A3D",
+  deepRed: "#7A2E2E",
+} as const;
+
+export const NOEL_2026_LOCATION = "Plan-d'Aups-Sainte-Baume";
+
+export const NOEL_2026_SESSION_DATES = [
+  { iso: "2026-11-07", label: "Samedi 7 novembre 2026" },
+  { iso: "2026-11-11", label: "Mercredi 11 novembre 2026" },
+] as const;
+
+export const NOEL_2026_WEATHER_FALLBACK_DATES = [
+  { iso: "2026-11-14", label: "samedi 14 novembre" },
+  { iso: "2026-11-15", label: "dimanche 15 novembre" },
+] as const;
+
+// Explicit Europe/Paris offset (CET, +01:00 — no DST ambiguity in
+// November) so the loader's server-side comparison never depends on
+// the server's local timezone or an implicit UTC read.
+export const NOEL_2026_EDITION_ENDS_AT = "2026-11-16T00:00:00+01:00";
+
+export function isNoel2026EditionOver(now: Date): boolean {
+  return now.getTime() >= new Date(NOEL_2026_EDITION_ENDS_AT).getTime();
+}
+
+// TODO: replace with the real Pelli booking links once Paul provides them.
+export const NOEL_2026_PELLI_URL_DOUCEUR = "https://TODO-lien-pelli-douceur";
+export const NOEL_2026_PELLI_URL_MAGIE = "https://TODO-lien-pelli-magie";
+
+export type NoelFormule = {
+  id: string;
+  name: string;
+  priceEur: number;
+  features: string[];
+  pelliUrl: string;
+};
+
+export const NOEL_2026_FORMULES: NoelFormule[] = [
+  {
+    id: "douceur",
+    name: "Douceur de Noël",
+    priceEur: 110,
+    features: [
+      "25 à 30 minutes de séance",
+      "Galerie privée en ligne",
+      "5 photos numériques HD à choisir sur votre galerie en ligne",
+    ],
+    pelliUrl: NOEL_2026_PELLI_URL_DOUCEUR,
+  },
+  {
+    id: "magie",
+    name: "Magie de Noël",
+    priceEur: 250,
+    features: [
+      "25 à 30 minutes de séance",
+      "Galerie privée en ligne",
+      "L'ensemble des images finalisées de la galerie en numérique HD (30 photos minimum)",
+      "Un grand tirage fine art 20 × 30 cm d'une photo au choix parmi la galerie finale (valeur 35 €, papier français, impression en France)",
+    ],
+    pelliUrl: NOEL_2026_PELLI_URL_MAGIE,
+  },
+];
+
+export type NoelFaqItem = { question: string; answer: string };
+
+export const NOEL_2026_FAQ: NoelFaqItem[] = [
+  {
+    question: "Combien de temps dure la séance ?",
+    answer:
+      "Entre 25 et 30 minutes — juste ce qu'il faut pour installer une vraie complicité et repartir avec des images sincères.",
+  },
+  {
+    question: "La séance a-t-elle lieu en intérieur ou en extérieur ?",
+    answer:
+      "En extérieur, au cœur des sapins. La lumière, l'ambiance et les couleurs peuvent donc varier légèrement selon l'heure de votre créneau.",
+  },
+  {
+    question: "Pourquoi si peu de créneaux ?",
+    answer:
+      "Deux journées seulement : les places sont limitées. Pour privilégier le temps passé avec chaque famille et chaque couple, sans se presser, et laisser la place à la vraie connexion.",
+  },
+  {
+    question: "Et s'il pleut ?",
+    answer:
+      "En cas de météo trop capricieuse (pluie, vent fort), les créneaux sont reportés au week-end suivant, à la même heure : le 7 novembre devient le 14, le 11 novembre devient le 15. Merci de vous assurer d'être disponible ce jour-là. En cas d'annulation de votre côté, l'acompte versé ne pourra pas être remboursé.",
+  },
+  {
+    question: "Comment s'habiller ?",
+    answer:
+      "Pour un résultat harmonieux, un petit guide des tenues vous sera envoyé, quelle que soit votre formule.",
+  },
+  {
+    question: "Comment réserver ma date ?",
+    answer: "Un acompte de 30 % permet de bloquer votre créneau. Sans acompte versé, la date n'est pas garantie.",
+  },
+];
+
+export const NOEL_2026_TEXTS = {
+  heroTitle: "Mini-séances de Noël 2026",
+  heroSubtitle: "Une parenthèse magique pour créer de précieux souvenirs en famille",
+  heroDatesLabel: "Samedi 7 et mercredi 11 novembre",
+  heroCta: "Réserver ma séance",
+  experience: [
+    "Le temps d'une mini-séance, on quitte le quotidien pour une parenthèse de Noël en pleine nature, au milieu des sapins. Un décor de fête, une musique d'ambiance, quelques petites douceurs : tout est pensé pour rire, jouer, se retrouver, et repartir avec de vrais souvenirs de cette saison, sincères et lumineux.",
+    "Pour les couples, les futurs parents, les familles et les enfants.",
+    "À moins d'une heure de Marseille et de Toulon, à Plan d'Aups Sainte-Baume : dépaysement garanti, le temps d'une escapade.",
+  ],
+  galleryMention: "Photos des précédentes éditions — l'univers 2026 se prépare avec beaucoup de magie.",
+  ctaFinalTitle: "Envie de vivre votre propre parenthèse de Noël ?",
+  ctaFinalButton: "Réserver ma séance",
+  editionOverTitle: "Mini-séances de Noël 2026 — l'édition est terminée",
+  editionOverText:
+    "L'édition 2026 des mini-séances de Noël est terminée. Merci à toutes les familles, couples et futurs parents qui l'ont vécue avec moi : à très vite pour la prochaine édition.",
+  editionOverButton: "Découvrir mes prestations",
+} as const;
+
+export type NoelHeroCandidate = {
+  id: "a" | "b";
+  src: string;
+  src1600: string;
+  src2400: string;
+  alt: string;
+};
+
+export const NOEL_2026_HERO_CANDIDATES: Record<"a" | "b", NoelHeroCandidate> = {
+  a: {
+    id: "a",
+    src: noelHeroA,
+    src1600: noelHeroA1600,
+    src2400: noelHeroA2400,
+    alt: "Couple enlacé lors d'une mini-séance de Noël en extérieur, lumière dorée de fin de journée",
+  },
+  b: {
+    id: "b",
+    src: noelHeroB,
+    src1600: noelHeroB1600,
+    src2400: noelHeroB2400,
+    alt: "Couple lors d'une mini-séance de Noël, instant complice en pleine lumière dorée",
+  },
+};
+
+// Photographer's pick pending — candidate A for now. The other candidate's
+// files get deleted (not renamed) once the final choice is made.
+export const NOEL_2026_ACTIVE_HERO: NoelHeroCandidate = NOEL_2026_HERO_CANDIDATES.a;
+
+export type NoelGalleryPhoto = {
+  id: string;
+  src: string;
+  srcLarge: string;
+  alt: string;
+};
+
+// Display order lives here, and only here — renumbering this array is
+// enough to reorder the gallery, no file renames needed.
+export const NOEL_2026_GALLERY_PHOTOS: NoelGalleryPhoto[] = [
+  {
+    id: "noel-gallery-01",
+    src: gallery01,
+    srcLarge: gallery01Lg,
+    alt: "Couple lors d'une mini-séance de Noël en extérieur, ambiance chaleureuse au milieu de la nature",
+  },
+  {
+    id: "noel-gallery-02",
+    src: gallery02,
+    srcLarge: gallery02Lg,
+    alt: "Couple tenant un coussin de Noël, moment complice en extérieur",
+  },
+  {
+    id: "noel-gallery-03",
+    src: gallery03,
+    srcLarge: gallery03Lg,
+    alt: "Cadeaux de Noël emballés et guirlande lumineuse, décor de la séance à la tombée du jour",
+  },
+  {
+    id: "noel-gallery-04",
+    src: gallery04,
+    srcLarge: gallery04Lg,
+    alt: "Installation cocooning de Noël en extérieur, plaid, coussins et guirlandes lumineuses",
+  },
+  {
+    id: "noel-gallery-05",
+    src: gallery05,
+    srcLarge: gallery05Lg,
+    alt: "Ambiance de Noël en extérieur, lumières scintillantes et douceurs sur un plaid",
+  },
+  {
+    id: "noel-gallery-06",
+    src: gallery06,
+    srcLarge: gallery06Lg,
+    alt: "Étoile lumineuse suspendue sous les sapins, décor de Noël en pleine nature",
+  },
+  {
+    id: "noel-gallery-07",
+    src: gallery07,
+    srcLarge: gallery07Lg,
+    alt: "Étoile de Noël suspendue sous le ciel du soir, traîneau et guirlandes lumineuses",
+  },
+];
