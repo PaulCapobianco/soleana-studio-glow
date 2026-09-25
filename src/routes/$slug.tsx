@@ -1,5 +1,4 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
 import { SiteShell } from "@/components/site/SiteShell";
 import { Reveal } from "@/components/site/Reveal";
 import { CategoryGallerySection } from "@/components/site/CategoryGallerySection";
@@ -369,6 +368,20 @@ const SEO_PAGE_GALLERY: Record<
 };
 
 export const Route = createFileRoute("/$slug")({
+  loader: async ({ params }) => {
+    const { data, error } = await supabase
+      .from("seo_pages")
+      .select("*")
+      .eq("slug", params.slug)
+      .eq("published", true)
+      .maybeSingle();
+
+    if (error) {
+      throw new Error(`Échec du chargement de la page SEO "${params.slug}": ${error.message}`);
+    }
+    if (!data) throw notFound();
+    return data;
+  },
   head: ({ params }) => {
     const meta = SEO_PAGE_META[params.slug] ?? {
       title: "Photographe à Marseille — Soleana Studio",
@@ -404,30 +417,9 @@ export const Route = createFileRoute("/$slug")({
 
 function SeoPage() {
   const { slug } = Route.useParams();
+  const page = Route.useLoaderData();
   const gallery = SEO_PAGE_GALLERY[slug];
   const hasMultipleGalleries = (gallery?.sections.length ?? 0) > 1;
-  const { data: page, isLoading } = useQuery({
-    queryKey: ["seo", slug],
-    queryFn: async () => {
-      const { data } = await supabase
-        .from("seo_pages")
-        .select("*")
-        .eq("slug", slug)
-        .eq("published", true)
-        .maybeSingle();
-
-      if (!data) throw notFound();
-      return data;
-    },
-  });
-
-  if (isLoading || !page) {
-    return (
-      <SiteShell>
-        <div className="px-6 pt-40 pb-32 text-center text-muted-foreground">Chargement…</div>
-      </SiteShell>
-    );
-  }
 
   const copyOverride = SEO_PAGE_COPY_OVERRIDES[slug];
   const displayPage = copyOverride ? { ...page, ...copyOverride } : page;
