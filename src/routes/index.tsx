@@ -35,6 +35,13 @@ import logoSoleana280 from "@/assets/logo-soleana-280.webp";
 import type { Database } from "@/integrations/supabase/types";
 import { isGoogleReviewUrl } from "@/lib/google-review-url";
 import { absoluteUrl, buildPageSeo } from "@/lib/seo";
+import {
+  NOEL_2026_COLORS,
+  NOEL_2026_HERO_CANDIDATES,
+  NOEL_2026_LOCATION,
+  NOEL_2026_SESSION_DATES,
+  isNoel2026EditionOver,
+} from "@/data/noel-2026";
 
 export const Route = createFileRoute("/")({
   loader: async () => {
@@ -43,7 +50,7 @@ export const Route = createFileRoute("/")({
 
     if (!supabaseUrl || !supabaseKey) {
       console.error("[home.services] Missing Supabase public env vars.");
-      return { services: [], reviews: [] };
+      return { services: [], reviews: [], isNoelTeaserVisible: !isNoel2026EditionOver(new Date()) };
     }
 
     const headers = {
@@ -68,7 +75,11 @@ export const Route = createFileRoute("/")({
       console.error("[home.services] Failed to fetch services:", error);
     }
 
-    return { services, reviews: await reviewsPromise };
+    return {
+      services,
+      reviews: await reviewsPromise,
+      isNoelTeaserVisible: !isNoel2026EditionOver(new Date()),
+    };
   },
   head: () => {
     const seo = buildPageSeo({
@@ -203,7 +214,7 @@ const googleReviewUrl = "https://g.page/r/CRyE27TfkuhmEBM/review";
 
 function Home() {
   const [scrolled, setScrolled] = useState(false);
-  const { services, reviews } = Route.useLoaderData();
+  const { services, reviews, isNoelTeaserVisible } = Route.useLoaderData();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -303,6 +314,58 @@ function Home() {
           </p>
         </div>
       </section>
+
+      {/* TEASER — MINI-SÉANCES DE NOËL 2026 */}
+      {isNoelTeaserVisible && (
+        <section className="[content-visibility:auto] [contain-intrinsic-size:1px_500px]">
+          <div className="grid md:grid-cols-2">
+            <div className="relative aspect-[16/10] md:aspect-auto md:min-h-[420px]">
+              <img
+                src={NOEL_2026_HERO_CANDIDATES.b.src}
+                srcSet={`${NOEL_2026_HERO_CANDIDATES.b.src} 800w, ${NOEL_2026_HERO_CANDIDATES.b.src1600} 1600w`}
+                sizes="(min-width: 768px) 50vw, 100vw"
+                alt={NOEL_2026_HERO_CANDIDATES.b.alt}
+                width={1600}
+                height={1067}
+                loading="lazy"
+                decoding="async"
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+            </div>
+            <div
+              className="flex flex-col items-center justify-center px-6 py-16 text-center md:px-12"
+              style={{ backgroundColor: "var(--background)" }}
+            >
+              <Reveal>
+                <p
+                  className="font-mono text-[10px] uppercase tracking-[0.4em] mb-4"
+                  style={{ color: NOEL_2026_COLORS.deepRed }}
+                >
+                  Édition limitée
+                </p>
+                <h2 className="font-display text-3xl md:text-4xl italic text-primary mb-4 leading-tight">
+                  Mini-séances de Noël 2026
+                </h2>
+                <p className="font-mono text-xs uppercase tracking-[0.3em] text-muted-foreground mb-6">
+                  {NOEL_2026_SESSION_DATES.map((d) => Number(d.iso.split("-")[2])).join(" & ")} novembre —{" "}
+                  {NOEL_2026_LOCATION}
+                </p>
+                <p className="max-w-sm text-base leading-relaxed text-foreground/85 mb-8">
+                  Une parenthèse de Noël en pleine nature, au milieu des sapins — deux journées
+                  seulement, places limitées.
+                </p>
+                <Link
+                  to="/mini-seances-noel-2026"
+                  className="inline-flex items-center justify-center px-8 py-3 text-xs uppercase tracking-widest text-white transition-colors"
+                  style={{ backgroundColor: NOEL_2026_COLORS.pineGreen }}
+                >
+                  Découvrir les mini-séances
+                </Link>
+              </Reveal>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* INTRO */}
       <section className="py-32 px-6 max-w-4xl mx-auto text-center [content-visibility:auto] [contain-intrinsic-size:1px_900px]">
