@@ -274,7 +274,9 @@ export const NOEL_2026_TEASER = {
   label: "Édition limitée",
   title: NOEL_2026_TEXTS.heroTitle,
   datesLabel:
-    NOEL_2026_SESSION_DATES.map((date) => Number(date.iso.split("-")[2])).join(" & ") + " novembre",
+    NOEL_2026_SESSION_DATES.map((date) => Number(date.iso.split("-")[2])).join(" & ") +
+    " novembre " +
+    NOEL_2026_SESSION_DATES[0].iso.slice(0, 4),
   text: "Une parenthèse de Noël en pleine nature, au milieu des sapins — deux journées seulement, places limitées.",
   cta: "Découvrir les mini-séances",
   photo: NOEL_2026_HERO_CANDIDATES[NOEL_2026_ACTIVE_HERO.id === "a" ? "b" : "a"],
