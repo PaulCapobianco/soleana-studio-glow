@@ -4,23 +4,36 @@ import { toast } from "sonner";
 import { useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
+import { SaveButton } from "@/components/site/admin/SaveButton";
+import { confirmDelete } from "@/lib/admin/confirm-delete";
+import { friendlySupabaseError } from "@/lib/admin/friendly-error";
+import { useDirtySet } from "@/lib/admin/use-dirty-set";
+import { useEditableRecord } from "@/lib/admin/use-editable-record";
 
-type PhotoUpdate = Database["public"]["Tables"]["photos"]["Update"];
+type PhotoRow = Database["public"]["Tables"]["photos"]["Row"];
+type CategoryRow = Database["public"]["Tables"]["categories"]["Row"];
+type PhotoWithCategory = PhotoRow & { category: Pick<CategoryRow, "name" | "slug"> | null };
 
 export const Route = createFileRoute("/admin/_authed/photos")({
-  head: () => ({ meta: [{ title: "Photos — Admin" }, { name: "robots", content: "noindex,nofollow" }] }),
+  head: () => ({
+    meta: [{ title: "Photos — Admin" }, { name: "robots", content: "noindex,nofollow" }],
+  }),
   component: PhotosAdmin,
 });
 
 function PhotosAdmin() {
   const qc = useQueryClient();
   const fileRef = useRef<HTMLInputElement>(null);
+  const setDirty = useDirtySet();
 
   const { data: photos } = useQuery({
     queryKey: ["admin-photos"],
     queryFn: async () => {
-      const { data } = await supabase.from("photos").select("*, category:categories(name, slug)").order("display_order");
-      return data ?? [];
+      const { data } = await supabase
+        .from("photos")
+        .select("*, category:categories(name, slug)")
+        .order("display_order");
+      return (data ?? []) as PhotoWithCategory[];
     },
   });
 
@@ -40,25 +53,18 @@ function PhotosAdmin() {
     if (file.size > 10 * 1024 * 1024) return toast.error("Fichier max 10 Mo");
     const ext = file.name.split(".").pop();
     const name = `${crypto.randomUUID()}.${ext}`;
-    const { error } = await supabase.storage.from("photos").upload(name, file, { contentType: file.type, upsert: false });
-    if (error) return toast.error(error.message);
+    const { error } = await supabase.storage
+      .from("photos")
+      .upload(name, file, { contentType: file.type, upsert: false });
+    if (error) return toast.error(friendlySupabaseError(error));
     const { data: pub } = supabase.storage.from("photos").getPublicUrl(name);
-    const { error: insErr } = await supabase.from("photos").insert({ image_url: pub.publicUrl, alt_text: file.name });
-    if (insErr) return toast.error(insErr.message);
+    const { error: insErr } = await supabase
+      .from("photos")
+      .insert({ image_url: pub.publicUrl, alt_text: file.name });
+    if (insErr) return toast.error(friendlySupabaseError(insErr));
     toast.success("Photo ajoutée");
     qc.invalidateQueries({ queryKey: ["admin-photos"] });
     if (fileRef.current) fileRef.current.value = "";
-  }
-
-  async function update(id: string, patch: PhotoUpdate) {
-    await supabase.from("photos").update(patch).eq("id", id);
-    qc.invalidateQueries({ queryKey: ["admin-photos"] });
-  }
-
-  async function remove(id: string) {
-    if (!confirm("Supprimer cette photo ?")) return;
-    await supabase.from("photos").delete().eq("id", id);
-    qc.invalidateQueries({ queryKey: ["admin-photos"] });
   }
 
   return (
@@ -67,32 +73,135 @@ function PhotosAdmin() {
         <h1 className="font-display text-4xl italic text-primary">Photos</h1>
         <label className="bg-primary text-primary-foreground px-6 py-3 text-xs uppercase tracking-widest cursor-pointer hover:bg-foreground transition-colors">
           + Ajouter une photo
-          <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp" onChange={handleUpload} className="hidden" />
+          <input
+            ref={fileRef}
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            onChange={handleUpload}
+            className="hidden"
+          />
         </label>
       </header>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {(photos ?? []).map((p) => (
-          <div key={p.id} className="bg-surface border border-border overflow-hidden">
-            <img src={p.image_url} alt={p.alt_text} className="w-full aspect-[4/5] object-cover" loading="lazy" />
-            <div className="p-4 space-y-2 text-sm">
-              <input defaultValue={p.alt_text} onBlur={(e) => update(p.id, { alt_text: e.target.value })} placeholder="Alt SEO" className="w-full bg-background border border-border px-2 py-1 text-xs" />
-              <input defaultValue={p.location ?? ""} onBlur={(e) => update(p.id, { location: e.target.value })} placeholder="Lieu" className="w-full bg-background border border-border px-2 py-1 text-xs" />
-              <select defaultValue={p.category_id ?? ""} onChange={(e) => update(p.id, { category_id: e.target.value || null })} className="w-full bg-background border border-border px-2 py-1 text-xs">
-                <option value="">— Catégorie —</option>
-                {(cats ?? []).map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
-              </select>
-              <div className="flex flex-wrap gap-3 text-xs pt-1">
-                <label className="flex items-center gap-1"><input type="checkbox" defaultChecked={p.published} onChange={(e) => update(p.id, { published: e.target.checked })} /> Publié</label>
-                <label className="flex items-center gap-1"><input type="checkbox" defaultChecked={p.on_home} onChange={(e) => update(p.id, { on_home: e.target.checked })} /> Accueil</label>
-                <label className="flex items-center gap-1"><input type="checkbox" defaultChecked={p.on_portfolio} onChange={(e) => update(p.id, { on_portfolio: e.target.checked })} /> Portfolio</label>
-              </div>
-              <button onClick={() => remove(p.id)} className="text-xs text-destructive hover:underline">Supprimer</button>
-            </div>
-          </div>
+          <PhotoCard
+            key={p.id}
+            item={p}
+            categories={cats ?? []}
+            onDirtyChange={(dirty) => setDirty(p.id, dirty)}
+          />
         ))}
       </div>
-      {(photos?.length ?? 0) === 0 && <p className="text-sm text-muted-foreground p-12 text-center bg-surface border border-border">Aucune photo. Cliquez sur « Ajouter une photo » pour commencer.</p>}
+      {(photos?.length ?? 0) === 0 && (
+        <p className="text-sm text-muted-foreground p-12 text-center bg-surface border border-border">
+          Aucune photo. Cliquez sur « Ajouter une photo » pour commencer.
+        </p>
+      )}
+    </div>
+  );
+}
+
+function PhotoCard({
+  item,
+  categories,
+  onDirtyChange,
+}: {
+  item: PhotoWithCategory;
+  categories: CategoryRow[];
+  onDirtyChange: (isDirty: boolean) => void;
+}) {
+  const qc = useQueryClient();
+  // The joined `category` field isn't a real column — keep it out of the
+  // editable draft so it's never sent back in an update patch.
+  const { category: _category, ...editable } = item;
+  const { draft, setField, isDirty, isSaving, save } = useEditableRecord(
+    editable,
+    async (patch) => {
+      const { error } = await supabase.from("photos").update(patch).eq("id", item.id);
+      qc.invalidateQueries({ queryKey: ["admin-photos"] });
+      return { error };
+    },
+    onDirtyChange,
+  );
+
+  async function remove() {
+    if (!confirmDelete("cette photo")) return;
+    const { error } = await supabase.from("photos").delete().eq("id", item.id);
+    if (error) {
+      toast.error(friendlySupabaseError(error));
+      return;
+    }
+    toast.success("Photo supprimée");
+    qc.invalidateQueries({ queryKey: ["admin-photos"] });
+  }
+
+  return (
+    <div className="bg-surface border border-border overflow-hidden">
+      <img
+        src={item.image_url}
+        alt={item.alt_text}
+        className="w-full aspect-[4/5] object-cover"
+        loading="lazy"
+      />
+      <div className="p-4 space-y-2 text-sm">
+        <input
+          value={draft.alt_text}
+          onChange={(e) => setField("alt_text", e.target.value)}
+          placeholder="Alt SEO"
+          className="w-full bg-background border border-border px-2 py-1 text-xs"
+        />
+        <input
+          value={draft.location ?? ""}
+          onChange={(e) => setField("location", e.target.value)}
+          placeholder="Lieu"
+          className="w-full bg-background border border-border px-2 py-1 text-xs"
+        />
+        <select
+          value={draft.category_id ?? ""}
+          onChange={(e) => setField("category_id", e.target.value || null)}
+          className="w-full bg-background border border-border px-2 py-1 text-xs"
+        >
+          <option value="">— Catégorie —</option>
+          {categories.map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.name}
+            </option>
+          ))}
+        </select>
+        <div className="flex flex-wrap gap-3 text-xs pt-1">
+          <label className="flex items-center gap-1">
+            <input
+              type="checkbox"
+              checked={draft.published}
+              onChange={(e) => setField("published", e.target.checked)}
+            />
+            Publié
+          </label>
+          <label className="flex items-center gap-1">
+            <input
+              type="checkbox"
+              checked={draft.on_home}
+              onChange={(e) => setField("on_home", e.target.checked)}
+            />
+            Accueil
+          </label>
+          <label className="flex items-center gap-1">
+            <input
+              type="checkbox"
+              checked={draft.on_portfolio}
+              onChange={(e) => setField("on_portfolio", e.target.checked)}
+            />
+            Portfolio
+          </label>
+        </div>
+        <div className="flex items-center justify-between pt-1">
+          <button onClick={remove} className="text-xs text-destructive hover:underline">
+            Supprimer
+          </button>
+          <SaveButton isDirty={isDirty} isSaving={isSaving} onClick={save} />
+        </div>
+      </div>
     </div>
   );
 }

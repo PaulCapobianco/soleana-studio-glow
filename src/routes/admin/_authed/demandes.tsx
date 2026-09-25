@@ -2,8 +2,16 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
+import { SaveButton } from "@/components/site/admin/SaveButton";
+import { confirmDelete } from "@/lib/admin/confirm-delete";
+import { friendlySupabaseError } from "@/lib/admin/friendly-error";
+import { useDirtySet } from "@/lib/admin/use-dirty-set";
+import { useEditableRecord } from "@/lib/admin/use-editable-record";
 
 const STATUSES = ["nouveau", "repondu", "reserve", "termine", "archive"] as const;
+
+type ContactRequestRow = Database["public"]["Tables"]["contact_requests"]["Row"];
 
 export const Route = createFileRoute("/admin/_authed/demandes")({
   head: () => ({
@@ -13,7 +21,7 @@ export const Route = createFileRoute("/admin/_authed/demandes")({
 });
 
 function Demandes() {
-  const qc = useQueryClient();
+  const setDirty = useDirtySet();
   const { data: items } = useQuery({
     queryKey: ["admin-demandes"],
     queryFn: async () => {
@@ -25,19 +33,6 @@ function Demandes() {
     },
   });
 
-  async function updateStatus(id: string, status: (typeof STATUSES)[number]) {
-    const { error } = await supabase.from("contact_requests").update({ status }).eq("id", id);
-    if (error) return toast.error(error.message);
-    toast.success("Statut mis à jour");
-    qc.invalidateQueries({ queryKey: ["admin-demandes"] });
-  }
-
-  async function remove(id: string) {
-    if (!confirm("Supprimer cette demande ?")) return;
-    await supabase.from("contact_requests").delete().eq("id", id);
-    qc.invalidateQueries({ queryKey: ["admin-demandes"] });
-  }
-
   return (
     <div className="space-y-8">
       <header>
@@ -45,65 +40,7 @@ function Demandes() {
       </header>
       <div className="space-y-3">
         {(items ?? []).map((r) => (
-          <details key={r.id} className="bg-surface border border-border">
-            <summary className="cursor-pointer p-4 flex flex-wrap gap-4 items-center justify-between list-none">
-              <div>
-                <p className="font-medium">
-                  {r.first_name} {r.last_name}{" "}
-                  <span className="text-muted-foreground text-sm">· {r.session_type}</span>
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  {new Date(r.created_at).toLocaleString("fr-FR")}
-                </p>
-              </div>
-              <select
-                value={r.status}
-                onChange={(e) =>
-                  updateStatus(r.id, e.target.value as (typeof STATUSES)[number])
-                }
-                className="bg-background border border-border px-3 py-1 text-xs"
-              >
-                {STATUSES.map((s) => (
-                  <option key={s} value={s}>
-                    {s}
-                  </option>
-                ))}
-              </select>
-            </summary>
-            <div className="p-4 border-t border-border space-y-2 text-sm">
-              <p>
-                <strong>Email :</strong>{" "}
-                <a href={`mailto:${r.email}`} className="text-accent">
-                  {r.email}
-                </a>
-              </p>
-              {r.phone && (
-                <p>
-                  <strong>Téléphone :</strong> {r.phone}
-                </p>
-              )}
-              <p>
-                <strong>Consentement :</strong> {r.consent ? "Oui" : "Non"}
-              </p>
-              {r.desired_date && (
-                <p>
-                  <strong>Date souhaitée :</strong> {r.desired_date}
-                </p>
-              )}
-              {r.location && (
-                <p>
-                  <strong>Lieu :</strong> {r.location}
-                </p>
-              )}
-              <p className="pt-2 whitespace-pre-line text-muted-foreground">{r.message}</p>
-              <button
-                onClick={() => remove(r.id)}
-                className="mt-3 text-xs text-destructive hover:underline"
-              >
-                Supprimer
-              </button>
-            </div>
-          </details>
+          <DemandeCard key={r.id} item={r} onDirtyChange={(dirty) => setDirty(r.id, dirty)} />
         ))}
         {(items?.length ?? 0) === 0 && (
           <p className="text-sm text-muted-foreground p-8 text-center bg-surface border border-border">
@@ -112,5 +49,96 @@ function Demandes() {
         )}
       </div>
     </div>
+  );
+}
+
+function DemandeCard({
+  item,
+  onDirtyChange,
+}: {
+  item: ContactRequestRow;
+  onDirtyChange: (isDirty: boolean) => void;
+}) {
+  const qc = useQueryClient();
+  const { draft, setField, isDirty, isSaving, save } = useEditableRecord(
+    item,
+    async (patch) => {
+      const { error } = await supabase.from("contact_requests").update(patch).eq("id", item.id);
+      qc.invalidateQueries({ queryKey: ["admin-demandes"] });
+      return { error };
+    },
+    onDirtyChange,
+  );
+
+  async function remove() {
+    if (!confirmDelete("cette demande")) return;
+    const { error } = await supabase.from("contact_requests").delete().eq("id", item.id);
+    if (error) {
+      toast.error(friendlySupabaseError(error));
+      return;
+    }
+    toast.success("Demande supprimée");
+    qc.invalidateQueries({ queryKey: ["admin-demandes"] });
+  }
+
+  return (
+    <details className="bg-surface border border-border">
+      <summary className="cursor-pointer p-4 flex flex-wrap gap-4 items-center justify-between list-none">
+        <div>
+          <p className="font-medium">
+            {item.first_name} {item.last_name}{" "}
+            <span className="text-muted-foreground text-sm">· {item.session_type}</span>
+          </p>
+          <p className="text-xs text-muted-foreground">
+            {new Date(item.created_at).toLocaleString("fr-FR")}
+          </p>
+        </div>
+        <select
+          value={draft.status}
+          onChange={(e) => setField("status", e.target.value as (typeof STATUSES)[number])}
+          onClick={(e) => e.stopPropagation()}
+          className="bg-background border border-border px-3 py-1 text-xs"
+        >
+          {STATUSES.map((s) => (
+            <option key={s} value={s}>
+              {s}
+            </option>
+          ))}
+        </select>
+      </summary>
+      <div className="p-4 border-t border-border space-y-2 text-sm">
+        <p>
+          <strong>Email :</strong>{" "}
+          <a href={`mailto:${item.email}`} className="text-accent">
+            {item.email}
+          </a>
+        </p>
+        {item.phone && (
+          <p>
+            <strong>Téléphone :</strong> {item.phone}
+          </p>
+        )}
+        <p>
+          <strong>Consentement :</strong> {item.consent ? "Oui" : "Non"}
+        </p>
+        {item.desired_date && (
+          <p>
+            <strong>Date souhaitée :</strong> {item.desired_date}
+          </p>
+        )}
+        {item.location && (
+          <p>
+            <strong>Lieu :</strong> {item.location}
+          </p>
+        )}
+        <p className="pt-2 whitespace-pre-line text-muted-foreground">{item.message}</p>
+        <div className="mt-3 flex items-center justify-between">
+          <button onClick={remove} className="text-xs text-destructive hover:underline">
+            Supprimer
+          </button>
+          <SaveButton isDirty={isDirty} isSaving={isSaving} onClick={save} />
+        </div>
+      </div>
+    </details>
   );
 }
