@@ -1,4 +1,8 @@
+import defaultSocialImage from "@/assets/accueil/hero_1.webp";
+
 export const SITE_URL = "https://soleanastudio.fr";
+
+export const DEFAULT_SOCIAL_IMAGE = defaultSocialImage;
 
 type SeoOptions = {
   title: string;
@@ -22,8 +26,8 @@ export const buildPageSeo = ({
   meta: [
     { title },
     { name: "description", content: description },
-    { property: "og:title", content: ogTitle ?? title },
-    { property: "og:description", content: ogDescription ?? description },
+    { property: "og:title", content: ogTitle?.trim() || title },
+    { property: "og:description", content: ogDescription?.trim() || description },
     { property: "og:url", content: absoluteUrl(path) },
     ...(noIndex ? [{ name: "robots", content: "noindex,nofollow" }] : []),
   ],

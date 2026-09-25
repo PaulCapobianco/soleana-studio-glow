@@ -331,7 +331,10 @@ export const Route = createFileRoute("/$slug")({
     return (
       <SiteShell>
         <div className="px-6 pt-40 pb-32 text-center">
-          <p>Cette page est momentanément indisponible, merci de réessayer dans quelques instants.</p>
+          <h1 className="font-display text-3xl italic">Page momentanément indisponible</h1>
+          <p className="mt-4">
+            Cette page est momentanément indisponible, merci de réessayer dans quelques instants.
+          </p>
           <div className="mt-8">
             <Link
               to="/"
@@ -372,7 +375,7 @@ function SeoPage() {
           <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent mb-4">
             Soleana Studio
           </p>
-          <h1 className="font-display text-4xl md:text-6xl italic text-primary leading-tight mx-auto max-w-4xl">
+          <h1 className="font-display text-4xl md:text-6xl italic text-primary leading-tight mx-auto max-w-4xl break-words">
             {page.h1}
           </h1>
         </Reveal>
@@ -386,7 +389,7 @@ function SeoPage() {
       <section className="px-5 pb-20 sm:px-6 sm:pb-24">
         <div className="mx-auto max-w-5xl">
           <Reveal>
-            <div className="prose prose-lg mx-auto max-w-3xl whitespace-pre-line leading-relaxed text-foreground">
+            <div className="prose prose-lg mx-auto max-w-3xl whitespace-pre-line break-words leading-relaxed text-foreground">
               {page.content}
             </div>
           </Reveal>

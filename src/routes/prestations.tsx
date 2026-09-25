@@ -1,5 +1,4 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
 import { SiteShell } from "@/components/site/SiteShell";
 import { Reveal } from "@/components/site/Reveal";
 import fondPresta from "@/assets/fond_presta.webp";
@@ -7,6 +6,18 @@ import { buildPageSeo } from "@/lib/seo";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/prestations")({
+  loader: async () => {
+    const { data, error } = await supabase
+      .from("services")
+      .select("*")
+      .eq("active", true)
+      .order("display_order");
+    if (error) {
+      console.error("[prestations] Failed to load public content", error);
+      throw new Error("Le contenu est momentanément indisponible.");
+    }
+    return data ?? [];
+  },
   head: () =>
     buildPageSeo({
       title: "Prestations & Tarifs — Soleana Studio",
@@ -21,17 +32,7 @@ export const Route = createFileRoute("/prestations")({
 });
 
 function Tarifs() {
-  const { data: services } = useQuery({
-    queryKey: ["services-all"],
-    queryFn: async () => {
-      const { data } = await supabase
-        .from("services")
-        .select("*")
-        .eq("active", true)
-        .order("display_order");
-      return data ?? [];
-    },
-  });
+  const services = Route.useLoaderData();
 
   return (
     <SiteShell>

@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
 import { SiteShell } from "@/components/site/SiteShell";
 import { Reveal } from "@/components/site/Reveal";
 import * as Accordion from "@radix-ui/react-accordion";
@@ -8,6 +7,18 @@ import { buildPageSeo } from "@/lib/seo";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/faq")({
+  loader: async () => {
+    const { data, error } = await supabase
+      .from("faq")
+      .select("*")
+      .eq("published", true)
+      .order("display_order");
+    if (error) {
+      console.error("[faq] Failed to load public content", error);
+      throw new Error("Le contenu est momentanément indisponible.");
+    }
+    return data ?? [];
+  },
   head: () =>
     buildPageSeo({
       title: "FAQ — Soleana Studio",
@@ -21,17 +32,7 @@ export const Route = createFileRoute("/faq")({
 });
 
 function Faq() {
-  const { data: items } = useQuery({
-    queryKey: ["faq"],
-    queryFn: async () => {
-      const { data } = await supabase
-        .from("faq")
-        .select("*")
-        .eq("published", true)
-        .order("display_order");
-      return data ?? [];
-    },
-  });
+  const items = Route.useLoaderData();
   const faqItems = (items ?? []).map((item) =>
     item.question === "Où peut se dérouler la séance ?"
       ? {

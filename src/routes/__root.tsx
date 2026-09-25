@@ -13,7 +13,7 @@ import { Toaster } from "sonner";
 import logoSoleanaIcon from "@/assets/logo-soleana-icon.png";
 import inter300 from "@/assets/fonts/Inter-300.woff2";
 import playfair600 from "@/assets/fonts/PlayfairDisplay-600.woff2";
-import { absoluteUrl } from "@/lib/seo";
+import { absoluteUrl, DEFAULT_SOCIAL_IMAGE } from "@/lib/seo";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 
@@ -84,6 +84,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "author", content: "Soleana Studio" },
       { property: "og:site_name", content: "Soleana Studio" },
       { property: "og:type", content: "website" },
+      { property: "og:image", content: absoluteUrl(DEFAULT_SOCIAL_IMAGE) },
       { property: "og:title", content: "Soleana Studio — Photographe lifestyle Marseille" },
       {
         property: "og:description",
@@ -118,7 +119,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "@context": "https://schema.org",
           "@type": "ProfessionalService",
           name: "Soleana Studio",
-          image: absoluteUrl("/og-image.jpg"),
+          image: absoluteUrl(DEFAULT_SOCIAL_IMAGE),
           url: absoluteUrl("/"),
           description:
             "Photographe lifestyle à Marseille — séances grossesse, famille, couple et portrait.",

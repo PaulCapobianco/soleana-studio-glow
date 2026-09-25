@@ -136,9 +136,9 @@ export function PortfolioEditorialSection() {
             <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent mb-4">
               Portfolio
             </p>
-            <h2 className="font-display text-4xl sm:text-5xl md:text-6xl leading-tight tracking-tight text-primary">
+            <h1 className="font-display text-4xl sm:text-5xl md:text-6xl leading-tight tracking-tight text-primary">
               MES RÉALISATIONS
-            </h2>
+            </h1>
             <p className="mt-6 text-base sm:text-lg leading-relaxed text-muted-foreground">
               Une composition douce et lumineuse, pensée comme un collage éditorial pour laisser
               respirer chaque image.
