@@ -182,87 +182,6 @@ const portraitGalleryPhotos = buildLocalGalleryPhotos(
   "Séance photo portrait à Marseille",
 );
 
-const SEO_PAGE_META: Record<
-  string,
-  {
-    title: string;
-    description: string;
-    ogTitle: string;
-    ogDescription: string;
-  }
-> = {
-  "photographe-grossesse-marseille": {
-    title: "Photographe grossesse Marseille — Soleana Studio",
-    description:
-      "Photographe grossesse à Marseille et alentours. Séances douces et naturelles pour immortaliser votre maternité.",
-    ogTitle: "Photographe grossesse à Marseille | Soleana Studio",
-    ogDescription: "Immortalisez votre maternité avec une séance douce et lumineuse à Marseille.",
-  },
-  "photographe-famille-marseille": {
-    title: "Photographe famille à Marseille — Soleana Studio",
-    description:
-      "Photographe famille à Marseille et alentours. Des séances naturelles, lumineuses et pleines de vie pour raconter votre famille telle qu’elle est.",
-    ogTitle: "Photographe famille à Marseille | Soleana Studio",
-    ogDescription: "Des souvenirs sincères, lumineux et pleins de vie de votre famille.",
-  },
-  "photographe-couple-marseille": {
-    title: "Photographe couple à Marseille — Soleana Studio",
-    description:
-      "Photographe couple à Marseille et alentours. Séances naturelles et lumineuses pour raconter votre histoire à deux.",
-    ogTitle: "Photographe couple à Marseille | Soleana Studio",
-    ogDescription: "Des images douces, sincères et lumineuses de votre histoire à deux.",
-  },
-  "photographe-portrait-marseille": {
-    title: "Photographe portrait à Marseille — Soleana Studio",
-    description:
-      "Photographe portrait à Marseille et alentours. Des séances naturelles, élégantes et sincères pour révéler votre personnalité.",
-    ogTitle: "Photographe portrait à Marseille | Soleana Studio",
-    ogDescription: "Des portraits naturels, élégants et sincères pour révéler votre personnalité.",
-  },
-  "photographe-lifestyle-marseille": {
-    title: "Photographe lifestyle Marseille — Soleana Studio",
-    description:
-      "Photographe lifestyle à Marseille. Reportages doux, naturels et lumineux du quotidien.",
-    ogTitle: "Photographe lifestyle à Marseille | Soleana Studio",
-    ogDescription: "Des reportages doux, naturels et lumineux du quotidien.",
-  },
-};
-
-const SEO_PAGE_COPY_OVERRIDES: Record<
-  string,
-  {
-    h1?: string;
-    intro: string;
-    content: string;
-  }
-> = {
-  "photographe-grossesse-marseille": {
-    intro: "Garder une trace douce et lumineuse de l’attente la plus précieuse de votre vie.",
-    content:
-      "Photographe maternité à Marseille et alentours, j’accompagne les futures mamans avec douceur pour créer des images naturelles, sensibles et pleines d’émotion. Sans poses figées, je vous guide simplement pour que vous restiez vous-même, dans un décor qui vous ressemble : calanques, plages, collines de Provence ou lieu plus intime. Mon approche repose sur la lumière naturelle, les gestes tendres et les détails qui racontent déjà votre histoire.",
-  },
-  "photographe-couple-marseille": {
-    h1: "Photographe couple à Marseille",
-    intro:
-      "Raconter votre histoire à deux, dans ce qu’elle a de plus vrai, de plus tendre et de plus naturel.",
-    content:
-      "Photographe couple à Marseille et alentours, je vous accompagne pour créer des images douces, sincères et lumineuses de votre relation. Sans poses figées, je vous guide simplement pour laisser place aux gestes naturels, aux regards complices et aux émotions vraies. En bord de mer, dans les calanques, au cœur de la Provence ou dans un lieu qui vous ressemble, chaque séance est pensée comme une parenthèse à deux, fidèle à votre histoire.",
-  },
-  "photographe-famille-marseille": {
-    h1: "Photographe famille à Marseille",
-    intro:
-      "Garder une trace sincère de votre famille, de ses liens, de ses rires et de ses petits instants précieux.",
-    content:
-      "Photographe famille à Marseille et alentours, je vous accompagne pour créer des souvenirs naturels, lumineux et pleins de vie. Chaque séance est pensée pour raconter votre famille telle qu’elle est, sans poses forcées ni sourires figés. À la maison, en extérieur, au bord de la mer, dans les collines ou dans un lieu qui compte pour vous, je capture les gestes spontanés, les éclats de rire, les câlins et les détails qui rendent votre histoire unique.",
-  },
-  "photographe-portrait-marseille": {
-    h1: "Photographe portrait à Marseille",
-    intro: "Révéler votre personnalité avec douceur, naturel et authenticité.",
-    content:
-      "Photographe portrait à Marseille et alentours, je vous accompagne pour créer des images naturelles, élégantes et sincères. Une séance portrait est un moment pour vous, pensé pour mettre en valeur votre personnalité, votre regard et ce que vous souhaitez transmettre. Sans poses figées, je vous guide avec bienveillance afin que vous vous sentiez à l’aise, dans une ambiance douce, lumineuse et adaptée à votre univers.",
-  },
-};
-
 const SEO_PAGE_GALLERY: Record<
   string,
   {
@@ -382,20 +301,27 @@ export const Route = createFileRoute("/$slug")({
     if (!data) throw notFound();
     return data;
   },
-  head: ({ params }) => {
-    const meta = SEO_PAGE_META[params.slug] ?? {
-      title: "Photographe à Marseille — Soleana Studio",
-      description: "Photographe lifestyle à Marseille et alentours.",
-      ogTitle: "Soleana Studio — Photographe lifestyle Marseille",
-      ogDescription: "Des souvenirs doux, vrais et lumineux.",
-    };
+  head: ({ params, loaderData, match }) => {
+    if (!loaderData) {
+      if (match.status === "notFound") {
+        return {
+          meta: [
+            { title: "Page introuvable — Soleana Studio" },
+            { name: "robots", content: "noindex" },
+          ],
+        };
+      }
+      return {
+        meta: [{ title: "Soleana Studio" }, { name: "robots", content: "noindex" }],
+      };
+    }
 
     return buildPageSeo({
-      title: meta.title,
-      description: meta.description,
+      title: loaderData.meta_title,
+      description: loaderData.meta_description,
       path: `/${params.slug}`,
-      ogTitle: meta.ogTitle,
-      ogDescription: meta.ogDescription,
+      ogTitle: loaderData.og_title ?? loaderData.meta_title,
+      ogDescription: loaderData.og_description ?? loaderData.meta_description,
     });
   },
   component: SeoPage,
@@ -421,9 +347,6 @@ function SeoPage() {
   const gallery = SEO_PAGE_GALLERY[slug];
   const hasMultipleGalleries = (gallery?.sections.length ?? 0) > 1;
 
-  const copyOverride = SEO_PAGE_COPY_OVERRIDES[slug];
-  const displayPage = copyOverride ? { ...page, ...copyOverride } : page;
-  const displayTitle = copyOverride?.h1 ?? page.h1;
   const gallerySections = gallery?.sections.map((section, index) => ({
     ...section,
     description: hasMultipleGalleries && index > 0 ? undefined : section.description,
@@ -438,12 +361,12 @@ function SeoPage() {
             Soleana Studio
           </p>
           <h1 className="font-display text-4xl md:text-6xl italic text-primary leading-tight mx-auto max-w-4xl">
-            {displayTitle}
+            {page.h1}
           </h1>
         </Reveal>
         <Reveal delay={100}>
           <p className="mt-8 mx-auto max-w-2xl text-lg leading-relaxed italic text-muted-foreground">
-            « {displayPage.intro} »
+            « {page.intro} »
           </p>
         </Reveal>
       </section>
@@ -452,7 +375,7 @@ function SeoPage() {
         <div className="mx-auto max-w-5xl">
           <Reveal>
             <div className="prose prose-lg mx-auto max-w-3xl whitespace-pre-line leading-relaxed text-foreground">
-              {displayPage.content}
+              {page.content}
             </div>
           </Reveal>
 
