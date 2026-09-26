@@ -191,6 +191,7 @@ function SettingsForm({
       <div className="sm:col-span-2">
         <Field
           label="Zone d'intervention"
+          hint="affichée sur la page d'accueil et utilisée par Google pour savoir où vous intervenez"
           value={draft.service_area}
           error={errors.service_area}
           onChange={(v) => setField("service_area", v)}

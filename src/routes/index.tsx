@@ -208,7 +208,7 @@ const seoMap: Record<string, string> = {
 };
 
 function Home() {
-  const { googleReviewUrl } = useSiteSettings();
+  const { googleReviewUrl, serviceArea } = useSiteSettings();
   const [scrolled, setScrolled] = useState(false);
   const { services, reviews, isNoelTeaserVisible } = Route.useLoaderData();
 
@@ -306,7 +306,7 @@ function Home() {
               textShadow: "0 0 10px rgba(255, 255, 255, 0.85)",
             }}
           >
-            Marseille · Aubagne · Cassis · La Ciotat · Provence
+            {serviceArea}
           </p>
         </div>
       </section>
