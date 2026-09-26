@@ -71,7 +71,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  head: () => ({
+  head: ({ matches }) => ({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
@@ -92,6 +92,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "theme-color", content: "#FAF6EF" },
+      ...(matches.some(
+        (match) => match.globalNotFound || match.status === "notFound" || match.status === "error",
+      )
+        ? [{ name: "robots", content: "noindex,nofollow" }]
+        : []),
     ],
     links: [
       {

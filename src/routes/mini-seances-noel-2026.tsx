@@ -106,8 +106,9 @@ function NoelPage() {
                 <br />
                 {NOEL_2026_LOCATION}
               </p>
-              <a href="#formules" className={styles.button}>
+              <a href="#formules" className={styles.editorialLink}>
                 {NOEL_2026_TEXTS.heroCta}
+                <span aria-hidden="true">→</span>
               </a>
             </div>
           </div>
@@ -137,7 +138,7 @@ function NoelPage() {
           <img
             src={NOEL_2026_GALLERY_PHOTOS[3].src}
             srcSet={`${NOEL_2026_GALLERY_PHOTOS[3].src} 700w, ${NOEL_2026_GALLERY_PHOTOS[3].srcLarge} 1600w`}
-            sizes="(min-width: 768px) 45vw, 100vw"
+            sizes="(min-width: 768px) 90vw, 100vw"
             width={700}
             height={467}
             alt={NOEL_2026_GALLERY_PHOTOS[3].alt}
@@ -168,7 +169,7 @@ function NoelPage() {
               {NOEL_2026_SESSION_DATES.map((date) => (
                 <div key={date.iso}>
                   <span aria-hidden="true">{date.iso.slice(-2)}</span>
-                  <p>{date.label}</p>
+                  <time dateTime={date.iso}>{date.label}</time>
                 </div>
               ))}
             </div>
@@ -203,9 +204,10 @@ function NoelPage() {
                     href={formule.pelliUrl}
                     target="_blank"
                     rel="noopener"
-                    className={styles.button}
+                    className={styles.editorialLink}
                   >
                     {NOEL_2026_PAGE_COPY.formuleCta}
+                    <span aria-hidden="true">→</span>
                   </a>
                 </article>
               ))}
@@ -233,7 +235,7 @@ function NoelPage() {
           <img
             src={NOEL_2026_CAMPAIGN.closingPhoto.src}
             srcSet={`${NOEL_2026_CAMPAIGN.closingPhoto.src} 700w, ${NOEL_2026_CAMPAIGN.closingPhoto.srcLarge} 1600w`}
-            sizes="(min-width: 768px) 40vw, 100vw"
+            sizes="(min-width: 768px) 55vw, 100vw"
             width={700}
             height={1050}
             alt=""
@@ -246,8 +248,9 @@ function NoelPage() {
               {NOEL_2026_TEXTS.ctaFinalTitle}
             </h2>
             <p className={styles.closingPhrase}>{NOEL_2026_TEXTS.heroSubtitle}</p>
-            <a href="#formules" className={`${styles.button} ${styles.inverseButton}`}>
+            <a href="#formules" className={styles.editorialLink}>
               {NOEL_2026_TEXTS.ctaFinalButton}
+              <span aria-hidden="true">→</span>
             </a>
           </div>
         </section>
