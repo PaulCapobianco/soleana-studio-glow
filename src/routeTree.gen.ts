@@ -35,7 +35,6 @@ import { Route as AdminAuthedPrestationsRouteImport } from './routes/admin/_auth
 import { Route as AdminAuthedPhotosRouteImport } from './routes/admin/_authed/photos'
 import { Route as AdminAuthedPagesSeoRouteImport } from './routes/admin/_authed/pages-seo'
 import { Route as AdminAuthedFaqRouteImport } from './routes/admin/_authed/faq'
-import { Route as AdminAuthedDemandesRouteImport } from './routes/admin/_authed/demandes'
 import { Route as AdminAuthedDashboardRouteImport } from './routes/admin/_authed/dashboard'
 import { Route as AdminAuthedAvisRouteImport } from './routes/admin/_authed/avis'
 
@@ -169,11 +168,6 @@ const AdminAuthedFaqRoute = AdminAuthedFaqRouteImport.update({
   path: '/faq',
   getParentRoute: () => AdminAuthedRoute,
 } as any)
-const AdminAuthedDemandesRoute = AdminAuthedDemandesRouteImport.update({
-  id: '/demandes',
-  path: '/demandes',
-  getParentRoute: () => AdminAuthedRoute,
-} as any)
 const AdminAuthedDashboardRoute = AdminAuthedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -210,7 +204,6 @@ export interface FileRoutesByFullPath {
   '/portfolio/': typeof PortfolioIndexRoute
   '/admin/avis': typeof AdminAuthedAvisRoute
   '/admin/dashboard': typeof AdminAuthedDashboardRoute
-  '/admin/demandes': typeof AdminAuthedDemandesRoute
   '/admin/faq': typeof AdminAuthedFaqRoute
   '/admin/pages-seo': typeof AdminAuthedPagesSeoRoute
   '/admin/photos': typeof AdminAuthedPhotosRoute
@@ -239,7 +232,6 @@ export interface FileRoutesByTo {
   '/portfolio': typeof PortfolioIndexRoute
   '/admin/avis': typeof AdminAuthedAvisRoute
   '/admin/dashboard': typeof AdminAuthedDashboardRoute
-  '/admin/demandes': typeof AdminAuthedDemandesRoute
   '/admin/faq': typeof AdminAuthedFaqRoute
   '/admin/pages-seo': typeof AdminAuthedPagesSeoRoute
   '/admin/photos': typeof AdminAuthedPhotosRoute
@@ -271,7 +263,6 @@ export interface FileRoutesById {
   '/portfolio/': typeof PortfolioIndexRoute
   '/admin/_authed/avis': typeof AdminAuthedAvisRoute
   '/admin/_authed/dashboard': typeof AdminAuthedDashboardRoute
-  '/admin/_authed/demandes': typeof AdminAuthedDemandesRoute
   '/admin/_authed/faq': typeof AdminAuthedFaqRoute
   '/admin/_authed/pages-seo': typeof AdminAuthedPagesSeoRoute
   '/admin/_authed/photos': typeof AdminAuthedPhotosRoute
@@ -304,7 +295,6 @@ export interface FileRouteTypes {
     | '/portfolio/'
     | '/admin/avis'
     | '/admin/dashboard'
-    | '/admin/demandes'
     | '/admin/faq'
     | '/admin/pages-seo'
     | '/admin/photos'
@@ -333,7 +323,6 @@ export interface FileRouteTypes {
     | '/portfolio'
     | '/admin/avis'
     | '/admin/dashboard'
-    | '/admin/demandes'
     | '/admin/faq'
     | '/admin/pages-seo'
     | '/admin/photos'
@@ -364,7 +353,6 @@ export interface FileRouteTypes {
     | '/portfolio/'
     | '/admin/_authed/avis'
     | '/admin/_authed/dashboard'
-    | '/admin/_authed/demandes'
     | '/admin/_authed/faq'
     | '/admin/_authed/pages-seo'
     | '/admin/_authed/photos'
@@ -575,13 +563,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAuthedFaqRouteImport
       parentRoute: typeof AdminAuthedRoute
     }
-    '/admin/_authed/demandes': {
-      id: '/admin/_authed/demandes'
-      path: '/demandes'
-      fullPath: '/admin/demandes'
-      preLoaderRoute: typeof AdminAuthedDemandesRouteImport
-      parentRoute: typeof AdminAuthedRoute
-    }
     '/admin/_authed/dashboard': {
       id: '/admin/_authed/dashboard'
       path: '/dashboard'
@@ -622,7 +603,6 @@ const PortfolioRouteWithChildren = PortfolioRoute._addFileChildren(
 interface AdminAuthedRouteChildren {
   AdminAuthedAvisRoute: typeof AdminAuthedAvisRoute
   AdminAuthedDashboardRoute: typeof AdminAuthedDashboardRoute
-  AdminAuthedDemandesRoute: typeof AdminAuthedDemandesRoute
   AdminAuthedFaqRoute: typeof AdminAuthedFaqRoute
   AdminAuthedPagesSeoRoute: typeof AdminAuthedPagesSeoRoute
   AdminAuthedPhotosRoute: typeof AdminAuthedPhotosRoute
@@ -632,7 +612,6 @@ interface AdminAuthedRouteChildren {
 const AdminAuthedRouteChildren: AdminAuthedRouteChildren = {
   AdminAuthedAvisRoute: AdminAuthedAvisRoute,
   AdminAuthedDashboardRoute: AdminAuthedDashboardRoute,
-  AdminAuthedDemandesRoute: AdminAuthedDemandesRoute,
   AdminAuthedFaqRoute: AdminAuthedFaqRoute,
   AdminAuthedPagesSeoRoute: AdminAuthedPagesSeoRoute,
   AdminAuthedPhotosRoute: AdminAuthedPhotosRoute,
