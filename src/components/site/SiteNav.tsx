@@ -129,7 +129,7 @@ export function SiteNav({ overlay = false }: { overlay?: boolean }) {
 
           <button
             ref={buttonRef}
-            className="lg:hidden p-2"
+            className="lg:hidden inline-flex min-h-11 min-w-11 items-center justify-center"
             aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
             onClick={() => setOpen((v) => !v)}
             aria-expanded={open}
@@ -158,7 +158,7 @@ export function SiteNav({ overlay = false }: { overlay?: boolean }) {
                   key={l.to}
                   to={l.to}
                   onClick={() => setOpen(false)}
-                  className="w-full rounded-2xl border border-transparent px-[4px] py-[6px] text-[10px] font-medium text-[#3E2F28] transition-colors hover:border-[#E8DCCF] hover:bg-[#FFFDF8] hover:text-[#8A5A44] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D8A15D]/50"
+                  className="flex min-h-11 w-full items-center justify-center rounded-2xl border border-transparent px-[4px] py-[6px] text-[10px] font-medium text-[#3E2F28] transition-colors hover:border-[#E8DCCF] hover:bg-[#FFFDF8] hover:text-[#8A5A44] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D8A15D]/50"
                 >
                   {l.label}
                 </Link>
@@ -168,7 +168,7 @@ export function SiteNav({ overlay = false }: { overlay?: boolean }) {
               <Link
                 to="/contact"
                 onClick={() => setOpen(false)}
-                className="inline-flex min-w-[6.5rem] items-center justify-center rounded-full bg-[#C89B7B] px-[10px] py-[5px] text-[8px] uppercase tracking-[0.12em] text-center text-white transition-colors hover:bg-[#b8845f]"
+                className="inline-flex min-h-11 min-w-[6.5rem] items-center justify-center rounded-full bg-[#C89B7B] px-[10px] py-[5px] text-[8px] uppercase tracking-[0.12em] text-center text-white transition-colors hover:bg-[#b8845f]"
               >
                 Contact
               </Link>
