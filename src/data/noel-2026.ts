@@ -132,7 +132,7 @@ export const NOEL_2026_TEXTS = {
     "À moins d'une heure de Marseille et de Toulon, à Plan d'Aups Sainte-Baume : dépaysement garanti, le temps d'une escapade.",
   ],
   galleryMention:
-    "Photos des précédentes éditions — l'univers 2026 se prépare avec beaucoup de magie.",
+    "Souvenirs des Noëls passés. Cette année, sous les sapins, un nouveau décor attend en secret.",
   ctaFinalTitle: "Envie de vivre votre propre parenthèse de Noël ?",
   ctaFinalButton: "Réserver ma séance",
   editionOverTitle: "Mini-séances de Noël 2026 — l'édition est terminée",
