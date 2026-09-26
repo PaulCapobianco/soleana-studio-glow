@@ -37,6 +37,7 @@ import { Route as AdminAuthedParametresRouteImport } from './routes/admin/_authe
 import { Route as AdminAuthedPagesSeoRouteImport } from './routes/admin/_authed/pages-seo'
 import { Route as AdminAuthedFaqRouteImport } from './routes/admin/_authed/faq'
 import { Route as AdminAuthedDashboardRouteImport } from './routes/admin/_authed/dashboard'
+import { Route as AdminAuthedCompteRouteImport } from './routes/admin/_authed/compte'
 import { Route as AdminAuthedAvisRouteImport } from './routes/admin/_authed/avis'
 
 const TarifsRoute = TarifsRouteImport.update({
@@ -179,6 +180,11 @@ const AdminAuthedDashboardRoute = AdminAuthedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AdminAuthedRoute,
 } as any)
+const AdminAuthedCompteRoute = AdminAuthedCompteRouteImport.update({
+  id: '/compte',
+  path: '/compte',
+  getParentRoute: () => AdminAuthedRoute,
+} as any)
 const AdminAuthedAvisRoute = AdminAuthedAvisRouteImport.update({
   id: '/avis',
   path: '/avis',
@@ -209,6 +215,7 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AdminIndexRoute
   '/portfolio/': typeof PortfolioIndexRoute
   '/admin/avis': typeof AdminAuthedAvisRoute
+  '/admin/compte': typeof AdminAuthedCompteRoute
   '/admin/dashboard': typeof AdminAuthedDashboardRoute
   '/admin/faq': typeof AdminAuthedFaqRoute
   '/admin/pages-seo': typeof AdminAuthedPagesSeoRoute
@@ -238,6 +245,7 @@ export interface FileRoutesByTo {
   '/portfolio/portrait': typeof PortfolioPortraitRoute
   '/portfolio': typeof PortfolioIndexRoute
   '/admin/avis': typeof AdminAuthedAvisRoute
+  '/admin/compte': typeof AdminAuthedCompteRoute
   '/admin/dashboard': typeof AdminAuthedDashboardRoute
   '/admin/faq': typeof AdminAuthedFaqRoute
   '/admin/pages-seo': typeof AdminAuthedPagesSeoRoute
@@ -270,6 +278,7 @@ export interface FileRoutesById {
   '/admin/': typeof AdminIndexRoute
   '/portfolio/': typeof PortfolioIndexRoute
   '/admin/_authed/avis': typeof AdminAuthedAvisRoute
+  '/admin/_authed/compte': typeof AdminAuthedCompteRoute
   '/admin/_authed/dashboard': typeof AdminAuthedDashboardRoute
   '/admin/_authed/faq': typeof AdminAuthedFaqRoute
   '/admin/_authed/pages-seo': typeof AdminAuthedPagesSeoRoute
@@ -303,6 +312,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/portfolio/'
     | '/admin/avis'
+    | '/admin/compte'
     | '/admin/dashboard'
     | '/admin/faq'
     | '/admin/pages-seo'
@@ -332,6 +342,7 @@ export interface FileRouteTypes {
     | '/portfolio/portrait'
     | '/portfolio'
     | '/admin/avis'
+    | '/admin/compte'
     | '/admin/dashboard'
     | '/admin/faq'
     | '/admin/pages-seo'
@@ -363,6 +374,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/portfolio/'
     | '/admin/_authed/avis'
+    | '/admin/_authed/compte'
     | '/admin/_authed/dashboard'
     | '/admin/_authed/faq'
     | '/admin/_authed/pages-seo'
@@ -589,6 +601,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAuthedDashboardRouteImport
       parentRoute: typeof AdminAuthedRoute
     }
+    '/admin/_authed/compte': {
+      id: '/admin/_authed/compte'
+      path: '/compte'
+      fullPath: '/admin/compte'
+      preLoaderRoute: typeof AdminAuthedCompteRouteImport
+      parentRoute: typeof AdminAuthedRoute
+    }
     '/admin/_authed/avis': {
       id: '/admin/_authed/avis'
       path: '/avis'
@@ -621,6 +640,7 @@ const PortfolioRouteWithChildren = PortfolioRoute._addFileChildren(
 
 interface AdminAuthedRouteChildren {
   AdminAuthedAvisRoute: typeof AdminAuthedAvisRoute
+  AdminAuthedCompteRoute: typeof AdminAuthedCompteRoute
   AdminAuthedDashboardRoute: typeof AdminAuthedDashboardRoute
   AdminAuthedFaqRoute: typeof AdminAuthedFaqRoute
   AdminAuthedPagesSeoRoute: typeof AdminAuthedPagesSeoRoute
@@ -631,6 +651,7 @@ interface AdminAuthedRouteChildren {
 
 const AdminAuthedRouteChildren: AdminAuthedRouteChildren = {
   AdminAuthedAvisRoute: AdminAuthedAvisRoute,
+  AdminAuthedCompteRoute: AdminAuthedCompteRoute,
   AdminAuthedDashboardRoute: AdminAuthedDashboardRoute,
   AdminAuthedFaqRoute: AdminAuthedFaqRoute,
   AdminAuthedPagesSeoRoute: AdminAuthedPagesSeoRoute,
