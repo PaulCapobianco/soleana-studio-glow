@@ -1,0 +1,3514 @@
+{
+  "version": 1,
+  "phase": "galleries-seo",
+  "note": "Généré par scripts/photos-storage/build-manifest.mjs — ne pas éditer à la main.",
+  "galleries": [
+    {
+      "seo": "photographe-grossesse-marseille",
+      "category": "grossesse",
+      "slot": "gallery-1",
+      "dirs": [
+        "grossesse/grossesse_1"
+      ],
+      "count": 11
+    },
+    {
+      "seo": "photographe-grossesse-marseille",
+      "category": "grossesse",
+      "slot": "gallery-2",
+      "dirs": [
+        "grossesse/maternite_2"
+      ],
+      "count": 20
+    },
+    {
+      "seo": "photographe-famille-marseille",
+      "category": "famille",
+      "slot": "gallery-1",
+      "dirs": [
+        "famille/famille_1",
+        "famille/famille_2"
+      ],
+      "count": 47
+    },
+    {
+      "seo": "photographe-famille-marseille",
+      "category": "famille",
+      "slot": "gallery-2",
+      "dirs": [
+        "famille/famille_2"
+      ],
+      "count": 20
+    },
+    {
+      "seo": "photographe-couple-marseille",
+      "category": "couple",
+      "slot": "gallery-1",
+      "dirs": [
+        "couple/couple_1"
+      ],
+      "count": 10
+    },
+    {
+      "seo": "photographe-couple-marseille",
+      "category": "couple",
+      "slot": "gallery-2",
+      "dirs": [
+        "couple/couple_2"
+      ],
+      "count": 17
+    },
+    {
+      "seo": "photographe-couple-marseille",
+      "category": "couple",
+      "slot": "gallery-3",
+      "dirs": [
+        "couple/couple_3"
+      ],
+      "count": 53
+    },
+    {
+      "seo": "photographe-portrait-marseille",
+      "category": "portrait",
+      "slot": "gallery-1",
+      "dirs": [
+        "portrait/portrait_1"
+      ],
+      "count": 12
+    }
+  ],
+  "photos": [
+    {
+      "source_key": "galleries/grossesse/177d6d0ed591",
+      "category": "grossesse",
+      "source_file": "src/assets/grossesse/grossesse_1/20220418-img7119.webp",
+      "source_sha256": "177d6d0ed59173783611055e144ecc37f4c83664a4680f8cc031566ea294c375",
+      "width": 1400,
+      "height": 934,
+      "alt_text": "Séance photo maternité à Marseille"
+    },
+    {
+      "source_key": "galleries/grossesse/67a7259787b2",
+      "category": "grossesse",
+      "source_file": "src/assets/grossesse/grossesse_1/20220418-img7125.webp",
+      "source_sha256": "67a7259787b2d95668c824252421eb3fdf26bb4c892173fdc8d38b7c243f0953",
+      "width": 1400,
+      "height": 934,
+      "alt_text": "Séance photo maternité à Marseille"
+    },
+    {
+      "source_key": "galleries/grossesse/a1c06f958428",
+      "category": "grossesse",
+      "source_file": "src/assets/grossesse/grossesse_1/20220418-img7152.webp",
+      "source_sha256": "a1c06f958428da70f2a428909e4415224c957202a17adfc276b60b67cc90bd24",
+      "width": 1400,
+      "height": 934,
+      "alt_text": "Séance photo maternité à Marseille"
+    },
+    {
+      "source_key": "galleries/grossesse/7d534e83e3b5",
+      "category": "grossesse",
+      "source_file": "src/assets/grossesse/grossesse_1/20220418-img7232.webp",
+      "source_sha256": "7d534e83e3b5c6d87d54f6732373d157e4bed111e3a55048eac3acbb8078d7be",
+      "width": 1400,
+      "height": 934,
+      "alt_text": "Séance photo maternité à Marseille"
+    },
+    {
+      "source_key": "galleries/grossesse/2b15c7128fbe",
+      "category": "grossesse",
+      "source_file": "src/assets/grossesse/grossesse_1/20220418-img7326.webp",
+      "source_sha256": "2b15c7128fbe4d4e34ea371e9723fea0e8eebba828909d446ff0c0c3d545e833",
+      "width": 1050,
+      "height": 1400,
+      "alt_text": "Séance photo maternité à Marseille"
+    },
+    {
+      "source_key": "galleries/grossesse/36dfe9c97391",
+      "category": "grossesse",
+      "source_file": "src/assets/grossesse/grossesse_1/20220418-img7380.webp",
+      "source_sha256": "36dfe9c9739177dff9c36152814ee3bde20874dee4d283cf630fa50ceff9a20a",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo maternité à Marseille"
+    },
+    {
+      "source_key": "galleries/grossesse/795c0551006e",
+      "category": "grossesse",
+      "source_file": "src/assets/grossesse/grossesse_1/20220418-img7397.webp",
+      "source_sha256": "795c0551006e54fd7bf88f01f5e7a05dcbeb668c984c45ed908e16435df4f4e7",
+      "width": 1400,
+      "height": 934,
+      "alt_text": "Séance photo maternité à Marseille"
+    },
+    {
+      "source_key": "galleries/grossesse/a86a4b81c2dc",
+      "category": "grossesse",
+      "source_file": "src/assets/grossesse/grossesse_1/20220418-img7401.webp",
+      "source_sha256": "a86a4b81c2dc2fb5a00088cccef189fe56eb66b3dd2706032db6bf4101040f64",
+      "width": 1400,
+      "height": 934,
+      "alt_text": "Séance photo maternité à Marseille"
+    },
+    {
+      "source_key": "galleries/grossesse/a0e9314ab349",
+      "category": "grossesse",
+      "source_file": "src/assets/grossesse/grossesse_1/20220418-img7431.webp",
+      "source_sha256": "a0e9314ab34938f9fa78ed65211c3754c8fdb4db55894b5663ceaca38a5279f4",
+      "width": 1400,
+      "height": 933,
+      "alt_text": "Séance photo maternité à Marseille"
+    },
+    {
+      "source_key": "galleries/grossesse/927bed4af4b2",
+      "category": "grossesse",
+      "source_file": "src/assets/grossesse/grossesse_1/20220418-img7441.webp",
+      "source_sha256": "927bed4af4b21ea44d91cf431599cb75e6dd36242184e83ef4daf513b992d934",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo maternité à Marseille"
+    },
+    {
+      "source_key": "galleries/grossesse/84078f11ba74",
+      "category": "grossesse",
+      "source_file": "src/assets/grossesse/grossesse_1/20220418-img7472.webp",
+      "source_sha256": "84078f11ba74e8ab66e4b263198ca0f9c24d9e7d15fa8cdf175d59fcfcc4d8cf",
+      "width": 1050,
+      "height": 1400,
+      "alt_text": "Séance photo maternité à Marseille"
+    },
+    {
+      "source_key": "galleries/grossesse/d38872a5803a",
+      "category": "grossesse",
+      "source_file": "src/assets/grossesse/maternite_2/20260226maternite-11.webp",
+      "source_sha256": "d38872a5803a1bcbc6748ab84a32803b100a29441bd27972703477e5874007db",
+      "width": 933,
+      "height": 1400,
+      "alt_text": "Séance photo maternité à Marseille"
+    },
+    {
+      "source_key": "galleries/grossesse/8f93794187a0",
+      "category": "grossesse",
+      "source_file": "src/assets/grossesse/maternite_2/20260226maternite-15.webp",
+      "source_sha256": "8f93794187a0e8fdabf4d3dbab0bc5b2cf5952b4bcc150bb8287595c4bacf029",
+      "width": 933,
+      "height": 1400,
+      "alt_text": "Séance photo maternité à Marseille"
+    },
+    {
+      "source_key": "galleries/grossesse/3b92b5262dc8",
+      "category": "grossesse",
+      "source_file": "src/assets/grossesse/maternite_2/20260226maternite-2.webp",
+      "source_sha256": "3b92b5262dc8c1df4662e4b7a3a7510ea9ebebedfebca83a1b782412b3167919",
+      "width": 933,
+      "height": 1400,
+      "alt_text": "Séance photo maternité à Marseille"
+    },
+    {
+      "source_key": "galleries/grossesse/c210b0690a13",
+      "category": "grossesse",
+      "source_file": "src/assets/grossesse/maternite_2/20260226maternite-20.webp",
+      "source_sha256": "c210b0690a13ce0740b9b974f690771e33c8bf2040218ce9e376fe162c949cb2",
+      "width": 1400,
+      "height": 933,
+      "alt_text": "Séance photo maternité à Marseille"
+    },
+    {
+      "source_key": "galleries/grossesse/79e67bf44544",
+      "category": "grossesse",
+      "source_file": "src/assets/grossesse/maternite_2/20260226maternite-21.webp",
+      "source_sha256": "79e67bf44544f833021560a9276579e2903c471668d7198b99411d386cef881e",
+      "width": 1400,
+      "height": 933,
+      "alt_text": "Séance photo maternité à Marseille"
+    },
+    {
+      "source_key": "galleries/grossesse/fac2b38b5457",
+      "category": "grossesse",
+      "source_file": "src/assets/grossesse/maternite_2/20260226maternite-22.webp",
+      "source_sha256": "fac2b38b5457a37adb85f0635b2ee1562c161ff9199d387ee2464dbac152be6a",
+      "width": 1400,
+      "height": 933,
+      "alt_text": "Séance photo maternité à Marseille"
+    },
+    {
+      "source_key": "galleries/grossesse/ad095a281583",
+      "category": "grossesse",
+      "source_file": "src/assets/grossesse/maternite_2/20260226maternite-23.webp",
+      "source_sha256": "ad095a281583d01d1e64689bbcab222411221b4433eaec2e701f2d7e527976ff",
+      "width": 933,
+      "height": 1400,
+      "alt_text": "Séance photo maternité à Marseille"
+    },
+    {
+      "source_key": "galleries/grossesse/00914f063312",
+      "category": "grossesse",
+      "source_file": "src/assets/grossesse/maternite_2/20260226maternite-24.webp",
+      "source_sha256": "00914f06331281527082af564f85e1907ee182451a231f5f3ce7f938924732f7",
+      "width": 933,
+      "height": 1400,
+      "alt_text": "Séance photo maternité à Marseille"
+    },
+    {
+      "source_key": "galleries/grossesse/9cf3d0f45ecf",
+      "category": "grossesse",
+      "source_file": "src/assets/grossesse/maternite_2/20260226maternite-25.webp",
+      "source_sha256": "9cf3d0f45ecf809e01a79fced94e59370d26a672541130e27c0d4a5b71322032",
+      "width": 933,
+      "height": 1400,
+      "alt_text": "Séance photo maternité à Marseille"
+    },
+    {
+      "source_key": "galleries/grossesse/52dfff4da465",
+      "category": "grossesse",
+      "source_file": "src/assets/grossesse/maternite_2/20260226maternite-27.webp",
+      "source_sha256": "52dfff4da465118b1492d258db4deeeecf140f6e44f13492e109a4c2f5104e12",
+      "width": 933,
+      "height": 1400,
+      "alt_text": "Séance photo maternité à Marseille"
+    },
+    {
+      "source_key": "galleries/grossesse/c43aba9e39f9",
+      "category": "grossesse",
+      "source_file": "src/assets/grossesse/maternite_2/20260226maternite-29.webp",
+      "source_sha256": "c43aba9e39f988275f3f3e5ef1d5658bdc2866163b075bda4f8f8a198cd34bdd",
+      "width": 933,
+      "height": 1400,
+      "alt_text": "Séance photo maternité à Marseille"
+    },
+    {
+      "source_key": "galleries/grossesse/62d5b2eb05aa",
+      "category": "grossesse",
+      "source_file": "src/assets/grossesse/maternite_2/20260226maternite-34.webp",
+      "source_sha256": "62d5b2eb05aa054cde95d4eb45f18d697caebe62cfd55a2531fa01ded878603b",
+      "width": 933,
+      "height": 1400,
+      "alt_text": "Séance photo maternité à Marseille"
+    },
+    {
+      "source_key": "galleries/grossesse/6ebd21174893",
+      "category": "grossesse",
+      "source_file": "src/assets/grossesse/maternite_2/20260226maternite-36.webp",
+      "source_sha256": "6ebd21174893805393b390e5d141a7e7afc032b7d852a13a4594f6666a575fb1",
+      "width": 933,
+      "height": 1400,
+      "alt_text": "Séance photo maternité à Marseille"
+    },
+    {
+      "source_key": "galleries/grossesse/862ccb7c4c04",
+      "category": "grossesse",
+      "source_file": "src/assets/grossesse/maternite_2/20260226maternite-37.webp",
+      "source_sha256": "862ccb7c4c04d61a7a1cabf9ecefb02538233aa1c87ccf8ffea4954d9b71941b",
+      "width": 933,
+      "height": 1400,
+      "alt_text": "Séance photo maternité à Marseille"
+    },
+    {
+      "source_key": "galleries/grossesse/56bebc90a656",
+      "category": "grossesse",
+      "source_file": "src/assets/grossesse/maternite_2/20260226maternite-39-2.webp",
+      "source_sha256": "56bebc90a656ebd7b7496f0a3cd701a8ee48ddc5a5f78f12ef61f3973b872085",
+      "width": 933,
+      "height": 1400,
+      "alt_text": "Séance photo maternité à Marseille"
+    },
+    {
+      "source_key": "galleries/grossesse/0f8afbb29290",
+      "category": "grossesse",
+      "source_file": "src/assets/grossesse/maternite_2/20260226maternite-40-2.webp",
+      "source_sha256": "0f8afbb29290a332ab9b04b3064897eafed6a0c5de09eaeae4a269d9d93655ff",
+      "width": 1400,
+      "height": 933,
+      "alt_text": "Séance photo maternité à Marseille"
+    },
+    {
+      "source_key": "galleries/grossesse/05fca553392e",
+      "category": "grossesse",
+      "source_file": "src/assets/grossesse/maternite_2/20260226maternite-5.webp",
+      "source_sha256": "05fca553392eefa4e27f72ad88f4d7f01e3b8314f66b14faa9c06036bb0c9a07",
+      "width": 933,
+      "height": 1400,
+      "alt_text": "Séance photo maternité à Marseille"
+    },
+    {
+      "source_key": "galleries/grossesse/bf6fd714b15e",
+      "category": "grossesse",
+      "source_file": "src/assets/grossesse/maternite_2/20260226maternite-51.webp",
+      "source_sha256": "bf6fd714b15e94003b835fecbad638fbf24a6ec74252ea18276b988e26007313",
+      "width": 933,
+      "height": 1400,
+      "alt_text": "Séance photo maternité à Marseille"
+    },
+    {
+      "source_key": "galleries/grossesse/b83f3231b3ea",
+      "category": "grossesse",
+      "source_file": "src/assets/grossesse/maternite_2/20260226maternite-52.webp",
+      "source_sha256": "b83f3231b3ea8d50050c96df9626c2bd6e96b3e073d16f2e02392c9481d04da0",
+      "width": 933,
+      "height": 1400,
+      "alt_text": "Séance photo maternité à Marseille"
+    },
+    {
+      "source_key": "galleries/grossesse/7598f13094fd",
+      "category": "grossesse",
+      "source_file": "src/assets/grossesse/maternite_2/20260226maternite-53.webp",
+      "source_sha256": "7598f13094fd6f606a8cebc787aecb96e51c55266214fa5835f2492ca3daee4e",
+      "width": 933,
+      "height": 1400,
+      "alt_text": "Séance photo maternité à Marseille"
+    },
+    {
+      "source_key": "galleries/famille/7bf9fc38126a",
+      "category": "famille",
+      "source_file": "src/assets/famille/famille_1/04042026-vv7a3111.webp",
+      "source_sha256": "7bf9fc38126a0215890af9bf4cd05e9cd22cf8a5bcc38174c9ca6775b2c672b4",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo famille à Marseille"
+    },
+    {
+      "source_key": "galleries/famille/f754a5ea9292",
+      "category": "famille",
+      "source_file": "src/assets/famille/famille_1/04042026-vv7a3152.webp",
+      "source_sha256": "f754a5ea9292a3f779aa47326c2ab9a8f416f03797be189f21bce5d3332c59d8",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo famille à Marseille"
+    },
+    {
+      "source_key": "galleries/famille/4867508c11a5",
+      "category": "famille",
+      "source_file": "src/assets/famille/famille_1/04042026-vv7a3163.webp",
+      "source_sha256": "4867508c11a5ab7a754546c89e085705326b3fb41d69632f327c4006f9153117",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo famille à Marseille"
+    },
+    {
+      "source_key": "galleries/famille/5729dc07b614",
+      "category": "famille",
+      "source_file": "src/assets/famille/famille_1/04042026-vv7a3177.webp",
+      "source_sha256": "5729dc07b6143667ff45f9ca9248eeae1851a3251f24a9b7dc8be2fbff875cd3",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo famille à Marseille"
+    },
+    {
+      "source_key": "galleries/famille/0974d8a42dde",
+      "category": "famille",
+      "source_file": "src/assets/famille/famille_1/04042026-vv7a3199.webp",
+      "source_sha256": "0974d8a42ddecb2ca817ee2f7d49fedc241763d74f0ccbad1e9a85ec129aa3c3",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo famille à Marseille"
+    },
+    {
+      "source_key": "galleries/famille/cd430ae49a9c",
+      "category": "famille",
+      "source_file": "src/assets/famille/famille_1/04042026-vv7a3203.webp",
+      "source_sha256": "cd430ae49a9ce921038b895479ffe1d9f6e0b87779ae780eeffc266bd1b517a6",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo famille à Marseille"
+    },
+    {
+      "source_key": "galleries/famille/86095948fefd",
+      "category": "famille",
+      "source_file": "src/assets/famille/famille_1/04042026-vv7a3225.webp",
+      "source_sha256": "86095948fefd35217568855cc84535bdde214cb5ee1abcdf9296ab9628a135c3",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo famille à Marseille"
+    },
+    {
+      "source_key": "galleries/famille/8bf0fe845197",
+      "category": "famille",
+      "source_file": "src/assets/famille/famille_1/04042026-vv7a3252.webp",
+      "source_sha256": "8bf0fe845197c5efc417f94ac4f9cbe7b03aba6b44d0734a40675950159f8fd9",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo famille à Marseille"
+    },
+    {
+      "source_key": "galleries/famille/ff194344f215",
+      "category": "famille",
+      "source_file": "src/assets/famille/famille_1/04042026-vv7a3273.webp",
+      "source_sha256": "ff194344f215b10d8e7630ba1876fce6059d6876fa26a36485e4ae260123a6fe",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo famille à Marseille"
+    },
+    {
+      "source_key": "galleries/famille/6748dada991b",
+      "category": "famille",
+      "source_file": "src/assets/famille/famille_1/04042026-vv7a3361.webp",
+      "source_sha256": "6748dada991b5461f9563792cb821e37f04f252574c1cd127d7170e7216b919a",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo famille à Marseille"
+    },
+    {
+      "source_key": "galleries/famille/4bf5e77c9ec4",
+      "category": "famille",
+      "source_file": "src/assets/famille/famille_1/04042026-vv7a3419.webp",
+      "source_sha256": "4bf5e77c9ec47197ffffbf298ed57fbee8525f542c67d82e135570cd78e4f402",
+      "width": 1400,
+      "height": 934,
+      "alt_text": "Séance photo famille à Marseille"
+    },
+    {
+      "source_key": "galleries/famille/3cbb7078d424",
+      "category": "famille",
+      "source_file": "src/assets/famille/famille_1/04042026-vv7a3432.webp",
+      "source_sha256": "3cbb7078d4244eb3c49fb3049b1dffdba9c414aa9ff9d4581bc0d09bbe66363d",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo famille à Marseille"
+    },
+    {
+      "source_key": "galleries/famille/d023666585f3",
+      "category": "famille",
+      "source_file": "src/assets/famille/famille_1/04042026-vv7a3450.webp",
+      "source_sha256": "d023666585f30758c285ccb404b09bab4dae0b63eb335cefc27cfb9bbc18c90c",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo famille à Marseille"
+    },
+    {
+      "source_key": "galleries/famille/055c88d3e098",
+      "category": "famille",
+      "source_file": "src/assets/famille/famille_1/04042026-vv7a3456.webp",
+      "source_sha256": "055c88d3e098ba9053b7f5c78906b744aeae53b8eb9bc6f6e68b20e513efabac",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo famille à Marseille"
+    },
+    {
+      "source_key": "galleries/famille/97467b1920b9",
+      "category": "famille",
+      "source_file": "src/assets/famille/famille_1/04042026-vv7a3467.webp",
+      "source_sha256": "97467b1920b9ed85a23a09aaa040cbd3ea38b1a7f7338267408805dd43b61a27",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo famille à Marseille"
+    },
+    {
+      "source_key": "galleries/famille/9993144136e3",
+      "category": "famille",
+      "source_file": "src/assets/famille/famille_1/04042026-vv7a3548.webp",
+      "source_sha256": "9993144136e38b645674f5adb1293f4e43204e6351741fb4599bd2f2c840a0fa",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo famille à Marseille"
+    },
+    {
+      "source_key": "galleries/famille/e6d8abf51104",
+      "category": "famille",
+      "source_file": "src/assets/famille/famille_1/04042026-vv7a3614.webp",
+      "source_sha256": "e6d8abf511044178942eab8ab7656b544514a3d60dab3479f0356b8b691adb9c",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo famille à Marseille"
+    },
+    {
+      "source_key": "galleries/famille/8a647a26e88a",
+      "category": "famille",
+      "source_file": "src/assets/famille/famille_1/04042026-vv7a3691.webp",
+      "source_sha256": "8a647a26e88a3654958e912605289e6020f0d9672d9d8a8665be6199638482b0",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo famille à Marseille"
+    },
+    {
+      "source_key": "galleries/famille/2235991bd4bb",
+      "category": "famille",
+      "source_file": "src/assets/famille/famille_1/04042026-vv7a3695.webp",
+      "source_sha256": "2235991bd4bb6f03e40c8ba0d969008c9f5bef0fd14a931ae44bf5bca9e9c908",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo famille à Marseille"
+    },
+    {
+      "source_key": "galleries/famille/f605a9bec309",
+      "category": "famille",
+      "source_file": "src/assets/famille/famille_1/04042026-vv7a3793.webp",
+      "source_sha256": "f605a9bec309b8d0aaebe5905cb59e15993d5faeafbd86f128652c6177a8a902",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo famille à Marseille"
+    },
+    {
+      "source_key": "galleries/famille/6537ffcda248",
+      "category": "famille",
+      "source_file": "src/assets/famille/famille_1/04042026-vv7a3863.webp",
+      "source_sha256": "6537ffcda2485a21bdce40e20923b7f16503deee83dea8473473db26a6601bd0",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo famille à Marseille"
+    },
+    {
+      "source_key": "galleries/famille/441b83fb7098",
+      "category": "famille",
+      "source_file": "src/assets/famille/famille_1/04042026-vv7a3910.webp",
+      "source_sha256": "441b83fb7098d2528101e154605e4a2cc2dc5e5b5ba770ddf5c286bc74447ddc",
+      "width": 1400,
+      "height": 934,
+      "alt_text": "Séance photo famille à Marseille"
+    },
+    {
+      "source_key": "galleries/famille/820a705c4f09",
+      "category": "famille",
+      "source_file": "src/assets/famille/famille_1/04042026-vv7a3948.webp",
+      "source_sha256": "820a705c4f09d5a350d1f19871bbf25d47993d5d6b1176154555ea19df9c2350",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo famille à Marseille"
+    },
+    {
+      "source_key": "galleries/famille/a220c27a2767",
+      "category": "famille",
+      "source_file": "src/assets/famille/famille_1/04042026-vv7a4011.webp",
+      "source_sha256": "a220c27a276742a4e1c953b51df0eacb243676abe5585669ef807f3f72dbce56",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo famille à Marseille"
+    },
+    {
+      "source_key": "galleries/famille/3b24184f8a5d",
+      "category": "famille",
+      "source_file": "src/assets/famille/famille_1/04042026-vv7a4160.webp",
+      "source_sha256": "3b24184f8a5d1d140f326fc97b9cedf63d1eaac78934efbcd58cf85fd2f58981",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo famille à Marseille"
+    },
+    {
+      "source_key": "galleries/famille/9f5c564c8307",
+      "category": "famille",
+      "source_file": "src/assets/famille/famille_1/04042026-vv7a4473.webp",
+      "source_sha256": "9f5c564c8307719d7fd6baabc9551c79a38399d1427f5d32cf953382ead465e2",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo famille à Marseille"
+    },
+    {
+      "source_key": "galleries/famille/601cec4542a7",
+      "category": "famille",
+      "source_file": "src/assets/famille/famille_1/04042026-vv7a4632.webp",
+      "source_sha256": "601cec4542a7b51d9edba0944efd0deb2ea8de9e9004b45d128512aa9ead8520",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo famille à Marseille"
+    },
+    {
+      "source_key": "galleries/famille/065fd720dfd7",
+      "category": "famille",
+      "source_file": "src/assets/famille/famille_2/20260218famille-10.webp",
+      "source_sha256": "065fd720dfd748a9bb113e9240b9e24bd47d5fadbfbea89b4cc489c81384b438",
+      "width": 1400,
+      "height": 934,
+      "alt_text": "Séance photo famille à Marseille"
+    },
+    {
+      "source_key": "galleries/famille/a8fb030f5121",
+      "category": "famille",
+      "source_file": "src/assets/famille/famille_2/20260218famille-11.webp",
+      "source_sha256": "a8fb030f512166502f28150b7c54583bfdc2485b449e3ffff048ef799dfc63c7",
+      "width": 1400,
+      "height": 934,
+      "alt_text": "Séance photo famille à Marseille"
+    },
+    {
+      "source_key": "galleries/famille/4520720a1a1a",
+      "category": "famille",
+      "source_file": "src/assets/famille/famille_2/20260218famille-14.webp",
+      "source_sha256": "4520720a1a1a530fc28930c5c6163e885ffa5a37e9cd4839afad6290dc8a5e32",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo famille à Marseille"
+    },
+    {
+      "source_key": "galleries/famille/dbbd06a9805f",
+      "category": "famille",
+      "source_file": "src/assets/famille/famille_2/20260218famille-17.webp",
+      "source_sha256": "dbbd06a9805f1c32ff78aba67e46ab5ebf6bc033c3b0d44f8d708c64f1e83265",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo famille à Marseille"
+    },
+    {
+      "source_key": "galleries/famille/e9fd89305bf2",
+      "category": "famille",
+      "source_file": "src/assets/famille/famille_2/20260218famille-18.webp",
+      "source_sha256": "e9fd89305bf26476989f9e2a83f8ba580cf03b3378f52a22f14785acfdd63522",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo famille à Marseille"
+    },
+    {
+      "source_key": "galleries/famille/76d1ab7b52fc",
+      "category": "famille",
+      "source_file": "src/assets/famille/famille_2/20260218famille-2.webp",
+      "source_sha256": "76d1ab7b52fcfc6e2c248cbd8d913124ffdb2cb28bed67c315883edd59b4c295",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo famille à Marseille"
+    },
+    {
+      "source_key": "galleries/famille/b1e1608d6b25",
+      "category": "famille",
+      "source_file": "src/assets/famille/famille_2/20260218famille-23.webp",
+      "source_sha256": "b1e1608d6b25d58f96fa47be472b183b2a41edcaf92fa80624722691af2645e0",
+      "width": 1400,
+      "height": 934,
+      "alt_text": "Séance photo famille à Marseille"
+    },
+    {
+      "source_key": "galleries/famille/a62e46f6ed20",
+      "category": "famille",
+      "source_file": "src/assets/famille/famille_2/20260218famille-24.webp",
+      "source_sha256": "a62e46f6ed203f7fd9a6e52e2f04c35f0f8135eeda314984cffae9e510dadb71",
+      "width": 1400,
+      "height": 934,
+      "alt_text": "Séance photo famille à Marseille"
+    },
+    {
+      "source_key": "galleries/famille/d3b9ac428eb7",
+      "category": "famille",
+      "source_file": "src/assets/famille/famille_2/20260218famille-28.webp",
+      "source_sha256": "d3b9ac428eb78f30a786a43fe7529053349638b4b34b14515055a4dd77a12c90",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo famille à Marseille"
+    },
+    {
+      "source_key": "galleries/famille/a4a9cc2b791c",
+      "category": "famille",
+      "source_file": "src/assets/famille/famille_2/20260218famille-3.webp",
+      "source_sha256": "a4a9cc2b791c2d91b0edf8a1c409311aef503372efd39d0356428d30e34791c4",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo famille à Marseille"
+    },
+    {
+      "source_key": "galleries/famille/f9edf4289903",
+      "category": "famille",
+      "source_file": "src/assets/famille/famille_2/20260218famille-32.webp",
+      "source_sha256": "f9edf4289903a35865cfa5c18e127df67223bfbe2632aa86bc3fbb98954905e5",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo famille à Marseille"
+    },
+    {
+      "source_key": "galleries/famille/d11e684df0d9",
+      "category": "famille",
+      "source_file": "src/assets/famille/famille_2/20260218famille-36.webp",
+      "source_sha256": "d11e684df0d94496132e8e293bfc1397b5f629b1cfdb71ac54d4a173eddad1db",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo famille à Marseille"
+    },
+    {
+      "source_key": "galleries/famille/2e5d577ca92a",
+      "category": "famille",
+      "source_file": "src/assets/famille/famille_2/20260218famille-41.webp",
+      "source_sha256": "2e5d577ca92adfe76b3096c7389de640584e63cf4afde0b66f43d95c3510765a",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo famille à Marseille"
+    },
+    {
+      "source_key": "galleries/famille/734489d3bcbc",
+      "category": "famille",
+      "source_file": "src/assets/famille/famille_2/20260218famille-42.webp",
+      "source_sha256": "734489d3bcbce4e8d195f6d939e90435d43f44d83318d872631c08dcee3047df",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo famille à Marseille"
+    },
+    {
+      "source_key": "galleries/famille/922975469919",
+      "category": "famille",
+      "source_file": "src/assets/famille/famille_2/20260218famille-44.webp",
+      "source_sha256": "92297546991985054482582487500df0a55c810bf0f10581110df7f04a7feacc",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo famille à Marseille"
+    },
+    {
+      "source_key": "galleries/famille/b59b4b2d2bd0",
+      "category": "famille",
+      "source_file": "src/assets/famille/famille_2/20260218famille-5.webp",
+      "source_sha256": "b59b4b2d2bd02ca425b1fbe9874610c67184664252c35b47e8e163e43c34b8ab",
+      "width": 1400,
+      "height": 934,
+      "alt_text": "Séance photo famille à Marseille"
+    },
+    {
+      "source_key": "galleries/famille/8c92952c9f13",
+      "category": "famille",
+      "source_file": "src/assets/famille/famille_2/20260218famille-59.webp",
+      "source_sha256": "8c92952c9f137be4abe7a0fc3e00ce8c0614727fc3bbb1f4a28cba4f61146317",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo famille à Marseille"
+    },
+    {
+      "source_key": "galleries/famille/3d76c9d6e674",
+      "category": "famille",
+      "source_file": "src/assets/famille/famille_2/20260218famille-6.webp",
+      "source_sha256": "3d76c9d6e6740a7ae9cc1232be5d7d0282fc43ba8adad8223da92a0b0fcfc38f",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo famille à Marseille"
+    },
+    {
+      "source_key": "galleries/famille/13394effd261",
+      "category": "famille",
+      "source_file": "src/assets/famille/famille_2/20260218famille-60.webp",
+      "source_sha256": "13394effd261659443be98fd26194aec79381e3b4a809de4d4b9c0ff044c5620",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo famille à Marseille"
+    },
+    {
+      "source_key": "galleries/famille/20ea7e81b1f1",
+      "category": "famille",
+      "source_file": "src/assets/famille/famille_2/20260218famille-62.webp",
+      "source_sha256": "20ea7e81b1f10af9478dd7468c476c9b9e36ad9114e91a1f145bbdfee7adc2ad",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo famille à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/dd39da108b84",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_1/20250906-couple-003.webp",
+      "source_sha256": "dd39da108b84fd307b886d1cb7fa3a3a40d088218a821b33dd47e4b35a0080b8",
+      "width": 1400,
+      "height": 934,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/09d36f165169",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_1/20250906-couple-010.webp",
+      "source_sha256": "09d36f1651693bff16998abd1cb667c4697afd8301fd2036fa47e0c92cc6e49e",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/cf7245d42acf",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_1/20250906-couple-023.webp",
+      "source_sha256": "cf7245d42acf631cd85d74bf5d865091c417f3a59028635a62a4f65f9c99d9c3",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/7d0b265993f9",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_1/20250906-couple-029.webp",
+      "source_sha256": "7d0b265993f9672fda355704f64811a40e76d08127bcda37b1a62247a99f788b",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/3954017cf240",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_1/20250906-couple-040.webp",
+      "source_sha256": "3954017cf2409585e1f172364bf3d6975a13991c6a87454614fdd08dceb7deca",
+      "width": 1400,
+      "height": 934,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/b16aac64ff64",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_1/20250906-couple-042.webp",
+      "source_sha256": "b16aac64ff6462258e17fba23cddd650be1ac958abe0e57a6232923fabba7e0b",
+      "width": 1050,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/a31a56a60e9e",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_1/20250906-couple-055.webp",
+      "source_sha256": "a31a56a60e9e079c0179dd15f3703c493d5dcb5f3b84a61a95d7f1f2edd4ed3b",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/528ffc807d6a",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_1/20250906-couple-059.webp",
+      "source_sha256": "528ffc807d6a32bd7f4d8c29761e558013fef371bbfe6ac86367af7d9a8b0149",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/0b8a3d064ae0",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_1/20250906-couple-068.webp",
+      "source_sha256": "0b8a3d064ae04692ded0680d8952e7fb784f4858119f64c1c6ea0341918d7b37",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/cf0fed4b2dba",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_1/20250906-couple-079.webp",
+      "source_sha256": "cf0fed4b2dba051e8fb544404f51318dd4875ab1f398371584b7a69f388b551a",
+      "width": 1400,
+      "height": 934,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/87ef4e6d08ae",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_2/20250912-couple-010.webp",
+      "source_sha256": "87ef4e6d08aeba7b7f1489fc2be10743330ef430975786d1741cc14ce608aa7e",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/18c8fc47800c",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_2/20250912-couple-012.webp",
+      "source_sha256": "18c8fc47800c8b54424c984cd2e2253be168e1659f2a1c18aaf954b9f3a7d3e1",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/9b613eac9ffb",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_2/20250912-couple-027.webp",
+      "source_sha256": "9b613eac9ffb69ac429e995860d1dc15657d09b27d3dbc12702a1cbc795a0319",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/ee881702f520",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_2/20250912-couple-033.webp",
+      "source_sha256": "ee881702f5203b8bc6aa26dee2689c219be96a8a2db5ccd8cdba0bdb284a7ed8",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/eb58659eb83e",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_2/20250912-couple-035.webp",
+      "source_sha256": "eb58659eb83ef0c055d9ca45df608fa15feffd06834d9c858627acbcf44af2b0",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/1c2b40afd891",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_2/20250912-couple-037.webp",
+      "source_sha256": "1c2b40afd891f5bee6ca2bdbc5a0c072346f9e7d1f019c6ebdcbb9fbc68bfabc",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/b5473b2931c9",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_2/20250912-couple-041.webp",
+      "source_sha256": "b5473b2931c9494789b7cbf9fd726fdbd453da2fc9eb1afa7009298551e32b2c",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/0f79377b7ca0",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_2/20250912-couple-045.webp",
+      "source_sha256": "0f79377b7ca03e3fb087bba609fbb71420f423507e156cfa60a9187e66519496",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/620c33d2b3cd",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_2/20250912-couple-046.webp",
+      "source_sha256": "620c33d2b3cd76992cb9fe76e2dd3793b7c22146e6f84c4068894e76257e6880",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/1b6533ee61e4",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_2/20250912-couple-058.webp",
+      "source_sha256": "1b6533ee61e43ad1321b9dff5ac5197aa8de7e1dde454686a84b447f67e6b54f",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/b93939247a75",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_2/20250912-couple-066.webp",
+      "source_sha256": "b93939247a7552be59492598ce6331f2b977494b0ef2922ca150d0d51cea9dac",
+      "width": 1400,
+      "height": 934,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/bd262cef7d1e",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_2/20250912-couple-067.webp",
+      "source_sha256": "bd262cef7d1ebd491ea8dfb8b0445fec4a24b9bc47196d6e533ca99df541e676",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/0d7140806c64",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_2/20250912-couple-070.webp",
+      "source_sha256": "0d7140806c649edb0a2c4b67fc0aa9430e61ac91a72770a498a71005b2d5d9e9",
+      "width": 1400,
+      "height": 934,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/43ac7c479c3e",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_2/20250912-couple-073.webp",
+      "source_sha256": "43ac7c479c3eb4eefce1486e89854fa19c45c80924d327dad86b608ef4f21903",
+      "width": 1400,
+      "height": 934,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/6381f77d5c0d",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_2/20250912-couple-078.webp",
+      "source_sha256": "6381f77d5c0d0ecc2590396c63a3feddb179bf1b9fe0bc67129ff53f09b3c242",
+      "width": 1400,
+      "height": 934,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/fa2b8128017b",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_2/20250912-couple-084.webp",
+      "source_sha256": "fa2b8128017b2b204d988155a2ff39b95cd628200450f9d7aa9ed6d1af13d3af",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/83aa4187596e",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_2/20250912-couple-089.webp",
+      "source_sha256": "83aa4187596ee5f6e0c71d708a453852eae558c1665c2ef101e8262822bbea6d",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/cbbfb7fb3c2b",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-1.webp",
+      "source_sha256": "cbbfb7fb3c2ba019d875fd3be427d4208e4c72dfd38cd01e71ac453b79643166",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/a7ff026b4b17",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-10.webp",
+      "source_sha256": "a7ff026b4b17e508ad50943e4d9bf3c4f3cf1f6182e9d9d1862986059495e934",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/76f9132a1318",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-11.webp",
+      "source_sha256": "76f9132a1318540c82c5e8c0b5189d3613f0b60c467a30ec7c8e312083bb7fdd",
+      "width": 1400,
+      "height": 934,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/fed74204c540",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-12.webp",
+      "source_sha256": "fed74204c540262a46a5c341876d41d36bbeb4852526cc6dca5cf07ebf6451c6",
+      "width": 1400,
+      "height": 934,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/cc0832a13dd6",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-13.webp",
+      "source_sha256": "cc0832a13dd6a51ce612b26a7b5ba11fa8ebd292f1b4faa19834f8d2ec918f34",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/6a9252eeb29d",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-14.webp",
+      "source_sha256": "6a9252eeb29d0c343fdf6ae3df9c1cd1eac37dab784e7dd9aec2ac68f9a7323f",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/969d198df9e0",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-15.webp",
+      "source_sha256": "969d198df9e07a66080b94b6f280867f51dd59b273f33fc313cdbdda1b7f900c",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/3c15bee08d2b",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-16.webp",
+      "source_sha256": "3c15bee08d2b3a8b01dc1df39518e877c5a542291e415f843fe7496bf775de1f",
+      "width": 1400,
+      "height": 934,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/6d623d13db17",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-17.webp",
+      "source_sha256": "6d623d13db17b92f416f16bd8875c4157a700afa8357dd88185440e19104257c",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/38c6b05f1ff4",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-18.webp",
+      "source_sha256": "38c6b05f1ff4024c425ddf3422e84831022b6218e6008676f34b4ed20e818ed1",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/b3f672198f8b",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-19.webp",
+      "source_sha256": "b3f672198f8b59f3775bab81a800becd3fd15f508975cfb2012dd59ab7389bbc",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/f999d8e54d28",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-2.webp",
+      "source_sha256": "f999d8e54d283275ad6f5bf72ef7a37932627a74037406d340bd873f5d823a30",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/152b5db3a1bb",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-20.webp",
+      "source_sha256": "152b5db3a1bb469170978c01bd3268df2a6755b94a005a7bc05a880d867d40d0",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/264b85b2b23e",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-21.webp",
+      "source_sha256": "264b85b2b23ee5d620ae52a1b30c5f0ea82171df5e82ced64bbb11ce546a0d4e",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/58f803e1c50a",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-22.webp",
+      "source_sha256": "58f803e1c50aa7ee1ccebfc8242f9734029ee940a89b63125b07750df415ffd8",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/06c683e7331e",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-23.webp",
+      "source_sha256": "06c683e7331e264faed8ff98905cce813ffc25d5ff247e134252bc99e7c038d5",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/234c38b0bd7f",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-24.webp",
+      "source_sha256": "234c38b0bd7f17070423ccf1508ef714ca24ffe66689dac3df0d1dffc523e339",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/b949b5ffbdf5",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-25.webp",
+      "source_sha256": "b949b5ffbdf5b2678c3e2e9f21acf0c0dd6d0b4de0a97e877b56f8530e2e4837",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/a95c2b3afc98",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-26.webp",
+      "source_sha256": "a95c2b3afc98c3eac4dfc4b8d95158284a7eadede8efaef48cdd9a6bfd39c970",
+      "width": 1400,
+      "height": 934,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/15dc8c7af9b1",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-27.webp",
+      "source_sha256": "15dc8c7af9b1632096d977f069bb302cabef871a3b2cb1e3f63e578e37c53b28",
+      "width": 1400,
+      "height": 934,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/6af7ceabad5e",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-28.webp",
+      "source_sha256": "6af7ceabad5ece87738415b4f2d6fee3f6e8d5a516b4e0db1b3c7557ea5215d8",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/d461292a2e8e",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-29.webp",
+      "source_sha256": "d461292a2e8e5a8d9484d9edf9622962abb2975b2afca38b29c21358b3f01f16",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/c05113616755",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-3.webp",
+      "source_sha256": "c051136167551090d5db526afb3cc573c7f8991ad62cdc9bd83a15c1646410b4",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/ee40db11221e",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-30.webp",
+      "source_sha256": "ee40db11221e021165a9f87d09da297a4e170149c7ebe5b6c23ea28cf935cd6b",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/7f18ebb974a6",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-31.webp",
+      "source_sha256": "7f18ebb974a6d79ebcb364351cbd0777b043ecc61d9ccbc0cb03878b08e6ce37",
+      "width": 1400,
+      "height": 934,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/4973ba89ae7d",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-32.webp",
+      "source_sha256": "4973ba89ae7d7a783c681d0ea5e307ea82504245e53ed89062aaecc49dd1388a",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/3e4d6dcc2204",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-33.webp",
+      "source_sha256": "3e4d6dcc2204242330ee5fa2df63447f369c53c86e307ac235b8301b86373241",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/2894de009cad",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-34.webp",
+      "source_sha256": "2894de009cad6cc0ae00eb365eff1bd63cd9c7f18a8e661f4a1af4dae93e1119",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/47c724a32b27",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-35.webp",
+      "source_sha256": "47c724a32b279530621b9b41ee4beffcadee70d7a54af8ee2f7fb43f4a7120fb",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/6c82ccc7572e",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-36.webp",
+      "source_sha256": "6c82ccc7572e1c244749191c8ffb67e8ceca6f5260b2ac2d6717b295b38c23a9",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/2b40179cc015",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-37.webp",
+      "source_sha256": "2b40179cc0158ff7d6df414ab83681864b495b0e160f2f326da4a4f00d32cb07",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/64439a76ba86",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-38.webp",
+      "source_sha256": "64439a76ba86a7790cd3df567b3eadd235b93a54950503aa4599c9ed9641f0d6",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/6187cfeafaa4",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-39.webp",
+      "source_sha256": "6187cfeafaa4d164b22e81523eedba9a54ec1063594971380ff176c8e55060e5",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/8bf325b03957",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-4.webp",
+      "source_sha256": "8bf325b0395794f627644e9c49def75640615daad7b58dafd3be5e564b484e7d",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/e3e8d81e113c",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-40.webp",
+      "source_sha256": "e3e8d81e113c0b71a49852985faaded968bf7f737dd635ed1a2eacba1c95cd0b",
+      "width": 1400,
+      "height": 934,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/960098b18ac8",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-41.webp",
+      "source_sha256": "960098b18ac8dda981d892829799b5caea87dc9e303b80aaea5a3afa80ff52e2",
+      "width": 1400,
+      "height": 934,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/cd2c419106f3",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-42.webp",
+      "source_sha256": "cd2c419106f3d964a2eca1b24b91bc24ba57829c41c7aa3ac67cfaca01dd8bee",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/10eb226d113d",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-43.webp",
+      "source_sha256": "10eb226d113dbc18ac1ad34f20353b5378ce2622fee8a057cf394062e2440def",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/5e14f8e31107",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-44.webp",
+      "source_sha256": "5e14f8e31107d1c1885755f69bc6953456a97bcd5b73bd87bfdc3ff5e9010b4e",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/27f6f370f440",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-45.webp",
+      "source_sha256": "27f6f370f4404dad599a72a200d28d2783ee1c7067cfac7f32f26300e6247741",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/ae91e60bc49b",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-46.webp",
+      "source_sha256": "ae91e60bc49b977e807d68f033a2192c0c66c21cb8fdf0eb4e1ee331267937f7",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/2ae10961e546",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-47.webp",
+      "source_sha256": "2ae10961e5462dbef3b0b749edf208402b45e2b2f4923fa60f6cc3fb55836d2b",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/f847afc11a12",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-48.webp",
+      "source_sha256": "f847afc11a12da019ce531ed3088e30acc631511cf6eb3dea20b2466cf1c5c1a",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/777bcb24a415",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-49.webp",
+      "source_sha256": "777bcb24a41552d821811851367aafdd6e6c88f97fe6dfdeebd4e9e41d101f92",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/31eb357ae9ae",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-5.webp",
+      "source_sha256": "31eb357ae9ae230976cdf4c6894685b5055d61c1d142c9cd6738d7ff94dac421",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/ac7bdd56fa2f",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-50.webp",
+      "source_sha256": "ac7bdd56fa2f4eae3936029cf69a24447f9e5341648456b89bd81a3f95a8261e",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/049817ee1cf6",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-51.webp",
+      "source_sha256": "049817ee1cf64a11e3e1c8caa5b3533f3f937a9de707fcb151fcece797bbac19",
+      "width": 1400,
+      "height": 934,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/ceaf9149d498",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-52.webp",
+      "source_sha256": "ceaf9149d498da584f0a70874bf2b82410e39e6883ada1e263d7bd852fe11433",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/2131e0ff9227",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-53.webp",
+      "source_sha256": "2131e0ff92278e808bc9ebbb18f4c77e5382200626cff7bc1b134be32d606d4e",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/d8491d56ff29",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-6.webp",
+      "source_sha256": "d8491d56ff294a6a56b4d3d24d6f1c69d5923ab36ebcdbb94b1d7d02dcbb7f6c",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/04f9d957bc12",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-7.webp",
+      "source_sha256": "04f9d957bc1224cecea2883594dde634ad4f52cb774375296ac223e2d5803586",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/fc0026ae5845",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-8.webp",
+      "source_sha256": "fc0026ae58457b45c101d2f0f5e3f21b078a85f862f4234b0f01a20063911ce7",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/couple/a57bd87a8527",
+      "category": "couple",
+      "source_file": "src/assets/couple/couple_3/fiancailles-9.webp",
+      "source_sha256": "a57bd87a8527d48749296a3d85fb68e8a8abb1519ef6a1f082e6a449b26fd6f6",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo couple à Marseille"
+    },
+    {
+      "source_key": "galleries/portrait/2f3676463bac",
+      "category": "portrait",
+      "source_file": "src/assets/portrait/portrait_1/20251025-img5598.webp",
+      "source_sha256": "2f3676463bac03fdb9244f1f6cbe935157da9a6210e64a6d815eedaf3e6346ad",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo portrait à Marseille"
+    },
+    {
+      "source_key": "galleries/portrait/bcbb645073ad",
+      "category": "portrait",
+      "source_file": "src/assets/portrait/portrait_1/20251025-img5600.webp",
+      "source_sha256": "bcbb645073add2b9498de6338f2fbff94904f754437c4fbdc8e84c149e4b913f",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo portrait à Marseille"
+    },
+    {
+      "source_key": "galleries/portrait/945f685aa560",
+      "category": "portrait",
+      "source_file": "src/assets/portrait/portrait_1/20251025-img5650.webp",
+      "source_sha256": "945f685aa5608336f531ab982fa93c8826b9eb356b049e9789106b78cb5a3f51",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo portrait à Marseille"
+    },
+    {
+      "source_key": "galleries/portrait/14151a90e739",
+      "category": "portrait",
+      "source_file": "src/assets/portrait/portrait_1/20251025-img5726.webp",
+      "source_sha256": "14151a90e739f2540d85442786e258536e67adf54148f2813c0e4bc9d4534750",
+      "width": 1400,
+      "height": 934,
+      "alt_text": "Séance photo portrait à Marseille"
+    },
+    {
+      "source_key": "galleries/portrait/628d9464a088",
+      "category": "portrait",
+      "source_file": "src/assets/portrait/portrait_1/20251025-img5732.webp",
+      "source_sha256": "628d9464a088b2407539dbe9012dbe94a895759f90126fc51f7bb0b02d44ddb7",
+      "width": 1400,
+      "height": 934,
+      "alt_text": "Séance photo portrait à Marseille"
+    },
+    {
+      "source_key": "galleries/portrait/54a0efcdacdb",
+      "category": "portrait",
+      "source_file": "src/assets/portrait/portrait_1/20251025-img5733.webp",
+      "source_sha256": "54a0efcdacdb54c7a1d2418d1b5674838879c50479ac5a3be38729d1bcddc3ef",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo portrait à Marseille"
+    },
+    {
+      "source_key": "galleries/portrait/cc491bcb5a2c",
+      "category": "portrait",
+      "source_file": "src/assets/portrait/portrait_1/20251025-img5761.webp",
+      "source_sha256": "cc491bcb5a2c894c1284167403dfb77ce5bf2b9e5434adf4394d9cbbaf33e513",
+      "width": 1400,
+      "height": 934,
+      "alt_text": "Séance photo portrait à Marseille"
+    },
+    {
+      "source_key": "galleries/portrait/4223c78d9b10",
+      "category": "portrait",
+      "source_file": "src/assets/portrait/portrait_1/20251025-img5783.webp",
+      "source_sha256": "4223c78d9b10f2375b784d31dac7911ec5b6f3469c2fc1c5445e04da96179d68",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo portrait à Marseille"
+    },
+    {
+      "source_key": "galleries/portrait/a634f9b65d5e",
+      "category": "portrait",
+      "source_file": "src/assets/portrait/portrait_1/20251025-img5788.webp",
+      "source_sha256": "a634f9b65d5e96c84b29af84110cf0097880c66cbd00d70aef9605c61f45102b",
+      "width": 1400,
+      "height": 934,
+      "alt_text": "Séance photo portrait à Marseille"
+    },
+    {
+      "source_key": "galleries/portrait/dd83346dedf7",
+      "category": "portrait",
+      "source_file": "src/assets/portrait/portrait_1/20251025-img5806.webp",
+      "source_sha256": "dd83346dedf75aed21d9e6473e2a45124dd319712e6362274733ebc5802527db",
+      "width": 1400,
+      "height": 934,
+      "alt_text": "Séance photo portrait à Marseille"
+    },
+    {
+      "source_key": "galleries/portrait/6d04e30efe92",
+      "category": "portrait",
+      "source_file": "src/assets/portrait/portrait_1/20251025-img5817.webp",
+      "source_sha256": "6d04e30efe926fdb6cb43b4af54a63a81cff9d6567d46e7889259efd2a7f7408",
+      "width": 1050,
+      "height": 1400,
+      "alt_text": "Séance photo portrait à Marseille"
+    },
+    {
+      "source_key": "galleries/portrait/a9b980af7fd2",
+      "category": "portrait",
+      "source_file": "src/assets/portrait/portrait_1/20251025-img5844.webp",
+      "source_sha256": "a9b980af7fd22ff1472d49f89fb2bc1b69402928bdfc7c8e33aa42fe8de17c35",
+      "width": 934,
+      "height": 1400,
+      "alt_text": "Séance photo portrait à Marseille"
+    }
+  ],
+  "placements": [
+    {
+      "placement_key": "seo/photographe-grossesse-marseille/gallery-1/001",
+      "seo_slug": "photographe-grossesse-marseille",
+      "slot": "gallery-1",
+      "display_order": 0,
+      "source_key": "galleries/grossesse/177d6d0ed591",
+      "alt": "Séance photo maternité à Marseille - photo 1",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-grossesse-marseille/gallery-1/002",
+      "seo_slug": "photographe-grossesse-marseille",
+      "slot": "gallery-1",
+      "display_order": 1,
+      "source_key": "galleries/grossesse/67a7259787b2",
+      "alt": "Séance photo maternité à Marseille - photo 2",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-grossesse-marseille/gallery-1/003",
+      "seo_slug": "photographe-grossesse-marseille",
+      "slot": "gallery-1",
+      "display_order": 2,
+      "source_key": "galleries/grossesse/a1c06f958428",
+      "alt": "Séance photo maternité à Marseille - photo 3",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-grossesse-marseille/gallery-1/004",
+      "seo_slug": "photographe-grossesse-marseille",
+      "slot": "gallery-1",
+      "display_order": 3,
+      "source_key": "galleries/grossesse/7d534e83e3b5",
+      "alt": "Séance photo maternité à Marseille - photo 4",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-grossesse-marseille/gallery-1/005",
+      "seo_slug": "photographe-grossesse-marseille",
+      "slot": "gallery-1",
+      "display_order": 4,
+      "source_key": "galleries/grossesse/2b15c7128fbe",
+      "alt": "Séance photo maternité à Marseille - photo 5",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-grossesse-marseille/gallery-1/006",
+      "seo_slug": "photographe-grossesse-marseille",
+      "slot": "gallery-1",
+      "display_order": 5,
+      "source_key": "galleries/grossesse/36dfe9c97391",
+      "alt": "Séance photo maternité à Marseille - photo 6",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-grossesse-marseille/gallery-1/007",
+      "seo_slug": "photographe-grossesse-marseille",
+      "slot": "gallery-1",
+      "display_order": 6,
+      "source_key": "galleries/grossesse/795c0551006e",
+      "alt": "Séance photo maternité à Marseille - photo 7",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-grossesse-marseille/gallery-1/008",
+      "seo_slug": "photographe-grossesse-marseille",
+      "slot": "gallery-1",
+      "display_order": 7,
+      "source_key": "galleries/grossesse/a86a4b81c2dc",
+      "alt": "Séance photo maternité à Marseille - photo 8",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-grossesse-marseille/gallery-1/009",
+      "seo_slug": "photographe-grossesse-marseille",
+      "slot": "gallery-1",
+      "display_order": 8,
+      "source_key": "galleries/grossesse/a0e9314ab349",
+      "alt": "Séance photo maternité à Marseille - photo 9",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-grossesse-marseille/gallery-1/010",
+      "seo_slug": "photographe-grossesse-marseille",
+      "slot": "gallery-1",
+      "display_order": 9,
+      "source_key": "galleries/grossesse/927bed4af4b2",
+      "alt": "Séance photo maternité à Marseille - photo 10",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-grossesse-marseille/gallery-1/011",
+      "seo_slug": "photographe-grossesse-marseille",
+      "slot": "gallery-1",
+      "display_order": 10,
+      "source_key": "galleries/grossesse/84078f11ba74",
+      "alt": "Séance photo maternité à Marseille - photo 11",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-grossesse-marseille/gallery-2/001",
+      "seo_slug": "photographe-grossesse-marseille",
+      "slot": "gallery-2",
+      "display_order": 0,
+      "source_key": "galleries/grossesse/d38872a5803a",
+      "alt": "Séance photo maternité à Marseille - photo 1",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-grossesse-marseille/gallery-2/002",
+      "seo_slug": "photographe-grossesse-marseille",
+      "slot": "gallery-2",
+      "display_order": 1,
+      "source_key": "galleries/grossesse/8f93794187a0",
+      "alt": "Séance photo maternité à Marseille - photo 2",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-grossesse-marseille/gallery-2/003",
+      "seo_slug": "photographe-grossesse-marseille",
+      "slot": "gallery-2",
+      "display_order": 2,
+      "source_key": "galleries/grossesse/3b92b5262dc8",
+      "alt": "Séance photo maternité à Marseille - photo 3",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-grossesse-marseille/gallery-2/004",
+      "seo_slug": "photographe-grossesse-marseille",
+      "slot": "gallery-2",
+      "display_order": 3,
+      "source_key": "galleries/grossesse/c210b0690a13",
+      "alt": "Séance photo maternité à Marseille - photo 4",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-grossesse-marseille/gallery-2/005",
+      "seo_slug": "photographe-grossesse-marseille",
+      "slot": "gallery-2",
+      "display_order": 4,
+      "source_key": "galleries/grossesse/79e67bf44544",
+      "alt": "Séance photo maternité à Marseille - photo 5",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-grossesse-marseille/gallery-2/006",
+      "seo_slug": "photographe-grossesse-marseille",
+      "slot": "gallery-2",
+      "display_order": 5,
+      "source_key": "galleries/grossesse/fac2b38b5457",
+      "alt": "Séance photo maternité à Marseille - photo 6",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-grossesse-marseille/gallery-2/007",
+      "seo_slug": "photographe-grossesse-marseille",
+      "slot": "gallery-2",
+      "display_order": 6,
+      "source_key": "galleries/grossesse/ad095a281583",
+      "alt": "Séance photo maternité à Marseille - photo 7",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-grossesse-marseille/gallery-2/008",
+      "seo_slug": "photographe-grossesse-marseille",
+      "slot": "gallery-2",
+      "display_order": 7,
+      "source_key": "galleries/grossesse/00914f063312",
+      "alt": "Séance photo maternité à Marseille - photo 8",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-grossesse-marseille/gallery-2/009",
+      "seo_slug": "photographe-grossesse-marseille",
+      "slot": "gallery-2",
+      "display_order": 8,
+      "source_key": "galleries/grossesse/9cf3d0f45ecf",
+      "alt": "Séance photo maternité à Marseille - photo 9",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-grossesse-marseille/gallery-2/010",
+      "seo_slug": "photographe-grossesse-marseille",
+      "slot": "gallery-2",
+      "display_order": 9,
+      "source_key": "galleries/grossesse/52dfff4da465",
+      "alt": "Séance photo maternité à Marseille - photo 10",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-grossesse-marseille/gallery-2/011",
+      "seo_slug": "photographe-grossesse-marseille",
+      "slot": "gallery-2",
+      "display_order": 10,
+      "source_key": "galleries/grossesse/c43aba9e39f9",
+      "alt": "Séance photo maternité à Marseille - photo 11",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-grossesse-marseille/gallery-2/012",
+      "seo_slug": "photographe-grossesse-marseille",
+      "slot": "gallery-2",
+      "display_order": 11,
+      "source_key": "galleries/grossesse/62d5b2eb05aa",
+      "alt": "Séance photo maternité à Marseille - photo 12",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-grossesse-marseille/gallery-2/013",
+      "seo_slug": "photographe-grossesse-marseille",
+      "slot": "gallery-2",
+      "display_order": 12,
+      "source_key": "galleries/grossesse/6ebd21174893",
+      "alt": "Séance photo maternité à Marseille - photo 13",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-grossesse-marseille/gallery-2/014",
+      "seo_slug": "photographe-grossesse-marseille",
+      "slot": "gallery-2",
+      "display_order": 13,
+      "source_key": "galleries/grossesse/862ccb7c4c04",
+      "alt": "Séance photo maternité à Marseille - photo 14",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-grossesse-marseille/gallery-2/015",
+      "seo_slug": "photographe-grossesse-marseille",
+      "slot": "gallery-2",
+      "display_order": 14,
+      "source_key": "galleries/grossesse/56bebc90a656",
+      "alt": "Séance photo maternité à Marseille - photo 15",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-grossesse-marseille/gallery-2/016",
+      "seo_slug": "photographe-grossesse-marseille",
+      "slot": "gallery-2",
+      "display_order": 15,
+      "source_key": "galleries/grossesse/0f8afbb29290",
+      "alt": "Séance photo maternité à Marseille - photo 16",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-grossesse-marseille/gallery-2/017",
+      "seo_slug": "photographe-grossesse-marseille",
+      "slot": "gallery-2",
+      "display_order": 16,
+      "source_key": "galleries/grossesse/05fca553392e",
+      "alt": "Séance photo maternité à Marseille - photo 17",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-grossesse-marseille/gallery-2/018",
+      "seo_slug": "photographe-grossesse-marseille",
+      "slot": "gallery-2",
+      "display_order": 17,
+      "source_key": "galleries/grossesse/bf6fd714b15e",
+      "alt": "Séance photo maternité à Marseille - photo 18",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-grossesse-marseille/gallery-2/019",
+      "seo_slug": "photographe-grossesse-marseille",
+      "slot": "gallery-2",
+      "display_order": 18,
+      "source_key": "galleries/grossesse/b83f3231b3ea",
+      "alt": "Séance photo maternité à Marseille - photo 19",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-grossesse-marseille/gallery-2/020",
+      "seo_slug": "photographe-grossesse-marseille",
+      "slot": "gallery-2",
+      "display_order": 19,
+      "source_key": "galleries/grossesse/7598f13094fd",
+      "alt": "Séance photo maternité à Marseille - photo 20",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-1/001",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-1",
+      "display_order": 0,
+      "source_key": "galleries/famille/7bf9fc38126a",
+      "alt": "Séance photo famille à Marseille - photo 1",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-1/002",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-1",
+      "display_order": 1,
+      "source_key": "galleries/famille/f754a5ea9292",
+      "alt": "Séance photo famille à Marseille - photo 2",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-1/003",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-1",
+      "display_order": 2,
+      "source_key": "galleries/famille/4867508c11a5",
+      "alt": "Séance photo famille à Marseille - photo 3",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-1/004",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-1",
+      "display_order": 3,
+      "source_key": "galleries/famille/5729dc07b614",
+      "alt": "Séance photo famille à Marseille - photo 4",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-1/005",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-1",
+      "display_order": 4,
+      "source_key": "galleries/famille/0974d8a42dde",
+      "alt": "Séance photo famille à Marseille - photo 5",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-1/006",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-1",
+      "display_order": 5,
+      "source_key": "galleries/famille/cd430ae49a9c",
+      "alt": "Séance photo famille à Marseille - photo 6",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-1/007",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-1",
+      "display_order": 6,
+      "source_key": "galleries/famille/86095948fefd",
+      "alt": "Séance photo famille à Marseille - photo 7",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-1/008",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-1",
+      "display_order": 7,
+      "source_key": "galleries/famille/8bf0fe845197",
+      "alt": "Séance photo famille à Marseille - photo 8",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-1/009",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-1",
+      "display_order": 8,
+      "source_key": "galleries/famille/ff194344f215",
+      "alt": "Séance photo famille à Marseille - photo 9",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-1/010",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-1",
+      "display_order": 9,
+      "source_key": "galleries/famille/6748dada991b",
+      "alt": "Séance photo famille à Marseille - photo 10",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-1/011",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-1",
+      "display_order": 10,
+      "source_key": "galleries/famille/4bf5e77c9ec4",
+      "alt": "Séance photo famille à Marseille - photo 11",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-1/012",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-1",
+      "display_order": 11,
+      "source_key": "galleries/famille/3cbb7078d424",
+      "alt": "Séance photo famille à Marseille - photo 12",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-1/013",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-1",
+      "display_order": 12,
+      "source_key": "galleries/famille/d023666585f3",
+      "alt": "Séance photo famille à Marseille - photo 13",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-1/014",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-1",
+      "display_order": 13,
+      "source_key": "galleries/famille/055c88d3e098",
+      "alt": "Séance photo famille à Marseille - photo 14",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-1/015",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-1",
+      "display_order": 14,
+      "source_key": "galleries/famille/97467b1920b9",
+      "alt": "Séance photo famille à Marseille - photo 15",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-1/016",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-1",
+      "display_order": 15,
+      "source_key": "galleries/famille/9993144136e3",
+      "alt": "Séance photo famille à Marseille - photo 16",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-1/017",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-1",
+      "display_order": 16,
+      "source_key": "galleries/famille/e6d8abf51104",
+      "alt": "Séance photo famille à Marseille - photo 17",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-1/018",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-1",
+      "display_order": 17,
+      "source_key": "galleries/famille/8a647a26e88a",
+      "alt": "Séance photo famille à Marseille - photo 18",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-1/019",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-1",
+      "display_order": 18,
+      "source_key": "galleries/famille/2235991bd4bb",
+      "alt": "Séance photo famille à Marseille - photo 19",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-1/020",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-1",
+      "display_order": 19,
+      "source_key": "galleries/famille/f605a9bec309",
+      "alt": "Séance photo famille à Marseille - photo 20",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-1/021",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-1",
+      "display_order": 20,
+      "source_key": "galleries/famille/6537ffcda248",
+      "alt": "Séance photo famille à Marseille - photo 21",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-1/022",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-1",
+      "display_order": 21,
+      "source_key": "galleries/famille/441b83fb7098",
+      "alt": "Séance photo famille à Marseille - photo 22",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-1/023",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-1",
+      "display_order": 22,
+      "source_key": "galleries/famille/820a705c4f09",
+      "alt": "Séance photo famille à Marseille - photo 23",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-1/024",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-1",
+      "display_order": 23,
+      "source_key": "galleries/famille/a220c27a2767",
+      "alt": "Séance photo famille à Marseille - photo 24",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-1/025",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-1",
+      "display_order": 24,
+      "source_key": "galleries/famille/3b24184f8a5d",
+      "alt": "Séance photo famille à Marseille - photo 25",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-1/026",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-1",
+      "display_order": 25,
+      "source_key": "galleries/famille/9f5c564c8307",
+      "alt": "Séance photo famille à Marseille - photo 26",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-1/027",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-1",
+      "display_order": 26,
+      "source_key": "galleries/famille/601cec4542a7",
+      "alt": "Séance photo famille à Marseille - photo 27",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-1/028",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-1",
+      "display_order": 27,
+      "source_key": "galleries/famille/065fd720dfd7",
+      "alt": "Séance photo famille à Marseille - photo 28",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-1/029",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-1",
+      "display_order": 28,
+      "source_key": "galleries/famille/a8fb030f5121",
+      "alt": "Séance photo famille à Marseille - photo 29",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-1/030",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-1",
+      "display_order": 29,
+      "source_key": "galleries/famille/4520720a1a1a",
+      "alt": "Séance photo famille à Marseille - photo 30",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-1/031",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-1",
+      "display_order": 30,
+      "source_key": "galleries/famille/dbbd06a9805f",
+      "alt": "Séance photo famille à Marseille - photo 31",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-1/032",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-1",
+      "display_order": 31,
+      "source_key": "galleries/famille/e9fd89305bf2",
+      "alt": "Séance photo famille à Marseille - photo 32",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-1/033",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-1",
+      "display_order": 32,
+      "source_key": "galleries/famille/76d1ab7b52fc",
+      "alt": "Séance photo famille à Marseille - photo 33",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-1/034",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-1",
+      "display_order": 33,
+      "source_key": "galleries/famille/b1e1608d6b25",
+      "alt": "Séance photo famille à Marseille - photo 34",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-1/035",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-1",
+      "display_order": 34,
+      "source_key": "galleries/famille/a62e46f6ed20",
+      "alt": "Séance photo famille à Marseille - photo 35",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-1/036",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-1",
+      "display_order": 35,
+      "source_key": "galleries/famille/d3b9ac428eb7",
+      "alt": "Séance photo famille à Marseille - photo 36",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-1/037",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-1",
+      "display_order": 36,
+      "source_key": "galleries/famille/a4a9cc2b791c",
+      "alt": "Séance photo famille à Marseille - photo 37",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-1/038",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-1",
+      "display_order": 37,
+      "source_key": "galleries/famille/f9edf4289903",
+      "alt": "Séance photo famille à Marseille - photo 38",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-1/039",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-1",
+      "display_order": 38,
+      "source_key": "galleries/famille/d11e684df0d9",
+      "alt": "Séance photo famille à Marseille - photo 39",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-1/040",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-1",
+      "display_order": 39,
+      "source_key": "galleries/famille/2e5d577ca92a",
+      "alt": "Séance photo famille à Marseille - photo 40",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-1/041",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-1",
+      "display_order": 40,
+      "source_key": "galleries/famille/734489d3bcbc",
+      "alt": "Séance photo famille à Marseille - photo 41",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-1/042",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-1",
+      "display_order": 41,
+      "source_key": "galleries/famille/922975469919",
+      "alt": "Séance photo famille à Marseille - photo 42",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-1/043",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-1",
+      "display_order": 42,
+      "source_key": "galleries/famille/b59b4b2d2bd0",
+      "alt": "Séance photo famille à Marseille - photo 43",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-1/044",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-1",
+      "display_order": 43,
+      "source_key": "galleries/famille/8c92952c9f13",
+      "alt": "Séance photo famille à Marseille - photo 44",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-1/045",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-1",
+      "display_order": 44,
+      "source_key": "galleries/famille/3d76c9d6e674",
+      "alt": "Séance photo famille à Marseille - photo 45",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-1/046",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-1",
+      "display_order": 45,
+      "source_key": "galleries/famille/13394effd261",
+      "alt": "Séance photo famille à Marseille - photo 46",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-1/047",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-1",
+      "display_order": 46,
+      "source_key": "galleries/famille/20ea7e81b1f1",
+      "alt": "Séance photo famille à Marseille - photo 47",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-2/001",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-2",
+      "display_order": 0,
+      "source_key": "galleries/famille/065fd720dfd7",
+      "alt": "Séance photo famille à Marseille - photo 1",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-2/002",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-2",
+      "display_order": 1,
+      "source_key": "galleries/famille/a8fb030f5121",
+      "alt": "Séance photo famille à Marseille - photo 2",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-2/003",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-2",
+      "display_order": 2,
+      "source_key": "galleries/famille/4520720a1a1a",
+      "alt": "Séance photo famille à Marseille - photo 3",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-2/004",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-2",
+      "display_order": 3,
+      "source_key": "galleries/famille/dbbd06a9805f",
+      "alt": "Séance photo famille à Marseille - photo 4",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-2/005",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-2",
+      "display_order": 4,
+      "source_key": "galleries/famille/e9fd89305bf2",
+      "alt": "Séance photo famille à Marseille - photo 5",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-2/006",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-2",
+      "display_order": 5,
+      "source_key": "galleries/famille/76d1ab7b52fc",
+      "alt": "Séance photo famille à Marseille - photo 6",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-2/007",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-2",
+      "display_order": 6,
+      "source_key": "galleries/famille/b1e1608d6b25",
+      "alt": "Séance photo famille à Marseille - photo 7",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-2/008",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-2",
+      "display_order": 7,
+      "source_key": "galleries/famille/a62e46f6ed20",
+      "alt": "Séance photo famille à Marseille - photo 8",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-2/009",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-2",
+      "display_order": 8,
+      "source_key": "galleries/famille/d3b9ac428eb7",
+      "alt": "Séance photo famille à Marseille - photo 9",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-2/010",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-2",
+      "display_order": 9,
+      "source_key": "galleries/famille/a4a9cc2b791c",
+      "alt": "Séance photo famille à Marseille - photo 10",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-2/011",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-2",
+      "display_order": 10,
+      "source_key": "galleries/famille/f9edf4289903",
+      "alt": "Séance photo famille à Marseille - photo 11",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-2/012",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-2",
+      "display_order": 11,
+      "source_key": "galleries/famille/d11e684df0d9",
+      "alt": "Séance photo famille à Marseille - photo 12",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-2/013",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-2",
+      "display_order": 12,
+      "source_key": "galleries/famille/2e5d577ca92a",
+      "alt": "Séance photo famille à Marseille - photo 13",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-2/014",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-2",
+      "display_order": 13,
+      "source_key": "galleries/famille/734489d3bcbc",
+      "alt": "Séance photo famille à Marseille - photo 14",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-2/015",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-2",
+      "display_order": 14,
+      "source_key": "galleries/famille/922975469919",
+      "alt": "Séance photo famille à Marseille - photo 15",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-2/016",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-2",
+      "display_order": 15,
+      "source_key": "galleries/famille/b59b4b2d2bd0",
+      "alt": "Séance photo famille à Marseille - photo 16",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-2/017",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-2",
+      "display_order": 16,
+      "source_key": "galleries/famille/8c92952c9f13",
+      "alt": "Séance photo famille à Marseille - photo 17",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-2/018",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-2",
+      "display_order": 17,
+      "source_key": "galleries/famille/3d76c9d6e674",
+      "alt": "Séance photo famille à Marseille - photo 18",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-2/019",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-2",
+      "display_order": 18,
+      "source_key": "galleries/famille/13394effd261",
+      "alt": "Séance photo famille à Marseille - photo 19",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-famille-marseille/gallery-2/020",
+      "seo_slug": "photographe-famille-marseille",
+      "slot": "gallery-2",
+      "display_order": 19,
+      "source_key": "galleries/famille/20ea7e81b1f1",
+      "alt": "Séance photo famille à Marseille - photo 20",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-1/001",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-1",
+      "display_order": 0,
+      "source_key": "galleries/couple/dd39da108b84",
+      "alt": "Séance photo couple à Marseille - photo 1",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-1/002",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-1",
+      "display_order": 1,
+      "source_key": "galleries/couple/09d36f165169",
+      "alt": "Séance photo couple à Marseille - photo 2",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-1/003",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-1",
+      "display_order": 2,
+      "source_key": "galleries/couple/cf7245d42acf",
+      "alt": "Séance photo couple à Marseille - photo 3",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-1/004",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-1",
+      "display_order": 3,
+      "source_key": "galleries/couple/7d0b265993f9",
+      "alt": "Séance photo couple à Marseille - photo 4",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-1/005",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-1",
+      "display_order": 4,
+      "source_key": "galleries/couple/3954017cf240",
+      "alt": "Séance photo couple à Marseille - photo 5",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-1/006",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-1",
+      "display_order": 5,
+      "source_key": "galleries/couple/b16aac64ff64",
+      "alt": "Séance photo couple à Marseille - photo 6",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-1/007",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-1",
+      "display_order": 6,
+      "source_key": "galleries/couple/a31a56a60e9e",
+      "alt": "Séance photo couple à Marseille - photo 7",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-1/008",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-1",
+      "display_order": 7,
+      "source_key": "galleries/couple/528ffc807d6a",
+      "alt": "Séance photo couple à Marseille - photo 8",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-1/009",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-1",
+      "display_order": 8,
+      "source_key": "galleries/couple/0b8a3d064ae0",
+      "alt": "Séance photo couple à Marseille - photo 9",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-1/010",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-1",
+      "display_order": 9,
+      "source_key": "galleries/couple/cf0fed4b2dba",
+      "alt": "Séance photo couple à Marseille - photo 10",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-2/001",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-2",
+      "display_order": 0,
+      "source_key": "galleries/couple/87ef4e6d08ae",
+      "alt": "Séance photo couple à Marseille - photo 1",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-2/002",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-2",
+      "display_order": 1,
+      "source_key": "galleries/couple/18c8fc47800c",
+      "alt": "Séance photo couple à Marseille - photo 2",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-2/003",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-2",
+      "display_order": 2,
+      "source_key": "galleries/couple/9b613eac9ffb",
+      "alt": "Séance photo couple à Marseille - photo 3",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-2/004",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-2",
+      "display_order": 3,
+      "source_key": "galleries/couple/ee881702f520",
+      "alt": "Séance photo couple à Marseille - photo 4",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-2/005",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-2",
+      "display_order": 4,
+      "source_key": "galleries/couple/eb58659eb83e",
+      "alt": "Séance photo couple à Marseille - photo 5",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-2/006",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-2",
+      "display_order": 5,
+      "source_key": "galleries/couple/1c2b40afd891",
+      "alt": "Séance photo couple à Marseille - photo 6",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-2/007",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-2",
+      "display_order": 6,
+      "source_key": "galleries/couple/b5473b2931c9",
+      "alt": "Séance photo couple à Marseille - photo 7",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-2/008",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-2",
+      "display_order": 7,
+      "source_key": "galleries/couple/0f79377b7ca0",
+      "alt": "Séance photo couple à Marseille - photo 8",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-2/009",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-2",
+      "display_order": 8,
+      "source_key": "galleries/couple/620c33d2b3cd",
+      "alt": "Séance photo couple à Marseille - photo 9",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-2/010",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-2",
+      "display_order": 9,
+      "source_key": "galleries/couple/1b6533ee61e4",
+      "alt": "Séance photo couple à Marseille - photo 10",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-2/011",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-2",
+      "display_order": 10,
+      "source_key": "galleries/couple/b93939247a75",
+      "alt": "Séance photo couple à Marseille - photo 11",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-2/012",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-2",
+      "display_order": 11,
+      "source_key": "galleries/couple/bd262cef7d1e",
+      "alt": "Séance photo couple à Marseille - photo 12",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-2/013",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-2",
+      "display_order": 12,
+      "source_key": "galleries/couple/0d7140806c64",
+      "alt": "Séance photo couple à Marseille - photo 13",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-2/014",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-2",
+      "display_order": 13,
+      "source_key": "galleries/couple/43ac7c479c3e",
+      "alt": "Séance photo couple à Marseille - photo 14",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-2/015",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-2",
+      "display_order": 14,
+      "source_key": "galleries/couple/6381f77d5c0d",
+      "alt": "Séance photo couple à Marseille - photo 15",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-2/016",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-2",
+      "display_order": 15,
+      "source_key": "galleries/couple/fa2b8128017b",
+      "alt": "Séance photo couple à Marseille - photo 16",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-2/017",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-2",
+      "display_order": 16,
+      "source_key": "galleries/couple/83aa4187596e",
+      "alt": "Séance photo couple à Marseille - photo 17",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/001",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 0,
+      "source_key": "galleries/couple/cbbfb7fb3c2b",
+      "alt": "Séance photo couple à Marseille - photo 1",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/002",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 1,
+      "source_key": "galleries/couple/a7ff026b4b17",
+      "alt": "Séance photo couple à Marseille - photo 2",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/003",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 2,
+      "source_key": "galleries/couple/76f9132a1318",
+      "alt": "Séance photo couple à Marseille - photo 3",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/004",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 3,
+      "source_key": "galleries/couple/fed74204c540",
+      "alt": "Séance photo couple à Marseille - photo 4",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/005",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 4,
+      "source_key": "galleries/couple/cc0832a13dd6",
+      "alt": "Séance photo couple à Marseille - photo 5",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/006",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 5,
+      "source_key": "galleries/couple/6a9252eeb29d",
+      "alt": "Séance photo couple à Marseille - photo 6",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/007",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 6,
+      "source_key": "galleries/couple/969d198df9e0",
+      "alt": "Séance photo couple à Marseille - photo 7",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/008",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 7,
+      "source_key": "galleries/couple/3c15bee08d2b",
+      "alt": "Séance photo couple à Marseille - photo 8",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/009",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 8,
+      "source_key": "galleries/couple/6d623d13db17",
+      "alt": "Séance photo couple à Marseille - photo 9",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/010",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 9,
+      "source_key": "galleries/couple/38c6b05f1ff4",
+      "alt": "Séance photo couple à Marseille - photo 10",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/011",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 10,
+      "source_key": "galleries/couple/b3f672198f8b",
+      "alt": "Séance photo couple à Marseille - photo 11",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/012",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 11,
+      "source_key": "galleries/couple/f999d8e54d28",
+      "alt": "Séance photo couple à Marseille - photo 12",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/013",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 12,
+      "source_key": "galleries/couple/152b5db3a1bb",
+      "alt": "Séance photo couple à Marseille - photo 13",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/014",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 13,
+      "source_key": "galleries/couple/264b85b2b23e",
+      "alt": "Séance photo couple à Marseille - photo 14",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/015",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 14,
+      "source_key": "galleries/couple/58f803e1c50a",
+      "alt": "Séance photo couple à Marseille - photo 15",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/016",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 15,
+      "source_key": "galleries/couple/06c683e7331e",
+      "alt": "Séance photo couple à Marseille - photo 16",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/017",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 16,
+      "source_key": "galleries/couple/234c38b0bd7f",
+      "alt": "Séance photo couple à Marseille - photo 17",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/018",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 17,
+      "source_key": "galleries/couple/b949b5ffbdf5",
+      "alt": "Séance photo couple à Marseille - photo 18",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/019",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 18,
+      "source_key": "galleries/couple/a95c2b3afc98",
+      "alt": "Séance photo couple à Marseille - photo 19",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/020",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 19,
+      "source_key": "galleries/couple/15dc8c7af9b1",
+      "alt": "Séance photo couple à Marseille - photo 20",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/021",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 20,
+      "source_key": "galleries/couple/6af7ceabad5e",
+      "alt": "Séance photo couple à Marseille - photo 21",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/022",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 21,
+      "source_key": "galleries/couple/d461292a2e8e",
+      "alt": "Séance photo couple à Marseille - photo 22",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/023",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 22,
+      "source_key": "galleries/couple/c05113616755",
+      "alt": "Séance photo couple à Marseille - photo 23",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/024",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 23,
+      "source_key": "galleries/couple/ee40db11221e",
+      "alt": "Séance photo couple à Marseille - photo 24",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/025",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 24,
+      "source_key": "galleries/couple/7f18ebb974a6",
+      "alt": "Séance photo couple à Marseille - photo 25",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/026",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 25,
+      "source_key": "galleries/couple/4973ba89ae7d",
+      "alt": "Séance photo couple à Marseille - photo 26",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/027",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 26,
+      "source_key": "galleries/couple/3e4d6dcc2204",
+      "alt": "Séance photo couple à Marseille - photo 27",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/028",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 27,
+      "source_key": "galleries/couple/2894de009cad",
+      "alt": "Séance photo couple à Marseille - photo 28",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/029",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 28,
+      "source_key": "galleries/couple/47c724a32b27",
+      "alt": "Séance photo couple à Marseille - photo 29",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/030",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 29,
+      "source_key": "galleries/couple/6c82ccc7572e",
+      "alt": "Séance photo couple à Marseille - photo 30",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/031",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 30,
+      "source_key": "galleries/couple/2b40179cc015",
+      "alt": "Séance photo couple à Marseille - photo 31",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/032",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 31,
+      "source_key": "galleries/couple/64439a76ba86",
+      "alt": "Séance photo couple à Marseille - photo 32",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/033",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 32,
+      "source_key": "galleries/couple/6187cfeafaa4",
+      "alt": "Séance photo couple à Marseille - photo 33",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/034",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 33,
+      "source_key": "galleries/couple/8bf325b03957",
+      "alt": "Séance photo couple à Marseille - photo 34",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/035",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 34,
+      "source_key": "galleries/couple/e3e8d81e113c",
+      "alt": "Séance photo couple à Marseille - photo 35",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/036",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 35,
+      "source_key": "galleries/couple/960098b18ac8",
+      "alt": "Séance photo couple à Marseille - photo 36",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/037",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 36,
+      "source_key": "galleries/couple/cd2c419106f3",
+      "alt": "Séance photo couple à Marseille - photo 37",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/038",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 37,
+      "source_key": "galleries/couple/10eb226d113d",
+      "alt": "Séance photo couple à Marseille - photo 38",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/039",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 38,
+      "source_key": "galleries/couple/5e14f8e31107",
+      "alt": "Séance photo couple à Marseille - photo 39",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/040",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 39,
+      "source_key": "galleries/couple/27f6f370f440",
+      "alt": "Séance photo couple à Marseille - photo 40",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/041",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 40,
+      "source_key": "galleries/couple/ae91e60bc49b",
+      "alt": "Séance photo couple à Marseille - photo 41",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/042",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 41,
+      "source_key": "galleries/couple/2ae10961e546",
+      "alt": "Séance photo couple à Marseille - photo 42",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/043",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 42,
+      "source_key": "galleries/couple/f847afc11a12",
+      "alt": "Séance photo couple à Marseille - photo 43",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/044",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 43,
+      "source_key": "galleries/couple/777bcb24a415",
+      "alt": "Séance photo couple à Marseille - photo 44",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/045",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 44,
+      "source_key": "galleries/couple/31eb357ae9ae",
+      "alt": "Séance photo couple à Marseille - photo 45",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/046",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 45,
+      "source_key": "galleries/couple/ac7bdd56fa2f",
+      "alt": "Séance photo couple à Marseille - photo 46",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/047",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 46,
+      "source_key": "galleries/couple/049817ee1cf6",
+      "alt": "Séance photo couple à Marseille - photo 47",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/048",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 47,
+      "source_key": "galleries/couple/ceaf9149d498",
+      "alt": "Séance photo couple à Marseille - photo 48",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/049",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 48,
+      "source_key": "galleries/couple/2131e0ff9227",
+      "alt": "Séance photo couple à Marseille - photo 49",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/050",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 49,
+      "source_key": "galleries/couple/d8491d56ff29",
+      "alt": "Séance photo couple à Marseille - photo 50",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/051",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 50,
+      "source_key": "galleries/couple/04f9d957bc12",
+      "alt": "Séance photo couple à Marseille - photo 51",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/052",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 51,
+      "source_key": "galleries/couple/fc0026ae5845",
+      "alt": "Séance photo couple à Marseille - photo 52",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-couple-marseille/gallery-3/053",
+      "seo_slug": "photographe-couple-marseille",
+      "slot": "gallery-3",
+      "display_order": 52,
+      "source_key": "galleries/couple/a57bd87a8527",
+      "alt": "Séance photo couple à Marseille - photo 53",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-portrait-marseille/gallery-1/001",
+      "seo_slug": "photographe-portrait-marseille",
+      "slot": "gallery-1",
+      "display_order": 0,
+      "source_key": "galleries/portrait/2f3676463bac",
+      "alt": "Séance photo portrait à Marseille - photo 1",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-portrait-marseille/gallery-1/002",
+      "seo_slug": "photographe-portrait-marseille",
+      "slot": "gallery-1",
+      "display_order": 1,
+      "source_key": "galleries/portrait/bcbb645073ad",
+      "alt": "Séance photo portrait à Marseille - photo 2",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-portrait-marseille/gallery-1/003",
+      "seo_slug": "photographe-portrait-marseille",
+      "slot": "gallery-1",
+      "display_order": 2,
+      "source_key": "galleries/portrait/945f685aa560",
+      "alt": "Séance photo portrait à Marseille - photo 3",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-portrait-marseille/gallery-1/004",
+      "seo_slug": "photographe-portrait-marseille",
+      "slot": "gallery-1",
+      "display_order": 3,
+      "source_key": "galleries/portrait/14151a90e739",
+      "alt": "Séance photo portrait à Marseille - photo 4",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-portrait-marseille/gallery-1/005",
+      "seo_slug": "photographe-portrait-marseille",
+      "slot": "gallery-1",
+      "display_order": 4,
+      "source_key": "galleries/portrait/628d9464a088",
+      "alt": "Séance photo portrait à Marseille - photo 5",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-portrait-marseille/gallery-1/006",
+      "seo_slug": "photographe-portrait-marseille",
+      "slot": "gallery-1",
+      "display_order": 5,
+      "source_key": "galleries/portrait/54a0efcdacdb",
+      "alt": "Séance photo portrait à Marseille - photo 6",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-portrait-marseille/gallery-1/007",
+      "seo_slug": "photographe-portrait-marseille",
+      "slot": "gallery-1",
+      "display_order": 6,
+      "source_key": "galleries/portrait/cc491bcb5a2c",
+      "alt": "Séance photo portrait à Marseille - photo 7",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-portrait-marseille/gallery-1/008",
+      "seo_slug": "photographe-portrait-marseille",
+      "slot": "gallery-1",
+      "display_order": 7,
+      "source_key": "galleries/portrait/4223c78d9b10",
+      "alt": "Séance photo portrait à Marseille - photo 8",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-portrait-marseille/gallery-1/009",
+      "seo_slug": "photographe-portrait-marseille",
+      "slot": "gallery-1",
+      "display_order": 8,
+      "source_key": "galleries/portrait/a634f9b65d5e",
+      "alt": "Séance photo portrait à Marseille - photo 9",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-portrait-marseille/gallery-1/010",
+      "seo_slug": "photographe-portrait-marseille",
+      "slot": "gallery-1",
+      "display_order": 9,
+      "source_key": "galleries/portrait/dd83346dedf7",
+      "alt": "Séance photo portrait à Marseille - photo 10",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-portrait-marseille/gallery-1/011",
+      "seo_slug": "photographe-portrait-marseille",
+      "slot": "gallery-1",
+      "display_order": 10,
+      "source_key": "galleries/portrait/6d04e30efe92",
+      "alt": "Séance photo portrait à Marseille - photo 11",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "seo/photographe-portrait-marseille/gallery-1/012",
+      "seo_slug": "photographe-portrait-marseille",
+      "slot": "gallery-1",
+      "display_order": 11,
+      "source_key": "galleries/portrait/a9b980af7fd2",
+      "alt": "Séance photo portrait à Marseille - photo 12",
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    }
+  ]
+}

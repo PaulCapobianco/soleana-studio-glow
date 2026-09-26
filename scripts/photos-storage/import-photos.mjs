@@ -1,0 +1,299 @@
+// Import des photos des galeries (phase 1) vers Supabase Storage + tables photos /
+// photo_variants / photo_placements.
+//
+// MODE SIMULATION PAR DÉFAUT : sans --apply, le script ne contacte AUCUN service et n'écrit rien
+// dans la base ni dans Storage ; il affiche ce qu'il enverrait et insérerait et écrit un journal
+// prévisionnel (hors dépôt).
+//
+// Mode réel (à lancer uniquement par Paul, d'abord sur 3 ou 4 photos) :
+//   export SUPABASE_URL=https://<projet>.supabase.co
+//   export SUPABASE_SERVICE_ROLE_KEY=<clé service_role>      # jamais dans un fichier du dépôt
+//   node scripts/photos-storage/import-photos.mjs --apply --confirm <projet>.supabase.co --limit 4
+// Le script ne lit aucun fichier .env. Il n'écrase jamais un objet (upsert: false), ne supprime
+// rien, saute ce qui existe déjà (reprise possible) et journalise chaque création dans
+// ../soleana-originaux/storage-variants/journals/ pour le retour arrière (rollback-import.mjs).
+//
+// Options : --limit N | --only cle1,cle2 | --publish (placements visibles dès l'insertion,
+// sinon ils restent non publiés) | --publish-existing (met seulement published = true sur les
+// placements du manifeste déjà importés).
+import { appendFile, mkdir, readFile, writeFile } from "node:fs/promises";
+import path from "node:path";
+import { VARIANTS_DIR, readManifest } from "./lib.mjs";
+
+const args = process.argv.slice(2);
+const flag = (name) => args.includes(name);
+const option = (name) => {
+  const i = args.indexOf(name);
+  return i >= 0 ? args[i + 1] : undefined;
+};
+
+const apply = flag("--apply");
+const publish = flag("--publish");
+const publishExisting = flag("--publish-existing");
+const limit = option("--limit") ? Number(option("--limit")) : undefined;
+const only = option("--only")?.split(",").filter(Boolean);
+const BUCKET = "photos";
+
+const manifest = await readManifest();
+const { variants } = JSON.parse(
+  await readFile(path.join(VARIANTS_DIR, "variants-index.json"), "utf8"),
+);
+const variantsBySource = new Map();
+for (const v of variants) {
+  if (!variantsBySource.has(v.source_key)) variantsBySource.set(v.source_key, []);
+  variantsBySource.get(v.source_key).push(v);
+}
+
+let selected = manifest.photos;
+if (only?.length) selected = selected.filter((p) => only.includes(p.source_key));
+if (limit) selected = selected.slice(0, limit);
+const selectedKeys = new Set(selected.map((p) => p.source_key));
+const selectedPlacements = manifest.placements.filter((p) => selectedKeys.has(p.source_key));
+
+const stamp = new Date().toISOString().replace(/[:.]/g, "-");
+const journalDir = path.join(VARIANTS_DIR, "journals");
+await mkdir(journalDir, { recursive: true });
+const journalFile = path.join(journalDir, `${apply ? "import" : "dry-run"}-${stamp}.jsonl`);
+async function journal(entry) {
+  await appendFile(journalFile, `${JSON.stringify({ at: new Date().toISOString(), ...entry })}\n`);
+}
+
+const mb = (bytes) => `${(bytes / 1e6).toFixed(2)} Mo`;
+const plannedUploads = selected.flatMap((p) => variantsBySource.get(p.source_key) ?? []);
+console.log(apply ? "MODE RÉEL" : "SIMULATION (aucune écriture ; ajouter --apply pour exécuter)");
+console.log(`Photos sélectionnées : ${selected.length} / ${manifest.photos.length}`);
+console.log(
+  `Variantes à envoyer   : ${plannedUploads.length} (${mb(plannedUploads.reduce((s, v) => s + v.byte_size, 0))})`,
+);
+console.log(`Emplacements          : ${selectedPlacements.length} (published = ${publish})`);
+
+// ---------- Simulation ----------
+if (!apply) {
+  if (publishExisting) {
+    console.log(
+      "\n[simulation] UPDATE photo_placements SET published = true pour les placement_key du manifeste :",
+    );
+    console.log(
+      `  ${manifest.placements.length} clés (seules les lignes déjà importées seraient modifiées)`,
+    );
+  }
+  for (const photo of selected) {
+    console.log(`\nPHOTO ${photo.source_key}  (${photo.category}, ${photo.width}x${photo.height})`);
+    for (const v of variantsBySource.get(photo.source_key) ?? []) {
+      console.log(
+        `  UPLOAD  ${BUCKET}/${v.storage_path}  ${v.width}x${v.height}  ${(v.byte_size / 1000).toFixed(0)} Ko`,
+      );
+      await journal({ op: "upload", path: v.storage_path, bytes: v.byte_size, planned: true });
+    }
+    console.log(
+      `  INSERT  photos            source_key=${photo.source_key} category=${photo.category} published=true alt="${photo.alt_text}"`,
+    );
+    await journal({ op: "insert_photo", source_key: photo.source_key, planned: true });
+    for (const v of variantsBySource.get(photo.source_key) ?? []) {
+      console.log(
+        `  INSERT  photo_variants    ${v.storage_path} (${v.width}x${v.height}, sha256 ${v.sha256.slice(0, 12)}…)`,
+      );
+      await journal({ op: "insert_variant", path: v.storage_path, planned: true });
+    }
+    for (const pl of selectedPlacements.filter((p) => p.source_key === photo.source_key)) {
+      console.log(
+        `  INSERT  photo_placements  ${pl.placement_key} order=${pl.display_order} alt="${pl.alt}" x/y=${pl.object_position_x_pct}/${pl.object_position_y_pct}`,
+      );
+      await journal({ op: "insert_placement", placement_key: pl.placement_key, planned: true });
+    }
+  }
+  console.log(`\nJournal prévisionnel : ${journalFile}`);
+  console.log("Rien n'a été envoyé ni inséré.");
+  process.exit(0);
+}
+
+// ---------- Mode réel ----------
+const url = process.env.SUPABASE_URL;
+const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+if (!url || !key)
+  throw new Error(
+    "SUPABASE_URL et SUPABASE_SERVICE_ROLE_KEY doivent être exportées dans le shell.",
+  );
+const host = new URL(url).host;
+if (option("--confirm") !== host) {
+  throw new Error(`Confirmation requise : ajoutez --confirm ${host} (projet visé : ${host}).`);
+}
+const { createClient } = await import("@supabase/supabase-js");
+const db = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } });
+const must = (result, what) => {
+  if (result.error) throw new Error(`${what} : ${result.error.message}`);
+  return result.data;
+};
+
+if (publishExisting) {
+  const keys = manifest.placements.map((p) => p.placement_key);
+  for (let i = 0; i < keys.length; i += 100) {
+    const chunk = keys.slice(i, i + 100);
+    const rows = must(
+      await db
+        .from("photo_placements")
+        .update({ published: true, updated_at: new Date().toISOString() })
+        .in("placement_key", chunk)
+        .select("placement_key"),
+      "publication des emplacements",
+    );
+    for (const r of rows)
+      await journal({ op: "publish_placement", placement_key: r.placement_key, created: false });
+  }
+  console.log("Emplacements du manifeste publiés.");
+  process.exit(0);
+}
+
+const categories = new Map(
+  must(await db.from("categories").select("id, slug"), "catégories").map((c) => [c.slug, c.id]),
+);
+const seoPages = new Map(
+  must(await db.from("seo_pages").select("id, slug"), "pages SEO").map((s) => [s.slug, s.id]),
+);
+const publicUrl = (p) => db.storage.from(BUCKET).getPublicUrl(p).data.publicUrl;
+
+let created = { objects: 0, photos: 0, variants: 0, placements: 0 };
+for (const [n, photo] of selected.entries()) {
+  const categoryId = categories.get(photo.category);
+  if (!categoryId) throw new Error(`Catégorie introuvable : ${photo.category}`);
+  const own = variantsBySource.get(photo.source_key) ?? [];
+
+  // 1) Objets Storage (jamais d'écrasement).
+  for (const v of own) {
+    const bytes = await readFile(path.join(VARIANTS_DIR, v.file));
+    const { error } = await db.storage.from(BUCKET).upload(v.storage_path, bytes, {
+      contentType: "image/webp",
+      cacheControl: "31536000",
+      upsert: false,
+    });
+    if (error) {
+      if (/already exists|Duplicate|409/i.test(`${error.message} ${error.statusCode ?? ""}`)) {
+        await journal({
+          op: "upload",
+          path: v.storage_path,
+          created: false,
+          skipped: "existe déjà",
+        });
+        continue;
+      }
+      throw new Error(`Envoi ${v.storage_path} : ${error.message}`);
+    }
+    created.objects += 1;
+    await journal({ op: "upload", path: v.storage_path, created: true });
+  }
+
+  // 2) Photo (reprise possible grâce à source_key).
+  let photoRow = must(
+    await db.from("photos").select("id").eq("source_key", photo.source_key).maybeSingle(),
+    "lecture photo",
+  );
+  if (!photoRow) {
+    const largest = own.reduce((a, b) => (b.width > a.width ? b : a));
+    photoRow = must(
+      await db
+        .from("photos")
+        .insert({
+          image_url: publicUrl(largest.storage_path),
+          alt_text: photo.alt_text,
+          category_id: categoryId,
+          published: true,
+          on_home: false,
+          on_portfolio: false,
+          display_order: n,
+          source_key: photo.source_key,
+        })
+        .select("id")
+        .single(),
+      "insertion photo",
+    );
+    created.photos += 1;
+    await journal({
+      op: "insert_photo",
+      id: photoRow.id,
+      source_key: photo.source_key,
+      created: true,
+    });
+  } else {
+    await journal({
+      op: "insert_photo",
+      id: photoRow.id,
+      source_key: photo.source_key,
+      created: false,
+      skipped: "existe déjà",
+    });
+  }
+
+  // 3) Variantes.
+  for (const v of own) {
+    const exists = must(
+      await db.from("photo_variants").select("id").eq("storage_path", v.storage_path).maybeSingle(),
+      "lecture variante",
+    );
+    if (exists) continue;
+    const row = must(
+      await db
+        .from("photo_variants")
+        .insert({
+          photo_id: photoRow.id,
+          storage_path: v.storage_path,
+          width: v.width,
+          height: v.height,
+          byte_size: v.byte_size,
+          sha256: v.sha256,
+        })
+        .select("id")
+        .single(),
+      "insertion variante",
+    );
+    created.variants += 1;
+    await journal({ op: "insert_variant", id: row.id, path: v.storage_path, created: true });
+  }
+
+  // 4) Emplacements.
+  for (const pl of selectedPlacements.filter((p) => p.source_key === photo.source_key)) {
+    const seoId = seoPages.get(pl.seo_slug);
+    if (!seoId) throw new Error(`Page SEO introuvable : ${pl.seo_slug}`);
+    const exists = must(
+      await db
+        .from("photo_placements")
+        .select("id")
+        .eq("placement_key", pl.placement_key)
+        .maybeSingle(),
+      "lecture emplacement",
+    );
+    if (exists) continue;
+    const row = must(
+      await db
+        .from("photo_placements")
+        .insert({
+          placement_key: pl.placement_key,
+          photo_id: photoRow.id,
+          context_type: "seo",
+          seo_page_id: seoId,
+          slot: pl.slot,
+          display_order: pl.display_order,
+          object_position_x_pct: pl.object_position_x_pct,
+          object_position_y_pct: pl.object_position_y_pct,
+          alt_text_override: pl.alt,
+          published: publish,
+        })
+        .select("id")
+        .single(),
+      "insertion emplacement",
+    );
+    created.placements += 1;
+    await journal({
+      op: "insert_placement",
+      id: row.id,
+      placement_key: pl.placement_key,
+      created: true,
+    });
+  }
+  console.log(`  ${n + 1}/${selected.length} ${photo.source_key}`);
+}
+
+await writeFile(`${journalFile}.summary.json`, `${JSON.stringify(created, null, 2)}\n`);
+console.log(
+  `Terminé : ${created.objects} objets, ${created.photos} photos, ${created.variants} variantes, ${created.placements} emplacements créés.`,
+);
+console.log(`Journal : ${journalFile}`);
