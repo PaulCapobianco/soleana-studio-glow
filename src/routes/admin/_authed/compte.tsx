@@ -147,13 +147,18 @@ function PasswordSection({ email }: { email: string }) {
           toast.error("Saisissez votre mot de passe actuel.");
           return;
         case "wrong-current":
+          // Vidé pour ne pas laisser une valeur fausse ou obsolète fausser le prochain essai.
+          setCurrent("");
           toast.error("Le mot de passe actuel est incorrect.");
           return;
         case "needs-nonce":
+          // Le mot de passe actuel vient d'être vérifié avec succès : on le garde pour le
+          // second envoi (avec le code), qui en a de nouveau besoin.
           setNeedsNonce(true);
           toast.message("Un code de confirmation vient d'être envoyé à votre adresse e-mail.");
           return;
         case "error":
+          setCurrent("");
           toast.error(result.message);
           return;
         case "success":
