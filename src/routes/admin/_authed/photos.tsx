@@ -188,24 +188,10 @@ function PhotoCard({
             Publié
             <FieldHint>visible sur le site</FieldHint>
           </label>
-          <label className="flex items-center gap-1">
-            <input
-              type="checkbox"
-              checked={draft.on_home}
-              onChange={(e) => setField("on_home", e.target.checked)}
-            />
-            Accueil
-            <FieldHint>marqueur interne, sans effet visible sur le site pour l'instant</FieldHint>
-          </label>
-          <label className="flex items-center gap-1">
-            <input
-              type="checkbox"
-              checked={draft.on_portfolio}
-              onChange={(e) => setField("on_portfolio", e.target.checked)}
-            />
-            Portfolio
-            <FieldHint>marqueur interne, sans effet visible sur le site pour l'instant</FieldHint>
-          </label>
+          {/* Accueil / Portfolio (on_home / on_portfolio) : masqués tant qu'aucune page publique
+              ne les lit (seuls `published` et `category_id` comptent aujourd'hui). Colonnes et
+              données restent intactes ; à réafficher lors de la migration Storage des photos, cf.
+              docs/photos-storage/README.md. */}
         </div>
         <div className="flex items-center justify-between pt-1">
           <button onClick={remove} className="text-xs text-destructive hover:underline">
