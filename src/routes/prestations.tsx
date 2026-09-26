@@ -50,7 +50,7 @@ function Tarifs() {
 
         <section className="relative px-6 pt-40 pb-24 text-center">
           <div className="mx-auto max-w-5xl">
-            <Reveal>
+            <Reveal immediate>
               <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent mb-4">
                 Prestations
               </p>

@@ -39,7 +39,7 @@ function Contact() {
           <div className="relative z-10 mx-auto grid max-w-6xl gap-10 lg:grid-cols-[320px_minmax(0,1fr)]">
             <div className="hidden lg:block" aria-hidden="true" />
             <div className="flex flex-col items-center text-center">
-              <Reveal>
+              <Reveal immediate>
                 <p
                   className="mb-4 font-mono text-[10px] uppercase tracking-[0.4em] text-accent"
                   style={{
@@ -54,7 +54,7 @@ function Contact() {
                   Parlons de votre séance
                 </h1>
               </Reveal>
-              <Reveal delay={100}>
+              <Reveal immediate>
                 <p className="mx-auto mt-8 max-w-2xl text-balance text-lg leading-relaxed text-foreground/80">
                   Une question ou une envie ? Vous pouvez me contacter ici. Pour prendre
                   rendez-vous, rendez-vous sur la page dédiée accessible juste après le formulaire.
