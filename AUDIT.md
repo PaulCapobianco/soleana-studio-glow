@@ -20,6 +20,11 @@
 - `20260926000001_align_site_settings_with_displayed_values.sql` — **appliquée manuellement en production le 26/09/2026, valeurs vérifiées par `SELECT`** : `tiktok_url` et `google_review_url` ajoutées ; ligne `id = 1` alignée sur les coordonnées affichées (e-mail `contact@soleanastudio.fr`, téléphone `06.67.53.63.12`, WhatsApp `https://wa.me/33667536312` avec `whatsapp_enabled = true`, Instagram, TikTok, lien d'avis Google, zone de service, phrase de pied de page) ; RLS revérifiée (lecture publique, écriture admin) ; `UPDATE` accordé à `authenticated`. L'e-mail par défaut obsolète `hello@soleana-studio.com` est remplacé.
 - Code sur la branche `apres-noel` (écran admin « Paramètres », lecture côté public avec repli sur les valeurs du code) : HTML et JSON-LD des 11 pages comparées identiques avant et après l'application de la migration. Non déployé.
 
+**Compte admin et double authentification :**
+
+- Branche `apres-noel` (non déployée) : écran « Mon compte » (mot de passe, e-mail, TOTP), code à 6 chiffres à la connexion, « Mot de passe oublié ? », inscription publique retirée de l'écran de connexion.
+- `20260926000002_require_aal2_for_admin_writes.sql` — **créée, en attente d'application manuelle** : exige la session aal2 pour toutes les écritures admin. **À appliquer seulement après l'enregistrement du second facteur par tous les admins** (sinon plus aucune écriture). Mise en place, limites d'e-mail et procédure de secours : `docs/account-and-mfa-setup.md`.
+
 ---
 
 ## Mise à jour — 25 septembre 2026
