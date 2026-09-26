@@ -141,7 +141,8 @@
 .landingHero {
   position: relative;
   display: flex;
-  min-height: clamp(36rem, 96svh, 60rem);
+  min-height: 100vh; /* repli anciens navigateurs */
+  min-height: 100svh;
   align-items: flex-end;
   overflow: hidden;
   background: var(--noel-pine);
@@ -160,6 +161,30 @@
     ),
     linear-gradient(to right, color-mix(in srgb, #14241c 45%, transparent) 0%, transparent 60%),
     linear-gradient(to bottom, color-mix(in srgb, #14241c 55%, transparent) 0%, transparent 22%);
+}
+.scrollCue {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  z-index: 1;
+  width: 1px;
+  height: 2.5rem;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--noel-cream) 30%, transparent);
+  pointer-events: none;
+}
+.scrollCue::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--noel-cream);
+  transform: translateY(-100%);
+  animation: scrollCue 2.2s ease-in-out infinite;
+}
+@keyframes scrollCue {
+  to {
+    transform: translateY(100%);
+  }
 }
 .heroPhoto {
   position: absolute;

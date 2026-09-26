@@ -102,6 +102,7 @@ function NoelPage() {
               {NOEL_2026_TEXTS.heroCta}
             </a>
           </div>
+          <span className={styles.scrollCue} aria-hidden="true" />
         </section>
 
         <section className={styles.section}>
