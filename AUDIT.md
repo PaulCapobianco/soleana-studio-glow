@@ -7,6 +7,16 @@
 
 ---
 
+## Mise à jour — 26 septembre 2026
+
+**Formulaire de contact local supprimé (Pelli reste le seul canal) :**
+
+- `20260926000000_close_anonymous_contact_inserts.sql` — **créée dans le dépôt, en attente d'application manuelle** (non exécutée). Elle supprime la politique « Anyone can submit a contact request » et retire `INSERT` à `anon` et `authenticated` sur `public.contact_requests`. La table, ses données (0 ligne en production, vérifié) et les politiques admin sont inchangées. La purge à 3 ans y figure en commentaire seulement.
+- Code retiré (commit `8026431`) : `contact-form.schema.ts`, `contact.functions.ts` (`submitContactRequest`), `TurnstileWidget.tsx`, `client.server.ts` (client service-role, seul importateur : la fonction supprimée) et `VITE_TURNSTILE_SITE_KEY` de `.env.example`. Cela clôt SEC-03 côté code ; côté base, SEC-03 reste ouvert tant que la migration n'est pas appliquée.
+- Les iframes Pelli (`/contact`, `/reservation`, `/espace-client`) ne se chargent plus qu'après un clic (commit `22cf7f8`).
+
+---
+
 ## Mise à jour — 25 septembre 2026
 
 **État des migrations, vérifié en production depuis l'audit initial (par requêtes `SELECT` en lecture seule, exécutées par Paul) :**
