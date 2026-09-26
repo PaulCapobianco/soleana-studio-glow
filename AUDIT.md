@@ -11,8 +11,8 @@
 
 **Formulaire de contact local supprimé (Pelli reste le seul canal) :**
 
-- `20260926000000_close_anonymous_contact_inserts.sql` — **créée dans le dépôt, en attente d'application manuelle** (non exécutée). Elle supprime la politique « Anyone can submit a contact request » et retire `INSERT` à `anon` et `authenticated` sur `public.contact_requests`. La table, ses données (0 ligne en production, vérifié) et les politiques admin sont inchangées. La purge à 3 ans y figure en commentaire seulement.
-- Code retiré (commit `8026431`) : `contact-form.schema.ts`, `contact.functions.ts` (`submitContactRequest`), `TurnstileWidget.tsx`, `client.server.ts` (client service-role, seul importateur : la fonction supprimée) et `VITE_TURNSTILE_SITE_KEY` de `.env.example`. Cela clôt SEC-03 côté code ; côté base, SEC-03 reste ouvert tant que la migration n'est pas appliquée.
+- `20260926000000_close_anonymous_contact_inserts.sql` — **appliquée manuellement en production le 26/09/2026, et vérifiée : seules les politiques admin (lecture, modification, suppression) restent sur `public.contact_requests`.** Elle a supprimé la politique « Anyone can submit a contact request » et retiré `INSERT` à `anon` et `authenticated`. La table, ses données (0 ligne) et les politiques admin sont inchangées. La purge à 3 ans n'y figure qu'en commentaire (non exécutée).
+- Code retiré (commit `8026431`) : `contact-form.schema.ts`, `contact.functions.ts` (`submitContactRequest`), `TurnstileWidget.tsx`, `client.server.ts` (client service-role, seul importateur : la fonction supprimée) et `VITE_TURNSTILE_SITE_KEY` de `.env.example`. **SEC-03 est clos** : côté code (commit `8026431`) et côté base (migration appliquée).
 - Les iframes Pelli (`/contact`, `/reservation`, `/espace-client`) ne se chargent plus qu'après un clic (commit `22cf7f8`).
 
 ---
@@ -173,7 +173,7 @@ Le vrai problème est ailleurs : **la protection a disparu, pas la surface d'att
 **Impact :** la RLS empêche tout accès privilégié (cf. tableau plus haut) : **aucune élévation de privilège n'est possible**. Les risques sont la création illimitée de comptes dans `auth.users`, la consommation du quota d'e-mails Supabase pour envoyer des confirmations à des adresses arbitraires (usage détourné en relais de spam), et l'existence d'une population d'attaquants déjà authentifiés qui bénéficierait immédiatement de tout assouplissement futur de la RLS.
 **Correction :** désactiver l'inscription dans le tableau de bord Supabase (*Authentication → Providers → Email → Disable signup*) et retirer le mode `signup` de ce composant. Les comptes admin se créent depuis la console Supabase, suivis d'un `INSERT INTO user_roles`. Activer par ailleurs la protection contre les mots de passe compromis et le MFA sur le compte de la photographe.
 
-#### SEC-03 — Insertion anonyme non protégée dans `contact_requests`
+#### SEC-03 — Insertion anonyme non protégée dans `contact_requests` — **clos le 26/09/2026** (voir la mise à jour du 26 septembre en tête de fichier)
 **Axe :** Sécurité · **Effort :** moyen
 **Localisation :** migration `20260601000000_add_consent_to_contact_requests.sql:236-248` ; protection inactive dans `src/lib/api/contact.functions.ts:47-94`
 **Description :** la politique `Anyone can submit a contact request` autorise l'INSERT par le rôle `anon`, avec pour seules contraintes `consent IS TRUE` et des bornes de longueur. La clé publiable étant dans `dist/client/assets/vendor-supabase-*.js`, l'endpoint REST est directement appelable. Le `serverFn` qui portait Turnstile, CSRF, honeypot et délai minimum est absent du build (cf. point 6).
