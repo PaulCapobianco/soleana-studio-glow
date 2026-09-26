@@ -30,4 +30,11 @@ describe("validatePasswordConfirmation", () => {
   it("accepte une confirmation identique au nouveau mot de passe", () => {
     expect(validatePasswordConfirmation("UnAutreMotDePasse2", "UnAutreMotDePasse2")).toBeNull();
   });
+
+  it("accepte deux formes Unicode équivalentes d'un même accent (NFC vs NFD)", () => {
+    const nfc = "MotDePasseCafé12"; // é précomposé (U+00E9)
+    const nfd = "MotDePasseCafé12"; // e + accent aigu combinant (U+0301)
+    expect(nfc).not.toBe(nfd); // même rendu visuel, chaînes différentes en JS
+    expect(validatePasswordConfirmation(nfc, nfd)).toBeNull();
+  });
 });

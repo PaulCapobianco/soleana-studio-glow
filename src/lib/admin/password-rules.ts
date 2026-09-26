@@ -39,9 +39,16 @@ export function validateNewPassword(
   return null;
 }
 
+/**
+ * Compare en forme Unicode normalisée (NFC) : un clavier/IME peut produire un accent composé
+ * différemment (ex. « é » précomposé vs « e » + accent combinant) selon le champ, ce qui rendrait
+ * deux saisies visuellement identiques différentes en comparaison stricte de chaînes.
+ */
 export function validatePasswordConfirmation(
   password: string,
   confirmation: string,
 ): string | null {
-  return password === confirmation ? null : "Les deux mots de passe ne correspondent pas.";
+  return password.normalize("NFC") === confirmation.normalize("NFC")
+    ? null
+    : "Les deux mots de passe ne correspondent pas.";
 }

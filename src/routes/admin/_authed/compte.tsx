@@ -122,7 +122,7 @@ function PrimaryButton({
 
 // --- Mot de passe -----------------------------------------------------------------------------
 
-function PasswordSection({ email }: { email: string }) {
+export function PasswordSection({ email }: { email: string }) {
   const [current, setCurrent] = useState("");
   const [next, setNext] = useState("");
   const [confirm, setConfirm] = useState("");
