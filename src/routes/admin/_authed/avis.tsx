@@ -196,7 +196,9 @@ function ReviewCard({
       <label className="grid gap-1">
         <span>
           Lien Google de l'avis (facultatif)
-          <FieldHint>adresse de l'avis original sur Google, pour y renvoyer les visiteurs</FieldHint>
+          <FieldHint>
+            adresse de l'avis original sur Google, pour y renvoyer les visiteurs
+          </FieldHint>
         </span>
         <input
           type="url"

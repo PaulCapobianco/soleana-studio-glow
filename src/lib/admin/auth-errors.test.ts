@@ -20,10 +20,7 @@ describe("friendlyAuthError", () => {
       "reauth_nonce_missing",
       "Le code de confirmation est invalide ou a expiré. Rechargez la page et réessayez.",
     ],
-    [
-      "insufficient_aal",
-      "Saisissez d'abord le code de votre application d'authentification.",
-    ],
+    ["insufficient_aal", "Saisissez d'abord le code de votre application d'authentification."],
     ["session_expired", "Votre session a expiré. Reconnectez-vous puis réessayez."],
   ];
 

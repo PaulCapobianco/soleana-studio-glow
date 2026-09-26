@@ -14,7 +14,14 @@ function makeDeps(overrides: Partial<ChangePasswordDeps> = {}): ChangePasswordDe
   };
 }
 
-const baseInput = { email: EMAIL, current: CURRENT, next: NEXT, confirm: NEXT, needsNonce: false, nonce: "" };
+const baseInput = {
+  email: EMAIL,
+  current: CURRENT,
+  next: NEXT,
+  confirm: NEXT,
+  needsNonce: false,
+  nonce: "",
+};
 
 describe("changePassword", () => {
   it("accepte un nouveau mot de passe différent de l'actuel (aucune erreur Supabase)", async () => {
@@ -28,7 +35,10 @@ describe("changePassword", () => {
   it("refuse une confirmation différente sans envoyer aucune requête", async () => {
     const deps = makeDeps();
     const result = await changePassword({ ...baseInput, confirm: "Different3" }, deps);
-    expect(result).toEqual({ status: "error", message: "Les deux mots de passe ne correspondent pas." });
+    expect(result).toEqual({
+      status: "error",
+      message: "Les deux mots de passe ne correspondent pas.",
+    });
     expect(deps.verifyCurrentPassword).not.toHaveBeenCalled();
     expect(deps.updateUser).not.toHaveBeenCalled();
   });
@@ -43,7 +53,10 @@ describe("changePassword", () => {
   it("refuse un nouveau mot de passe identique à l'actuel, une fois celui-ci vérifié (same_password)", async () => {
     const deps = makeDeps({
       updateUser: vi.fn().mockResolvedValue({
-        error: { code: "same_password", message: "New password should be different from the old password." },
+        error: {
+          code: "same_password",
+          message: "New password should be different from the old password.",
+        },
       }),
     });
     const result = await changePassword(baseInput, deps);

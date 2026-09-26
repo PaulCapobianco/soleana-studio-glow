@@ -28,7 +28,11 @@ const NEXT = "UnAutreMotDePasse2";
 
 async function fillForm(
   user: ReturnType<typeof userEvent.setup>,
-  { current = CURRENT, next = NEXT, confirm = NEXT }: { current?: string; next?: string; confirm?: string } = {},
+  {
+    current = CURRENT,
+    next = NEXT,
+    confirm = NEXT,
+  }: { current?: string; next?: string; confirm?: string } = {},
 ) {
   await user.type(screen.getByLabelText("Mot de passe actuel"), current);
   await user.type(screen.getByLabelText("Nouveau mot de passe"), next);
