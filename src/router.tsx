@@ -3,7 +3,25 @@ import { createRouter } from "@tanstack/react-router";
 import { routeTree } from "./routeTree.gen";
 import { ErrorComponent, NotFoundComponent } from "./routes/__root";
 
+// Le lien de réinitialisation arrive avec "#…type=recovery" ; le client d'authentification
+// efface ce fragment dès son initialisation. On garde donc une trace (dans l'onglet seulement)
+// pour que la page /admin/reinitialiser n'accepte que les sessions issues d'un tel lien.
+function rememberRecoveryLink() {
+  if (typeof window === "undefined") return;
+  if (
+    window.location.pathname === "/admin/reinitialiser" &&
+    /type=recovery/.test(window.location.hash + window.location.search)
+  ) {
+    try {
+      window.sessionStorage.setItem("soleana-recovery-link", "1");
+    } catch {
+      // stockage indisponible : la page affichera « lien invalide », sans risque.
+    }
+  }
+}
+
 export const getRouter = () => {
+  rememberRecoveryLink();
   const queryClient = new QueryClient();
 
   const router = createRouter({

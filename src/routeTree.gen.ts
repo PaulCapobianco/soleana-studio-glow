@@ -29,6 +29,7 @@ import { Route as PortfolioPortraitRouteImport } from './routes/portfolio/portra
 import { Route as PortfolioGrossesseRouteImport } from './routes/portfolio/grossesse'
 import { Route as PortfolioFamilleRouteImport } from './routes/portfolio/famille'
 import { Route as PortfolioCoupleRouteImport } from './routes/portfolio/couple'
+import { Route as AdminReinitialiserRouteImport } from './routes/admin/reinitialiser'
 import { Route as AdminLoginRouteImport } from './routes/admin/login'
 import { Route as AdminAuthedRouteImport } from './routes/admin/_authed'
 import { Route as AdminAuthedPrestationsRouteImport } from './routes/admin/_authed/prestations'
@@ -140,6 +141,11 @@ const PortfolioCoupleRoute = PortfolioCoupleRouteImport.update({
   path: '/couple',
   getParentRoute: () => PortfolioRoute,
 } as any)
+const AdminReinitialiserRoute = AdminReinitialiserRouteImport.update({
+  id: '/admin/reinitialiser',
+  path: '/admin/reinitialiser',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminLoginRoute = AdminLoginRouteImport.update({
   id: '/admin/login',
   path: '/admin/login',
@@ -208,6 +214,7 @@ export interface FileRoutesByFullPath {
   '/tarifs': typeof TarifsRoute
   '/admin': typeof AdminAuthedRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
+  '/admin/reinitialiser': typeof AdminReinitialiserRoute
   '/portfolio/couple': typeof PortfolioCoupleRoute
   '/portfolio/famille': typeof PortfolioFamilleRoute
   '/portfolio/grossesse': typeof PortfolioGrossesseRoute
@@ -239,6 +246,7 @@ export interface FileRoutesByTo {
   '/tarifs': typeof TarifsRoute
   '/admin': typeof AdminIndexRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/reinitialiser': typeof AdminReinitialiserRoute
   '/portfolio/couple': typeof PortfolioCoupleRoute
   '/portfolio/famille': typeof PortfolioFamilleRoute
   '/portfolio/grossesse': typeof PortfolioGrossesseRoute
@@ -271,6 +279,7 @@ export interface FileRoutesById {
   '/tarifs': typeof TarifsRoute
   '/admin/_authed': typeof AdminAuthedRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
+  '/admin/reinitialiser': typeof AdminReinitialiserRoute
   '/portfolio/couple': typeof PortfolioCoupleRoute
   '/portfolio/famille': typeof PortfolioFamilleRoute
   '/portfolio/grossesse': typeof PortfolioGrossesseRoute
@@ -305,6 +314,7 @@ export interface FileRouteTypes {
     | '/tarifs'
     | '/admin'
     | '/admin/login'
+    | '/admin/reinitialiser'
     | '/portfolio/couple'
     | '/portfolio/famille'
     | '/portfolio/grossesse'
@@ -336,6 +346,7 @@ export interface FileRouteTypes {
     | '/tarifs'
     | '/admin'
     | '/admin/login'
+    | '/admin/reinitialiser'
     | '/portfolio/couple'
     | '/portfolio/famille'
     | '/portfolio/grossesse'
@@ -367,6 +378,7 @@ export interface FileRouteTypes {
     | '/tarifs'
     | '/admin/_authed'
     | '/admin/login'
+    | '/admin/reinitialiser'
     | '/portfolio/couple'
     | '/portfolio/famille'
     | '/portfolio/grossesse'
@@ -400,6 +412,7 @@ export interface RootRouteChildren {
   TarifsRoute: typeof TarifsRoute
   AdminAuthedRoute: typeof AdminAuthedRouteWithChildren
   AdminLoginRoute: typeof AdminLoginRoute
+  AdminReinitialiserRoute: typeof AdminReinitialiserRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
@@ -545,6 +558,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PortfolioCoupleRouteImport
       parentRoute: typeof PortfolioRoute
     }
+    '/admin/reinitialiser': {
+      id: '/admin/reinitialiser'
+      path: '/admin/reinitialiser'
+      fullPath: '/admin/reinitialiser'
+      preLoaderRoute: typeof AdminReinitialiserRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/login': {
       id: '/admin/login'
       path: '/admin/login'
@@ -681,6 +701,7 @@ const rootRouteChildren: RootRouteChildren = {
   TarifsRoute: TarifsRoute,
   AdminAuthedRoute: AdminAuthedRouteWithChildren,
   AdminLoginRoute: AdminLoginRoute,
+  AdminReinitialiserRoute: AdminReinitialiserRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 export const routeTree = rootRouteImport
