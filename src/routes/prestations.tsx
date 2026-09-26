@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { SiteShell } from "@/components/site/SiteShell";
 import { Reveal } from "@/components/site/Reveal";
 import fondPresta from "@/assets/fond_presta.webp";

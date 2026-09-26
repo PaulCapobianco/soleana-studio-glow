@@ -4,14 +4,6 @@ import { X } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
 
-type Photo = {
-  id: string;
-  image_url: string;
-  alt_text: string;
-  location?: string;
-  title?: string;
-};
-
 interface CategoryGalleryProps {
   categorySlug: string;
 }

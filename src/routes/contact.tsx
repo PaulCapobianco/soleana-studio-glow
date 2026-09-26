@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 
 import fondContact from "@/assets/fond_contact.webp";
