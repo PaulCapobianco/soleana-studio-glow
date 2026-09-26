@@ -7,6 +7,7 @@ import { NoelGallery } from "@/components/site/NoelGallery";
 import { NoelStar } from "@/components/site/NoelStar";
 import { absoluteUrl, buildPageSeo } from "@/lib/seo";
 import { getNoel2026EditionState } from "@/lib/noel-2026.functions";
+import { buildNoel2026EventJsonLd } from "@/lib/noel-2026-jsonld";
 import {
   NOEL_2026_ACTIVE_HERO,
   NOEL_2026_CAMPAIGN,
@@ -23,7 +24,7 @@ import {
 
 export const Route = createFileRoute("/mini-seances-noel-2026")({
   loader: () => getNoel2026EditionState(),
-  head: () => {
+  head: ({ loaderData }) => {
     const seo = buildPageSeo(NOEL_2026_SEO);
 
     return {
@@ -32,6 +33,15 @@ export const Route = createFileRoute("/mini-seances-noel-2026")({
         ...seo.meta,
         { property: "og:image", content: absoluteUrl(NOEL_2026_ACTIVE_HERO.src1600) },
       ],
+      // No Event once the edition is over.
+      scripts: loaderData?.isEditionOver
+        ? []
+        : [
+            {
+              type: "application/ld+json",
+              children: JSON.stringify(buildNoel2026EventJsonLd()),
+            },
+          ],
     };
   },
   component: NoelPage,
