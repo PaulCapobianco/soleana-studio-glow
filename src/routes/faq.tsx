@@ -59,11 +59,13 @@ function Faq() {
           <Accordion.Root type="single" collapsible className="space-y-2">
             {faqItems.map((q) => (
               <Accordion.Item key={q.id} value={q.id} className="border-b border-border">
-                <Accordion.Header>
-                  <Accordion.Trigger className="group flex w-full items-center justify-between py-6 text-left font-display text-xl italic text-foreground hover:text-primary transition-colors">
-                    {q.question}
-                    <ChevronDown className="w-4 h-4 shrink-0 transition-transform group-data-[state=open]:rotate-180" />
-                  </Accordion.Trigger>
+                <Accordion.Header asChild>
+                  <h2>
+                    <Accordion.Trigger className="group flex w-full items-center justify-between py-6 text-left font-display text-xl italic text-foreground hover:text-primary transition-colors">
+                      {q.question}
+                      <ChevronDown className="w-4 h-4 shrink-0 transition-transform group-data-[state=open]:rotate-180" />
+                    </Accordion.Trigger>
+                  </h2>
                 </Accordion.Header>
                 <Accordion.Content
                   forceMount
