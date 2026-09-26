@@ -5,6 +5,7 @@ import { useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 import { SaveButton } from "@/components/site/admin/SaveButton";
+import { FieldHint } from "@/components/site/admin/FieldHint";
 import { confirmDelete } from "@/lib/admin/confirm-delete";
 import { friendlySupabaseError } from "@/lib/admin/friendly-error";
 import { useDirtySet } from "@/lib/admin/use-dirty-set";
@@ -145,16 +146,24 @@ function PhotoCard({
         loading="lazy"
       />
       <div className="p-4 space-y-2 text-sm">
+        <label className="block text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
+          Texte alternatif
+          <FieldHint>description de la photo pour Google et les personnes malvoyantes</FieldHint>
+        </label>
         <input
           value={draft.alt_text}
           onChange={(e) => setField("alt_text", e.target.value)}
-          placeholder="Alt SEO"
+          placeholder="Ex. Séance grossesse en forêt au coucher du soleil"
           className="w-full bg-background border border-border px-2 py-1 text-xs"
         />
+        <label className="block text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
+          Lieu
+          <FieldHint>lieu de la séance, affiché en superposition sur la photo</FieldHint>
+        </label>
         <input
           value={draft.location ?? ""}
           onChange={(e) => setField("location", e.target.value)}
-          placeholder="Lieu"
+          placeholder="Ex. Lyon"
           className="w-full bg-background border border-border px-2 py-1 text-xs"
         />
         <select
@@ -177,6 +186,7 @@ function PhotoCard({
               onChange={(e) => setField("published", e.target.checked)}
             />
             Publié
+            <FieldHint>visible sur le site</FieldHint>
           </label>
           <label className="flex items-center gap-1">
             <input
@@ -185,6 +195,7 @@ function PhotoCard({
               onChange={(e) => setField("on_home", e.target.checked)}
             />
             Accueil
+            <FieldHint>marqueur interne, sans effet visible sur le site pour l'instant</FieldHint>
           </label>
           <label className="flex items-center gap-1">
             <input
@@ -193,6 +204,7 @@ function PhotoCard({
               onChange={(e) => setField("on_portfolio", e.target.checked)}
             />
             Portfolio
+            <FieldHint>marqueur interne, sans effet visible sur le site pour l'instant</FieldHint>
           </label>
         </div>
         <div className="flex items-center justify-between pt-1">

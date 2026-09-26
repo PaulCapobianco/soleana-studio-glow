@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 import { SaveButton } from "@/components/site/admin/SaveButton";
+import { FieldHint } from "@/components/site/admin/FieldHint";
 import { confirmDelete } from "@/lib/admin/confirm-delete";
 import { friendlySupabaseError } from "@/lib/admin/friendly-error";
 import { useDirtySet } from "@/lib/admin/use-dirty-set";
@@ -165,6 +166,7 @@ function ServiceCard({
             onChange={(e) => setField("featured", e.target.checked)}
           />
           Mise en avant
+          <FieldHint>carte mise en valeur avec le badge « Populaire »</FieldHint>
         </label>
         <label className="flex items-center gap-2">
           <input
@@ -173,9 +175,11 @@ function ServiceCard({
             onChange={(e) => setField("active", e.target.checked)}
           />
           Active
+          <FieldHint>visible sur le site</FieldHint>
         </label>
         <Input
           label="Ordre d'affichage"
+          hint="position dans la liste : 1 = en premier"
           value={String(draft.display_order)}
           type="number"
           onChange={(v) => setField("display_order", Number(v))}
@@ -197,11 +201,13 @@ function ServiceCard({
 
 function Input({
   label,
+  hint,
   value,
   onChange,
   type = "text",
 }: {
   label: string;
+  hint?: string;
   value: string;
   onChange: (v: string) => void;
   type?: string;
@@ -210,6 +216,7 @@ function Input({
     <div>
       <label className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
         {label}
+        {hint && <FieldHint>{hint}</FieldHint>}
       </label>
       <input
         type={type}
