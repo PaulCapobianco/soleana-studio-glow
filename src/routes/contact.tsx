@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import fondContact from "@/assets/fond_contact.webp";
 import { SiteShell } from "@/components/site/SiteShell";
 import { Reveal } from "@/components/site/Reveal";
+import { ConsentEmbed } from "@/components/site/ConsentEmbed";
 import { TikTokIcon } from "@/components/site/TikTokIcon";
 import { Instagram, Mail, MessageCircle } from "lucide-react";
 import { buildPageSeo } from "@/lib/seo";
@@ -122,13 +123,13 @@ function Contact() {
                     </p>
                     <h2 className="mt-3 font-display text-3xl italic text-primary">Écrivez-moi</h2>
                   </div>
-                  <iframe
+                  <ConsentEmbed
                     src="https://soleana-studio.pelli.io/embedded/contact"
                     title="Formulaire de contact Soleana Studio"
-                    width="100%"
+                    subject="Le formulaire de contact"
                     height="600"
-                    loading="lazy"
                     className="block w-full border-0 bg-[#FAF6EF]/95"
+                    placeholderClassName="min-h-[20rem]"
                   />
                 </div>
               </Reveal>

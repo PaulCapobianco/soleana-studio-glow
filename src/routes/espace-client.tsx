@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { GoogleIcon } from "@/components/site/GoogleIcon";
 import { SiteShell } from "@/components/site/SiteShell";
 import { Reveal } from "@/components/site/Reveal";
+import { ConsentEmbed } from "@/components/site/ConsentEmbed";
 import { buildPageSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/espace-client")({
@@ -55,13 +56,13 @@ function EspaceClient() {
                   Vos contenus privés
                 </h2>
               </div>
-              <iframe
+              <ConsentEmbed
                 src="https://soleana-studio.pelli.io/embedded"
                 title="Espace client Soleana Studio"
-                width="100%"
+                subject="L'espace client"
                 height="700"
                 scrolling="yes"
-                loading="lazy"
+                placeholderClassName="min-h-[20rem]"
                 className="block w-full border-0 bg-[#FAF6EF] h-[max(82dvh,760px)] sm:h-[max(84dvh,820px)] md:h-[max(86dvh,860px)] lg:h-[max(88dvh,920px)]"
               />
             </div>

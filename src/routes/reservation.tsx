@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import { SiteShell } from "@/components/site/SiteShell";
 import { Reveal } from "@/components/site/Reveal";
+import { ConsentEmbed } from "@/components/site/ConsentEmbed";
 import { buildPageSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/reservation")({
@@ -50,13 +51,13 @@ function Reservation() {
                   Choisissez votre créneau
                 </h2>
               </div>
-              <iframe
+              <ConsentEmbed
                 src="https://soleana-studio.pelli.io/embedded/booking"
                 title="Réservation en ligne Soleana Studio"
-                width="100%"
+                subject="Le calendrier de réservation"
                 height="700"
-                loading="lazy"
                 className="block w-full border-0 bg-[#FAF6EF]"
+                placeholderClassName="min-h-[20rem]"
               />
             </div>
           </Reveal>
