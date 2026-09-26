@@ -14,6 +14,10 @@ export function isInsufficientAal(error: unknown): boolean {
   return authErrorCode(error) === "insufficient_aal";
 }
 
+export function isSamePassword(error: unknown): boolean {
+  return authErrorCode(error) === "same_password";
+}
+
 export function friendlyAuthError(error: unknown): string {
   const code = authErrorCode(error);
   const message =

@@ -6,6 +6,7 @@ import {
   friendlyAuthError,
   isInsufficientAal,
   isReauthenticationNeeded,
+  isSamePassword,
 } from "@/lib/admin/auth-errors";
 import { getMfaState, normalizeTotpCode, TOTP_CODE, type MfaState } from "@/lib/admin/mfa";
 import { validateNewPassword, validatePasswordConfirmation } from "@/lib/admin/password-rules";
@@ -160,6 +161,15 @@ function PasswordSection({ email }: { email: string }) {
         }
         if (isInsufficientAal(error)) {
           toast.error("Reconnectez-vous avec votre code d'authentification, puis réessayez.");
+          return;
+        }
+        if (isSamePassword(error)) {
+          // Le formulaire garantit déjà next !== current avant l'appel : si Supabase répond
+          // quand même « same_password », c'est que le mot de passe stocké a changé entre-temps
+          // (autre onglet/session), pas que la saisie de cet écran était invalide.
+          toast.error(
+            "Le mot de passe n'a pas été modifié : le serveur indique qu'il correspond déjà au mot de passe enregistré. Rechargez la page, vérifiez votre mot de passe actuel, puis réessayez.",
+          );
           return;
         }
         toast.error(friendlyAuthError(error));
