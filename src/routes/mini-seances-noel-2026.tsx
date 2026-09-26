@@ -4,6 +4,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteShell } from "@/components/site/SiteShell";
 import { Reveal } from "@/components/site/Reveal";
 import { NoelGallery } from "@/components/site/NoelGallery";
+import { NOEL_2026_SESSIONS } from "@/data/noel-2026-sessions";
 import { NoelStar } from "@/components/site/NoelStar";
 import { absoluteUrl, buildPageSeo } from "@/lib/seo";
 import { getNoel2026EditionState } from "@/lib/noel-2026.functions";
@@ -80,7 +81,7 @@ function NoelPage() {
   }
 
   const main = NOEL_2026_GALLERY_PHOTOS[0];
-  const accent = NOEL_2026_GALLERY_PHOTOS[5];
+  const accent = NOEL_2026_GALLERY_PHOTOS[1];
 
   return (
     <SiteShell overlay>
@@ -172,7 +173,7 @@ function NoelPage() {
               </h2>
               <p>{NOEL_2026_TEXTS.galleryMention}</p>
             </div>
-            <NoelGallery photos={NOEL_2026_GALLERY_PHOTOS} />
+            <NoelGallery sessions={NOEL_2026_SESSIONS} />
           </div>
         </section>
 

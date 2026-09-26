@@ -5,20 +5,13 @@ import noelHeroB from "@/assets/noel-2026/noel-hero-b.webp";
 import noelHeroB1600 from "@/assets/noel-2026/noel-hero-b-1600.webp";
 import noelHeroB2400 from "@/assets/noel-2026/noel-hero-b-2400.webp";
 
-import gallery01 from "@/assets/noel-2026/noel-gallery-01.webp";
-import gallery01Lg from "@/assets/noel-2026/noel-gallery-01-1600.webp";
-import gallery02 from "@/assets/noel-2026/noel-gallery-02.webp";
-import gallery02Lg from "@/assets/noel-2026/noel-gallery-02-1600.webp";
-import gallery03 from "@/assets/noel-2026/noel-gallery-03.webp";
-import gallery03Lg from "@/assets/noel-2026/noel-gallery-03-1600.webp";
-import gallery04 from "@/assets/noel-2026/noel-gallery-04.webp";
-import gallery04Lg from "@/assets/noel-2026/noel-gallery-04-1600.webp";
-import gallery05 from "@/assets/noel-2026/noel-gallery-05.webp";
-import gallery05Lg from "@/assets/noel-2026/noel-gallery-05-1600.webp";
-import gallery06 from "@/assets/noel-2026/noel-gallery-06.webp";
-import gallery06Lg from "@/assets/noel-2026/noel-gallery-06-1600.webp";
-import gallery07 from "@/assets/noel-2026/noel-gallery-07.webp";
-import gallery07Lg from "@/assets/noel-2026/noel-gallery-07-1600.webp";
+// Intro, small accent and closing photos: three of the session photos (same files as the gallery).
+import introPhoto from "@/assets/noel-2026/noel-s03-07.webp";
+import introPhotoLg from "@/assets/noel-2026/noel-s03-07-1600.webp";
+import accentPhoto from "@/assets/noel-2026/noel-decor-15.webp";
+import accentPhotoLg from "@/assets/noel-2026/noel-decor-15-1600.webp";
+import closingPhoto from "@/assets/noel-2026/noel-decor-19.webp";
+import closingPhotoLg from "@/assets/noel-2026/noel-decor-19-1600.webp";
 
 // Shared with the homepage teaser — defined once here so both
 // consumers stay in sync instead of duplicating hex codes.
@@ -180,61 +173,28 @@ export type NoelGalleryPhoto = {
   alt: string;
 };
 
-// Display order lives here, and only here — renumbering this array is
-// enough to reorder the gallery, no file renames needed.
+// Photos used outside the gallery: [0] intro portrait, [1] small accent, [2] closing.
 export const NOEL_2026_GALLERY_PHOTOS: NoelGalleryPhoto[] = [
   {
     id: "noel-gallery-01",
-    src: gallery01,
-    srcLarge: gallery01Lg,
+    src: introPhoto,
+    srcLarge: introPhotoLg,
     width: 700,
     height: 1050,
     alt: "Couple lors d'une mini-séance de Noël en extérieur, ambiance chaleureuse au milieu de la nature",
   },
   {
-    id: "noel-gallery-02",
-    src: gallery02,
-    srcLarge: gallery02Lg,
-    width: 700,
-    height: 467,
-    alt: "Couple tenant un coussin de Noël, moment complice en extérieur",
-  },
-  {
-    id: "noel-gallery-03",
-    src: gallery03,
-    srcLarge: gallery03Lg,
-    width: 700,
-    height: 1050,
-    alt: "Cadeaux de Noël emballés et guirlande lumineuse, décor de la séance à la tombée du jour",
-  },
-  {
-    id: "noel-gallery-04",
-    src: gallery04,
-    srcLarge: gallery04Lg,
-    width: 700,
-    height: 467,
-    alt: "Installation cocooning de Noël en extérieur, plaid, coussins et guirlandes lumineuses",
-  },
-  {
-    id: "noel-gallery-05",
-    src: gallery05,
-    srcLarge: gallery05Lg,
-    width: 700,
-    height: 1050,
-    alt: "Ambiance de Noël en extérieur, lumières scintillantes et douceurs sur un plaid",
-  },
-  {
     id: "noel-gallery-06",
-    src: gallery06,
-    srcLarge: gallery06Lg,
+    src: accentPhoto,
+    srcLarge: accentPhotoLg,
     width: 700,
     height: 1050,
     alt: "Étoile lumineuse suspendue sous les sapins, décor de Noël en pleine nature",
   },
   {
     id: "noel-gallery-07",
-    src: gallery07,
-    srcLarge: gallery07Lg,
+    src: closingPhoto,
+    srcLarge: closingPhotoLg,
     width: 700,
     height: 1050,
     alt: "Étoile de Noël suspendue sous le ciel du soir, traîneau et guirlandes lumineuses",
@@ -283,6 +243,6 @@ export const NOEL_2026_TEASER = {
 
 export const NOEL_2026_CAMPAIGN = {
   editionLabel: "Édition Noël 2026",
-  detailPhoto: NOEL_2026_GALLERY_PHOTOS[5],
-  closingPhoto: NOEL_2026_GALLERY_PHOTOS[6],
+  detailPhoto: NOEL_2026_GALLERY_PHOTOS[1],
+  closingPhoto: NOEL_2026_GALLERY_PHOTOS[2],
 } as const;

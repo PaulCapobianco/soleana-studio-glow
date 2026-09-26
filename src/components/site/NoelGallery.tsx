@@ -1,32 +1,49 @@
 import styles from "@/components/site/NoelCampaign.module.css";
 import { useEffect, useRef, useState } from "react";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { NOEL_2026_PAGE_COPY, type NoelGalleryPhoto } from "@/data/noel-2026";
+import { NOEL_2026_PAGE_COPY } from "@/data/noel-2026";
+import type { NoelSession } from "@/data/noel-2026-sessions";
 
-export function NoelGallery({ photos }: { photos: NoelGalleryPhoto[] }) {
+// Une tuile par séance (couverture + nombre de photos) ; un clic ouvre la lightbox sur les
+// photos de cette séance seulement.
+export function NoelGallery({ sessions }: { sessions: NoelSession[] }) {
   const triggerRef = useRef<HTMLButtonElement | null>(null);
-  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
-  const current = lightboxIndex !== null ? (photos[lightboxIndex] ?? null) : null;
+  const [open, setOpen] = useState<{ session: number; index: number } | null>(null);
+  const photos = open ? sessions[open.session].photos : [];
+  const lightboxIndex = open ? open.index : null;
+  const current = open ? (photos[open.index] ?? null) : null;
+
+  function go(delta: number) {
+    setOpen((state) =>
+      state
+        ? {
+            session: state.session,
+            index:
+              (state.index + delta + sessions[state.session].photos.length) %
+              sessions[state.session].photos.length,
+          }
+        : state,
+    );
+  }
 
   useEffect(() => {
-    if (lightboxIndex === null) return;
+    if (!open) return;
 
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "ArrowRight" && photos.length > 1) {
+      if (event.key === "ArrowRight") {
         event.preventDefault();
-        setLightboxIndex((i) => (i === null ? 0 : (i + 1) % photos.length));
+        go(1);
       }
-      if (event.key === "ArrowLeft" && photos.length > 1) {
+      if (event.key === "ArrowLeft") {
         event.preventDefault();
-        setLightboxIndex((i) =>
-          i === null ? photos.length - 1 : (i - 1 + photos.length) % photos.length,
-        );
+        go(-1);
       }
     };
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [lightboxIndex, photos.length]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open?.session]);
 
   useEffect(() => {
     if (lightboxIndex === null) {
@@ -42,36 +59,36 @@ export function NoelGallery({ photos }: { photos: NoelGalleryPhoto[] }) {
   return (
     <>
       <div className={styles.gallery}>
-        {photos.map((photo, index) => (
+        {sessions.map((session, sessionIndex) => (
           <button
-            key={photo.id}
+            key={session.id}
             type="button"
             onClick={(event) => {
               triggerRef.current = event.currentTarget;
-              setLightboxIndex(index);
+              setOpen({ session: sessionIndex, index: 0 });
             }}
             className={styles.galleryPhoto}
-            aria-label={`Agrandir la photo : ${photo.alt}`}
+            aria-label={`Ouvrir la série de ${session.photos.length} photos : ${session.cover.alt}`}
           >
             <img
-              src={photo.src}
-              srcSet={`${photo.src} 700w, ${photo.srcLarge} 1600w`}
+              src={session.cover.src}
+              srcSet={`${session.cover.src} 700w, ${session.cover.srcLarge} 1600w`}
               sizes="(min-width: 1440px) 700px, (min-width: 768px) 55vw, 100vw"
-              width={photo.width}
-              height={photo.height}
-              alt={photo.alt}
+              width={session.cover.width}
+              height={session.cover.height}
+              alt={session.cover.alt}
               loading="lazy"
               decoding="async"
               className={styles.galleryImage}
             />
+            <span className={styles.photoCount} aria-hidden="true">
+              {session.photos.length} photos
+            </span>
           </button>
         ))}
       </div>
 
-      <Dialog
-        open={lightboxIndex !== null}
-        onOpenChange={(open) => !open && setLightboxIndex(null)}
-      >
+      <Dialog open={open !== null} onOpenChange={(isOpen) => !isOpen && setOpen(null)}>
         <DialogContent
           onCloseAutoFocus={(event) => {
             event.preventDefault();
@@ -99,13 +116,7 @@ export function NoelGallery({ photos }: { photos: NoelGalleryPhoto[] }) {
                   <div className="flex items-center justify-between gap-3 md:justify-center md:gap-4">
                     <button
                       type="button"
-                      onClick={() =>
-                        setLightboxIndex(
-                          lightboxIndex === null
-                            ? 0
-                            : (lightboxIndex - 1 + photos.length) % photos.length,
-                        )
-                      }
+                      onClick={() => go(-1)}
                       className="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/10 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-white backdrop-blur-sm transition hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
                       aria-label="Photo précédente"
                     >
@@ -116,11 +127,7 @@ export function NoelGallery({ photos }: { photos: NoelGalleryPhoto[] }) {
                     </p>
                     <button
                       type="button"
-                      onClick={() =>
-                        setLightboxIndex(
-                          lightboxIndex === null ? 0 : (lightboxIndex + 1) % photos.length,
-                        )
-                      }
+                      onClick={() => go(1)}
                       className="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/10 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-white backdrop-blur-sm transition hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
                       aria-label="Photo suivante"
                     >
