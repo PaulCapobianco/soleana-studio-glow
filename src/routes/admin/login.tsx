@@ -2,6 +2,7 @@ import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useEffect, useId, useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { PasswordVisibilityToggle } from "@/components/site/admin/PasswordVisibilityToggle";
 import { friendlyAuthError } from "@/lib/admin/auth-errors";
 import {
   getMfaState,
@@ -41,6 +42,7 @@ function AdminLogin() {
   const [mode, setMode] = useState<Mode>("login");
   const [factorId, setFactorId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const codeId = useId();
 
   // Session déjà ouverte mais second facteur non saisi (retour depuis une page admin, actualisation).
@@ -181,14 +183,20 @@ function AdminLogin() {
                 <label htmlFor="admin-password" className={labelClass}>
                   Mot de passe
                 </label>
-                <input
-                  id="admin-password"
-                  name="password"
-                  type="password"
-                  autoComplete="current-password"
-                  required
-                  className={inputClass}
-                />
+                <div className="relative">
+                  <input
+                    id="admin-password"
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    autoComplete="current-password"
+                    required
+                    className={`${inputClass} pr-11`}
+                  />
+                  <PasswordVisibilityToggle
+                    visible={showPassword}
+                    onToggle={() => setShowPassword((v) => !v)}
+                  />
+                </div>
               </div>
               <button type="submit" disabled={loading} className={buttonClass}>
                 {loading ? "Patientez…" : "Connexion"}

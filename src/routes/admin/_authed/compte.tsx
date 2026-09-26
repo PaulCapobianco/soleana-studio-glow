@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { HiddenUsernameField } from "@/components/site/admin/HiddenUsernameField";
+import { PasswordVisibilityToggle } from "@/components/site/admin/PasswordVisibilityToggle";
 import { friendlyAuthError, isInsufficientAal } from "@/lib/admin/auth-errors";
 import { changePassword } from "@/lib/admin/change-password";
 import { getMfaState, normalizeTotpCode, TOTP_CODE, type MfaState } from "@/lib/admin/mfa";
@@ -69,6 +70,8 @@ function Field({
   maxLength?: number;
 }) {
   const id = useId();
+  const [visible, setVisible] = useState(false);
+  const isPassword = type === "password";
   return (
     <div>
       <label
@@ -77,17 +80,22 @@ function Field({
       >
         {label}
       </label>
-      <input
-        id={id}
-        type={type}
-        value={value}
-        autoComplete={autoComplete}
-        inputMode={inputMode}
-        maxLength={maxLength}
-        aria-describedby={hint ? `${id}-hint` : undefined}
-        onChange={(e) => onChange(e.target.value)}
-        className="mt-1 w-full bg-background border border-border px-3 py-2 text-sm"
-      />
+      <div className="relative mt-1">
+        <input
+          id={id}
+          type={isPassword ? (visible ? "text" : "password") : type}
+          value={value}
+          autoComplete={autoComplete}
+          inputMode={inputMode}
+          maxLength={maxLength}
+          aria-describedby={hint ? `${id}-hint` : undefined}
+          onChange={(e) => onChange(e.target.value)}
+          className={`w-full bg-background border border-border px-3 py-2 text-sm ${isPassword ? "pr-11" : ""}`}
+        />
+        {isPassword && (
+          <PasswordVisibilityToggle visible={visible} onToggle={() => setVisible((v) => !v)} />
+        )}
+      </div>
       {hint && (
         <p id={`${id}-hint`} className="mt-1 text-xs text-muted-foreground">
           {hint}

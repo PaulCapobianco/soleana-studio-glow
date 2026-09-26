@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { HiddenUsernameField } from "@/components/site/admin/HiddenUsernameField";
+import { PasswordVisibilityToggle } from "@/components/site/admin/PasswordVisibilityToggle";
 import { friendlyAuthError, isInsufficientAal } from "@/lib/admin/auth-errors";
 import {
   getMfaState,
@@ -46,6 +47,8 @@ function ResetPassword() {
   const [factorId, setFactorId] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [email, setEmail] = useState("");
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -198,14 +201,20 @@ function ResetPassword() {
               <label htmlFor="new-password" className={labelClass}>
                 Nouveau mot de passe
               </label>
-              <input
-                id="new-password"
-                name="password"
-                type="password"
-                autoComplete="new-password"
-                required
-                className={inputClass}
-              />
+              <div className="relative">
+                <input
+                  id="new-password"
+                  name="password"
+                  type={showNewPassword ? "text" : "password"}
+                  autoComplete="new-password"
+                  required
+                  className={`${inputClass} pr-11`}
+                />
+                <PasswordVisibilityToggle
+                  visible={showNewPassword}
+                  onToggle={() => setShowNewPassword((v) => !v)}
+                />
+              </div>
               <p className="mt-1 text-xs text-muted-foreground">
                 12 caractères minimum, avec au moins une lettre et un chiffre.
               </p>
@@ -214,14 +223,20 @@ function ResetPassword() {
               <label htmlFor="confirm-password" className={labelClass}>
                 Confirmer le mot de passe
               </label>
-              <input
-                id="confirm-password"
-                name="confirmation"
-                type="password"
-                autoComplete="new-password"
-                required
-                className={inputClass}
-              />
+              <div className="relative">
+                <input
+                  id="confirm-password"
+                  name="confirmation"
+                  type={showConfirmPassword ? "text" : "password"}
+                  autoComplete="new-password"
+                  required
+                  className={`${inputClass} pr-11`}
+                />
+                <PasswordVisibilityToggle
+                  visible={showConfirmPassword}
+                  onToggle={() => setShowConfirmPassword((v) => !v)}
+                />
+              </div>
             </div>
             <button type="submit" disabled={busy} className={buttonClass}>
               {busy ? "Enregistrement…" : "Enregistrer le mot de passe"}
