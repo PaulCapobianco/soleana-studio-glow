@@ -1,15 +1,16 @@
 /*
  * Mini-séances de Noël 2026 — page + teaser d'accueil.
- * Palette saisonnière : --noel-pine / --noel-red viennent de NOEL_2026_COLORS ;
+ * Palette saisonnière : --noel-burgundy vient de NOEL_2026_COLORS ;
  * l'or de guirlande est l'accent existant du site (--accent). Fonds, bordures
  * et polices viennent du thème.
  */
 .campaign {
   --noel-gold: var(--accent);
-  --noel-gold-text: #e3c4a4; /* or clair, lisible en texte sur le vert sapin */
+  --noel-gold-text: #e3c4a4; /* or clair, lisible en petit texte sur le bordeaux */
   --noel-cream: #fffdf8;
-  --noel-rule: color-mix(in srgb, var(--noel-pine) 20%, transparent);
-  color: var(--noel-pine);
+  --noel-ink: color-mix(in srgb, var(--noel-burgundy) 45%, #000); /* voile des photos */
+  --noel-rule: color-mix(in srgb, var(--noel-burgundy) 20%, transparent);
+  color: var(--noel-burgundy);
 }
 .campaign :is(a, button, summary):focus-visible {
   outline: 2px solid currentColor;
@@ -30,7 +31,7 @@
   text-transform: uppercase;
 }
 .accentRed {
-  color: var(--noel-red);
+  color: var(--noel-burgundy);
 }
 .onDark {
   color: var(--noel-gold-text);
@@ -62,8 +63,8 @@
   align-items: center;
   justify-content: center;
   padding: 0.95rem 2.25rem;
-  border: 1px solid var(--noel-pine);
-  background: var(--noel-pine);
+  border: 1px solid var(--noel-burgundy);
+  background: var(--noel-burgundy);
   color: var(--noel-cream);
   font-family: var(--font-sans);
   font-size: 0.6875rem;
@@ -77,12 +78,12 @@
 }
 .button:hover {
   background: transparent;
-  color: var(--noel-pine);
+  color: var(--noel-burgundy);
 }
 .buttonLight {
   border-color: var(--noel-cream);
   background: var(--noel-cream);
-  color: var(--noel-pine);
+  color: var(--noel-burgundy);
 }
 .buttonLight:hover {
   background: transparent;
@@ -105,7 +106,7 @@
       color-mix(in srgb, var(--noel-gold) 18%, transparent),
       transparent 42%
     ),
-    var(--noel-pine);
+    var(--noel-burgundy);
   color: var(--noel-cream);
 }
 .night::before {
@@ -117,7 +118,7 @@
   background:
     radial-gradient(
       circle at 78% 14%,
-      color-mix(in srgb, var(--noel-gold) 40%, transparent) 0 0.35rem,
+      color-mix(in srgb, var(--noel-gold) 30%, transparent) 0 0.35rem,
       transparent 0.9rem
     ),
     radial-gradient(
@@ -127,7 +128,7 @@
     ),
     radial-gradient(
       circle at 6% 62%,
-      color-mix(in srgb, var(--noel-gold) 30%, transparent) 0 0.4rem,
+      color-mix(in srgb, var(--noel-gold) 28%, transparent) 0 0.4rem,
       transparent 1rem
     ),
     radial-gradient(
@@ -145,7 +146,7 @@
   min-height: 100svh;
   align-items: flex-end;
   overflow: hidden;
-  background: var(--noel-pine);
+  background: var(--noel-burgundy);
   color: var(--noel-cream);
 }
 .landingHero::after {
@@ -155,12 +156,20 @@
   background:
     linear-gradient(
       to top,
-      color-mix(in srgb, #14241c 84%, transparent) 0%,
-      color-mix(in srgb, #14241c 48%, transparent) 42%,
+      color-mix(in srgb, var(--noel-ink) 84%, transparent) 0%,
+      color-mix(in srgb, var(--noel-ink) 48%, transparent) 42%,
       transparent 78%
     ),
-    linear-gradient(to right, color-mix(in srgb, #14241c 45%, transparent) 0%, transparent 60%),
-    linear-gradient(to bottom, color-mix(in srgb, #14241c 55%, transparent) 0%, transparent 22%);
+    linear-gradient(
+      to right,
+      color-mix(in srgb, var(--noel-ink) 45%, transparent) 0%,
+      transparent 60%
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--noel-ink) 55%, transparent) 0%,
+      transparent 22%
+    );
 }
 .heroPhoto {
   position: absolute;
@@ -203,7 +212,7 @@
 .tags li {
   padding: 0.5rem 1rem;
   border: 1px solid color-mix(in srgb, var(--noel-gold) 70%, transparent);
-  background: color-mix(in srgb, #14241c 35%, transparent);
+  background: color-mix(in srgb, var(--noel-ink) 35%, transparent);
   font-size: 0.8rem;
   line-height: 1.4;
   letter-spacing: 0.06em;
@@ -290,7 +299,7 @@
   font-family: var(--font-display);
   font-style: italic;
   font-size: 1.25rem;
-  color: var(--noel-red);
+  color: var(--noel-burgundy);
 }
 
 /* Galerie */
@@ -383,7 +392,7 @@
   padding: 2rem 1.5rem;
   border: 1px solid transparent;
   background: var(--background);
-  color: var(--noel-pine);
+  color: var(--noel-burgundy);
 }
 .formules .featured {
   border-color: var(--noel-gold);
@@ -395,7 +404,7 @@
   top: 1.5rem;
   right: 1.5rem;
   padding: 0.3rem 0.75rem;
-  background: var(--noel-red);
+  background: var(--noel-burgundy);
   color: var(--noel-cream);
   font-size: 0.625rem;
   letter-spacing: 0.2em;
@@ -465,7 +474,7 @@
   font-family: var(--font-display);
   font-size: 1.6rem;
   line-height: 1;
-  color: var(--noel-red);
+  color: var(--noel-burgundy);
 }
 .faqItem[open] summary::after {
   content: "−";

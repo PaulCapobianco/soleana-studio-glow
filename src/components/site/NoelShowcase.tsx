@@ -19,8 +19,7 @@ export function NoelShowcase() {
       className={`${styles.campaign} ${styles.teaser}`}
       style={
         {
-          "--noel-pine": NOEL_2026_COLORS.pineGreen,
-          "--noel-red": NOEL_2026_COLORS.deepRed,
+          "--noel-burgundy": NOEL_2026_COLORS.burgundy,
         } as CSSProperties
       }
     >

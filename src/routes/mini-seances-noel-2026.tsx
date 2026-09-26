@@ -38,8 +38,7 @@ export const Route = createFileRoute("/mini-seances-noel-2026")({
 });
 
 const seasonVars = {
-  "--noel-pine": NOEL_2026_COLORS.pineGreen,
-  "--noel-red": NOEL_2026_COLORS.deepRed,
+  "--noel-burgundy": NOEL_2026_COLORS.burgundy,
 } as CSSProperties;
 
 function NoelPage() {

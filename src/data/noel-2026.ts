@@ -23,8 +23,7 @@ import gallery07Lg from "@/assets/noel-2026/noel-gallery-07-1600.webp";
 // Shared with the homepage teaser — defined once here so both
 // consumers stay in sync instead of duplicating hex codes.
 export const NOEL_2026_COLORS = {
-  pineGreen: "#2F4A3D",
-  deepRed: "#7A2E2E",
+  burgundy: "#5E1112",
 } as const;
 
 export const NOEL_2026_LOCATION = "Plan-d'Aups-Sainte-Baume";
