@@ -33,15 +33,7 @@ export const Route = createFileRoute("/faq")({
 
 function Faq() {
   const items = Route.useLoaderData();
-  const faqItems = (items ?? []).map((item) =>
-    item.question === "Où peut se dérouler la séance ?"
-      ? {
-          ...item,
-          answer:
-            "Les séances se déroulent essentiellement en bord de mer ou dans la nature, à Marseille et alentours. Je reste aussi ouverte à d'autres propositions si le lieu est adapté à votre séance.",
-        }
-      : item,
-  );
+  const faqItems = items ?? [];
 
   return (
     <SiteShell>
