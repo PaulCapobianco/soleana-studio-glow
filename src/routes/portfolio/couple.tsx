@@ -6,7 +6,7 @@ import { CategoryGallery } from "@/components/site/CategoryGallery";
 import { ExperienceSection } from "@/components/site/ExperienceSection";
 import { RelatedCategories } from "@/components/site/RelatedCategories";
 import { buildPageSeo } from "@/lib/seo";
-import catC from "@/assets/couple/couple_3/fiancailles-marisol-and-maxence-1.webp";
+import catC from "@/assets/couple/couple_3/fiancailles-1.webp";
 
 export const Route = createFileRoute("/portfolio/couple")({
   head: () =>

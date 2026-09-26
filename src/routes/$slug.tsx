@@ -64,13 +64,13 @@ const maternityGallery1Photos = buildLocalGalleryPhotos(
 
 const maternityGallery2Photos = buildLocalGalleryPhotos(
   toAssetMap(
-    import.meta.glob("../assets/grossesse/laurie_maternite/*.webp", {
+    import.meta.glob("../assets/grossesse/maternite_2/*.webp", {
       eager: true,
       import: "default",
     }),
   ),
   toAssetMap(
-    import.meta.glob("../assets/grossesse/laurie_maternite/thumbs/*.webp", {
+    import.meta.glob("../assets/grossesse/maternite_2/thumbs/*.webp", {
       eager: true,
       import: "default",
     }),
