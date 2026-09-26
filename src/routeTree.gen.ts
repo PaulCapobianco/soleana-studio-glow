@@ -33,6 +33,7 @@ import { Route as AdminLoginRouteImport } from './routes/admin/login'
 import { Route as AdminAuthedRouteImport } from './routes/admin/_authed'
 import { Route as AdminAuthedPrestationsRouteImport } from './routes/admin/_authed/prestations'
 import { Route as AdminAuthedPhotosRouteImport } from './routes/admin/_authed/photos'
+import { Route as AdminAuthedParametresRouteImport } from './routes/admin/_authed/parametres'
 import { Route as AdminAuthedPagesSeoRouteImport } from './routes/admin/_authed/pages-seo'
 import { Route as AdminAuthedFaqRouteImport } from './routes/admin/_authed/faq'
 import { Route as AdminAuthedDashboardRouteImport } from './routes/admin/_authed/dashboard'
@@ -158,6 +159,11 @@ const AdminAuthedPhotosRoute = AdminAuthedPhotosRouteImport.update({
   path: '/photos',
   getParentRoute: () => AdminAuthedRoute,
 } as any)
+const AdminAuthedParametresRoute = AdminAuthedParametresRouteImport.update({
+  id: '/parametres',
+  path: '/parametres',
+  getParentRoute: () => AdminAuthedRoute,
+} as any)
 const AdminAuthedPagesSeoRoute = AdminAuthedPagesSeoRouteImport.update({
   id: '/pages-seo',
   path: '/pages-seo',
@@ -206,6 +212,7 @@ export interface FileRoutesByFullPath {
   '/admin/dashboard': typeof AdminAuthedDashboardRoute
   '/admin/faq': typeof AdminAuthedFaqRoute
   '/admin/pages-seo': typeof AdminAuthedPagesSeoRoute
+  '/admin/parametres': typeof AdminAuthedParametresRoute
   '/admin/photos': typeof AdminAuthedPhotosRoute
   '/admin/prestations': typeof AdminAuthedPrestationsRoute
 }
@@ -234,6 +241,7 @@ export interface FileRoutesByTo {
   '/admin/dashboard': typeof AdminAuthedDashboardRoute
   '/admin/faq': typeof AdminAuthedFaqRoute
   '/admin/pages-seo': typeof AdminAuthedPagesSeoRoute
+  '/admin/parametres': typeof AdminAuthedParametresRoute
   '/admin/photos': typeof AdminAuthedPhotosRoute
   '/admin/prestations': typeof AdminAuthedPrestationsRoute
 }
@@ -265,6 +273,7 @@ export interface FileRoutesById {
   '/admin/_authed/dashboard': typeof AdminAuthedDashboardRoute
   '/admin/_authed/faq': typeof AdminAuthedFaqRoute
   '/admin/_authed/pages-seo': typeof AdminAuthedPagesSeoRoute
+  '/admin/_authed/parametres': typeof AdminAuthedParametresRoute
   '/admin/_authed/photos': typeof AdminAuthedPhotosRoute
   '/admin/_authed/prestations': typeof AdminAuthedPrestationsRoute
 }
@@ -297,6 +306,7 @@ export interface FileRouteTypes {
     | '/admin/dashboard'
     | '/admin/faq'
     | '/admin/pages-seo'
+    | '/admin/parametres'
     | '/admin/photos'
     | '/admin/prestations'
   fileRoutesByTo: FileRoutesByTo
@@ -325,6 +335,7 @@ export interface FileRouteTypes {
     | '/admin/dashboard'
     | '/admin/faq'
     | '/admin/pages-seo'
+    | '/admin/parametres'
     | '/admin/photos'
     | '/admin/prestations'
   id:
@@ -355,6 +366,7 @@ export interface FileRouteTypes {
     | '/admin/_authed/dashboard'
     | '/admin/_authed/faq'
     | '/admin/_authed/pages-seo'
+    | '/admin/_authed/parametres'
     | '/admin/_authed/photos'
     | '/admin/_authed/prestations'
   fileRoutesById: FileRoutesById
@@ -549,6 +561,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAuthedPhotosRouteImport
       parentRoute: typeof AdminAuthedRoute
     }
+    '/admin/_authed/parametres': {
+      id: '/admin/_authed/parametres'
+      path: '/parametres'
+      fullPath: '/admin/parametres'
+      preLoaderRoute: typeof AdminAuthedParametresRouteImport
+      parentRoute: typeof AdminAuthedRoute
+    }
     '/admin/_authed/pages-seo': {
       id: '/admin/_authed/pages-seo'
       path: '/pages-seo'
@@ -605,6 +624,7 @@ interface AdminAuthedRouteChildren {
   AdminAuthedDashboardRoute: typeof AdminAuthedDashboardRoute
   AdminAuthedFaqRoute: typeof AdminAuthedFaqRoute
   AdminAuthedPagesSeoRoute: typeof AdminAuthedPagesSeoRoute
+  AdminAuthedParametresRoute: typeof AdminAuthedParametresRoute
   AdminAuthedPhotosRoute: typeof AdminAuthedPhotosRoute
   AdminAuthedPrestationsRoute: typeof AdminAuthedPrestationsRoute
 }
@@ -614,6 +634,7 @@ const AdminAuthedRouteChildren: AdminAuthedRouteChildren = {
   AdminAuthedDashboardRoute: AdminAuthedDashboardRoute,
   AdminAuthedFaqRoute: AdminAuthedFaqRoute,
   AdminAuthedPagesSeoRoute: AdminAuthedPagesSeoRoute,
+  AdminAuthedParametresRoute: AdminAuthedParametresRoute,
   AdminAuthedPhotosRoute: AdminAuthedPhotosRoute,
   AdminAuthedPrestationsRoute: AdminAuthedPrestationsRoute,
 }
