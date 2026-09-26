@@ -2,14 +2,9 @@ import { useEffect, useId, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  friendlyAuthError,
-  isInsufficientAal,
-  isReauthenticationNeeded,
-  isSamePassword,
-} from "@/lib/admin/auth-errors";
+import { friendlyAuthError, isInsufficientAal } from "@/lib/admin/auth-errors";
+import { changePassword } from "@/lib/admin/change-password";
 import { getMfaState, normalizeTotpCode, TOTP_CODE, type MfaState } from "@/lib/admin/mfa";
-import { validateNewPassword, validatePasswordConfirmation } from "@/lib/admin/password-rules";
 import { verifyCurrentPassword } from "@/lib/admin/verify-password";
 
 export const Route = createFileRoute("/admin/_authed/compte")({
@@ -136,51 +131,40 @@ function PasswordSection({ email }: { email: string }) {
   const [nonce, setNonce] = useState("");
 
   async function submit() {
-    const problem =
-      validateNewPassword(next, { email, current }) ?? validatePasswordConfirmation(next, confirm);
-    if (!current) return toast.error("Saisissez votre mot de passe actuel.");
-    if (problem) return toast.error(problem);
-
     setBusy(true);
     try {
-      if (!(await verifyCurrentPassword(email, current))) {
-        toast.error("Le mot de passe actuel est incorrect.");
-        return;
-      }
-      const { error } = await supabase.auth.updateUser({
-        password: next,
-        ...(needsNonce && nonce.trim() ? { nonce: nonce.trim() } : {}),
-      });
-      if (error) {
-        if (isReauthenticationNeeded(error) && !needsNonce) {
-          const { error: sendError } = await supabase.auth.reauthenticate();
-          if (sendError) return toast.error(friendlyAuthError(sendError));
+      const result = await changePassword(
+        { email, current, next, confirm, needsNonce, nonce },
+        {
+          verifyCurrentPassword,
+          updateUser: (attrs) => supabase.auth.updateUser(attrs),
+          reauthenticate: () => supabase.auth.reauthenticate(),
+        },
+      );
+
+      switch (result.status) {
+        case "missing-current":
+          toast.error("Saisissez votre mot de passe actuel.");
+          return;
+        case "wrong-current":
+          toast.error("Le mot de passe actuel est incorrect.");
+          return;
+        case "needs-nonce":
           setNeedsNonce(true);
           toast.message("Un code de confirmation vient d'être envoyé à votre adresse e-mail.");
           return;
-        }
-        if (isInsufficientAal(error)) {
-          toast.error("Reconnectez-vous avec votre code d'authentification, puis réessayez.");
+        case "error":
+          toast.error(result.message);
           return;
-        }
-        if (isSamePassword(error)) {
-          // Le formulaire garantit déjà next !== current avant l'appel : si Supabase répond
-          // quand même « same_password », c'est que le mot de passe stocké a changé entre-temps
-          // (autre onglet/session), pas que la saisie de cet écran était invalide.
-          toast.error(
-            "Le mot de passe n'a pas été modifié : le serveur indique qu'il correspond déjà au mot de passe enregistré. Rechargez la page, vérifiez votre mot de passe actuel, puis réessayez.",
-          );
+        case "success":
+          toast.success("Mot de passe modifié.");
+          setCurrent("");
+          setNext("");
+          setConfirm("");
+          setNonce("");
+          setNeedsNonce(false);
           return;
-        }
-        toast.error(friendlyAuthError(error));
-        return;
       }
-      toast.success("Mot de passe modifié.");
-      setCurrent("");
-      setNext("");
-      setConfirm("");
-      setNonce("");
-      setNeedsNonce(false);
     } finally {
       setBusy(false);
     }

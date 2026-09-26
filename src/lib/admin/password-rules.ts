@@ -12,10 +12,16 @@ const COMMON = new Set([
 /**
  * Règles de robustesse d'un nouveau mot de passe admin. Retourne un message d'erreur
  * (le premier problème rencontré) ou null si le mot de passe est acceptable.
+ *
+ * Ne compare pas au mot de passe actuel : ce champ n'est vérifié (via un client jetable)
+ * qu'après ces règles, donc le comparer ici reviendrait à comparer contre une valeur pas
+ * encore confirmée (autofill du navigateur, saisie restée d'un essai précédent…). Supabase
+ * refuse déjà un nouveau mot de passe identique à l'actuel (`same_password`) une fois le mot
+ * de passe actuel vérifié — c'est la seule source fiable pour cette règle.
  */
 export function validateNewPassword(
   password: string,
-  options: { email?: string | null; current?: string | null } = {},
+  options: { email?: string | null } = {},
 ): string | null {
   if (password.length < 12) return "Le mot de passe doit contenir au moins 12 caractères.";
   if (password.length > 72) return "Le mot de passe est trop long (72 caractères maximum).";
@@ -29,9 +35,6 @@ export function validateNewPassword(
   const email = options.email?.trim().toLowerCase();
   if (email && (password.toLowerCase() === email || password.toLowerCase().includes(email))) {
     return "Le mot de passe ne doit pas contenir votre adresse e-mail.";
-  }
-  if (options.current && password === options.current) {
-    return "Le nouveau mot de passe doit être différent de l'actuel.";
   }
   return null;
 }

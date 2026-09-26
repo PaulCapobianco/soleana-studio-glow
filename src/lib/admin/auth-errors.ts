@@ -14,10 +14,6 @@ export function isInsufficientAal(error: unknown): boolean {
   return authErrorCode(error) === "insufficient_aal";
 }
 
-export function isSamePassword(error: unknown): boolean {
-  return authErrorCode(error) === "same_password";
-}
-
 export function friendlyAuthError(error: unknown): string {
   const code = authErrorCode(error);
   const message =
@@ -60,9 +56,10 @@ export function friendlyAuthError(error: unknown): string {
     case "no_authorization":
       return "Votre session a expiré. Reconnectez-vous puis réessayez.";
     case "reauthentication_needed":
+      return "Une confirmation supplémentaire est nécessaire. Suivez les instructions à l'écran.";
     case "reauthentication_not_valid":
     case "reauth_nonce_missing":
-      return "Une confirmation supplémentaire est nécessaire. Suivez les instructions à l'écran.";
+      return "Le code de confirmation est invalide ou a expiré. Rechargez la page et réessayez.";
     default:
       break;
   }

@@ -2,19 +2,21 @@ import { describe, expect, it } from "vitest";
 import { validateNewPassword, validatePasswordConfirmation } from "./password-rules";
 
 const EMAIL = "admin@soleana.studio";
-const CURRENT = "MotDePasseActuel1";
 
 describe("validateNewPassword", () => {
-  it("refuse un nouveau mot de passe identique à l'actuel", () => {
-    expect(validateNewPassword(CURRENT, { email: EMAIL, current: CURRENT })).toBe(
-      "Le nouveau mot de passe doit être différent de l'actuel.",
+  it("accepte un mot de passe valide", () => {
+    expect(validateNewPassword("UnAutreMotDePasse2", { email: EMAIL })).toBeNull();
+  });
+
+  it("refuse un mot de passe trop court", () => {
+    expect(validateNewPassword("Court1", { email: EMAIL })).toBe(
+      "Le mot de passe doit contenir au moins 12 caractères.",
     );
   });
 
-  it("accepte un nouveau mot de passe différent de l'actuel", () => {
-    expect(
-      validateNewPassword("UnAutreMotDePasse2", { email: EMAIL, current: CURRENT }),
-    ).toBeNull();
+  it("ne compare pas au mot de passe actuel : cette règle vit côté serveur (same_password)", () => {
+    // Voir change-password.ts : comparer ici comparerait à une valeur pas encore vérifiée.
+    expect(validateNewPassword("MotDePasseActuel1", { email: EMAIL })).toBeNull();
   });
 });
 
