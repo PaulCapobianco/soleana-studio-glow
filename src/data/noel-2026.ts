@@ -243,7 +243,7 @@ export const NOEL_2026_GALLERY_PHOTOS: NoelGalleryPhoto[] = [
 ];
 
 export const NOEL_2026_SEO = {
-  title: "Mini-séances photo de Noël 2026 près de Marseille | Soleana Studio",
+  title: "Mini-séances de Noël 2026 près de Marseille | Soleana Studio",
   description:
     "Mini-séances photo de Noël en extérieur les 7 et 11 novembre 2026, à Plan-d'Aups-Sainte-Baume. Deux formules, places limitées. Réservez votre créneau.",
   path: "/mini-seances-noel-2026",
