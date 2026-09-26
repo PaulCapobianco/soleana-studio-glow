@@ -7,6 +7,17 @@
 
 ---
 
+## Mise à jour — 27 septembre 2026
+
+**Textes RGPD (`mentions-legales.tsx`, `confidentialite.tsx`), branche `apres-noel`, non déployé :**
+
+- Mentions légales : section « Cookies » réécrite (retrait de la formule de consentement invalide, description exacte du chargement des iframes Pelli sur clic) ; section « Crédits » complétée (lien vers le profil LinkedIn du développeur, contenu existant conservé).
+- Politique de confidentialité : sections « Destinataires des données », « Durée de conservation » (durées chiffrées) et « Transferts hors UE » réécrites ; ajout d'une phrase sur le retrait du consentement en fin de « Vos droits » ; nouvelle section « Photos publiées sur le site » (retrait sur simple demande). Renumérotée en conséquence (11 sections).
+- Détail par constat : voir les mises à jour du 27/09/2026 dans RGPD-01 à 05 ci-dessous. En résumé : RGPD-03 et RGPD-04 largement résolus sur `confidentialite.tsx` (reste : la région Supabase à renseigner, et la purge automatique de `contact_requests` toujours à créer) ; RGPD-01 partiellement traité (texte correct, mais ce que Pelli dépose réellement reste à vérifier dans un navigateur) ; RGPD-02 et RGPD-05 inchangés (portent sur `mentions-legales.tsx`, hors périmètre de cette mise à jour).
+- Rendu vérifié à 390 px et 1280 px sur les deux pages.
+
+---
+
 ## Mise à jour — 26 septembre 2026
 
 **Formulaire de contact local supprimé (Pelli reste le seul canal) :**
@@ -230,10 +241,11 @@ Le vrai problème est ailleurs : **la protection a disparu, pas la surface d'att
 
 #### RGPD-01 — Consentement cookies invalide et absence de bandeau
 **Axe :** RGPD · **Effort :** moyen
-**Localisation :** `src/routes/mentions-legales.tsx` §6 « Cookies » ; `src/routes/confidentialite.tsx` §8 ; aucun composant de gestion du consentement dans `src/`
-**Description :** les mentions légales indiquent « En poursuivant votre navigation, vous acceptez l'utilisation éventuelle de ces cookies ». Cette formulation est explicitement rejetée par les lignes directrices CNIL du 17 septembre 2020 : la poursuite de la navigation ne constitue pas un consentement valide. La politique de confidentialité emploie de son côté un conditionnel non engageant (« ne devraient être déposés qu'avec votre consentement »). **Aucun bandeau ni CMP n'existe dans le code.**
+**Localisation :** `src/routes/mentions-legales.tsx` §6 « Cookies » ; `src/routes/confidentialite.tsx` §9 « Cookies et traceurs » ; aucun composant de gestion du consentement dans `src/`
+**Description :** les mentions légales indiquaient « En poursuivant votre navigation, vous acceptez l'utilisation éventuelle de ces cookies ». Cette formulation est explicitement rejetée par les lignes directrices CNIL du 17 septembre 2020 : la poursuite de la navigation ne constitue pas un consentement valide. La politique de confidentialité emploie de son côté un conditionnel non engageant (« ne devraient être déposés qu'avec votre consentement »). **Aucun bandeau ni CMP n'existe dans le code.**
 **Impact :** le site charge trois iframes tiers — `soleana-studio.pelli.io/embedded/contact`, `/embedded/booking`, `/embedded` (`contact.tsx:127`, `reservation.tsx:54`, `espace-client.tsx:59`) — chargés sans condition dès l'affichage de la page. Si Pelli dépose le moindre traceur non strictement nécessaire, le site est en infraction à l'article 82 de la loi Informatique et Libertés (sanction CNIL possible, jusqu'à 2 % du CA ou 20 M€ au titre du RGPD pour les autres manquements). **Point à vérifier :** l'inspection effective des cookies déposés par Pelli n'a pas pu être faite depuis ce dépôt — elle doit être réalisée dans un navigateur, onglet Application → Cookies, sur les trois pages concernées.
 **Correction :** auditer les cookies réellement déposés par les iframes Pelli. Si des traceurs non essentiels sont présents, installer un bandeau de consentement (Tarteaucitron, Axeptio ou équivalent conforme CNIL) et ne charger les iframes qu'après acceptation. Si Pelli ne dépose que du strictement nécessaire, réécrire les deux sections pour l'affirmer clairement et retirer la phrase « En poursuivant votre navigation ».
+**Mise à jour (27/09/2026) :** la phrase invalide est retirée de `mentions-legales.tsx` §6, remplacée par un texte qui décrit l'état réel du site (aucun cookie de mesure d'audience ni publicitaire ; les iframes Pelli — déjà chargées uniquement après clic sur « Afficher le formulaire », via `ConsentEmbed.tsx` — peuvent déposer leurs propres cookies, avec lien vers la politique de confidentialité de Pelli et la nôtre). **Non traité** : `confidentialite.tsx` §9 garde son conditionnel non engageant (hors périmètre de cette mise à jour). **Le point à vérifier reste entier** : ce que Pelli dépose réellement une fois le clic effectué n'a toujours pas été inspecté dans un vrai navigateur — c'est ce constat qui détermine si un bandeau de consentement est encore nécessaire.
 
 ---
 
@@ -259,27 +271,31 @@ Le vrai problème est ailleurs : **la protection a disparu, pas la surface d'att
 **Description :** « Ces données ne sont jamais revendues, ni cédées, ni transmises à des tiers, sauf obligation légale. » Or les données transitent par Pelli (formulaire, réservation, espace client), sont stockées chez Supabase et le site est hébergé par Cloudflare. La politique de confidentialité, elle, décrit correctement le recours à des sous-traitants (§4).
 **Impact :** information inexacte au sens de l'article 13 du RGPD, et incohérence entre deux documents du même site. Facilement opposable en cas de réclamation.
 **Correction :** reformuler en « ne sont jamais revendues ni cédées à des fins commerciales » et renvoyer explicitement à la section 4 de la politique de confidentialité pour la liste des sous-traitants.
+**Mise à jour (27/09/2026) :** toujours ouvert — cette mise à jour a porté sur `confidentialite.tsx`, pas sur `mentions-legales.tsx` §4, qui garde sa formulation d'origine.
 
-#### RGPD-03 — Sous-traitants non nommés
+#### RGPD-03 — Sous-traitants non nommés — **résolu sur `confidentialite.tsx` le 27/09/2026, reste une valeur à compléter**
 **Axe :** RGPD · **Effort :** rapide
-**Localisation :** `src/routes/confidentialite.tsx` §4 et §6
-**Description :** la politique évoque « les prestataires techniques strictement nécessaires » sans jamais nommer **Pelli**, **Supabase** ni **Cloudflare**. La section 6 sur les transferts hors UE reste au conditionnel (« peuvent être situés »).
+**Localisation :** `src/routes/confidentialite.tsx` §4 « Destinataires des données » et §6 « Transferts hors Union européenne »
+**Description d'origine :** la politique évoquait « les prestataires techniques strictement nécessaires » sans jamais nommer **Pelli**, **Supabase** ni **Cloudflare**. La section transferts hors UE restait au conditionnel (« peuvent être situés »).
 **Impact :** l'article 13 autorise la mention de *catégories* de destinataires, mais la CNIL recommande fortement de les nommer, en particulier lorsqu'un sous-traitant collecte directement les données via une iframe — ce qui est ici le cas principal. La personne concernée ne peut pas savoir que ses données de réservation partent chez un tiers.
-**Correction :** nommer Pelli (formulaire de contact, réservation, espace client), Supabase (base de données) et Cloudflare (hébergement). Préciser la région du projet Supabase et, si elle est hors UE, indiquer les garanties (clauses contractuelles types). Signer un contrat de sous-traitance (article 28) avec Pelli s'il n'existe pas déjà.
+**Correction d'origine (conservée pour mémoire) :** nommer Pelli (formulaire de contact, réservation, espace client), Supabase (base de données) et Cloudflare (hébergement). Préciser la région du projet Supabase et, si elle est hors UE, indiquer les garanties (clauses contractuelles types). Signer un contrat de sous-traitance (article 28) avec Pelli s'il n'existe pas déjà.
+**Mise à jour (27/09/2026) :** §4 nomme désormais explicitement Pelli, Supabase et Cloudflare, avec leur rôle respectif. §6 nomme Cloudflare (États-Unis) et cite les garanties RGPD (cadre UE–États-Unis, clauses contractuelles types). **Reste à compléter dans le texte :** la région d'hébergement Supabase, laissée en placeholder `[RÉGION À COMPLÉTER]` — à renseigner (tableau de bord Supabase → Project Settings → General) puis à vérifier si elle est hors UE, auquel cas les garanties mentionnées doivent effectivement être en place. Contrat de sous-traitance avec Pelli toujours à confirmer.
 
-#### RGPD-04 — Durées de conservation non chiffrées et absence de purge
+#### RGPD-04 — Durées de conservation non chiffrées et absence de purge — **texte résolu sur `confidentialite.tsx` le 27/09/2026, purge technique toujours absente**
 **Axe :** RGPD · **Effort :** moyen
-**Localisation :** `src/routes/confidentialite.tsx` §5 ; `src/routes/mentions-legales.tsx` §5 ; table `contact_requests`
-**Description :** la politique indique que les durées « ne sont pas illimitées » sans en donner aucune. Côté base, `contact_requests` (`created_at`, statut `archive` disponible) n'est soumise à aucun mécanisme de suppression automatique — ni trigger, ni `pg_cron`, ni tâche applicative.
+**Localisation :** `src/routes/confidentialite.tsx` §5 « Durée de conservation » ; `src/routes/mentions-legales.tsx` §5 ; table `contact_requests`
+**Description d'origine :** la politique indiquait que les durées « ne sont pas illimitées » sans en donner aucune. Côté base, `contact_requests` (`created_at`, statut `archive` disponible) n'est soumise à aucun mécanisme de suppression automatique — ni trigger, ni `pg_cron`, ni tâche applicative.
 **Impact :** manquement au principe de limitation de la conservation (article 5.1.e). En pratique, les demandes de contact — nom, prénom, e-mail, téléphone, lieu, message libre — s'accumulent indéfiniment.
-**Correction :** fixer des durées explicites (usage courant : 3 ans après le dernier contact pour un prospect, 10 ans pour les pièces comptables d'un client) et les écrire dans la politique. Mettre en place une purge automatique via `pg_cron` sur `contact_requests`. Demander à Pelli ses propres durées de conservation.
+**Correction d'origine (conservée pour mémoire) :** fixer des durées explicites (usage courant : 3 ans après le dernier contact pour un prospect, 10 ans pour les pièces comptables d'un client) et les écrire dans la politique. Mettre en place une purge automatique via `pg_cron` sur `contact_requests`. Demander à Pelli ses propres durées de conservation.
+**Mise à jour (27/09/2026) :** `confidentialite.tsx` §5 donne maintenant des durées explicites par catégorie : demandes sans suite (3 ans), données clients (durée de la prestation + 5 ans), factures (10 ans), galeries privées en ligne (12 mois après livraison), photos publiées (jusqu'au retrait de l'accord). **`mentions-legales.tsx` §5 n'a pas été touché** (formulation vague inchangée, hors périmètre de cette mise à jour). **Deux points restent à confirmer, faute de quoi le texte promet plus qu'il n'est fait :** la durée de 12 mois pour les galeries privées est celle que Paul a indiquée comme à reconfirmer auprès de Pelli (qui héberge ces galeries) ; et aucune purge automatique n'existe encore techniquement sur `contact_requests` ni sur les autres tables (`pg_cron` ou tâche équivalente toujours à créer).
 
 #### RGPD-05 — Deux adresses de contact RGPD différentes
 **Axe :** RGPD · **Effort :** rapide
-**Localisation :** `src/routes/confidentialite.tsx` §1, §7, §10 (`contact@soleanastudio.fr`) ; `src/routes/mentions-legales.tsx` §1, §4, §5 (`anaischartonphotographie@gmail.com`)
+**Localisation :** `src/routes/confidentialite.tsx` §1, §7, §8, §11 (`site_settings.email`, actuellement `contact@soleanastudio.fr`) ; `src/routes/mentions-legales.tsx` §1, §4, §5 (`anaischartonphotographie@gmail.com`, en dur)
 **Description :** deux adresses distinctes sont indiquées pour l'exercice des droits selon la page consultée.
 **Impact :** confusion pour la personne qui souhaite exercer ses droits ; risque qu'une demande adressée à l'une des deux reste sans réponse dans le délai d'un mois imposé par l'article 12.3.
 **Correction :** retenir une seule adresse — de préférence `contact@soleanastudio.fr`, cohérente avec le domaine — et l'harmoniser sur les deux pages.
+**Mise à jour (27/09/2026) :** toujours ouvert, sans changement (hors périmètre de cette mise à jour). La nouvelle section « Photos publiées sur le site » de `confidentialite.tsx` (§8) utilise elle aussi `site_settings.email`, ce qui ajoute un troisième emplacement à harmoniser le jour où cette adresse sera unifiée.
 
 #### ARCH-01 — Code mort important
 **Axe :** Architecture et qualité · **Effort :** moyen

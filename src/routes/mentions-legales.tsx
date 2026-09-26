@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 
 import { SiteShell } from "@/components/site/SiteShell";
@@ -139,13 +139,19 @@ function LegalNoticePage() {
 
             <LegalSection title="6. Cookies">
               <p>
-                Ce site peut utiliser des cookies nécessaires à son fonctionnement, ainsi que, le
-                cas échéant, des cookies liés à des services tiers intégrés ou à la mesure
-                d&apos;audience.
+                Ce site n&apos;utilise aucun cookie de mesure d&apos;audience ni cookie publicitaire,
+                et ne dépose aucun traceur soumis à votre consentement lors de votre navigation.
               </p>
               <p className="mt-4">
-                En poursuivant votre navigation, vous acceptez l&apos;utilisation éventuelle de ces
-                cookies. Vous pouvez les désactiver à tout moment dans les paramètres de votre
+                Le formulaire de contact, la réservation en ligne et l&apos;espace client sont
+                fournis par le service Pelli : ils ne se chargent qu&apos;après votre clic sur «
+                Afficher le formulaire ». Pelli peut alors déposer ses propres cookies, nécessaires
+                à leur fonctionnement ; pour en savoir plus, consultez sa politique de
+                confidentialité ainsi que notre{" "}
+                <Link to="/confidentialite" className="text-foreground story-link">
+                  politique de confidentialité
+                </Link>
+                . Vous pouvez à tout moment supprimer les cookies depuis les paramètres de votre
                 navigateur.
               </p>
             </LegalSection>
@@ -165,6 +171,18 @@ function LegalNoticePage() {
             <LegalSection title="8. Crédits">
               <p>Site réalisé par Paul Capobianco.</p>
               <p className="mt-4">Photographies : Anaïs Charton, sauf mention spécifique.</p>
+              <p className="mt-4">
+                Conception et développement du site :{" "}
+                <a
+                  href="https://www.linkedin.com/in/paul-capobianco-web"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-foreground story-link"
+                >
+                  Paul Capobianco
+                </a>
+                .
+              </p>
             </LegalSection>
 
             <LegalSection title="9. Conditions générales de vente">
