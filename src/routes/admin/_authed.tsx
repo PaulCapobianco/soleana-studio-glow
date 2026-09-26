@@ -28,6 +28,11 @@ export const Route = createFileRoute("/admin/_authed")({
     if (!isAdmin) {
       throw redirect({ to: "/admin/login", search: { reason: "forbidden" } });
     }
+    // Second facteur enregistré mais code pas encore saisi dans cette session : retour à la saisie du code.
+    const { data: aal } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+    if (aal && aal.nextLevel === "aal2" && aal.currentLevel !== "aal2") {
+      throw redirect({ to: "/admin/login", search: { reason: "mfa" } });
+    }
   },
   component: AdminLayout,
 });
