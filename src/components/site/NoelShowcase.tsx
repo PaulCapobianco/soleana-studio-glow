@@ -4,19 +4,17 @@ import {
   NOEL_2026_CAMPAIGN,
   NOEL_2026_COLORS,
   NOEL_2026_LOCATION,
-  NOEL_2026_SESSION_DATES,
   NOEL_2026_TEASER,
 } from "@/data/noel-2026";
 import styles from "./NoelCampaign.module.css";
 
 export function NoelShowcase() {
   const photo = NOEL_2026_TEASER.photo;
-  const detail = NOEL_2026_CAMPAIGN.detailPhoto;
 
   return (
     <section
       aria-labelledby="noel-teaser-title"
-      className={`${styles.campaign} ${styles.showcase}`}
+      className={`${styles.campaign} ${styles.teaser}`}
       style={
         {
           "--noel-pine": NOEL_2026_COLORS.pineGreen,
@@ -24,69 +22,28 @@ export function NoelShowcase() {
         } as CSSProperties
       }
     >
-      <div className={styles.container}>
-        <div className={styles.showcaseHeader}>
-          <div>
-            <p className={styles.eyebrow} style={{ color: NOEL_2026_COLORS.deepRed }}>
-              {NOEL_2026_CAMPAIGN.editionLabel}
-            </p>
-            <h2 id="noel-teaser-title" className={`${styles.display} ${styles.showcaseTitle}`}>
-              {NOEL_2026_TEASER.title}
-            </h2>
-          </div>
-          <div>
-            <p className={styles.showcaseDates}>
-              <span className="sr-only">{NOEL_2026_TEASER.datesLabel}</span>
-              <span className={styles.dateNumbers} aria-hidden="true">
-                {NOEL_2026_SESSION_DATES.map((date, index) => (
-                  <span key={date.iso}>
-                    {index > 0 && <i>&</i>}
-                    {date.iso.slice(-2)}
-                  </span>
-                ))}
-              </span>
-              <span className={styles.dateMonth} aria-hidden="true">
-                {new Intl.DateTimeFormat("fr-FR", {
-                  month: "long",
-                  year: "numeric",
-                  timeZone: "UTC",
-                }).format(new Date(NOEL_2026_SESSION_DATES[0].iso))}
-              </span>
-            </p>
-            <p className={styles.showcaseLocation}>{NOEL_2026_LOCATION}</p>
-          </div>
-        </div>
-        <div className={styles.showcaseStage}>
-          <div className={styles.showcaseMain}>
-            <img
-              src={photo.src}
-              srcSet={`${photo.src} 800w, ${photo.src1600} 1600w`}
-              sizes="(min-width: 1408px) 1067px, (min-width: 1024px) 76vw, (min-width: 640px) 75vw, calc(100vw - 40px)"
-              alt={photo.alt}
-              width={1600}
-              height={1067}
-              loading="lazy"
-              decoding="async"
-            />
-          </div>
-          <div className={styles.showcaseDetail}>
-            <img
-              src={detail.src}
-              alt={detail.alt}
-              width={detail.width}
-              height={detail.height}
-              loading="lazy"
-              decoding="async"
-            />
-          </div>
-        </div>
-        <div className={styles.showcaseBottom}>
-          <p className={styles.showcaseText}>{NOEL_2026_TEASER.text}</p>
-          <Link to="/mini-seances-noel-2026" className={styles.editorialLink}>
-            {NOEL_2026_TEASER.cta}
-            <span aria-hidden="true">→</span>
-          </Link>
-        </div>
+      <img
+        className={styles.teaserPhoto}
+        src={photo.src}
+        srcSet={`${photo.src} 800w, ${photo.src1600} 1600w`}
+        sizes="(min-width: 768px) 50vw, 100vw"
+        alt={photo.alt}
+        width={1600}
+        height={1067}
+        loading="lazy"
+        decoding="async"
+      />
+      <div className={styles.teaserCopy}>
+        <p className={`${styles.eyebrow} ${styles.accentRed}`}>{NOEL_2026_CAMPAIGN.editionLabel}</p>
+        <h2 id="noel-teaser-title" className={`${styles.display} ${styles.teaserTitle}`}>
+          {NOEL_2026_TEASER.title}
+        </h2>
+        <p className={styles.teaserDates}>{NOEL_2026_TEASER.datesLabel}</p>
+        <p className={styles.teaserLocation}>{NOEL_2026_LOCATION}</p>
+        <p className={styles.teaserText}>{NOEL_2026_TEASER.text}</p>
+        <Link to="/mini-seances-noel-2026" className={styles.button}>
+          {NOEL_2026_TEASER.cta}
+        </Link>
       </div>
     </section>
   );
