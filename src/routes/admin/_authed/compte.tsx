@@ -2,6 +2,7 @@ import { useEffect, useId, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { HiddenUsernameField } from "@/components/site/admin/HiddenUsernameField";
 import { friendlyAuthError, isInsufficientAal } from "@/lib/admin/auth-errors";
 import { changePassword } from "@/lib/admin/change-password";
 import { getMfaState, normalizeTotpCode, TOTP_CODE, type MfaState } from "@/lib/admin/mfa";
@@ -184,6 +185,7 @@ function PasswordSection({ email }: { email: string }) {
           void submit();
         }}
       >
+        <HiddenUsernameField email={email} />
         <Field
           label="Mot de passe actuel"
           type="password"

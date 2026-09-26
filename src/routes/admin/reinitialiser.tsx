@@ -2,6 +2,7 @@ import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { HiddenUsernameField } from "@/components/site/admin/HiddenUsernameField";
 import { friendlyAuthError, isInsufficientAal } from "@/lib/admin/auth-errors";
 import {
   getMfaState,
@@ -44,6 +45,7 @@ function ResetPassword() {
   const [phase, setPhase] = useState<Phase>("checking");
   const [factorId, setFactorId] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [email, setEmail] = useState("");
 
   useEffect(() => {
     let active = true;
@@ -58,6 +60,7 @@ function ResetPassword() {
         setPhase("invalid");
         return;
       }
+      setEmail(data.session.user.email ?? "");
       const state = await getMfaState();
       if (!active) return;
       if (needsSecondFactor(state) && state.factorId) {
@@ -190,6 +193,7 @@ function ResetPassword() {
 
         {phase === "form" && (
           <form onSubmit={onPassword} className="space-y-4">
+            <HiddenUsernameField email={email} />
             <div>
               <label htmlFor="new-password" className={labelClass}>
                 Nouveau mot de passe
