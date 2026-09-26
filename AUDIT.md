@@ -16,6 +16,19 @@
 - Détail par constat : voir les mises à jour du 27/09/2026 dans RGPD-01 à 05 ci-dessous. En résumé : RGPD-03 et RGPD-04 largement résolus sur `confidentialite.tsx` (reste : la région Supabase à renseigner, et la purge automatique de `contact_requests` toujours à créer) ; RGPD-01 partiellement traité (texte correct, mais ce que Pelli dépose réellement reste à vérifier dans un navigateur) ; RGPD-02 et RGPD-05 inchangés (portent sur `mentions-legales.tsx`, hors périmètre de cette mise à jour).
 - Rendu vérifié à 390 px et 1280 px sur les deux pages.
 
+**FAQ « Où peut se dérouler la séance ? » — décision close :**
+
+- Paul a remplacé, depuis l'admin FAQ (écriture directe en production), le texte de cette réponse
+  par celui qui était codé en dur sur `main` (`cfda0d3`, `src/routes/faq.tsx`, override retiré
+  ensuite par le commit `e37174a` sur `apres-noel`) : « Les séances se déroulent essentiellement en
+  bord de mer ou dans la nature, à Marseille et alentours. Je reste aussi ouverte à d'autres
+  propositions si le lieu est adapté à votre séance. »
+- Vérifié en local (base de production, lecture seule) : `/faq` affiche ce texte à l'identique,
+  caractère pour caractère (comparaison par hachage).
+- Conséquence : la migration `20260602000000_remove_vieux_quartiers_from_faq.sql` reste **non
+  appliquée**, décision définitive — voir la ligne mise à jour dans la section du 25 septembre
+  ci-dessous.
+
 ---
 
 ## Mise à jour — 26 septembre 2026
@@ -59,7 +72,7 @@
 **État des migrations, vérifié en production depuis l'audit initial (par requêtes `SELECT` en lecture seule, exécutées par Paul) :**
 
 - `20260601000000_add_consent_to_contact_requests.sql` — **appliquée.**
-- `20260602000000_remove_vieux_quartiers_from_faq.sql` — **non appliquée, et ne doit pas l'être.** Le texte de la question « Où peut se dérouler la séance ? » actuellement en production est plus récent et plus riche que celui que cette migration écrirait. Toute évolution future de ce texte passe par l'admin FAQ, pas par cette migration.
+- `20260602000000_remove_vieux_quartiers_from_faq.sql` — **non appliquée, décision définitive : ne doit pas l'être** (close le 27/09/2026, voir la mise à jour du 27 septembre en tête de fichier). Le texte de la question « Où peut se dérouler la séance ? » a été remplacé depuis l'admin FAQ par Paul, le 27/09/2026, par le texte historique de `main` (celui que cette migration aurait justement supprimé) — cette migration écrirait donc désormais un texte obsolète des deux façons. Toute évolution future de ce texte passe par l'admin FAQ, pas par cette migration.
 - `20260924000000_align_reviews_with_public_site.sql` — **appliquée** (commit `ce16761`).
 - `20260924000001_align_seo_pages_with_public_site.sql` — **appliquée** (commit `f80f7f2`, re-vérifiée en direct lors du chantier SEO — voir plus bas).
 
