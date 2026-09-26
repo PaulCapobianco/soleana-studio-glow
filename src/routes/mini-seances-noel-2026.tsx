@@ -4,6 +4,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteShell } from "@/components/site/SiteShell";
 import { Reveal } from "@/components/site/Reveal";
 import { NoelGallery } from "@/components/site/NoelGallery";
+import { NoelStar } from "@/components/site/NoelStar";
 import { absoluteUrl, buildPageSeo } from "@/lib/seo";
 import { getNoel2026EditionState } from "@/lib/noel-2026.functions";
 import {
@@ -50,6 +51,7 @@ function NoelPage() {
         <div className={styles.campaign} style={seasonVars}>
           <section className={styles.over}>
             <Reveal>
+              <NoelStar className={styles.star} />
               <p className={`${styles.eyebrow} ${styles.accentRed}`}>
                 {NOEL_2026_PAGE_COPY.editionStatus}
               </p>
@@ -68,7 +70,8 @@ function NoelPage() {
     );
   }
 
-  const experiencePhoto = NOEL_2026_GALLERY_PHOTOS[0];
+  const main = NOEL_2026_GALLERY_PHOTOS[0];
+  const accent = NOEL_2026_GALLERY_PHOTOS[5];
 
   return (
     <SiteShell overlay>
@@ -86,14 +89,15 @@ function NoelPage() {
             decoding="async"
           />
           <div className={styles.heroCopy}>
-            <p className={styles.eyebrow}>{NOEL_2026_CAMPAIGN.editionLabel} · Soleana Studio</p>
+            <p className={`${styles.eyebrow} ${styles.onDark}`}>
+              {NOEL_2026_CAMPAIGN.editionLabel} · Soleana Studio
+            </p>
             <h1 className={`${styles.display} ${styles.heroTitle}`}>{NOEL_2026_TEXTS.heroTitle}</h1>
             <p className={styles.heroSubtitle}>{NOEL_2026_TEXTS.heroSubtitle}</p>
-            <p className={styles.heroDates}>
-              {NOEL_2026_TEXTS.heroDatesLabel}
-              <br />
-              {NOEL_2026_LOCATION}
-            </p>
+            <ul className={styles.tags}>
+              <li>{NOEL_2026_TEXTS.heroDatesLabel}</li>
+              <li>{NOEL_2026_LOCATION}</li>
+            </ul>
             <a href="#formules" className={`${styles.button} ${styles.buttonLight}`}>
               {NOEL_2026_TEXTS.heroCta}
             </a>
@@ -102,22 +106,52 @@ function NoelPage() {
 
         <section className={styles.section}>
           <div className={`${styles.container} ${styles.intro}`}>
-            <div className={styles.introCopy}>
-              {NOEL_2026_TEXTS.experience.map((paragraph) => (
-                <p key={paragraph}>{paragraph}</p>
-              ))}
+            <Reveal className={styles.introCopy}>
+              <p className={`${styles.eyebrow} ${styles.accentRed}`}>L'expérience</p>
+              <p className={styles.lead}>{NOEL_2026_TEXTS.experience[0]}</p>
+              <p className={styles.audience}>{NOEL_2026_TEXTS.experience[1]}</p>
+              <p className={styles.small}>{NOEL_2026_TEXTS.experience[2]}</p>
+            </Reveal>
+            <div className={styles.introPhotos}>
+              <img
+                className={styles.introMain}
+                src={main.src}
+                srcSet={`${main.src} 700w, ${main.srcLarge} 1600w`}
+                sizes="(min-width: 1024px) 34vw, (min-width: 768px) 45vw, 100vw"
+                width={main.width}
+                height={main.height}
+                alt={main.alt}
+                loading="lazy"
+                decoding="async"
+              />
+              <img
+                className={styles.introAccent}
+                src={accent.src}
+                srcSet={`${accent.src} 700w, ${accent.srcLarge} 1600w`}
+                sizes="16vw"
+                width={accent.width}
+                height={accent.height}
+                alt={accent.alt}
+                loading="lazy"
+                decoding="async"
+              />
             </div>
-            <img
-              className={styles.introPhoto}
-              src={experiencePhoto.src}
-              srcSet={`${experiencePhoto.src} 700w, ${experiencePhoto.srcLarge} 1600w`}
-              sizes="(min-width: 1024px) 40vw, (min-width: 768px) 45vw, 100vw"
-              width={experiencePhoto.width}
-              height={experiencePhoto.height}
-              alt={experiencePhoto.alt}
-              loading="lazy"
-              decoding="async"
-            />
+          </div>
+        </section>
+
+        <section className={`${styles.section} ${styles.stepsSection}`}>
+          <div className={styles.container}>
+            <h2 className={`${styles.display} ${styles.sectionTitle}`}>
+              {NOEL_2026_PAGE_COPY.experienceTitle}
+            </h2>
+            <ol className={styles.steps}>
+              {NOEL_2026_PAGE_COPY.experienceItems.map((item, index) => (
+                <li key={item}>
+                  <span aria-hidden="true">0{index + 1}</span>
+                  <p>{item}</p>
+                </li>
+              ))}
+            </ol>
           </div>
         </section>
 
@@ -133,55 +167,35 @@ function NoelPage() {
           </div>
         </section>
 
-        <section className={`${styles.section} ${styles.tinted}`}>
-          <div className={`${styles.container} ${styles.steps}`}>
-            <h2 className={`${styles.display} ${styles.sectionTitle}`}>
-              {NOEL_2026_PAGE_COPY.experienceTitle}
-            </h2>
-            <ol>
-              {NOEL_2026_PAGE_COPY.experienceItems.map((item, index) => (
-                <li key={item}>
-                  <span aria-hidden="true">0{index + 1}</span>
-                  <p>{item}</p>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </section>
-
-        <section className={styles.section}>
-          <div className={`${styles.container} ${styles.datesBlock}`}>
-            <h2 className={`${styles.display} ${styles.sectionTitle}`}>
-              {NOEL_2026_PAGE_COPY.datesTitle}
-            </h2>
-            <div>
-              <div className={styles.dates}>
-                {NOEL_2026_SESSION_DATES.map((date) => (
-                  <div key={date.iso}>
-                    <span aria-hidden="true">{date.iso.slice(-2)}</span>
-                    <time dateTime={date.iso}>{date.label}</time>
-                  </div>
-                ))}
-              </div>
-              <p className={styles.note}>{NOEL_2026_PAGE_COPY.limitedPlaces}</p>
-            </div>
-          </div>
-        </section>
-
-        <section
-          id="formules"
-          className={`${styles.section} ${styles.tinted} ${styles.formulesSection}`}
-        >
+        <section id="formules" className={`${styles.section} ${styles.night}`}>
           <div className={styles.container}>
-            <div className={styles.sectionHeading}>
+            <div className={styles.formulesHead}>
+              <NoelStar className={styles.star} />
+              <p className={`${styles.eyebrow} ${styles.onDark}`}>
+                {NOEL_2026_CAMPAIGN.editionLabel}
+              </p>
               <h2 className={`${styles.display} ${styles.sectionTitle}`}>
                 {NOEL_2026_PAGE_COPY.formulesTitle}
               </h2>
-              <p>{NOEL_2026_PAGE_COPY.formulesIntro}</p>
+              <p className={styles.formulesIntro}>{NOEL_2026_PAGE_COPY.formulesIntro}</p>
             </div>
-            <div className={styles.formules}>
+            <div className={styles.datesBar}>
+              <h3 className={`${styles.eyebrow} ${styles.onDark}`}>
+                {NOEL_2026_PAGE_COPY.datesTitle}
+              </h3>
+              <ul>
+                {NOEL_2026_SESSION_DATES.map((date) => (
+                  <li key={date.iso}>
+                    <time dateTime={date.iso}>{date.label}</time>
+                  </li>
+                ))}
+              </ul>
+              <p>{NOEL_2026_PAGE_COPY.limitedPlaces}</p>
+            </div>
+            <Reveal className={styles.formules}>
               {NOEL_2026_FORMULES.map((formule, index) => (
                 <article key={formule.id} className={index === 1 ? styles.featured : undefined}>
+                  {index === 1 && <span className={styles.badge}>La plus complète</span>}
                   <p className={`${styles.eyebrow} ${styles.accentRed}`} aria-hidden="true">
                     0{index + 1}
                   </p>
@@ -204,15 +218,18 @@ function NoelPage() {
                   </a>
                 </article>
               ))}
-            </div>
+            </Reveal>
           </div>
         </section>
 
         <section className={styles.section}>
           <div className={`${styles.container} ${styles.faq}`}>
-            <h2 className={`${styles.display} ${styles.sectionTitle}`}>
-              {NOEL_2026_PAGE_COPY.faqTitle}
-            </h2>
+            <div>
+              <p className={`${styles.eyebrow} ${styles.accentRed}`}>En pratique</p>
+              <h2 className={`${styles.display} ${styles.sectionTitle}`}>
+                {NOEL_2026_PAGE_COPY.faqTitle}
+              </h2>
+            </div>
             <div>
               {NOEL_2026_FAQ.map((item) => (
                 <details className={styles.faqItem} key={item.question}>
@@ -226,9 +243,12 @@ function NoelPage() {
           </div>
         </section>
 
-        <section className={styles.closing}>
-          <div className={styles.closingCopy}>
-            <p className={styles.eyebrow}>{NOEL_2026_CAMPAIGN.editionLabel}</p>
+        <section className={`${styles.closing} ${styles.night}`}>
+          <Reveal className={styles.closingCopy}>
+            <NoelStar className={styles.star} />
+            <p className={`${styles.eyebrow} ${styles.onDark}`}>
+              {NOEL_2026_CAMPAIGN.editionLabel}
+            </p>
             <h2 className={`${styles.display} ${styles.sectionTitle}`}>
               {NOEL_2026_TEXTS.ctaFinalTitle}
             </h2>
@@ -236,7 +256,7 @@ function NoelPage() {
             <a href="#formules" className={`${styles.button} ${styles.buttonLight}`}>
               {NOEL_2026_TEXTS.ctaFinalButton}
             </a>
-          </div>
+          </Reveal>
           <img
             src={NOEL_2026_CAMPAIGN.closingPhoto.src}
             srcSet={`${NOEL_2026_CAMPAIGN.closingPhoto.src} 700w, ${NOEL_2026_CAMPAIGN.closingPhoto.srcLarge} 1600w`}

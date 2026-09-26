@@ -1,10 +1,14 @@
 /*
  * Mini-séances de Noël 2026 — page + teaser d'accueil.
- * Palette saisonnière : --noel-pine / --noel-red sont injectées une seule
- * fois depuis NOEL_2026_COLORS. Polices, fonds et bordures viennent du thème.
+ * Palette saisonnière : --noel-pine / --noel-red viennent de NOEL_2026_COLORS ;
+ * l'or de guirlande est l'accent existant du site (--accent). Fonds, bordures
+ * et polices viennent du thème.
  */
 .campaign {
-  --noel-rule: color-mix(in srgb, var(--noel-pine) 22%, transparent);
+  --noel-gold: var(--accent);
+  --noel-gold-text: #e3c4a4; /* or clair, lisible en texte sur le vert sapin */
+  --noel-cream: #fffdf8;
+  --noel-rule: color-mix(in srgb, var(--noel-pine) 20%, transparent);
   color: var(--noel-pine);
 }
 .campaign :is(a, button, summary):focus-visible {
@@ -28,6 +32,9 @@
 .accentRed {
   color: var(--noel-red);
 }
+.onDark {
+  color: var(--noel-gold-text);
+}
 .display {
   font-family: var(--font-display);
   font-style: italic;
@@ -37,11 +44,18 @@
   text-wrap: balance;
 }
 .sectionTitle {
-  font-size: clamp(2.25rem, 4vw, 3.5rem);
   max-width: 18ch;
+  font-size: clamp(2.25rem, 4vw, 3.5rem);
+}
+.star {
+  display: block;
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-bottom: 1.25rem;
+  color: var(--noel-gold);
 }
 
-/* Boutons : même gabarit que les boutons du site (capitales espacées) */
+/* Boutons : gabarit du site (capitales espacées, coins droits, 48 px) */
 .button {
   display: inline-flex;
   min-height: 3rem;
@@ -50,7 +64,7 @@
   padding: 0.95rem 2.25rem;
   border: 1px solid var(--noel-pine);
   background: var(--noel-pine);
-  color: #fffdf8;
+  color: var(--noel-cream);
   font-family: var(--font-sans);
   font-size: 0.6875rem;
   line-height: 1.4;
@@ -66,24 +80,72 @@
   color: var(--noel-pine);
 }
 .buttonLight {
-  border-color: #fffdf8;
-  background: #fffdf8;
+  border-color: var(--noel-cream);
+  background: var(--noel-cream);
   color: var(--noel-pine);
 }
 .buttonLight:hover {
   background: transparent;
-  color: #fffdf8;
+  color: var(--noel-cream);
 }
 
-/* Ouverture : photo pleine largeur, voile discret */
+/* Sections « de nuit » : vert sapin + halos chauds façon guirlande (CSS pur) */
+.night {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      circle at 12% 8%,
+      color-mix(in srgb, var(--noel-gold) 26%, transparent),
+      transparent 38%
+    ),
+    radial-gradient(
+      circle at 92% 88%,
+      color-mix(in srgb, var(--noel-gold) 18%, transparent),
+      transparent 42%
+    ),
+    var(--noel-pine);
+  color: var(--noel-cream);
+}
+.night::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      circle at 78% 14%,
+      color-mix(in srgb, var(--noel-gold) 40%, transparent) 0 0.35rem,
+      transparent 0.9rem
+    ),
+    radial-gradient(
+      circle at 90% 30%,
+      color-mix(in srgb, var(--noel-gold) 26%, transparent) 0 0.25rem,
+      transparent 0.7rem
+    ),
+    radial-gradient(
+      circle at 6% 62%,
+      color-mix(in srgb, var(--noel-gold) 30%, transparent) 0 0.4rem,
+      transparent 1rem
+    ),
+    radial-gradient(
+      circle at 20% 90%,
+      color-mix(in srgb, var(--noel-gold) 22%, transparent) 0 0.3rem,
+      transparent 0.8rem
+    );
+}
+
+/* Ouverture */
 .landingHero {
   position: relative;
   display: flex;
-  min-height: clamp(34rem, 92svh, 62rem);
+  min-height: clamp(36rem, 96svh, 60rem);
   align-items: flex-end;
   overflow: hidden;
   background: var(--noel-pine);
-  color: #fffdf8;
+  color: var(--noel-cream);
 }
 .landingHero::after {
   content: "";
@@ -92,10 +154,11 @@
   background:
     linear-gradient(
       to top,
-      color-mix(in srgb, #14241c 82%, transparent) 0%,
-      color-mix(in srgb, #14241c 50%, transparent) 42%,
+      color-mix(in srgb, #14241c 84%, transparent) 0%,
+      color-mix(in srgb, #14241c 48%, transparent) 42%,
       transparent 78%
     ),
+    linear-gradient(to right, color-mix(in srgb, #14241c 45%, transparent) 0%, transparent 60%),
     linear-gradient(to bottom, color-mix(in srgb, #14241c 55%, transparent) 0%, transparent 22%);
 }
 .heroPhoto {
@@ -126,29 +189,34 @@
 .heroSubtitle {
   max-width: 30rem;
   font-family: var(--font-display);
-  font-size: clamp(1.1rem, 1.6vw, 1.35rem);
-  line-height: 1.6;
+  font-style: italic;
+  font-size: clamp(1.15rem, 1.7vw, 1.45rem);
+  line-height: 1.55;
 }
-.heroDates {
-  margin-block: 1.5rem 2rem;
-  font-size: 0.9rem;
-  line-height: 1.8;
-  letter-spacing: 0.04em;
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-block: 1.75rem 2rem;
+}
+.tags li {
+  padding: 0.5rem 1rem;
+  border: 1px solid color-mix(in srgb, var(--noel-gold) 70%, transparent);
+  background: color-mix(in srgb, #14241c 35%, transparent);
+  font-size: 0.8rem;
+  line-height: 1.4;
+  letter-spacing: 0.06em;
 }
 
 /* Sections */
 .section {
   padding: clamp(4.5rem, 9vw, 8rem) 1.5rem;
 }
-.tinted {
-  background: var(--surface);
-  border-block: 1px solid var(--border);
-}
 
-/* Expérience : texte en colonne étroite + photo portrait */
+/* Expérience : texte + photo portrait (+ petite photo qui chevauche sur desktop) */
 .intro {
   display: grid;
-  gap: 2.5rem;
+  gap: 3rem;
   align-items: center;
 }
 .introCopy {
@@ -157,27 +225,38 @@
   gap: 1.5rem;
   line-height: 1.85;
 }
-.introCopy p:first-child {
+.lead {
   font-family: var(--font-display);
   font-size: clamp(1.3rem, 2vw, 1.6rem);
   line-height: 1.6;
 }
-.introCopy p:not(:first-child) {
+.audience {
+  padding-left: 1.25rem;
+  border-left: 2px solid var(--noel-gold);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.25rem;
+  line-height: 1.6;
+}
+.small {
   font-size: 0.95rem;
 }
-.introCopy p:nth-child(2) {
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--noel-rule);
-}
-.introPhoto {
+.introPhotos {
+  position: relative;
   width: 100%;
   max-width: 26rem;
-  aspect-ratio: 2 / 3;
-  object-fit: cover;
   justify-self: center;
 }
+.introMain {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+}
+.introAccent {
+  display: none;
+}
 
-/* Titres de section + chapeau */
+/* Titre + chapeau */
 .sectionHeading {
   display: grid;
   gap: 1.25rem;
@@ -190,67 +269,32 @@
 }
 
 /* Déroulement */
+.stepsSection {
+  background: var(--surface);
+  border-block: 1px solid var(--border);
+}
 .steps {
   display: grid;
-  gap: 2.5rem;
-}
-.steps ol {
-  max-width: 40rem;
+  margin-top: 2.5rem;
 }
 .steps li {
   display: flex;
-  gap: 1.5rem;
+  gap: 1.25rem;
   padding-block: 1.25rem;
-  border-top: 1px solid var(--noel-rule);
-  font-size: 1rem;
-  line-height: 1.75;
-}
-.steps li:last-child {
-  border-bottom: 1px solid var(--noel-rule);
+  border-top: 1px solid color-mix(in srgb, var(--noel-gold) 70%, transparent);
+  line-height: 1.7;
 }
 .steps li > span {
-  padding-top: 0.2rem;
+  padding-top: 0.15rem;
   font-family: var(--font-display);
-  font-size: 1.1rem;
+  font-style: italic;
+  font-size: 1.25rem;
   color: var(--noel-red);
-}
-
-/* Dates */
-.datesBlock {
-  display: grid;
-  gap: 2.5rem;
-}
-.dates > div {
-  display: flex;
-  align-items: center;
-  gap: 1.75rem;
-  padding-block: 1.5rem;
-  border-top: 1px solid var(--noel-rule);
-}
-.dates > div:last-child {
-  border-bottom: 1px solid var(--noel-rule);
-}
-.dates span {
-  min-width: 2ch;
-  font-family: var(--font-display);
-  font-size: clamp(3.75rem, 8vw, 5.5rem);
-  line-height: 1;
-  color: var(--noel-pine);
-}
-.dates time {
-  font-family: var(--font-display);
-  font-size: 1.35rem;
-  line-height: 1.4;
-}
-.note {
-  margin-top: 1.5rem;
-  font-size: 0.9rem;
-  line-height: 1.8;
 }
 
 /* Galerie */
 .gallerySection {
-  padding: clamp(4.5rem, 9vw, 8rem) 1.5rem 0;
+  padding: clamp(4.5rem, 9vw, 8rem) 1.5rem;
 }
 .gallery {
   display: grid;
@@ -288,25 +332,73 @@
   transition: transform 700ms;
 }
 
-/* Formules */
-.formulesSection {
-  scroll-margin-top: 5rem;
+/* Formules (section de nuit) */
+.night#formules {
+  scroll-margin-top: 4rem;
+}
+.formulesHead {
+  display: grid;
+  justify-items: start;
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+}
+.formulesHead .star {
+  margin-bottom: 0;
+}
+.formulesIntro {
+  max-width: 28rem;
+  font-size: 0.9rem;
+  line-height: 1.8;
+  opacity: 0.9;
+}
+.datesBar {
+  display: grid;
+  gap: 0.75rem;
+  margin-bottom: 3rem;
+  padding-block: 1.5rem;
+  border-block: 1px solid color-mix(in srgb, var(--noel-gold) 55%, transparent);
+}
+.datesBar ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 2rem;
+}
+.datesBar time {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+}
+.datesBar p {
+  font-size: 0.9rem;
+  line-height: 1.7;
 }
 .formules {
   display: grid;
   gap: 1.5rem;
 }
 .formules article {
+  position: relative;
   display: flex;
   flex-direction: column;
   padding: 2rem 1.5rem;
-  border: 1px solid var(--border);
+  border: 1px solid transparent;
   background: var(--background);
+  color: var(--noel-pine);
 }
 .formules .featured {
-  border: 1px solid var(--noel-pine);
-  border-top: 3px solid var(--noel-red);
-  background: #fffdf8;
+  border-color: var(--noel-gold);
+  border-top-width: 3px;
+  background: var(--noel-cream);
+}
+.badge {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  padding: 0.3rem 0.75rem;
+  background: var(--noel-red);
+  color: var(--noel-cream);
+  font-size: 0.625rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
 }
 .formuleName {
   margin-top: 0.5rem;
@@ -344,6 +436,9 @@
   display: grid;
   gap: 2.5rem;
 }
+.faq .sectionTitle {
+  margin-top: 0.75rem;
+}
 .faqItem {
   border-top: 1px solid var(--noel-rule);
 }
@@ -369,6 +464,7 @@
   font-family: var(--font-display);
   font-size: 1.6rem;
   line-height: 1;
+  color: var(--noel-red);
 }
 .faqItem[open] summary::after {
   content: "−";
@@ -386,11 +482,9 @@
   line-height: 1.85;
 }
 
-/* CTA final : fond vert sapin */
+/* CTA final */
 .closing {
   display: grid;
-  background: var(--noel-pine);
-  color: #fffdf8;
 }
 .closingCopy {
   display: flex;
@@ -400,13 +494,14 @@
   padding: 4.5rem 1.5rem;
 }
 .closingCopy h2 {
-  margin-block: 1.25rem;
+  margin-block: 1rem 1.25rem;
 }
 .closingPhrase {
   max-width: 26rem;
   margin-bottom: 2rem;
   font-family: var(--font-display);
-  font-size: 1.2rem;
+  font-style: italic;
+  font-size: 1.25rem;
   line-height: 1.6;
 }
 .closing > img {
@@ -423,10 +518,13 @@
   padding: 10rem 1.5rem 7rem;
   text-align: center;
 }
+.over .star {
+  margin-inline: auto;
+}
 .overTitle {
+  max-width: none;
   margin-block: 1rem 1.5rem;
   font-size: clamp(2.5rem, 6vw, 4rem);
-  max-width: none;
 }
 .overLead {
   margin-bottom: 1rem;
@@ -434,36 +532,41 @@
   font-size: 1.25rem;
 }
 .overText {
-  margin: 0 auto 2.5rem;
   max-width: 34rem;
-  font-size: 1rem;
+  margin: 0 auto 2.5rem;
   line-height: 1.85;
 }
 
-/* Teaser d'accueil : 50 % photo / 50 % texte */
+/* Teaser d'accueil : invitation posée dans le fond crème de la page */
 .teaser {
+  padding: clamp(5rem, 10vw, 9rem) 1.5rem clamp(2rem, 4vw, 3rem);
+  background: var(--background);
+}
+.teaserGrid {
   display: grid;
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
+  margin-inline: auto;
+  max-width: 76rem;
+}
+.teaserPhotoWrap {
+  overflow: hidden;
 }
 .teaserPhoto {
+  display: block;
   width: 100%;
-  height: 100%;
   aspect-ratio: 4 / 3;
   object-fit: cover;
   object-position: 50% 40%;
 }
-.teaserCopy {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-  padding: 3.5rem 1.5rem 4rem;
+.teaserCard {
+  padding: 2.5rem 0 0;
+}
+.teaserCard .star {
+  margin-bottom: 1rem;
 }
 .teaserTitle {
-  margin-block: 1rem 1.5rem;
-  font-size: clamp(2.4rem, 4.4vw, 3.75rem);
   max-width: 13ch;
+  margin-block: 0.75rem 1.5rem;
+  font-size: clamp(2.4rem, 4.4vw, 3.5rem);
 }
 .teaserDates {
   font-family: var(--font-display);
@@ -495,33 +598,31 @@
   .heroCopy,
   .section,
   .gallerySection,
-  .closingCopy {
+  .closingCopy,
+  .teaser {
     padding-inline: 2.5rem;
   }
   .heroCopy {
     padding-bottom: 4.5rem;
   }
-  .intro {
-    grid-template-columns: 1.1fr 0.9fr;
-    gap: clamp(3rem, 7vw, 7rem);
-  }
-  .steps,
-  .datesBlock,
-  .faq {
-    grid-template-columns: 1fr 1.3fr;
-    gap: 4rem;
+  .steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 3rem;
   }
   .sectionHeading {
     grid-template-columns: 1.3fr 1fr;
     align-items: end;
     gap: 4rem;
   }
-  .gallery {
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-    gap: clamp(1rem, 2vw, 1.75rem);
+  .datesBar {
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 2rem 3rem;
   }
   .gallery {
-    align-items: center;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    align-items: start;
+    gap: clamp(1rem, 2vw, 1.75rem);
   }
   .galleryPhoto:nth-child(n) {
     aspect-ratio: 2 / 3;
@@ -533,6 +634,7 @@
   .galleryPhoto:nth-child(2) {
     grid-area: 1 / 5 / 2 / 13;
     aspect-ratio: 3 / 2;
+    align-self: center;
   }
   .galleryPhoto:nth-child(3) {
     grid-area: 2 / 9 / 3 / 13;
@@ -540,12 +642,14 @@
   .galleryPhoto:nth-child(4) {
     grid-area: 2 / 1 / 3 / 9;
     aspect-ratio: 3 / 2;
+    align-self: center;
   }
   .galleryPhoto:nth-child(5) {
     grid-area: 3 / 1 / 4 / 5;
   }
   .galleryPhoto:nth-child(6) {
     grid-area: 3 / 5 / 4 / 9;
+    margin-top: 3rem;
   }
   .galleryPhoto:nth-child(7) {
     grid-area: 3 / 9 / 4 / 13;
@@ -554,26 +658,20 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 2rem;
   }
+  .faq {
+    grid-template-columns: 1fr 1.5fr;
+    gap: 4rem;
+  }
   .closing {
     grid-template-columns: 1fr 1fr;
   }
   .closing > img {
     height: 100%;
-    aspect-ratio: auto;
     min-height: 34rem;
+    aspect-ratio: auto;
   }
   .closingCopy {
     padding-block: 5rem;
-  }
-  .teaser {
-    grid-template-columns: 1fr 1fr;
-    min-height: 34rem;
-  }
-  .teaserPhoto {
-    aspect-ratio: auto;
-  }
-  .teaserCopy {
-    padding: 4rem clamp(2.5rem, 5vw, 5rem);
   }
 }
 
@@ -581,25 +679,69 @@
   .heroCopy,
   .section,
   .gallerySection,
-  .closingCopy {
+  .teaser {
     padding-inline: 4rem;
   }
   .heroCopy {
     padding-bottom: 5.5rem;
   }
   .heroPhoto {
-    /* Élargie et calée à gauche : le sujet se décale vers la droite, le texte reste dégagé. */
-    width: 122%;
     object-position: 50% 25%;
   }
   .heroTitle {
     font-size: clamp(3rem, 5.2vw, 5rem);
+  }
+  .intro {
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(4rem, 8vw, 8rem);
+  }
+  .introPhotos {
+    max-width: 28rem;
+    justify-self: end;
+  }
+  .introAccent {
+    position: absolute;
+    bottom: -2.5rem;
+    left: -4.5rem;
+    display: block;
+    width: 45%;
+    aspect-ratio: 2 / 3;
+    border: 0.5rem solid var(--background);
+    object-fit: cover;
+  }
+  .steps {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    column-gap: 2rem;
+  }
+  .steps li {
+    flex-direction: column;
+    gap: 0.75rem;
   }
   .formules article {
     padding: 3rem 2.75rem;
   }
   .closingCopy {
     padding-inline: clamp(4rem, 7vw, 7rem);
+  }
+  /* Teaser : photo et carte crème qui se chevauchent, composition 55/45 */
+  .teaserGrid {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    align-items: end;
+    padding-bottom: 4rem;
+  }
+  .teaserPhotoWrap {
+    grid-area: 1 / 1 / 2 / 8;
+  }
+  .teaserPhoto {
+    aspect-ratio: 5 / 4;
+  }
+  .teaserCard {
+    position: relative;
+    grid-area: 1 / 7 / 2 / 13;
+    margin-bottom: -4rem;
+    padding: 3.5rem 3.5rem 3.5rem;
+    border: 1px solid var(--border);
+    background: var(--surface);
   }
 }
 
