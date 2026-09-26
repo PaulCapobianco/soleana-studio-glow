@@ -1,7 +1,12 @@
 // Turns a Supabase/PostgREST error into a short, non-technical French
 // message safe to show in the admin UI. Never surfaces error.message (or a
 // raw Postgres error code) directly — see AUDIT.md SEC-05.
+// Raised by admin forms for input problems the editor can fix; its message is
+// already written for them, so it is shown as-is.
+export class AdminValidationError extends Error {}
+
 export function friendlySupabaseError(error: unknown): string {
+  if (error instanceof AdminValidationError) return error.message;
   const raw =
     error && typeof error === "object" && "message" in error
       ? String((error as { message?: unknown }).message ?? "")

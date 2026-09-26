@@ -1,5 +1,5 @@
 import { useId } from "react";
-import { friendlySupabaseError } from "@/lib/admin/friendly-error";
+import { AdminValidationError, friendlySupabaseError } from "@/lib/admin/friendly-error";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,6 +10,16 @@ import { useEditableRecord } from "@/lib/admin/use-editable-record";
 
 type SeoPageRow = Database["public"]["Tables"]["seo_pages"]["Row"];
 type SeoPageUpdate = Database["public"]["Tables"]["seo_pages"]["Update"];
+
+// Published as-is on the public page (<title>, <meta>, h1, body, button): never empty.
+const REQUIRED_FIELDS = [
+  ["h1", "H1"],
+  ["meta_title", "Meta title"],
+  ["meta_description", "Meta description"],
+  ["intro", "Intro"],
+  ["content", "Contenu"],
+  ["cta_label", "CTA"],
+] as const;
 
 export const Route = createFileRoute("/admin/_authed/pages-seo")({
   head: () => ({
@@ -74,6 +84,16 @@ function SeoPageCard({
     item,
     async (patch) => {
       const normalizedPatch: SeoPageUpdate = { ...patch };
+      for (const [key, label] of REQUIRED_FIELDS) {
+        const value = patch[key];
+        if (value === undefined) continue;
+        if (!value.trim()) {
+          return {
+            error: new AdminValidationError(`Le champ « ${label} » ne peut pas être vide.`),
+          };
+        }
+        normalizedPatch[key] = value.trim();
+      }
       if (patch.og_title !== undefined) normalizedPatch.og_title = patch.og_title?.trim() || null;
       if (patch.og_description !== undefined)
         normalizedPatch.og_description = patch.og_description?.trim() || null;
