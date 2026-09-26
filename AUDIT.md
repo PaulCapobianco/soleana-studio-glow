@@ -15,6 +15,11 @@
 - Code retiré (commit `8026431`) : `contact-form.schema.ts`, `contact.functions.ts` (`submitContactRequest`), `TurnstileWidget.tsx`, `client.server.ts` (client service-role, seul importateur : la fonction supprimée) et `VITE_TURNSTILE_SITE_KEY` de `.env.example`. **SEC-03 est clos** : côté code (commit `8026431`) et côté base (migration appliquée).
 - Les iframes Pelli (`/contact`, `/reservation`, `/espace-client`) ne se chargent plus qu'après un clic (commit `22cf7f8`).
 
+**Paramètres du studio (`site_settings`) :**
+
+- `20260926000001_align_site_settings_with_displayed_values.sql` — **appliquée manuellement en production le 26/09/2026, valeurs vérifiées par `SELECT`** : `tiktok_url` et `google_review_url` ajoutées ; ligne `id = 1` alignée sur les coordonnées affichées (e-mail `contact@soleanastudio.fr`, téléphone `06.67.53.63.12`, WhatsApp `https://wa.me/33667536312` avec `whatsapp_enabled = true`, Instagram, TikTok, lien d'avis Google, zone de service, phrase de pied de page) ; RLS revérifiée (lecture publique, écriture admin) ; `UPDATE` accordé à `authenticated`. L'e-mail par défaut obsolète `hello@soleana-studio.com` est remplacé.
+- Code sur la branche `apres-noel` (écran admin « Paramètres », lecture côté public avec repli sur les valeurs du code) : HTML et JSON-LD des 11 pages comparées identiques avant et après l'application de la migration. Non déployé.
+
 ---
 
 ## Mise à jour — 25 septembre 2026
