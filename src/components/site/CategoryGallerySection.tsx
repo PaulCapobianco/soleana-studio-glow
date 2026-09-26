@@ -12,7 +12,14 @@ type GalleryPhoto = {
   location: string | null;
   title: string | null;
   display_order: number;
+  /** Présents seulement pour les photos lues depuis Supabase Storage (variantes 400/800/native). */
+  srcset?: string;
+  object_position?: string;
 };
+
+// Tailles d'affichage par contexte (utilisées seulement quand la photo a un srcset).
+const SIZES_LARGE = "(min-width: 1024px) 960px, 100vw";
+const SIZES_TILE = "(min-width: 1024px) 300px, 45vw";
 
 type CategoryGallerySectionProps = {
   categorySlugs: string[];
@@ -178,6 +185,13 @@ export function CategoryGallerySection({
             >
               <img
                 src={mainPhoto.image_url}
+                srcSet={mainPhoto.srcset}
+                sizes={mainPhoto.srcset ? SIZES_LARGE : undefined}
+                style={
+                  mainPhoto.object_position
+                    ? { objectPosition: mainPhoto.object_position }
+                    : undefined
+                }
                 alt={mainPhoto.alt_text}
                 width={1600}
                 height={2000}
@@ -213,6 +227,13 @@ export function CategoryGallerySection({
             >
               <img
                 src={featuredPhoto.image_url}
+                srcSet={featuredPhoto.srcset}
+                sizes={featuredPhoto.srcset ? SIZES_LARGE : undefined}
+                style={
+                  featuredPhoto.object_position
+                    ? { objectPosition: featuredPhoto.object_position }
+                    : undefined
+                }
                 alt={featuredPhoto.alt_text}
                 width={1600}
                 height={1200}
@@ -247,6 +268,13 @@ export function CategoryGallerySection({
                   >
                     <img
                       src={photo.image_url}
+                      srcSet={photo.srcset}
+                      sizes={photo.srcset ? SIZES_TILE : undefined}
+                      style={
+                        photo.object_position
+                          ? { objectPosition: photo.object_position }
+                          : undefined
+                      }
                       alt={photo.alt_text}
                       width={1200}
                       height={1500}

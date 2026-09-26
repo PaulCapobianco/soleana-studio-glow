@@ -4,6 +4,7 @@ import { Reveal } from "@/components/site/Reveal";
 import { CategoryGallerySection } from "@/components/site/CategoryGallerySection";
 import { buildPageSeo } from "@/lib/seo";
 import { supabase } from "@/integrations/supabase/client";
+import { loadStorageGalleries, STORAGE_GALLERIES_ENABLED } from "@/lib/photo-storage";
 
 type GalleryPhoto = {
   id: string;
@@ -300,6 +301,11 @@ export const Route = createFileRoute("/$slug")({
       throw new Error("Erreur de chargement de la page");
     }
     if (!data) throw notFound();
+    // Galeries lues depuis Supabase Storage : inactif tant que STORAGE_GALLERIES_ENABLED est faux
+    // (le site garde alors les fichiers locaux, sans requête supplémentaire ni donnée en plus).
+    if (STORAGE_GALLERIES_ENABLED && SEO_PAGE_GALLERY[params.slug]?.sections.length) {
+      return { ...data, storageGalleries: await loadStorageGalleries(data.id) };
+    }
     return data;
   },
   head: ({ params, loaderData, match }) => {
@@ -362,10 +368,19 @@ function SeoPage() {
   const gallery = SEO_PAGE_GALLERY[slug];
   const hasMultipleGalleries = (gallery?.sections.length ?? 0) > 1;
 
-  const gallerySections = gallery?.sections.map((section, index) => ({
-    ...section,
-    description: hasMultipleGalleries && index > 0 ? undefined : section.description,
-  }));
+  const storageGalleries = "storageGalleries" in page ? page.storageGalleries : null;
+
+  const gallerySections = gallery?.sections.map((section, index) => {
+    // Repli explicite : les photos de Storage ne sont utilisées que si la galerie est complète
+    // (même nombre de photos que la version locale) ; sinon on garde les fichiers locaux.
+    const stored = storageGalleries?.[`gallery-${index + 1}`];
+    const usable = stored && stored.length > 0 && stored.length === section.photos?.length;
+    return {
+      ...section,
+      photos: usable ? stored : section.photos,
+      description: hasMultipleGalleries && index > 0 ? undefined : section.description,
+    };
+  });
   const primaryGallerySection = gallerySections?.[0];
 
   return (
@@ -432,7 +447,7 @@ function SeoPage() {
               </div>
             </div>
           ) : (
-            gallery?.sections.map((section, index) => (
+            gallerySections?.map((section, index) => (
               <Reveal key={`${slug}-${index}`} delay={120 + index * 60}>
                 <CategoryGallerySection
                   categorySlugs={section.categorySlugs}
