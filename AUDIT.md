@@ -25,6 +25,22 @@
 - Branche `apres-noel` (non déployée) : écran « Mon compte » (mot de passe, e-mail, TOTP), code à 6 chiffres à la connexion, « Mot de passe oublié ? », inscription publique retirée de l'écran de connexion.
 - `20260926000002_require_aal2_for_admin_writes.sql` — **créée, en attente d'application manuelle** : exige la session aal2 pour toutes les écritures admin. **À appliquer seulement après l'enregistrement du second facteur par tous les admins** (sinon plus aucune écriture). Mise en place, limites d'e-mail et procédure de secours : `docs/account-and-mfa-setup.md`.
 
+**Explications en langage simple sur les écrans admin (branche `apres-noel`, non déployée) :**
+
+- Pages SEO, Avis, FAQ, Prestations, Photos, Paramètres : courte explication discrète à côté de chaque libellé technique ou ambigu (ordre d'affichage, publié/actif, mise en avant, texte alternatif, zone d'intervention…), composant partagé `FieldHint`. Compteurs de caractères non bloquants (neutre/orange) sous meta title/description et OG title/description.
+- Photos : cases « Accueil »/« Portfolio » masquées — `photos.on_home`/`on_portfolio` ne sont lues par aucune page publique aujourd'hui (seuls `published` et `category_id` comptent) ; colonnes et données inchangées. Note dans `docs/photos-storage/README.md` pour les réafficher lors de la migration Storage des photos.
+- Accueil : la ligne « Marseille · Aubagne · Cassis · La Ciotat · Provence » était codée en dur ; elle lit maintenant `site_settings.service_area` (déjà utilisé pour le JSON-LD `areaServed`, avec repli sur cette même valeur si vide/erreur). HTML de l'accueil vérifié identique avant/après avec la valeur actuellement en base.
+
+**Changement de mot de passe (« Mon compte ») — bug et durcissement :**
+
+- Un contrôle côté formulaire comparait le nouveau mot de passe au mot de passe actuel *avant* que celui-ci soit vérifié, ce qui pouvait bloquer un changement légitime sans qu'aucune requête ne parte (« doit être différent de l'actuel » à tort). Supprimé : Supabase (`same_password`, après vérification réelle du mot de passe actuel via un client jetable) est désormais la seule source pour cette règle. Logique extraite dans `change-password.ts` (fonction pure, dépendances injectées) pour être testable sans réseau ni navigateur.
+- Comparaison de la confirmation normalisée en Unicode (NFC) : deux saisies visuellement identiques mais composées différemment (accent précomposé vs lettre + accent combinant) n'étaient pas reconnues comme identiques.
+- Champ identifiant caché (`autocomplete="username"`, recommandation Chrome) ajouté sur « Mon compte » et la page de réinitialisation, pour que les gestionnaires de mots de passe associent bien le nouveau mot de passe au bon compte.
+- Bouton afficher/masquer (icône œil) sur tous les champs de mot de passe de l'admin (connexion, Mon compte, réinitialisation), accessible (bouton, `aria-label`, `aria-pressed`, zone tactile 44 px).
+- Champ « Mot de passe actuel » vidé après un échec réel, pour qu'une valeur obsolète ne fausse pas l'essai suivant.
+
+**Tests automatisés (nouveauté sur ce dépôt) :** `vitest` + `@testing-library/react`/`user-event`/`jsdom` (environnement `jsdom` activé au cas par cas via un commentaire en tête de fichier, le reste des tests restant en environnement `node`, plus rapide). 37 tests à ce stade : règles de mot de passe, messages d'erreur Supabase, logique de changement de mot de passe (mocks, aucun appel réseau réel), rendu du formulaire « Mon compte » (confirmation, bouton œil). `npm run test` (`vitest run`) n'est pas encore branché sur `build`/CI — à faire si des tests doivent bloquer un déploiement.
+
 ---
 
 ## Mise à jour — 25 septembre 2026
