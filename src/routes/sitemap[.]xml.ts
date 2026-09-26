@@ -6,10 +6,8 @@ const SITE_URL = "https://soleanastudio.fr";
 const PATHS = [
   "/",
   "/portfolio",
-  "/portfolio/grossesse",
-  "/portfolio/famille",
-  "/portfolio/couple",
-  "/portfolio/portrait",
+  // /portfolio/grossesse, /famille, /couple and /portrait are left out on purpose: they
+  // render the generic portfolio until BUG-02 is fixed. Put them back with the fix (0a23b0f).
   "/prestations",
   "/mini-seances-noel-2026",
   "/reservation",
