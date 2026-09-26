@@ -14,6 +14,7 @@ import instagramMark from "@/assets/logo-soleana-icon.png";
 import { Reveal } from "@/components/site/Reveal";
 import { SiteShell } from "@/components/site/SiteShell";
 import { buildPageSeo } from "@/lib/seo";
+import { useSiteSettings } from "@/lib/site-settings";
 
 const photographyNotes = [
   {
@@ -107,7 +108,6 @@ const instagramCards = [
 ];
 
 const instagramHandle = "@soleana.studio";
-const instagramUrl = "https://instagram.com/soleana.studio";
 
 export const Route = createFileRoute("/a-propos")({
   head: () =>
@@ -124,6 +124,7 @@ export const Route = createFileRoute("/a-propos")({
 });
 
 function About() {
+  const { instagramUrl } = useSiteSettings();
   return (
     <SiteShell>
       <section className="relative overflow-hidden px-6 pt-32 pb-16 sm:pt-36 sm:pb-20">

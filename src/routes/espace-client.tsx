@@ -4,6 +4,7 @@ import { GoogleIcon } from "@/components/site/GoogleIcon";
 import { SiteShell } from "@/components/site/SiteShell";
 import { Reveal } from "@/components/site/Reveal";
 import { ConsentEmbed } from "@/components/site/ConsentEmbed";
+import { useSiteSettings } from "@/lib/site-settings";
 import { buildPageSeo } from "@/lib/seo";
 
 export const Route = createFileRoute("/espace-client")({
@@ -20,9 +21,8 @@ export const Route = createFileRoute("/espace-client")({
   component: EspaceClient,
 });
 
-const googleReviewUrl = "https://g.page/r/CRyE27TfkuhmEBM/review";
-
 function EspaceClient() {
+  const { googleReviewUrl } = useSiteSettings();
   return (
     <SiteShell>
       <section className="px-4 pb-8 pt-24 sm:px-6 sm:pb-10 sm:pt-28 md:pb-12 md:pt-32 lg:pt-36">

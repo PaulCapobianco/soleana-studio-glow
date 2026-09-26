@@ -35,6 +35,7 @@ import logoSoleana280 from "@/assets/logo-soleana-280.webp";
 import type { Database } from "@/integrations/supabase/types";
 import { isGoogleReviewUrl } from "@/lib/google-review-url";
 import { absoluteUrl, buildPageSeo } from "@/lib/seo";
+import { useSiteSettings } from "@/lib/site-settings";
 import { NoelShowcase } from "@/components/site/NoelShowcase";
 import { getNoel2026EditionState } from "@/lib/noel-2026.functions";
 
@@ -206,9 +207,8 @@ const seoMap: Record<string, string> = {
   portrait: "photographe-portrait-marseille",
 };
 
-const googleReviewUrl = "https://g.page/r/CRyE27TfkuhmEBM/review";
-
 function Home() {
+  const { googleReviewUrl } = useSiteSettings();
   const [scrolled, setScrolled] = useState(false);
   const { services, reviews, isNoelTeaserVisible } = Route.useLoaderData();
 

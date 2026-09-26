@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 
 import { SiteShell } from "@/components/site/SiteShell";
 import { buildPageSeo } from "@/lib/seo";
+import { useSiteSettings } from "@/lib/site-settings";
 
 export const Route = createFileRoute("/mentions-legales")({
   head: () =>
@@ -19,6 +20,7 @@ export const Route = createFileRoute("/mentions-legales")({
 });
 
 function LegalNoticePage() {
+  const settings = useSiteSettings();
   return (
     <SiteShell>
       <section className="px-6 pb-24 pt-40">
@@ -178,14 +180,14 @@ function LegalNoticePage() {
               <ul className="mt-4 space-y-2">
                 <li>
                   <strong className="text-foreground">E-mail :</strong>{" "}
-                  <a href="mailto:contact@soleanastudio.fr" className="text-foreground story-link">
-                    contact@soleanastudio.fr
+                  <a href={`mailto:${settings.email}`} className="text-foreground story-link">
+                    {settings.email}
                   </a>
                 </li>
                 <li>
                   <strong className="text-foreground">Téléphone :</strong>{" "}
-                  <a href="tel:+33667536312" className="text-foreground story-link">
-                    06.67.53.63.12
+                  <a href={settings.phoneHref} className="text-foreground story-link">
+                    {settings.phone}
                   </a>
                 </li>
               </ul>
