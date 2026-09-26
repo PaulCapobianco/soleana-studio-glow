@@ -178,7 +178,8 @@ Le vrai problème est ailleurs : **la protection a disparu, pas la surface d'att
 **Localisation :** migration `20260601000000_add_consent_to_contact_requests.sql:236-248` ; protection inactive dans `src/lib/api/contact.functions.ts:47-94`
 **Description :** la politique `Anyone can submit a contact request` autorise l'INSERT par le rôle `anon`, avec pour seules contraintes `consent IS TRUE` et des bornes de longueur. La clé publiable étant dans `dist/client/assets/vendor-supabase-*.js`, l'endpoint REST est directement appelable. Le `serverFn` qui portait Turnstile, CSRF, honeypot et délai minimum est absent du build (cf. point 6).
 **Impact :** inondation de la table par un script, saturation de la boîte de réception de la photographe, coût Supabase, et pollution de données personnelles (des tiers pourraient y injecter les coordonnées de personnes réelles). Aucune limitation de débit au niveau base.
-**Correction :** si Pelli reste le canal unique, révoquer la politique INSERT anonyme (`DROP POLICY "Anyone can submit a contact request"`) — la table ne sert alors plus qu'à l'historique. Si le formulaire natif est réactivé, restreindre l'INSERT au seul `service_role` et faire passer les soumissions par `submitContactRequest`. Dans les deux cas, ajouter une règle Cloudflare Rate Limiting.
+**Décision et résultat (26/09/2026) :** Pelli reste le canal unique ; le formulaire local est supprimé. Code retiré (commit `8026431`) : schéma Zod, `submitContactRequest`, widget Turnstile et client service-role. Insertion anonyme fermée en base par `20260926000000_close_anonymous_contact_inserts.sql` (politique `Anyone can submit a contact request` supprimée, `INSERT` retiré à `anon` et `authenticated`), **appliquée manuellement en production le 26/09/2026 et vérifiée** : seules les politiques admin (lecture, modification, suppression) restent sur `contact_requests`, qui était vide (0 ligne). **Statut : clos.**
+**Correction d'origine (conservée pour mémoire) :** si Pelli reste le canal unique, révoquer la politique INSERT anonyme (`DROP POLICY "Anyone can submit a contact request"`) — la table ne sert alors plus qu'à l'historique. Si le formulaire natif est réactivé, restreindre l'INSERT au seul `service_role` et faire passer les soumissions par `submitContactRequest`. Dans les deux cas, ajouter une règle Cloudflare Rate Limiting. *(La règle de limitation de débit ne concerne plus cette table ; elle reste utile pour le site en général.)*
 
 #### SEC-04 — Aucun en-tête de sécurité HTTP
 **Axe :** Sécurité · **Effort :** rapide
@@ -399,7 +400,7 @@ Le vrai problème est ailleurs : **la protection a disparu, pas la surface d'att
 |---|---|---|
 | **RGPD-01** | Auditer les cookies déposés par les iframes Pelli, puis installer un bandeau de consentement si nécessaire et réécrire la section « Cookies » des deux pages légales | moyen |
 | **RGPD-02/03/05** | Harmoniser les pages légales : nommer Pelli, Supabase et Cloudflare ; corriger « jamais transmises à des tiers » ; unifier l'adresse de contact RGPD | rapide |
-| **SEC-03** | Trancher sur le formulaire de contact (Pelli seul ou retour au formulaire natif) et aligner la politique RLS de `contact_requests` en conséquence. Ajouter une règle Cloudflare Rate Limiting | moyen |
+| ~~**SEC-03**~~ | ~~Trancher sur le formulaire de contact et aligner la politique RLS de `contact_requests`~~ — **fait le 26/09/2026** : formulaire local supprimé (commit `8026431`), insertion anonyme fermée (migration `20260926000000` appliquée et vérifiée). Reste, hors table : règle Cloudflare Rate Limiting sur le site | fait |
 | **BUG-03** | Corriger le soft 404 de `/$slug` et retirer du sitemap les 3 slugs sans ligne en base | moyen |
 | **DEP-01** | `npm audit fix` (maintenant possible sans risque grâce à Git) | moyen |
 | **CONF-01** | Choisir bun **ou** npm et supprimer le second fichier de verrouillage | rapide |
@@ -411,8 +412,8 @@ Le vrai problème est ailleurs : **la protection a disparu, pas la surface d'att
 | ID | Action | Effort |
 |---|---|---|
 | **TEST-01** | Mettre en place Playwright et couvrir les parcours critiques : accueil, 4 pages catégorie, connexion admin, 404 | important |
-| **ARCH-01** | Élaguer le code mort et les dépendances associées ; documenter la décision sur `contact.functions.ts` | moyen |
-| **RGPD-04** | Fixer et publier des durées de conservation ; automatiser la purge de `contact_requests` via `pg_cron` ; signer un contrat de sous-traitance avec Pelli | moyen |
+| **ARCH-01** | Élaguer le code mort et les dépendances associées (`contact.functions.ts`, `contact-form.schema.ts`, `TurnstileWidget.tsx` et `client.server.ts` sont supprimés depuis le 26/09/2026 ; restent notamment `example.functions.ts` et `config.server.ts`) | moyen |
+| **RGPD-04** | Fixer et publier des durées de conservation ; signer un contrat de sous-traitance avec Pelli. La purge automatique de `contact_requests` n'est plus nécessaire tant que la table n'est plus alimentée (vide, insertion fermée le 26/09/2026) ; la requête de purge reste en commentaire dans la migration | moyen |
 | **A11Y-01/02** | Bouton de pause sur le carrousel, `prefers-reduced-motion` ; refonte de la lightbox de `CategoryGallery` sur le modèle Radix | moyen |
 | **SUG-02/03** | Sauvegardes documentées et environnement de préproduction (projet Supabase + Worker séparés) | moyen |
 | **PERF-02/03**, **SUG-01/04/05** | Optimisation continue : pipeline d'images, jointure unique dans les galeries, supervision des erreurs, migrations idempotentes | moyen |
