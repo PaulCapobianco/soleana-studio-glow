@@ -14,7 +14,8 @@ export type SiteSettingsFormValues = {
 export type SiteSettingsErrors = Partial<Record<keyof SiteSettingsFormValues, string>>;
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-const PHONE = /^\+?[0-9][0-9 .()-]{5,24}$/;
+// Doit commencer par 0 (format national) ou par + (format international).
+const PHONE = /^(?:\+[0-9]|0)[0-9 .()-]{5,24}$/;
 
 function httpsUrl(value: string, hosts: string[]): boolean {
   try {
@@ -36,8 +37,12 @@ export function validateSiteSettings(values: SiteSettingsFormValues): SiteSettin
   const phone = values.phone?.trim();
   if (phone) {
     const digits = phone.replace(/\D/g, "");
-    if (!PHONE.test(phone) || digits.length < 9 || digits.length > 15) {
-      errors.phone = "Numéro invalide (ex. 06.67.53.63.12 ou +33 6 67 53 63 12).";
+    if (!phone.startsWith("0") && !phone.startsWith("+")) {
+      errors.phone =
+        "Le numéro doit commencer par 0 ou par + (ex. 06.67.53.63.12 ou +33 6 67 53 63 12).";
+    } else if (!PHONE.test(phone) || digits.length < 9 || digits.length > 15) {
+      errors.phone =
+        "Numéro invalide : 9 à 15 chiffres, avec seulement des espaces, points, tirets ou parenthèses.";
     }
   }
 
