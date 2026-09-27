@@ -1,6 +1,7 @@
 -- Objet : fermer l'insertion anonyme dans public.contact_requests.
 -- Date : 26 septembre 2026.
--- À APPLIQUER MANUELLEMENT : cette migration est créée dans le dépôt mais n'a PAS été exécutée.
+-- Appliquée manuellement le 26/09/2026, et vérifiée (AUDIT.md, mise à jour du 26/09/2026) :
+-- seules les politiques admin listées ci-dessous subsistent, table à 0 ligne.
 --
 -- Contexte : le formulaire de contact local est supprimé du code (Pelli est le seul canal) ;
 -- contact_requests est vide en production (0 ligne, vérifié le 26/09/2026). Plus rien ne doit
