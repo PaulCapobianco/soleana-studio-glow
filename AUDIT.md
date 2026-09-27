@@ -13,7 +13,7 @@
 
 - Mentions légales : section « Cookies » réécrite (retrait de la formule de consentement invalide, description exacte du chargement des iframes Pelli sur clic) ; section « Crédits » complétée (lien vers le profil LinkedIn du développeur, contenu existant conservé).
 - Politique de confidentialité : sections « Destinataires des données », « Durée de conservation » (durées chiffrées) et « Transferts hors UE » réécrites ; ajout d'une phrase sur le retrait du consentement en fin de « Vos droits » ; nouvelle section « Photos publiées sur le site » (retrait sur simple demande). Renumérotée en conséquence (11 sections).
-- Détail par constat : voir les mises à jour du 27/09/2026 dans RGPD-01 à 05 ci-dessous. En résumé : RGPD-03 et RGPD-04 largement résolus sur `confidentialite.tsx` (reste : la région Supabase à renseigner, et la purge automatique de `contact_requests` toujours à créer) ; RGPD-01 partiellement traité (texte correct, mais ce que Pelli dépose réellement reste à vérifier dans un navigateur) ; RGPD-02 et RGPD-05 inchangés (portent sur `mentions-legales.tsx`, hors périmètre de cette mise à jour).
+- Détail par constat : voir les mises à jour du 27/09/2026 dans RGPD-01 à 05 ci-dessous. En résumé : RGPD-03 résolu sur `confidentialite.tsx` (reste : le contrat de sous-traitance avec Pelli à confirmer) ; RGPD-04 largement résolu sur `confidentialite.tsx` (reste : la purge automatique de `contact_requests` toujours à créer) ; RGPD-01 partiellement traité (texte correct, mais ce que Pelli dépose réellement reste à vérifier dans un navigateur) ; RGPD-02 et RGPD-05 inchangés (portent sur `mentions-legales.tsx`, hors périmètre de cette mise à jour).
 - Rendu vérifié à 390 px et 1280 px sur les deux pages.
 
 **FAQ « Où peut se dérouler la séance ? » — décision close :**
@@ -287,13 +287,13 @@ Le vrai problème est ailleurs : **la protection a disparu, pas la surface d'att
 **Correction :** reformuler en « ne sont jamais revendues ni cédées à des fins commerciales » et renvoyer explicitement à la section 4 de la politique de confidentialité pour la liste des sous-traitants.
 **Mise à jour (27/09/2026) :** toujours ouvert — cette mise à jour a porté sur `confidentialite.tsx`, pas sur `mentions-legales.tsx` §4, qui garde sa formulation d'origine.
 
-#### RGPD-03 — Sous-traitants non nommés — **résolu sur `confidentialite.tsx` le 27/09/2026, reste une valeur à compléter**
+#### RGPD-03 — Sous-traitants non nommés — **résolu sur `confidentialite.tsx` le 27/09/2026, reste le contrat Pelli à confirmer**
 **Axe :** RGPD · **Effort :** rapide
 **Localisation :** `src/routes/confidentialite.tsx` §4 « Destinataires des données » et §6 « Transferts hors Union européenne »
 **Description d'origine :** la politique évoquait « les prestataires techniques strictement nécessaires » sans jamais nommer **Pelli**, **Supabase** ni **Cloudflare**. La section transferts hors UE restait au conditionnel (« peuvent être situés »).
 **Impact :** l'article 13 autorise la mention de *catégories* de destinataires, mais la CNIL recommande fortement de les nommer, en particulier lorsqu'un sous-traitant collecte directement les données via une iframe — ce qui est ici le cas principal. La personne concernée ne peut pas savoir que ses données de réservation partent chez un tiers.
 **Correction d'origine (conservée pour mémoire) :** nommer Pelli (formulaire de contact, réservation, espace client), Supabase (base de données) et Cloudflare (hébergement). Préciser la région du projet Supabase et, si elle est hors UE, indiquer les garanties (clauses contractuelles types). Signer un contrat de sous-traitance (article 28) avec Pelli s'il n'existe pas déjà.
-**Mise à jour (27/09/2026) :** §4 nomme désormais explicitement Pelli, Supabase et Cloudflare, avec leur rôle respectif. §6 nomme Cloudflare (États-Unis) et cite les garanties RGPD (cadre UE–États-Unis, clauses contractuelles types). **Reste à compléter dans le texte :** la région d'hébergement Supabase, laissée en placeholder `[RÉGION À COMPLÉTER]` — à renseigner (tableau de bord Supabase → Project Settings → General) puis à vérifier si elle est hors UE, auquel cas les garanties mentionnées doivent effectivement être en place. Contrat de sous-traitance avec Pelli toujours à confirmer.
+**Mise à jour (27/09/2026) :** §4 nomme désormais explicitement Pelli, Supabase et Cloudflare, avec leur rôle respectif. §6 nomme Cloudflare (États-Unis) et cite les garanties RGPD (cadre UE–États-Unis, clauses contractuelles types), et nomme désormais la région d'hébergement Supabase (Irlande, UE) — le placeholder `[RÉGION À COMPLÉTER]` a été renseigné. Le projet étant hébergé dans l'UE, aucune garantie de transfert supplémentaire n'est nécessaire pour cette partie de la chaîne. **Reste ouvert :** le contrat de sous-traitance (article 28) avec Pelli toujours à confirmer.
 
 #### RGPD-04 — Durées de conservation non chiffrées et absence de purge — **texte résolu sur `confidentialite.tsx` le 27/09/2026, purge technique toujours absente**
 **Axe :** RGPD · **Effort :** moyen
@@ -473,6 +473,36 @@ Le vrai problème est ailleurs : **la protection a disparu, pas la surface d'att
 | **A11Y-01/02** | Bouton de pause sur le carrousel, `prefers-reduced-motion` ; refonte de la lightbox de `CategoryGallery` sur le modèle Radix | moyen |
 | **SUG-02/03** | Sauvegardes documentées et environnement de préproduction (projet Supabase + Worker séparés) | moyen |
 | **PERF-02/03**, **SUG-01/04/05** | Optimisation continue : pipeline d'images, jointure unique dans les galeries, supervision des erreurs, migrations idempotentes | moyen |
+
+---
+
+## Checklist avant fusion `apres-noel` → `main` (27/09/2026)
+
+État constaté par relecture du code à cette date (pas de nouvelle requête en base) :
+
+**Résolu sur `apres-noel` :**
+- [x] BUG-01 — back-office admin fonctionnel (`loadSupabaseClient` n'est plus référencé nulle part, `supabase-browser.ts` supprimé)
+- [x] QUAL-01 — `build` lance `tsc --noEmit` avant `vite build` (`package.json:10`)
+- [x] SEC-02 — plus de mode `signup` dans `admin/login.tsx`
+- [x] SEC-03 — formulaire de contact local supprimé, insertion anonyme fermée (migration `20260926000000`)
+- [x] PERF-01 — plus de JPG surdimensionné, `grossesse-*.webp` déclinés en plusieurs tailles
+- [x] RGPD-03 — Pelli/Supabase/Cloudflare nommés, région Supabase renseignée (reste le contrat Pelli, hors code)
+- [x] RGPD-04 (texte) — durées de conservation chiffrées ; purge technique non nécessaire tant que `contact_requests` n'est plus alimentée
+- [x] FAQ « vieux quartiers » — décision close, admin fait foi, migration `20260602000000` volontairement non appliquée
+
+**Encore ouvert, à trancher avant ou après la fusion :**
+- [ ] BUG-02 — `portfolio.tsx` n'a toujours pas de `<Outlet />` : `/portfolio/{couple,famille,grossesse,portrait}` affichent le contenu générique de `/portfolio` (contenu dupliqué SEO). Les 4 slugs restent volontairement hors sitemap (commentaire `sitemap[.]xml.ts:9-10`) tant que ce n'est pas corrigé.
+- [ ] BUG-03 (soft 404 sur `/$slug`) — sitemap assaini aujourd'hui, mais toute URL inconnue renvoie encore 200 avec chargement perpétuel
+- [ ] SEC-04 — pas de `public/_headers` (aucun en-tête de sécurité : CSP, X-Frame-Options, HSTS…)
+- [ ] SEC-02 (volet tableau de bord) — désactivation de l'inscription côté Supabase (*Authentication → Providers → Email*) à confirmer par Paul, non vérifiable depuis le code
+- [ ] RGPD-01 — ce que Pelli dépose réellement (cookies) reste à vérifier dans un navigateur
+- [ ] RGPD-02/05 — portent sur `mentions-legales.tsx`, non traités dans ce chantier
+- [ ] Contrat de sous-traitance (article 28) avec Pelli à confirmer
+- [ ] Vérification GRANT en prod (`\dp public.*`) : confirmer que les privilèges par défaut Supabase n'accordent pas plus que ce que prévoit chaque migration, maintenant que BUG-01 est corrigé et que les écritures admin sont testables (voir remarque ligne 126)
+- [ ] `npm run test` (37 tests) n'est branché ni sur `build` ni sur une CI
+- [ ] Migrations en attente d'application par Paul : voir l'état détaillé plus haut (« État des migrations, vérifié en production »)
+
+**Rappel :** ce dépôt ne déploie ni ne migre lui-même (voir `CLAUDE.md`) — la fusion vers `main` et la mise en production restent des actions de Paul.
 
 ---
 
