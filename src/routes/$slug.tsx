@@ -371,13 +371,13 @@ function SeoPage() {
   const storageGalleries = "storageGalleries" in page ? page.storageGalleries : null;
 
   const gallerySections = gallery?.sections.map((section, index) => {
-    // Repli explicite : les photos de Storage ne sont utilisées que si la galerie est complète
-    // (même nombre de photos que la version locale) ; sinon on garde les fichiers locaux.
-    const stored = storageGalleries?.[`gallery-${index + 1}`];
-    const usable = stored && stored.length > 0 && stored.length === section.photos?.length;
+    // L'activation est faite uniquement après l'import complet. Ensuite, l'admin peut ajouter,
+    // retirer ou dépublier des photos : la longueur de la galerie doit pouvoir changer.
+    // Une erreur de lecture renvoie null et conserve les fichiers locaux.
+    const stored = storageGalleries?.[`gallery-${index + 1}`] ?? [];
     return {
       ...section,
-      photos: usable ? stored : section.photos,
+      photos: storageGalleries ? stored : section.photos,
       description: hasMultipleGalleries && index > 0 ? undefined : section.description,
     };
   });

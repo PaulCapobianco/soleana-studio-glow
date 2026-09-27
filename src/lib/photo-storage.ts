@@ -25,6 +25,8 @@ export type StorageGalleryPhoto = {
   id: string;
   image_url: string;
   srcset: string;
+  avif_srcset: string;
+  webp_srcset: string;
   alt_text: string;
   location: null;
   title: null;
@@ -41,7 +43,7 @@ type PlacementRow = {
   photo: {
     id: string;
     alt_text: string;
-    photo_variants: { width: number; height: number; storage_path: string }[];
+    photo_variants: { width: number; height: number; storage_path: string; format: string }[];
   } | null;
 };
 
@@ -50,13 +52,21 @@ export function buildStorageGalleries(rows: PlacementRow[]): Record<string, Stor
   const bySlot: Record<string, StorageGalleryPhoto[]> = {};
   const ordered = [...rows].sort((a, b) => a.display_order - b.display_order);
   for (const row of ordered) {
-    const variants = [...(row.photo?.photo_variants ?? [])].sort((a, b) => a.width - b.width);
-    if (!row.photo || variants.length === 0) continue;
-    const largest = variants[variants.length - 1];
+    const variants = row.photo?.photo_variants ?? [];
+    const avif = variants.filter((variant) => variant.format === "avif").sort((a, b) => a.width - b.width);
+    const webp = variants.filter((variant) => variant.format === "webp").sort((a, b) => a.width - b.width);
+    // Une photo incomplète ne doit pas rendre une galerie partiellement utilisable.
+    if (!row.photo || avif.length === 0 || avif.length !== webp.length ||
+        avif.some((variant, index) => variant.width !== webp[index].width)) continue;
+    const largest = webp[webp.length - 1];
+    const sourceSet = (items: typeof webp) =>
+      items.map((variant) => `${publicImageUrl(variant.storage_path)} ${variant.width}w`).join(", ");
     (bySlot[row.slot] ??= []).push({
       id: row.photo.id,
       image_url: publicImageUrl(largest.storage_path),
-      srcset: variants.map((v) => `${publicImageUrl(v.storage_path)} ${v.width}w`).join(", "),
+      srcset: sourceSet(webp),
+      avif_srcset: sourceSet(avif),
+      webp_srcset: sourceSet(webp),
       // Texte de l'emplacement s'il existe, sinon celui de la photo.
       alt_text: row.alt_text_override ?? row.photo.alt_text,
       location: null,
@@ -79,7 +89,7 @@ export async function loadStorageGalleries(
     const { data, error } = await supabase
       .from("photo_placements")
       .select(
-        "slot, display_order, alt_text_override, object_position_x_pct, object_position_y_pct, photo:photos!inner(id, alt_text, photo_variants(width, height, storage_path))",
+        "slot, display_order, alt_text_override, object_position_x_pct, object_position_y_pct, photo:photos!inner(id, alt_text, photo_variants(width, height, storage_path, format))",
       )
       .eq("seo_page_id", seoPageId)
       .eq("context_type", "seo")

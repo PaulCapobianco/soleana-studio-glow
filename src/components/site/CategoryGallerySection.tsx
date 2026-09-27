@@ -14,12 +14,52 @@ type GalleryPhoto = {
   display_order: number;
   /** Présents seulement pour les photos lues depuis Supabase Storage (variantes 400/800/native). */
   srcset?: string;
+  avif_srcset?: string;
+  webp_srcset?: string;
   object_position?: string;
 };
 
 // Tailles d'affichage par contexte (utilisées seulement quand la photo a un srcset).
 const SIZES_LARGE = "(min-width: 1024px) 960px, 100vw";
 const SIZES_TILE = "(min-width: 1024px) 300px, 45vw";
+
+function GalleryImage({
+  photo,
+  sizes,
+  width,
+  height,
+  className,
+}: {
+  photo: GalleryPhoto;
+  sizes: string;
+  width: number;
+  height: number;
+  className: string;
+}) {
+  const image = (
+    <img
+      src={photo.image_url}
+      srcSet={photo.srcset}
+      sizes={photo.srcset ? sizes : undefined}
+      style={photo.object_position ? { objectPosition: photo.object_position } : undefined}
+      alt={photo.alt_text}
+      width={width}
+      height={height}
+      loading="lazy"
+      decoding="async"
+      fetchPriority="low"
+      className={className}
+    />
+  );
+  if (!photo.avif_srcset || !photo.webp_srcset) return image;
+  return (
+    <picture>
+      <source type="image/avif" srcSet={photo.avif_srcset} sizes={sizes} />
+      <source type="image/webp" srcSet={photo.webp_srcset} sizes={sizes} />
+      {image}
+    </picture>
+  );
+}
 
 type CategoryGallerySectionProps = {
   categorySlugs: string[];
@@ -44,7 +84,7 @@ export function CategoryGallerySection({
   description,
   showHeader = true,
   variant = "standard",
-  photos: manualPhotos = [],
+  photos: manualPhotos,
   fallbackImageSrc,
   fallbackImageAlt,
   viewAllLink,
@@ -62,7 +102,7 @@ export function CategoryGallerySection({
   const { data: fetchedPhotos = [], isLoading } = useQuery({
     queryKey: ["gallery-section", normalizedCategorySlugs.join(",")],
     queryFn: async () => {
-      if (normalizedCategorySlugs.length === 0 || manualPhotos.length > 0) return [];
+      if (normalizedCategorySlugs.length === 0 || manualPhotos !== undefined) return [];
 
       const { data: categories } = await supabase
         .from("categories")
@@ -82,10 +122,10 @@ export function CategoryGallerySection({
 
       return (data ?? []) as GalleryPhoto[];
     },
-    enabled: normalizedCategorySlugs.length > 0 && manualPhotos.length === 0,
+    enabled: normalizedCategorySlugs.length > 0 && manualPhotos === undefined,
   });
 
-  const photos = manualPhotos.length > 0 ? manualPhotos : fetchedPhotos;
+  const photos = manualPhotos ?? fetchedPhotos;
 
   useEffect(() => {
     if (lightboxIndex === null) return;
@@ -123,7 +163,7 @@ export function CategoryGallerySection({
   const featuredPhoto = photos[0];
   const galleryPhotos = photos.slice(1);
   const isSingle = variant === "single";
-  const fallbackPhoto =
+  const fallbackPhoto: GalleryPhoto | null =
     fallbackImageSrc && fallbackImageAlt
       ? {
           id: "fallback-photo",
@@ -183,21 +223,11 @@ export function CategoryGallerySection({
               className="group relative block w-full overflow-hidden rounded-[30px] border border-border bg-muted aspect-[4/5] md:aspect-[16/10] transition-all duration-700 hover:-translate-y-1 hover:shadow-[0_28px_80px_-44px_rgba(62,47,40,0.32)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C6966F] focus-visible:ring-offset-2"
               aria-label={`Ouvrir la photo ${mainPhoto.title ?? mainPhoto.alt_text}`}
             >
-              <img
-                src={mainPhoto.image_url}
-                srcSet={mainPhoto.srcset}
-                sizes={mainPhoto.srcset ? SIZES_LARGE : undefined}
-                style={
-                  mainPhoto.object_position
-                    ? { objectPosition: mainPhoto.object_position }
-                    : undefined
-                }
-                alt={mainPhoto.alt_text}
+              <GalleryImage
+                photo={mainPhoto}
+                sizes={SIZES_LARGE}
                 width={1600}
                 height={2000}
-                loading="lazy"
-                decoding="async"
-                fetchPriority="low"
                 className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-black/5 to-transparent" />
@@ -225,21 +255,11 @@ export function CategoryGallerySection({
               className="group relative block w-full overflow-hidden rounded-[28px] border border-border bg-muted aspect-[16/10] md:aspect-[16/8] transition-all duration-700 hover:-translate-y-1 hover:shadow-[0_28px_80px_-44px_rgba(62,47,40,0.32)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C6966F] focus-visible:ring-offset-2"
               aria-label={`Ouvrir la photo ${featuredPhoto.title ?? featuredPhoto.alt_text}`}
             >
-              <img
-                src={featuredPhoto.image_url}
-                srcSet={featuredPhoto.srcset}
-                sizes={featuredPhoto.srcset ? SIZES_LARGE : undefined}
-                style={
-                  featuredPhoto.object_position
-                    ? { objectPosition: featuredPhoto.object_position }
-                    : undefined
-                }
-                alt={featuredPhoto.alt_text}
+              <GalleryImage
+                photo={featuredPhoto}
+                sizes={SIZES_LARGE}
                 width={1600}
                 height={1200}
-                loading="lazy"
-                decoding="async"
-                fetchPriority="low"
                 className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-black/10 to-transparent" />
@@ -266,21 +286,11 @@ export function CategoryGallerySection({
                     className="group relative block overflow-hidden rounded-[24px] border border-border bg-muted aspect-[4/5] transition-all duration-700 hover:-translate-y-1 hover:shadow-[0_24px_70px_-44px_rgba(62,47,40,0.3)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C6966F] focus-visible:ring-offset-2"
                     aria-label={`Ouvrir la photo ${photo.title ?? photo.alt_text}`}
                   >
-                    <img
-                      src={photo.image_url}
-                      srcSet={photo.srcset}
-                      sizes={photo.srcset ? SIZES_TILE : undefined}
-                      style={
-                        photo.object_position
-                          ? { objectPosition: photo.object_position }
-                          : undefined
-                      }
-                      alt={photo.alt_text}
+                    <GalleryImage
+                      photo={photo}
+                      sizes={SIZES_TILE}
                       width={1200}
                       height={1500}
-                      loading="lazy"
-                      decoding="async"
-                      fetchPriority="low"
                       className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-black/0 transition duration-700 group-hover:bg-black/10" />
@@ -336,16 +346,35 @@ export function CategoryGallerySection({
 
               <div className="relative flex min-h-0 min-w-0 flex-1 items-center justify-center overflow-hidden px-4 py-4 sm:px-6 sm:py-6 md:px-8 md:py-8">
                 <div className="flex w-full min-w-0 flex-1 items-center justify-center">
-                  <img
-                    src={currentPhoto.image_url}
-                    alt={currentPhoto.alt_text}
-                    width={1600}
-                    height={1200}
-                    loading="eager"
-                    fetchPriority="high"
-                    className="block rounded-[18px] object-contain shadow-2xl max-h-[calc(100svh-10rem)] max-w-[min(96vw,1200px)] sm:max-h-[calc(100svh-11rem)] md:max-h-[calc(100svh-10rem)] lg:max-h-[calc(100svh-9rem)] lg:max-w-[min(92vw,1280px)]"
-                    decoding="async"
-                  />
+                  {currentPhoto.avif_srcset && currentPhoto.webp_srcset ? (
+                    <picture>
+                      <source type="image/avif" srcSet={currentPhoto.avif_srcset} sizes="(min-width: 1280px) 1280px, 96vw" />
+                      <source type="image/webp" srcSet={currentPhoto.webp_srcset} sizes="(min-width: 1280px) 1280px, 96vw" />
+                      <img
+                        src={currentPhoto.image_url}
+                        srcSet={currentPhoto.webp_srcset}
+                        sizes="(min-width: 1280px) 1280px, 96vw"
+                        alt={currentPhoto.alt_text}
+                        width={1600}
+                        height={1200}
+                        loading="eager"
+                        fetchPriority="high"
+                        className="block rounded-[18px] object-contain shadow-2xl max-h-[calc(100svh-10rem)] max-w-[min(96vw,1200px)] sm:max-h-[calc(100svh-11rem)] md:max-h-[calc(100svh-10rem)] lg:max-h-[calc(100svh-9rem)] lg:max-w-[min(92vw,1280px)]"
+                        decoding="async"
+                      />
+                    </picture>
+                  ) : (
+                    <img
+                      src={currentPhoto.image_url}
+                      alt={currentPhoto.alt_text}
+                      width={1600}
+                      height={1200}
+                      loading="eager"
+                      fetchPriority="high"
+                      className="block rounded-[18px] object-contain shadow-2xl max-h-[calc(100svh-10rem)] max-w-[min(96vw,1200px)] sm:max-h-[calc(100svh-11rem)] md:max-h-[calc(100svh-10rem)] lg:max-h-[calc(100svh-9rem)] lg:max-w-[min(92vw,1280px)]"
+                      decoding="async"
+                    />
+                  )}
                 </div>
               </div>
 
