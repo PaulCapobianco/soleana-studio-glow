@@ -238,13 +238,15 @@ Le vrai problème est ailleurs : **la protection a disparu, pas la surface d'att
 **Impact :** aucune défense en profondeur contre le XSS (le risque direct est faible — React échappe par défaut et le seul `dangerouslySetInnerHTML` est dans `components/ui/chart.tsx:73`, composant jamais importé) ; surtout, **`/admin/*` peut être encadré dans une iframe tierce**, ce qui ouvre la voie au clickjacking sur les actions de suppression du back-office. Pas de `Referrer-Policy` alors que le site pointe vers des domaines tiers.
 **Correction :** créer `public/_headers` (servi tel quel par Cloudflare Static Assets). Prévoir une CSP autorisant explicitement `frame-src https://soleana-studio.pelli.io`, `connect-src` vers le projet Supabase, et `frame-ancestors 'none'`. Démarrer en `Content-Security-Policy-Report-Only` pour valider sans casser les iframes.
 
-#### BUG-03 — `/$slug` intercepte toute URL inconnue et affiche « Chargement… » indéfiniment
+#### BUG-03 — `/$slug` intercepte toute URL inconnue et affiche « Chargement… » indéfiniment — **résolu le 25/09/2026**
 **Axe :** Bugs et logique / SEO · **Effort :** moyen
 **Localisation :** `src/routes/$slug.tsx:409-430`
 **Description :** la `queryFn` fait `if (!data) throw notFound()` (l. 419). Comme `throwOnError` n'est pas activé sur TanStack Query, l'erreur est stockée dans l'état de la requête et n'est jamais relancée pendant le rendu — le `notFoundComponent` de la route (l. 396-402) ne se déclenche donc jamais. La garde `if (isLoading || !page)` (l. 424) retombe sur l'état « chargement » : à l'échec, `isLoading` vaut `false` et `page` est `undefined`, l'écran reste bloqué sur « Chargement… ».
 **Impact :** `/$slug` étant une route attrape-tout à un segment, **toute URL inconnue** (`/nimportequoi`, une ancienne URL, une faute de frappe) renvoie un **HTTP 200 avec un écran de chargement perpétuel** au lieu d'un 404. C'est un *soft 404* : Google indexe des pages vides et le budget de crawl est gaspillé. Trois URL sont concernées directement : `sitemap[.]xml.ts:25-27` déclare `/photographe-bapteme-marseille`, `/photographe-mariage-marseille` et `/photographe-anniversaire-marseille`, qui n'ont **aucune ligne correspondante** dans `seo_pages` (la migration n'en insère que 5 : grossesse, famille, couple, portrait, lifestyle).
 **Correction :** distinguer les trois états de la requête (`isLoading` / `isError` / succès) et rendre le `notFoundComponent` sur erreur, ou passer par un `loader` de route qui lève `notFound()` côté serveur pour obtenir un vrai statut 404. Retirer les 3 slugs orphelins du sitemap ou créer les lignes `seo_pages` correspondantes.
-**Mise à jour (27/09/2026) :** les 3 slugs orphelins (`bapteme`, `mariage`, `anniversaire`) ont été retirés de `sitemap[.]xml.ts` — Google n'indexera plus ces URL sans page correspondante. **Reste ouvert :** le soft 404 sur `/$slug` lui-même (toute URL inconnue continue de renvoyer 200 avec un écran de chargement perpétuel) ; la correction de `queryFn`/`notFoundComponent` décrite ci-dessus n'a pas été faite.
+**Mise à jour (27/09/2026) :** le soft 404 lui-même était déjà résolu depuis le 25/09/2026, avant la rédaction de ce constat — voir le détail ci-dessous. Les 3 slugs orphelins (`bapteme`, `mariage`, `anniversaire`) ont par ailleurs été retirés de `sitemap[.]xml.ts` le 27/09/2026 — Google n'indexera plus ces URL sans page correspondante.
+
+**Correction réellement appliquée (commit `e5fd875`, 25/09/2026, complété par `f5998b6` et `f4dd25b`) :** le fetch a été déplacé dans un `loader` de route (`$slug.tsx:290-304`) qui lève `notFound()` côté serveur quand la ligne `seo_pages` est absente ou non publiée — TanStack Router traduit cela en un vrai statut HTTP 404. Le `head` de la route (l. 305-318) ajoute `robots: noindex` aussi bien sur le `notFoundComponent` que sur l'état sans `loaderData`. Une erreur Supabase (au lieu d'une absence de ligne) lève désormais une vraie `Error` → `errorComponent`, HTTP 500, avec un message neutre côté utilisateur (`f4dd25b`) — une panne transitoire ne produit donc plus un faux 404. Revérifié dans le code actuel et par `curl` en local le 27/09/2026 : un slug inexistant renvoie `HTTP 404` avec `<meta name="robots" content="noindex"/>` et le titre « Page introuvable — Soleana Studio ».
 
 #### PERF-01 — JPG de 9,2 Mo servi dans le `srcSet` de la page d'accueil
 **Axe :** Performance · **Effort :** rapide
@@ -457,7 +459,7 @@ Le vrai problème est ailleurs : **la protection a disparu, pas la surface d'att
 | **RGPD-01** | Auditer les cookies déposés par les iframes Pelli, puis installer un bandeau de consentement si nécessaire et réécrire la section « Cookies » des deux pages légales | moyen |
 | **RGPD-02/03/05** | Harmoniser les pages légales : nommer Pelli, Supabase et Cloudflare ; corriger « jamais transmises à des tiers » ; unifier l'adresse de contact RGPD | rapide |
 | ~~**SEC-03**~~ | ~~Trancher sur le formulaire de contact et aligner la politique RLS de `contact_requests`~~ — **fait le 26/09/2026** : formulaire local supprimé (commit `8026431`), insertion anonyme fermée (migration `20260926000000` appliquée et vérifiée). Reste, hors table : règle Cloudflare Rate Limiting sur le site | fait |
-| **BUG-03** | Corriger le soft 404 de `/$slug` et retirer du sitemap les 3 slugs sans ligne en base | moyen |
+| ~~**BUG-03**~~ | ~~Corriger le soft 404 de `/$slug` et retirer du sitemap les 3 slugs sans ligne en base~~ — **fait** : soft 404 corrigé le 25/09/2026 (`e5fd875`), sitemap assaini le 27/09/2026 | fait |
 | **DEP-01** | `npm audit fix` (maintenant possible sans risque grâce à Git) | moyen |
 | **CONF-01** | Choisir bun **ou** npm et supprimer le second fichier de verrouillage | rapide |
 | **DOC-01** | Rédiger le `README.md` | rapide |
@@ -489,10 +491,10 @@ Le vrai problème est ailleurs : **la protection a disparu, pas la surface d'att
 - [x] RGPD-03 — Pelli/Supabase/Cloudflare nommés, région Supabase renseignée (reste le contrat Pelli, hors code)
 - [x] RGPD-04 (texte) — durées de conservation chiffrées ; purge technique non nécessaire tant que `contact_requests` n'est plus alimentée
 - [x] FAQ « vieux quartiers » — décision close, admin fait foi, migration `20260602000000` volontairement non appliquée
+- [x] BUG-03 (soft 404 sur `/$slug`) — corrigé depuis le 25/09/2026 (`e5fd875`, complété par `f5998b6` et `f4dd25b`), sitemap assaini le 27/09/2026 ; revérifié dans le code et par `curl` le 27/09/2026 (voir le détail dans le constat ci-dessus)
 
 **Encore ouvert, à trancher avant ou après la fusion :**
-- [ ] BUG-02 — `portfolio.tsx` n'a toujours pas de `<Outlet />` : `/portfolio/{couple,famille,grossesse,portrait}` affichent le contenu générique de `/portfolio` (contenu dupliqué SEO). Les 4 slugs restent volontairement hors sitemap (commentaire `sitemap[.]xml.ts:9-10`) tant que ce n'est pas corrigé.
-- [ ] BUG-03 (soft 404 sur `/$slug`) — sitemap assaini aujourd'hui, mais toute URL inconnue renvoie encore 200 avec chargement perpétuel
+- [ ] BUG-02 — `portfolio.tsx` n'a toujours pas de `<Outlet />` sur `apres-noel` : `/portfolio/{couple,famille,grossesse,portrait}` affichent le contenu générique de `/portfolio` (contenu dupliqué SEO). Le correctif existe déjà (commit `0a23b0f`) mais a été délibérément annulé (`d46c2db`) car les galeries seraient publiées vides sans photos en base. Il est repris sur la branche `photos-storage` (`docs/photos-storage-plan.md`, étape 9) et n'y sera réactivé qu'une fois l'import des photos terminé — pas avant. Les 4 slugs restent volontairement hors sitemap tant que ce n'est pas fait.
 - [ ] SEC-04 — pas de `public/_headers` (aucun en-tête de sécurité : CSP, X-Frame-Options, HSTS…)
 - [ ] SEC-02 (volet tableau de bord) — désactivation de l'inscription côté Supabase (*Authentication → Providers → Email*) à confirmer par Paul, non vérifiable depuis le code
 - [ ] RGPD-01 — ce que Pelli dépose réellement (cookies) reste à vérifier dans un navigateur
@@ -501,6 +503,16 @@ Le vrai problème est ailleurs : **la protection a disparu, pas la surface d'att
 - [ ] Vérification GRANT en prod (`\dp public.*`) : confirmer que les privilèges par défaut Supabase n'accordent pas plus que ce que prévoit chaque migration, maintenant que BUG-01 est corrigé et que les écritures admin sont testables (voir remarque ligne 126)
 - [ ] `npm run test` (37 tests) n'est branché ni sur `build` ni sur une CI
 - [ ] Migrations en attente d'application par Paul : voir l'état détaillé plus haut (« État des migrations, vérifié en production »)
+
+**Ordre de fusion prévu, après le déploiement de Noël :**
+1. `apres-noel` → `main`
+2. `perf-mobile` → `main`
+3. `photos-storage` → `main`, **en dernier** — ses migrations (`20260926000003` à `...005`) exigent une session `aal2` (double authentification) pour toute écriture admin sur les photos ; s'assurer que tous les comptes admin ont le MFA activé avant cette fusion, sous peine de bloquer leurs propres écritures (`RAISE EXCEPTION ... 'aal2 session required'`)
+
+**Simulation de fusion `perf-mobile` → `apres-noel` (27/09/2026, aucune fusion réelle) :**
+- `git merge-tree --write-tree apres-noel perf-mobile` : arbre fusionné produit sans conflit (code de sortie 0)
+- Confirmé par un deuxième essai, `git merge --no-commit --no-ff perf-mobile` puis `git merge --abort` : fusion automatique réussie, environ 70 fichiers touchés (essentiellement des variantes AVIF ajoutées dans `src/assets/`, plus `HeroSlideshow.tsx`, `PortfolioEditorialSection.tsx`, `Reveal.tsx`, `SiteFooter.tsx`, `SiteNav.tsx`, `$slug.tsx`, `a-propos.tsx`, `contact.tsx`, `index.tsx`, `prestations.tsx`), **aucun marqueur de conflit**. Rien n'a été fusionné ni commité sur `apres-noel` par cette simulation.
+- Cette simulation ne dit rien d'un éventuel conflit avec `photos-storage`, qui touche aussi `$slug.tsx` et les assets `portfolio/` : à revérifier au moment de fusionner `photos-storage` en dernier.
 
 **Rappel :** ce dépôt ne déploie ni ne migre lui-même (voir `CLAUDE.md`) — la fusion vers `main` et la mise en production restent des actions de Paul.
 
