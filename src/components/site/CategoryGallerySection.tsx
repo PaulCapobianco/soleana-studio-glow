@@ -12,7 +12,7 @@ type GalleryPhoto = {
   location: string | null;
   title: string | null;
   display_order: number;
-  /** Présents seulement pour les photos lues depuis Supabase Storage (variantes 400/800/native). */
+  /** Présents seulement pour les photos Storage (variantes 400/800/1200/1600 ou largeur native). */
   srcset?: string;
   avif_srcset?: string;
   webp_srcset?: string;

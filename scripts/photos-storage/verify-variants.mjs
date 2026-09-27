@@ -4,11 +4,19 @@ import { readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import sharp from "sharp";
 import { VARIANTS_DIR, readManifest, sha256 } from "./lib.mjs";
+import { expectedVariantCount, expectedWidthsFor, GENERATION_VERSION, getQualityProfile } from "./quality-profiles.mjs";
 
 const manifest = await readManifest();
 const index = JSON.parse(await readFile(path.join(VARIANTS_DIR, "variants-index.json"), "utf8"));
 const variants = index.variants;
-if (manifest.version !== 3 || index.version !== 3) throw new Error("Manifeste ou index obsolète.");
+if (manifest.version !== 3 || index.version !== GENERATION_VERSION) throw new Error("Manifeste ou index obsolète.");
+getQualityProfile(index.encoder_settings?.quality_profile);
+if (manifest.target_widths?.join(",") !== "400,800,1200,1600") {
+  throw new Error("Le manifeste doit définir les tailles 400/800/1200/1600.");
+}
+if (index.target_widths?.join(",") !== manifest.target_widths.join(",")) {
+  throw new Error("Les tailles de l'index ne correspondent pas au manifeste.");
+}
 const problems = [];
 const summary = new Map();
 const seen = new Set();
@@ -61,7 +69,7 @@ for (const v of variants) {
   if (!/^galleries\/[a-z]+\/[0-9a-f]{12}\/[0-9a-f]{8}-\d+\.(avif|webp)$/.test(v.storage_path)
       || !v.storage_path.endsWith(`.${v.format}`))
     problems.push(`${v.storage_path}: clé inattendue`);
-  const size = v.width <= 400 ? "400" : v.width <= 800 ? "800" : "1600";
+  const size = [400, 800, 1200, 1600].includes(v.width) ? String(v.width) : `native-${v.width}`;
   const bucket = `${v.format}/${size}`;
   const current = summary.get(bucket) ?? { n: 0, bytes: 0 };
   summary.set(bucket, { n: current.n + 1, bytes: current.bytes + bytes.length });
@@ -72,14 +80,13 @@ for (const photo of manifest.photos) {
       (photo.source_kind === "original" && !/^[0-9a-f]{64}$/.test(photo.original_sha256 ?? ""))) {
     problems.push(`${photo.source_key}: provenance absente ou chemin privé dans le manifeste`);
   }
-  const widths = [...new Set([400, 800, 1600].map((width) => Math.min(width, photo.width)))];
+  const widths = expectedWidthsFor(photo.width, manifest.target_widths);
   for (const width of widths) for (const format of manifest.variant_formats) {
     if (!seen.has(`${photo.source_key}/${width}/${format}`))
       problems.push(`${photo.source_key}: variante ${width} ${format} absente`);
   }
 }
-const expected = manifest.photos.reduce((n, photo) =>
-  n + new Set([400, 800, 1600].map((width) => Math.min(width, photo.width))).size * 2, 0);
+const expected = expectedVariantCount(manifest.photos, manifest.target_widths);
 if (variants.length !== expected) problems.push(`${variants.length} variantes au lieu de ${expected}`);
 
 const indexedFiles = new Set(variants.map((variant) => path.join(VARIANTS_DIR, variant.file)));

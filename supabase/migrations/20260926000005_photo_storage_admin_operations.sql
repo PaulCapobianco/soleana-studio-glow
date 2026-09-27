@@ -1,4 +1,5 @@
 -- Prépare le contrôle de capacité et la suppression fiable des photos Storage.
+-- Autorise les variantes web cibles 400 / 800 / 1200 / 1600 px et les sources natives plus petites.
 -- À exécuter manuellement seulement après 00002, 00003 et 00004, avant d'activer l'admin Storage.
 -- Ne modifie aucun objet, ne migre aucun contenu et ne change pas le bucket public photos.
 
@@ -47,7 +48,7 @@ CREATE POLICY "Admin upload photos" ON storage.objects
     bucket_id = 'photos'
     AND (
       public.has_role(auth.uid(), 'admin')
-      AND name ~ '^galleries/[a-z0-9][a-z0-9_-]*/[a-f0-9]{12,32}/[a-f0-9]{8}-([1-9]|[1-9][0-9]|[1-9][0-9]{2}|1[0-5][0-9]{2}|1600)\.(avif|webp)$'
+      AND name ~ '^galleries/[a-z0-9][a-z0-9_-]*/[a-f0-9]{12,32}/[a-f0-9]{8}-(400|800|1200|1600|[1-9][0-9]{0,2}|1[0-5][0-9]{2})\.(avif|webp)$'
       AND metadata->>'mimetype' = CASE WHEN name ~ '\.avif$' THEN 'image/avif' ELSE 'image/webp' END
     )
   );
@@ -58,7 +59,7 @@ CREATE POLICY "Restrict photos object uploads to web variants" ON storage.object
   WITH CHECK (
     bucket_id <> 'photos'
     OR (
-      name ~ '^galleries/[a-z0-9][a-z0-9_-]*/[a-f0-9]{12,32}/[a-f0-9]{8}-([1-9]|[1-9][0-9]|[1-9][0-9]{2}|1[0-5][0-9]{2}|1600)\.(avif|webp)$'
+      name ~ '^galleries/[a-z0-9][a-z0-9_-]*/[a-f0-9]{12,32}/[a-f0-9]{8}-(400|800|1200|1600|[1-9][0-9]{0,2}|1[0-5][0-9]{2})\.(avif|webp)$'
       AND metadata->>'mimetype' = CASE WHEN name ~ '\.avif$' THEN 'image/avif' ELSE 'image/webp' END
     )
   );
@@ -69,14 +70,14 @@ CREATE POLICY "Restrict photos object updates to web variants" ON storage.object
   USING (
     bucket_id <> 'photos'
     OR (
-      name ~ '^galleries/[a-z0-9][a-z0-9_-]*/[a-f0-9]{12,32}/[a-f0-9]{8}-([1-9]|[1-9][0-9]|[1-9][0-9]{2}|1[0-5][0-9]{2}|1600)\.(avif|webp)$'
+      name ~ '^galleries/[a-z0-9][a-z0-9_-]*/[a-f0-9]{12,32}/[a-f0-9]{8}-(400|800|1200|1600|[1-9][0-9]{0,2}|1[0-5][0-9]{2})\.(avif|webp)$'
       AND metadata->>'mimetype' = CASE WHEN name ~ '\.avif$' THEN 'image/avif' ELSE 'image/webp' END
     )
   )
   WITH CHECK (
     bucket_id <> 'photos'
     OR (
-      name ~ '^galleries/[a-z0-9][a-z0-9_-]*/[a-f0-9]{12,32}/[a-f0-9]{8}-([1-9]|[1-9][0-9]|[1-9][0-9]{2}|1[0-5][0-9]{2}|1600)\.(avif|webp)$'
+      name ~ '^galleries/[a-z0-9][a-z0-9_-]*/[a-f0-9]{12,32}/[a-f0-9]{8}-(400|800|1200|1600|[1-9][0-9]{0,2}|1[0-5][0-9]{2})\.(avif|webp)$'
       AND metadata->>'mimetype' = CASE WHEN name ~ '\.avif$' THEN 'image/avif' ELSE 'image/webp' END
     )
   );
@@ -89,7 +90,7 @@ CREATE POLICY "Require aal2 for photo web variant deletes" ON storage.objects
 CREATE TABLE public.photo_storage_cleanup_jobs (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   photo_id UUID NOT NULL,
-  object_paths TEXT[] NOT NULL CHECK (cardinality(object_paths) BETWEEN 1 AND 6),
+  object_paths TEXT[] NOT NULL CHECK (cardinality(object_paths) BETWEEN 1 AND 8),
   requested_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   last_error TEXT NULL
 );
@@ -132,13 +133,13 @@ BEGIN
     JOIN photo_objects o ON o.name = v.storage_path
     GROUP BY v.photo_id
     HAVING COUNT(*) FILTER (WHERE v.format = 'avif') = COUNT(*) FILTER (WHERE v.format = 'webp')
-      AND COUNT(*) FILTER (WHERE v.format = 'avif') BETWEEN 1 AND 3
+      AND COUNT(*) FILTER (WHERE v.format = 'avif') BETWEEN 1 AND 4
        AND COUNT(*) = (SELECT COUNT(*) FROM public.photo_variants all_v WHERE all_v.photo_id = v.photo_id)
        AND COUNT(DISTINCT v.width) = COUNT(*) FILTER (WHERE v.format = 'avif')
   ), orphan_objects AS (
     SELECT o.name, o.byte_size
     FROM photo_objects o
-    WHERE o.name ~ '^galleries/[a-z0-9][a-z0-9_-]*/[a-f0-9]{12,32}/[a-f0-9]{8}-(400|800|1600)\.(avif|webp)$'
+    WHERE o.name ~ '^galleries/[a-z0-9][a-z0-9_-]*/[a-f0-9]{12,32}/[a-f0-9]{8}-(400|800|1200|1600|[1-9][0-9]{0,2}|1[0-5][0-9]{2})\.(avif|webp)$'
       AND o.created_at < now() - interval '24 hours'
       AND NOT EXISTS (SELECT 1 FROM public.photo_variants v WHERE v.storage_path = o.name)
       AND NOT EXISTS (

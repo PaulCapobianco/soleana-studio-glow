@@ -1,4 +1,9 @@
 import { supabase } from "@/integrations/supabase/client";
+import {
+  ACTIVE_PHOTO_QUALITY_PROFILE,
+  expectedPhotoWidths,
+  PHOTO_QUALITY_PROFILES,
+} from "@/lib/photo-storage-quality";
 
 /**
  * INTERRUPTEUR UNIQUE de la lecture des galeries depuis Supabase Storage.
@@ -120,22 +125,9 @@ export type BrowserPhotoVariant = {
   storage_path: string;
 };
 
-const BROWSER_AVIF_OPTIONS = {
-  quality: 70,
-  qualityAlpha: -1,
-  speed: 4,
-  subsample: 3,
-  bitDepth: 8,
-  lossless: false,
-} as const;
-const BROWSER_WEBP_OPTIONS = {
-  quality: 90,
-  method: 4,
-  alpha_quality: 100,
-  use_sharp_yuv: 1,
-  lossless: 0,
-  near_lossless: 100,
-} as const;
+export const ACTIVE_BROWSER_PHOTO_QUALITY_PROFILE = ACTIVE_PHOTO_QUALITY_PROFILE;
+const BROWSER_AVIF_OPTIONS = PHOTO_QUALITY_PROFILES[ACTIVE_PHOTO_QUALITY_PROFILE].avif;
+const BROWSER_WEBP_OPTIONS = PHOTO_QUALITY_PROFILES[ACTIVE_PHOTO_QUALITY_PROFILE].webp;
 
 const jpegSignature = (bytes: Uint8Array) => bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff;
 const pngSignature = (bytes: Uint8Array) =>
@@ -275,7 +267,7 @@ export async function generateBrowserPhotoVariants(
     if (decoded.width < 1 || decoded.height < 1 || decoded.width * decoded.height > 100_000_000) {
       throw new Error("Les dimensions de cette photo sont trop grandes.");
     }
-    const widths = [...new Set([400, 800, 1600].map((width) => Math.min(width, decoded.width)))];
+    const widths = expectedPhotoWidths(decoded.width);
     const [avifEncoder, webpEncoder] = await Promise.all([browserAvifEncoder(), browserWebpEncoder()]);
     const variants: BrowserPhotoVariant[] = [];
     for (const width of widths) {

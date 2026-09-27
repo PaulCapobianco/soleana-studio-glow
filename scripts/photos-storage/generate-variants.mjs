@@ -1,28 +1,27 @@
-// Génère localement AVIF + WebP (400 / 800 / 1600 px, sans agrandissement) de chaque photo du
+// Génère localement AVIF + WebP (400 / 800 / 1200 / 1600 px, sans agrandissement) de chaque photo du
 // manifeste, SANS métadonnées, dans ../soleana-originaux/storage-variants/ (hors dépôt).
-// Une source de 934 px de large donne 400, 800 et 934 ; toutes sont réencodées.
-// Usage : node scripts/photos-storage/generate-variants.mjs
+// Les variantes sont toujours dérivées de la source originale, jamais d'une autre variante.
+// Usage : node scripts/photos-storage/generate-variants.mjs --profile q55
 import { mkdir, readFile, readdir, rename, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import sharp from "sharp";
 import { MANIFEST_PATH, ROOT, VARIANTS_DIR, readManifest, sha256, variantPath } from "./lib.mjs";
+import { FORMATS, GENERATION_VERSION, TARGET_WIDTHS, expectedWidthsFor, getQualityProfile } from "./quality-profiles.mjs";
 
-const TARGET_WIDTHS = [400, 800, 1600];
-const FORMATS = ["avif", "webp"];
+const profileIndex = process.argv.indexOf("--profile");
+const profileName = profileIndex >= 0 ? process.argv[profileIndex + 1] : undefined;
+if (!profileName || process.argv.slice(profileIndex + 2).includes("--profile")) {
+  throw new Error("Choisir le profil définitif : --profile q55.");
+}
+const quality = getQualityProfile(profileName);
 const ENCODER_SETTINGS = {
+  quality_profile: quality.name,
   sharp: sharp.versions.sharp,
   libvips: sharp.versions.vips,
   aom: sharp.versions.aom,
   webpEncoder: sharp.versions.webp,
-  avif: { quality: 70, effort: 4, lossless: false, chromaSubsampling: "4:4:4", bitdepth: 8 },
-  webp: {
-    quality: 90,
-    effort: 4,
-    alphaQuality: 100,
-    lossless: false,
-    nearLossless: false,
-    smartSubsample: true,
-  },
+  avif: quality.avif,
+  webp: quality.webp,
 };
 
 if (path.relative(ROOT, VARIANTS_DIR).split(path.sep)[0] !== "..") {
@@ -52,7 +51,7 @@ let progressWrite = Promise.resolve();
 async function readIndex(file) {
   try {
     const index = JSON.parse(await readFile(file, "utf8"));
-    return index.version === 3 && index.input_hash === inputHash ? index : null;
+    return index.version === GENERATION_VERSION && index.input_hash === inputHash ? index : null;
   } catch (error) {
     if (error.code === "ENOENT") return null;
     throw error;
@@ -94,7 +93,7 @@ async function saveProgress() {
   progressWrite = progressWrite.then(async () => {
     const variants = perPhoto.flatMap((items) => items ?? []);
     const temporary = `${progressPath}.tmp`;
-    await writeFile(temporary, `${JSON.stringify({ version: 3, input_hash: inputHash, encoder_settings: ENCODER_SETTINGS, variants }, null, 2)}\n`);
+    await writeFile(temporary, `${JSON.stringify({ version: GENERATION_VERSION, input_hash: inputHash, target_widths: TARGET_WIDTHS, encoder_settings: ENCODER_SETTINGS, variants }, null, 2)}\n`);
     await rename(temporary, progressPath);
   });
   await progressWrite;
@@ -115,7 +114,7 @@ async function generatePhoto(photo, photoIndex) {
   if (sha256(bytes) !== match.selected_sha256) {
     throw new Error(`Source modifiée depuis la comparaison : ${photo.source_key}`);
   }
-  const widths = [...new Set(TARGET_WIDTHS.map((width) => Math.min(width, photo.width)))];
+  const widths = expectedWidthsFor(photo.width);
   const own = [];
 
   for (const width of widths) {
@@ -169,7 +168,7 @@ await Promise.all(Array.from({ length: Math.min(6, manifest.photos.length) }, wo
 const index = perPhoto.flat();
 for (const [photoIndex, photo] of manifest.photos.entries()) {
   const match = matchesByKey.get(photo.source_key);
-  const expectedWidths = [...new Set(TARGET_WIDTHS.map((width) => Math.min(width, photo.width)))];
+  const expectedWidths = expectedWidthsFor(photo.width);
   if (perPhoto[photoIndex]?.length !== expectedWidths.length * FORMATS.length) {
     throw new Error(`Variantes incomplètes : ${photo.source_key}`);
   }
@@ -182,7 +181,7 @@ for (const [photoIndex, photo] of manifest.photos.entries()) {
 await mkdir(VARIANTS_DIR, { recursive: true });
 await writeFile(
   `${indexPath}.tmp`,
-  `${JSON.stringify({ version: 3, input_hash: inputHash, encoder_settings: ENCODER_SETTINGS, generated_at: new Date().toISOString(), variants: index }, null, 2)}\n`,
+  `${JSON.stringify({ version: GENERATION_VERSION, input_hash: inputHash, target_widths: TARGET_WIDTHS, encoder_settings: ENCODER_SETTINGS, generated_at: new Date().toISOString(), variants: index }, null, 2)}\n`,
 );
 await rename(`${indexPath}.tmp`, indexPath);
 await rm(progressPath, { force: true });

@@ -1,10 +1,25 @@
 import { describe, expect, it } from "vitest";
 import { assertEncodedFormat, validatePhotoSource } from "@/lib/photo-storage";
+import {
+  ACTIVE_PHOTO_QUALITY_PROFILE,
+  expectedPhotoWidths,
+  PHOTO_QUALITY_PROFILES,
+  PHOTO_VARIANT_WIDTHS,
+} from "@/lib/photo-storage-quality";
 
 const file = (bytes: number[], name: string, type: string) =>
   new File([new Uint8Array(bytes)], name, { type });
 
 describe("validation des entrées et sorties photo", () => {
+  it("applique le profil définitif q55 aux quatre largeurs sans agrandissement", () => {
+    expect(PHOTO_VARIANT_WIDTHS).toEqual([400, 800, 1200, 1600]);
+    expect(expectedPhotoWidths(2000)).toEqual([400, 800, 1200, 1600]);
+    expect(expectedPhotoWidths(1000)).toEqual([400, 800, 1000]);
+    expect(PHOTO_QUALITY_PROFILES.q55.avif.quality).toBe(55);
+    expect(PHOTO_QUALITY_PROFILES.q55.webp.quality).toBe(80);
+    expect(ACTIVE_PHOTO_QUALITY_PROFILE).toBe("q55");
+  });
+
   it("accepte un JPEG par sa signature", async () => {
     await expect(validatePhotoSource(file([0xff, 0xd8, 0xff, 0, 1], "photo.jpg", "image/jpeg"))).resolves.toBe("jpeg");
   });

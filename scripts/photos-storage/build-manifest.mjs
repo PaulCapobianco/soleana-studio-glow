@@ -6,7 +6,15 @@ import { readFile, writeFile, mkdir } from "node:fs/promises";
 import path from "node:path";
 import sharp from "sharp";
 import { GALLERIES, MANIFEST_PATH, ROOT, listGalleryFiles, pad, sha256 } from "./lib.mjs";
+import { TARGET_WIDTHS } from "./quality-profiles.mjs";
 
+let previousManifest;
+try {
+  previousManifest = JSON.parse(await readFile(MANIFEST_PATH, "utf8"));
+} catch (error) {
+  if (error.code !== "ENOENT") throw error;
+}
+const previousByKey = new Map((previousManifest?.photos ?? []).map((photo) => [photo.source_key, photo]));
 const photos = new Map(); // sha256 -> photo
 const placements = [];
 
@@ -26,6 +34,17 @@ for (const gallery of GALLERIES) {
         height: meta.height,
         alt_text: gallery.prefix,
       };
+      const previous = previousByKey.get(photo.source_key);
+      // Preserve the privately verified source dimensions/fingerprint when the local gallery
+      // asset is unchanged; never replace them with the smaller local WebP dimensions.
+      if (previous?.source_sha256 === hash && previous.source_kind === "original" &&
+          Number.isSafeInteger(previous.width) && Number.isSafeInteger(previous.height) &&
+          /^[0-9a-f]{64}$/.test(previous.original_sha256 ?? "")) {
+        photo.width = previous.width;
+        photo.height = previous.height;
+        photo.source_kind = previous.source_kind;
+        photo.original_sha256 = previous.original_sha256;
+      }
       photos.set(hash, photo);
     }
     placements.push({
@@ -47,7 +66,7 @@ const manifest = {
   phase: "galleries-seo",
   note: "Généré par build-manifest.mjs puis match-originals.mjs — ne pas éditer à la main.",
   variant_formats: ["avif", "webp"],
-  target_widths: [400, 800, 1600],
+  target_widths: TARGET_WIDTHS,
   galleries: GALLERIES.map(({ seo, category, slot, dirs }) => ({
     seo,
     category,

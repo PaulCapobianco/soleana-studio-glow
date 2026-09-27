@@ -308,7 +308,7 @@ export function PhotosAdmin() {
 
       <form onSubmit={handleUpload} className="space-y-4 border border-border bg-surface p-4 sm:p-6">
         <h2 className="font-display text-2xl italic text-primary">Ajouter une photo</h2>
-        <p className="text-sm text-muted-foreground">Choisissez un original JPG/JPEG, HEIC/HEIF ou PNG. Les six variantes web sont créées sur cet appareil ; le fichier source n'est jamais envoyé.</p>
+        <p className="text-sm text-muted-foreground">Choisissez un original JPG/JPEG, HEIC/HEIF ou PNG. Les huit variantes web sont créées sur cet appareil ; le fichier source n'est jamais envoyé.</p>
         {!storageReady && (
           <p role="status" className="text-sm text-muted-foreground">L'ajout sera disponible après l'application des migrations Photos et le chargement des galeries.</p>
         )}

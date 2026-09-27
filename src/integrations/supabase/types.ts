@@ -173,6 +173,7 @@ export type Database = {
         Row: {
           byte_size: number;
           created_at: string;
+          format: string;
           height: number;
           id: string;
           photo_id: string;
@@ -183,6 +184,7 @@ export type Database = {
         Insert: {
           byte_size: number;
           created_at?: string;
+          format: string;
           height: number;
           id?: string;
           photo_id: string;
@@ -193,6 +195,7 @@ export type Database = {
         Update: {
           byte_size?: number;
           created_at?: string;
+          format?: string;
           height?: number;
           id?: string;
           photo_id?: string;
