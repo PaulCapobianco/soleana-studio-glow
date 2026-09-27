@@ -27,14 +27,26 @@ Clés de stockage : `galleries/<catégorie>/<id opaque de 12 caractères>/<hash8
 
 - Tant que `VITE_GALLERIES_FROM_STORAGE` n'est pas `true` au build, le site lit les fichiers locaux,
   sans requête ni donnée en plus : le HTML est identique à celui d'avant.
-- Activé, le `loader` de `/$slug` lit les emplacements publiés (rendu serveur conservé). Une galerie
-  n'est remplacée que si elle est **complète** (même nombre de photos que la version locale) ; sinon
-  ou en cas d'erreur, les fichiers locaux restent affichés.
+- Activé **seulement après l'import complet**, le `loader` de `/$slug` lit les emplacements publiés
+  (rendu serveur conservé). Storage devient la source de la galerie : les ajouts, retraits et
+  dépublications de l'admin peuvent changer son nombre de photos. En cas d'erreur de lecture ou de
+  table absente, les fichiers locaux restent affichés. Une galerie volontairement vide reste vide.
 - Une photo Storage n'est utilisable que si elle possède les variantes AVIF et WebP aux mêmes
   largeurs. La galerie affiche alors `<picture>` (AVIF, puis WebP) ; les photos locales conservent
   exactement leurs balises `<img>` actuelles.
 - `VITE_IMAGE_BASE_URL` (ex. `https://images.soleanastudio.fr`) remplace l'hôte des images sans
   toucher aux composants (sous-domaine Cloudflare avec cache devant le bucket).
+
+L'écran admin « Photos » reste lisible avant les migrations, mais désactive l'ajout et la suppression
+tant que `photo_variants` et `photo_placements` ne sont pas disponibles. Après application, l'envoi
+réencode sur l'appareil en AVIF (encodeur WASM chargé à la demande) et WebP. Le texte alternatif est
+obligatoire. Les emplacements SEO ont une page, une galerie, un ordre libre, un cadrage et un état de
+publication. Les cases Accueil / Portfolio restent masquées : ces pages ne lisent toujours pas ces
+colonnes. L'envoi n'a **pas** été exécuté contre la production ; la logique est testée localement.
+Sur une image JPEG avec orientation EXIF, nom d'auteur et profil ICC, le test Chrome local a confirmé
+deux sorties correctement orientées (400 × 600), AVIF et WebP, sans EXIF, ICC, XMP ni IPTC. Un test
+automatisé simule l'envoi, le nettoyage après échec et la suppression confirmée. Un navigateur qui
+ne sait pas décoder la photo ou encoder WebP ne peut pas l'envoyer ; essayer un JPG récent dans ce cas.
 
 ## Procédure pas à pas : test réel sur 4 photos (à faire par Paul)
 
