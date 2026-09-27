@@ -9,6 +9,8 @@ pas À propos. Voir aussi `docs/photos-storage-plan.md` (plan général).
 | Élément | Rôle |
 |---|---|
 | `docs/photos-storage/preflight-selects.sql` | Requêtes de vérification en lecture seule (bucket, politiques, tables, comptes). |
+| `docs/photos-storage/postflight-selects.sql` | Contrôles de schéma, RLS, variantes, emplacements et objets après migration et import. |
+| `docs/photos-storage/bug-02-activation.md` | État du correctif BUG-02 et ordre d'activation après import. |
 | `supabase/migrations/20260926000003_add_photo_variants_and_placements.sql` | Schéma additif (`photos.source_key`, `photo_variants`, `photo_placements`) avec RLS et politiques aal2. **Non appliquée, inchangée.** |
 | `supabase/migrations/20260926000004_add_avif_photo_variants.sql` | Ajoute le format AVIF à `photo_variants` et autorise deux formats par largeur. **Non appliquée ; à lancer après 000003.** |
 | `docs/photos-storage/manifest-phase1.json` | Manifeste : chaque photo (fichier source, clé opaque, dimensions) et chaque emplacement (galerie, ordre, texte alternatif actuel, cadrage 50/50). Généré par `build-manifest.mjs`. |
@@ -54,53 +56,78 @@ Rien de ceci n'a été exécuté. Chaque étape a un retour arrière.
 
 1. **Vérifier l'état de production** : exécuter les requêtes de `preflight-selects.sql` une à une
    (lecture seule) et noter : bucket `photos` public, politiques du stockage, `source_key` absente,
-   nouvelles tables absentes, nombre de lignes de `photos`. Sauvegarder (export) les tables `photos`,
-   `categories`, `seo_pages` et la liste des objets du bucket. *Retour arrière : sans objet.*
-2. **Appliquer la migration** `20260926000003_...sql` dans le SQL Editor (copier le fichier entier).
-   Si la migration `20260926000002` (aal2) n'est pas encore appliquée et que les admins n'ont pas leur
-   second facteur, retirer le bloc « aal2 » en fin de fichier avant de l'exécuter.
+   nouvelles tables absentes, nombre de lignes de `photos`. *Retour arrière : sans objet.*
+2. **Sauvegarder** : exporter `photos`, `categories`, `seo_pages`, les objets et leurs métadonnées
+   du bucket `photos` (télécharger ses fichiers s'il contient déjà des photos), et conserver les
+   exports hors dépôt. Vérifier que les sauvegardes sont lisibles.
+3. **Appliquer la migration** `20260926000003_...sql` dans le SQL Editor (copier le fichier entier).
+   Si les admins sont déjà enrôlés au second facteur, conserver le bloc final « aal2 ». Sinon,
+   retirer ce bloc **seulement dans la copie collée au SQL Editor**, jamais du fichier versionné,
+   et prévoir son ajout quand les admins seront enrôlés. Vérifier aussi les politiques aal2
+   existantes des tables `photos` et `storage.objects` : elles peuvent déjà imposer ce facteur.
    Contrôle : les deux tables existent, `SELECT count(*) FROM pg_policies WHERE tablename IN
    ('photo_variants','photo_placements');` (attendu : 4 sans le bloc aal2, 10 avec).
    *Retour arrière : bloc « Retour arrière » commenté en bas du fichier (tables vides).*
    **Puis appliquer `20260926000004_add_avif_photo_variants.sql`** : contrôle par
    `SELECT column_name FROM information_schema.columns WHERE table_schema = 'public' AND
    table_name = 'photo_variants' AND column_name = 'format';` (une ligne attendue).
-3. **Régénérer et vérifier les variantes en local** (déjà fait, rejouable ; environ 10 minutes) :
+4. **Régénérer et vérifier les variantes en local** (déjà fait, rejouable ; environ 10 minutes) :
    `node scripts/photos-storage/generate-variants.mjs && node scripts/photos-storage/verify-variants.mjs`.
    *Retour arrière : supprimer le dossier hors dépôt.*
-4. **Simulations** : `node scripts/photos-storage/import-photos.mjs --limit 4`, puis
+5. **Simulations** : `node scripts/photos-storage/import-photos.mjs --limit 4`, puis
    `node scripts/photos-storage/import-photos.mjs` → relire les envois et insertions prévus.
    Résultats locaux : 4 photos / 24 variantes / 4 emplacements (1,84 Mo), puis 170 photos /
    1 020 variantes / 190 emplacements (43,70 Mo). Un journal prévisionnel est écrit hors dépôt.
    *Aucun appel réseau, aucun effet en base.*
-5. **Import réel de 4 photos** (les emplacements restent non publiés, donc invisibles du public) :
+6. **Import réel de 4 photos** (les emplacements restent non publiés, donc invisibles du public) :
    ```
-   export SUPABASE_URL=https://<projet>.supabase.co
+   export SUPABASE_URL='https://<projet>.supabase.co'
    read -rsp 'Clé service_role : ' SUPABASE_SERVICE_ROLE_KEY; echo
    export SUPABASE_SERVICE_ROLE_KEY
-   node scripts/photos-storage/import-photos.mjs --apply --confirm <projet>.supabase.co --limit 4
+   SUPABASE_HOST_TO_CONFIRM="$(node -p 'new URL(process.env.SUPABASE_URL).host')"
+   node scripts/photos-storage/import-photos.mjs --apply --confirm "$SUPABASE_HOST_TO_CONFIRM" --limit 4
    unset SUPABASE_SERVICE_ROLE_KEY
    ```
    Le script vérifie l'hôte, n'écrase rien, saute ce qui existe et écrit un journal
    `import-<date>.jsonl` dans `../soleana-originaux/storage-variants/journals/`.
    Désactiver l'historique du shell le temps de saisir les commandes si le shell les enregistre ;
    `read -s` ne montre jamais la valeur et elle n'est écrite dans aucun fichier.
-6. **Vérifier** : (a) `SELECT count(*)` sur `photos` (avec `source_key IS NOT NULL`),
-   `photo_variants`, `photo_placements` (attendu : 4, 24, 4) ; (b) ouvrir dans un navigateur
+7. **Vérifier** : exécuter `postflight-selects.sql` (attendu après le test : 4 photos, 12 AVIF,
+   12 WebP, 4 emplacements non publiés, 24 objets) ; puis ouvrir dans un navigateur
    l'URL publique d'une variante (`https://<projet>.supabase.co/storage/v1/object/public/photos/<storage_path>`)
-   et vérifier `content-type: image/avif` puis `image/webp` et l'en-tête de cache ; (c) avec la clé publique (anon),
-   `photo_placements` doit renvoyer une liste vide (non publiés) ; (d) l'écran admin « Photos » liste
+   et vérifier `content-type: image/avif` puis `image/webp` et l'en-tête de cache ; avec la clé publique (anon),
+   `photo_placements` doit renvoyer une liste vide (non publiés) ; l'écran admin « Photos » liste
    les 4 photos avec leur texte alternatif.
-7. **Retour arrière du test** si besoin : `node scripts/photos-storage/rollback-import.mjs --journal
+8. **Retour arrière du test** si besoin : `node scripts/photos-storage/rollback-import.mjs --journal
    <journal>` (simulation), puis avec `--apply --confirm <hôte>`. Il supprime seulement les lignes et
    objets créés par ce lot.
-8. **Import complet** (une fois le test validé) : même commande sans `--limit` ; puis publier les
-   emplacements : `node scripts/photos-storage/import-photos.mjs --apply --confirm <hôte> --publish-existing`.
-   Ce dernier passage écrit aussi un journal permettant d'annuler la publication.
-9. **Activation côté site** : construire avec `VITE_GALLERIES_FROM_STORAGE=true`, vérifier les 4 pages
+9. **Import complet** (une fois le test validé) : saisir de nouveau la clé en mémoire, puis :
+   ```
+   export SUPABASE_URL='https://<projet>.supabase.co'
+   read -rsp 'Clé service_role : ' SUPABASE_SERVICE_ROLE_KEY; echo
+   export SUPABASE_SERVICE_ROLE_KEY
+   SUPABASE_HOST_TO_CONFIRM="$(node -p 'new URL(process.env.SUPABASE_URL).host')"
+   node scripts/photos-storage/import-photos.mjs --apply --confirm "$SUPABASE_HOST_TO_CONFIRM"
+   unset SUPABASE_SERVICE_ROLE_KEY
+   ```
+   Refaire `postflight-selects.sql` : 170 photos, 510 AVIF, 510 WebP, 190 emplacements
+   non publiés, 1 020 objets. Comparer chaque galerie au manifeste avant publication.
+10. **Publier puis activer côté site** : ressaisir la clé et publier uniquement les emplacements
+    du manifeste, avec journal de retour arrière :
+   ```
+   export SUPABASE_URL='https://<projet>.supabase.co'
+   read -rsp 'Clé service_role : ' SUPABASE_SERVICE_ROLE_KEY; echo
+   export SUPABASE_SERVICE_ROLE_KEY
+   SUPABASE_HOST_TO_CONFIRM="$(node -p 'new URL(process.env.SUPABASE_URL).host')"
+   node scripts/photos-storage/import-photos.mjs --publish-existing
+   node scripts/photos-storage/import-photos.mjs --apply --confirm "$SUPABASE_HOST_TO_CONFIRM" --publish-existing
+   unset SUPABASE_SERVICE_ROLE_KEY
+   ```
+   Vérifier 190 emplacements publiés dans `postflight-selects.sql`. Construire avec
+   `VITE_GALLERIES_FROM_STORAGE=true`, vérifier les 4 pages
    (ordre, texte alternatif, cadrage, chargement des images à 360, 768 et 1280 px), puis déployer.
    *Retour arrière immédiat : redéployer sans la variable (les fichiers locaux sont toujours dans le code).*
-10. **Ensuite seulement** : BUG-02 (pages `/portfolio/<catégorie>`), sous-domaine d'images Cloudflare,
+11. **Ensuite seulement** : BUG-02 suivant `bug-02-activation.md` (pages `/portfolio/<catégorie>`), sous-domaine d'images Cloudflare,
     puis chantier séparé de suppression des anciens fichiers du dépôt.
 
 ## Limites connues
