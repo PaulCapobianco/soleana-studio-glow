@@ -47,46 +47,64 @@ exclue par le prédicat SQL strict `created_at < now() - interval '24 hours'`; u
 ancienne que 24 h devient candidate si aucune ligne `photo_variants` ni `photos.image_url` ne la
 référence. Ce prédicat a été relu statiquement, pas exécuté sur PostgreSQL.
 
-### Poids au premier affichage et à l'ouverture de la lightbox
+### Poids servi et échantillons temporaires
 
-Mesure locale des huit sections des quatre pages SEO. Elles utilisent `variant="single"` : le
-premier affichage montre une seule photo, puis la lightbox s'ouvre sur cette même photo. La version
-actuelle sert son WebP local complet (933 ou 1 400 px, selon la photo). En Storage, les attributs
-`sizes` font choisir le candidat AVIF 1 600 px sur les profils testés : 390 px à DPR 3 (`100vw` ×
-DPR) et 1 280 px à DPR 1 (`960px` pour l'aperçu, `1280px` dans la lightbox). L'ouverture reprend
-le même candidat en cache : **0 octet supplémentaire** pour cette première image. Le WebP q90
-serait le repli si le navigateur n'utilise pas AVIF.
+Mesure des huit photos mises en avant sur les quatre pages SEO. Chaque galerie est `variant="single"` :
+une photo est chargée au premier affichage et la lightbox s'ouvre sur cette même photo. Les essais
+ont été encodés directement depuis les originaux, dans `/tmp/soleana-storage-quality-samples-20260927`
+et `/tmp/soleana-storage-detail-crops-100pct.png`; aucun original ni échantillon n'a été ajouté au
+dépôt ou envoyé vers Supabase. Aucun fichier du lot de 170 photos n'a été régénéré.
 
-Chaque ligne indique le poids de l'image au premier affichage **et** le total après ouverture de la
-lightbox pour cette image. Les nombres sont identiques aux deux profils, qui choisissent tous deux
-la variante 1 600 px.
+Le `srcset` comprend désormais dans le calcul d'essai 400/800/1200/1600 px. Vérification dans Chrome
+headless avec les `sizes` de l'aperçu (`960px` dès 1024 px, sinon `100vw`) : 390 px à DPR 3 sélectionne
+1200 px; 1280 px à DPR 1 sélectionne également 1200 px. Pour la lightbox, 390 px à DPR 3 sélectionne
+1200 px et 1280 px à DPR 1 sélectionne 1600 px. L'ouverture utilise le même fichier qu'au premier
+affichage sur mobile (0 octet réseau supplémentaire si conservé en cache); sur desktop elle demande
+la variante 1600 px, sauf si celle-ci a déjà été préchargée. La comparaison ci-dessous porte sur le
+premier affichage demandé.
 
-| Page / section | WebP local actuel | Storage AVIF q70 | Écart | Storage WebP q90 (repli) |
+| Profil du premier affichage | Candidat Storage | WebP local actuel (8 photos) | AVIF q55 (8 photos) | AVIF q60 (8 photos) | WebP q80 (8 photos) |
+|---|---:|---:|---:|---:|---:|
+| Mobile 390 px, DPR 3 | 1200 px | 866 566 o | 848 691 o (-2,1 %) | 1 022 791 o (+18,0 %) | 1 325 364 o (+52,9 %) |
+| Desktop 1280 px, DPR 1 | 1200 px | 866 566 o | 848 691 o (-2,1 %) | 1 022 791 o (+18,0 %) | 1 325 364 o (+52,9 %) |
+
+Les deux profils ont le même total car ils choisissent chacun 1200 px pour l'aperçu. Le total AVIF
+correspond au format choisi sur navigateur AVIF; le WebP q80 est le repli et n'est pas téléchargé en
+plus par le même navigateur. La lightbox desktop peut télécharger 1600 px : cette comparaison de
+premier affichage ne prétend donc pas chiffrer le transfert supplémentaire de la lightbox.
+
+| Galerie | WebP local  | AVIF q55 | AVIF q60 | WebP q80 |
 |---|---:|---:|---:|---:|
-| Grossesse / galerie 1 | 156 726 o | 258 993 o | +65,3 % | 402 880 o |
-| Grossesse / galerie 2 | 148 334 o | 495 037 o | +233,7 % | 790 320 o |
-| Famille / galerie 1 | 155 548 o | 436 036 o | +180,3 % | 694 498 o |
-| Famille / galerie 2 | 90 876 o | 144 583 o | +59,1 % | 252 316 o |
-| Couple / galerie 1 | 66 228 o | 83 139 o | +25,5 % | 163 688 o |
-| Couple / galerie 2 | 68 878 o | 176 927 o | +156,9 % | 357 298 o |
-| Couple / galerie 3 | 86 202 o | 231 591 o | +168,7 % | 422 564 o |
-| Portrait / galerie 1 | 93 774 o | 294 615 o | +214,2 % | 550 892 o |
+| Grossesse / galerie 1 | 156 726 o | 111 326 o | 132 828 o | 154 024 o |
+| Grossesse / galerie 2 | 148 334 o | 189 260 o | 227 673 o | 292 026 o |
+| Famille / galerie 1 | 155 548 o | 183 196 o | 219 450 o | 271 710 o |
+| Famille / galerie 2 | 90 876 o | 54 306 o | 65 415 o | 86 790 o |
+| Couple / galerie 1 | 66 228 o | 37 675 o | 45 235 o | 65 334 o |
+| Couple / galerie 2 | 68 878 o | 72 999 o | 88 736 o | 125 456 o |
+| Couple / galerie 3 | 86 202 o | 90 838 o | 110 143 o | 152 366 o |
+| Portrait / galerie 1 | 93 774 o | 109 091 o | 133 311 o | 177 658 o |
 
-L'AVIF q70 du Storage est donc plus lourd que le WebP local sur les huit images comparées. L'écart
-vient aussi du choix de résolution : le WebP local fait 933/1 400 px tandis que le candidat
-Storage servi fait 1 600 px. Le navigateur a sélectionné le candidat 1 600 px dans Chrome headless;
-les tailles d'octets viennent des fichiers servis localement, sans entêtes HTTP ni cache CDN. La
-planche côte à côte, hors dépôt, est
-`/tmp/soleana-storage-first-display-comparison.png`; elle compare le WebP local, l'AVIF q70 et le
-WebP q90 pour la première image de chaque section. À sa taille d'affichage, aucun défaut évident
-n'apparaît, mais elle ne remplace pas l'examen des détails fins à taille réelle.
+Planche hors dépôt : `/tmp/soleana-storage-detail-crops-100pct.png`, recadrages exacts 320×320 sans
+redimensionnement sur peau/tissu, cheveux/peau et tissu/détails; elle compare WebP local, AVIF q70,
+AVIF q55/q60 et WebP q80/q90. Visuellement, les trois zones ne montrent pas de banding ni de
+changement évident de couleur. q55 présente une légère douceur de microtexture sur certains détails,
+sans aplats ou contours artificiels manifestes à ces crops. C'est un contrôle qualitatif ciblé de
+trois crops issus des huit images mises en avant, pas une validation de chaque photo du lot.
 
-Un essai **AVIF q55 / WebP q80** est une piste, pas un réglage validé. Aucune variante n'a été
-régénérée pour cet essai, conformément à la consigne. Le lot antérieur AVIF q50 / WebP q80 pesait
-78,30 Mo, avec une perte visible de microtexture à 1 600 px; il ne permet pas de déduire précisément
-le poids q55/q80. Le poids total et la comparaison visuelle des candidats q55/q80 restent à mesurer
-après accord pour produire des fichiers d'essai temporaires. Le total actuellement validé reste
-**152,28 Mo**.
+Estimation du poids complet des 170 photos, avec quatre largeurs et deux formats par photo :
+
+| Profil estimé | Anciennes largeurs 400/800/1600 | Ajout estimé 1200 | Total estimé |
+|---|---:|---:|---:|
+| AVIF q55 + WebP q80 | 91 388 938 o | 46 198 669 o | 137 587 607 o (137,59 Mo) |
+| AVIF q60 + WebP q80 | 98 503 694 o | 49 898 294 o | 148 401 987 o (148,40 Mo) |
+
+Ces volumes extrapolent les ratios q55/q70 (0,6261), q60/q70 (0,7545) et q80/q90 (0,5853) mesurés
+sur huit images à 1200 px; les 400/800/1600 sont mis à l'échelle depuis l'index AVIF q70/WebP q90
+actuel, et le 1200 est estimé par la moyenne des échantillons ×170. Ce sont des estimations de
+planification, pas les octets exacts d'une régénération. Le lot validé reste 1 020 fichiers et
+**152 280 609 octets (152,28 Mo)**; aucun réglage de production ni fichier du lot n'a changé. q55
+ramène le premier affichage moyen légèrement sous le WebP local, tandis que q60 et le repli q80 sont
+plus lourds; la décision de réglage reste à prendre après examen de la planche.
 
 ## Audit des migrations 00002–00005
 
@@ -99,6 +117,27 @@ Ordre obligatoire, chaque fichier une seule fois et dans une transaction de migr
 | `20260926000003_add_photo_variants_and_placements.sql` | Exige RLS sur `photos`, `seo_pages`, `categories`; ajoute `photos.source_key`, deux tables RLS, contraintes/index/FK et policies publiques/admin/AAL2. FK vers photo/page/catégorie en `RESTRICT`; aucune suppression en cascade involontaire. | Garde-fous refusent les tables/colonne déjà présentes : migration à appliquer une fois, pas une migration de réparation. Les deux nouvelles tables ont 10 policies au total avec les policies restrictives AAL2. |
 | `20260926000004_add_avif_photo_variants.sql` | Dépend de 00003; ajoute `format`, remplace l'unicité `(photo_id,width)` par `(photo_id,width,format)` et lie extension au format. | `ALTER TABLE` sans garde de répétition : une seule application. Vérifier `format` et les contraintes après exécution. |
 | `20260926000005_photo_storage_admin_operations.sql` | Exige 00002–00004 et le bucket public existant. Restreint l'énumération aux admins, les uploads aux chemins/mime de variantes, ajoute les fonctions capacité/suppression et une outbox RLS inaccessible directement. | Transactionnelle mais `CREATE TABLE`/policies ne sont pas rejouables. Vérifier les fonctions, droits, outbox, policies et métriques après application. Retour arrière commenté et conditionné à l'absence de données/outbox. |
+
+### Variante pré-déploiement sans 00002 : analyse et décision
+
+| Élément | Peut fonctionner sans 00002 ? | Constat |
+|---|---|---|
+| 00003 | Oui, techniquement | Ses prérequis SQL sont RLS sur `photos`, `seo_pages`, `categories`; elle ne lit ni ne crée les policies de 00002. Ses propres policies restrictives AAL2 limitent les écritures authentifiées dans `photo_variants` et `photo_placements`. L'écran Photos actuellement en ligne (version `main`) ne consulte ni ces tables ni `source_key`; ces policies ne bloquent donc pas son upload legacy. |
+| 00004 | Oui, après 00003 | Elle ne modifie que `photo_variants` créé en 00003 et n'exige aucune policy de 00002. |
+| 00005 | **Non, telle qu'écrite** | Son garde-fou SQL refuse explicitement l'absence de « Require aal2 for photos uploads » sur `storage.objects` et de « Require aal2 for admin inserts » sur `photos`. Elle dépend donc explicitement de 00002, en plus de 00003/00004. |
+| Import avec `service_role` | Oui, vis-à-vis de RLS/AAL2 | `service_role` contourne la RLS; l'import SQL/Storage peut s'exécuter sans 00002. Cela ne rend pas l'importeur actuel non-public : il insère toujours `photos.published=true`; seul `photo_placements.published` dépend du flag `--publish`. |
+
+Le flux en ligne actuel (`git show main:src/routes/admin/_authed/photos.tsx`) envoie un fichier à la racine du bucket sous un nom UUID et son extension d'origine, puis insère `photos`. Après 00002, un admin en session AAL1 serait bloqué sur l'envoi Storage et l'insertion/modification/suppression de `photos`; la lecture et l'ouverture de l'écran restent possibles. Après 00005, même un admin AAL2 ne pourrait plus envoyer avec cet écran : sa policy restrictive n'accepte que `galleries/.../<largeur>.avif|webp` avec le MIME correspondant. La règle 00005 actuelle n'inclut d'ailleurs pas 1200 px.
+
+**Décision pour la route demandée** : `00003` puis `00004` avant déploiement est techniquement possible; la séquence complète `00003–00005` avant déploiement, sans 00002, est **NO-GO** avec les SQL actuels. Il n'existe pas de variante sûre consistant à ignorer/retirer le garde-fou de 00005 : le même SQL restreint les envois du panneau déjà en ligne, et il a été conçu pour n'accepter que des variantes Web AVIF/WebP. Les placements seuls non publiés ne suffisent pas à cacher les imports, car les galeries legacy interrogent directement `photos` avec `published=true`.
+
+Route pré-déploiement sûre la plus proche, sous réserve d'une prochaine version de l'importeur qui accepte explicitement un mode brouillon photo (`photos.published=false`) et dont la simulation vérifie ce champ :
+
+1. GO uniquement après les contrôles de schéma/RLS préalables : appliquer 00003, vérifier ses tables/policies, puis appliquer 00004 et vérifier `format`/contraintes.
+2. GO pour un import privé par `service_role` uniquement si la simulation confirme `photos.published=false` **et** `photo_placements.published=false` pour chaque ligne, sans modifier les photos déjà existantes. Les objets du bucket public ont des URL devinables/connues et ne sont pas confidentiels; ils ne doivent pas être considérés privés. Le code actuel n'offre pas ce mode : ne pas lancer l'import pré-déploiement avec `import-photos.mjs` tel quel.
+3. NO-GO pour 00005 avant 00002 et NO-GO pour l'activation des galeries Storage. Après déploiement de `apres-noel`, enrôlement et vérification AAL2 de tous les admins, appliquer 00002 puis réviser 00005 afin d'accepter 1200 px et le parcours du nouveau panneau; vérifier ensuite les policies avant l'activation des galeries.
+
+Ainsi, la demande précise « 00003–00005 et imports non publiés avant déploiement sans 00002 » n'est pas un chemin exécutable actuellement. Pour la rendre GO, il faudra une décision de conception et une révision dédiée de 00005 (séparant ses opérations de préparation des restrictions de l'admin), plus un mode d'import brouillon testé. Ne pas altérer les migrations déjà prêtes ni lancer d'import tant que ces préconditions ne sont pas levées.
 
 Les trois RPC privilégiées (capacité, suppression, reprise/fin de file) utilisent `SECURITY DEFINER`,
 `search_path` vide, vérifient explicitement rôle admin et `aal2`; `EXECUTE` est révoqué à `PUBLIC`
@@ -124,10 +163,13 @@ validées, jamais un original.
 
 ## AAL2 : effet et récupération
 
-Ordre obligatoire avant toute migration photos : **déployer `apres-noel`**, vérifier que son écran
+Ordre de la route complète actuelle, qui comprend 00002 et 00005 : **déployer `apres-noel`**, vérifier
+que son écran
 `/admin/compte` et son parcours MFA sont accessibles, faire activer et vérifier la double
 authentification par **tous** les admins, confirmer une session `aal2` pour chacun, puis seulement
-appliquer 00002 à 00005. Aucun de ces déploiements ou enrôlements ne fait partie du présent préflight.
+appliquer 00002 à 00005. L'exception pré-déploiement limitée à 00003/00004 est décrite dans la section
+précédente; elle ne rend pas possible 00005 sans 00002. Aucun déploiement, enrôlement ou migration n'a
+été exécuté dans ce préflight.
 
 Si 00002 est appliquée avant l'enrôlement, un admin AAL1 peut encore se connecter et lire ce que ses
 policies de lecture permettent, mais toutes ses écritures admin protégées sont refusées. Les
@@ -165,9 +207,9 @@ confirmé. Conserver les sorties privées de préflight et les journaux d'import
 | 6. 00004 | Appliquer `20260926000004_add_avif_photo_variants.sql` une fois. Lire la colonne `format` et les contraintes. | `format` non nullable, défaut `webp`, valeurs AVIF/WebP, unicité incluant format, extension liée au format. |
 | 7. Capacité | Configurer `PHOTOS_STORAGE_LIMIT_BYTES` comme variable serveur Worker (jamais `VITE_`) et préférer `PHOTOS_STORAGE_CRITICAL_UPLOAD_MODE=block`. Après 00005, relever l'usage global avec `admin_photo_storage_status()`. | L'opérateur confirme séparément `used_bytes + 152280609 <= limite`, puisque l'import `service_role` contourne le contrôle UI. Limite absente/invalide ou projection trop élevée = **NO-GO**. |
 | 8. 00005 | Appliquer `20260926000005_photo_storage_admin_operations.sql` une fois. Vérifier policies de liste/upload/update/delete et privilèges des quatre RPC. | RPC sans admin/AAL2 refusée; admin+AAL2 autorisé. Non-admin ne peut lister, uploader, supprimer ou appeler une RPC privilégiée. Anonyme peut GET une URL connue, pas lister. Sinon **NO-GO**. |
-| 9. Test réel limité | Après GO explicite, fournir `SUPABASE_URL` et `SUPABASE_SERVICE_ROLE_KEY` dans un terminal contrôlé (le script ne lit pas `.env`). Exécuter `node scripts/photos-storage/import-photos.mjs --apply --confirm <project-ref>.supabase.co --limit 4`, sans `--publish`. | 4 photos, 24 variantes, 4 placements non publiés, environ 4 274 097 octets. Vérifier Storage et DB; sinon simuler puis appliquer le rollback du journal correspondant. |
-| 10. Lot complet | Après validation du test limité : `node scripts/photos-storage/import-photos.mjs --apply --confirm <project-ref>.supabase.co`. Garder le manifeste et le journal privé inchangés. | 170 photos, 1 020 variantes, 190 placements, environ 152 280 609 octets. Reprise possible avec même manifeste; divergence de poids/SHA = arrêt. |
-| 11. Publication/lecture | Inspecter les quatre pages. Après accord, publier avec `node scripts/photos-storage/import-photos.mjs --apply --confirm <project-ref>.supabase.co --publish-existing`. Activer `VITE_GALLERIES_FROM_STORAGE=true` dans un déploiement distinct et ultérieur. | Placements publiés et lecture testée. Retour au rendu précédent en désactivant le flag; objets conservés. |
+| 9. Test réel limité | **NO-GO avec l'importeur actuel.** Avant tout test, ajouter et simuler un mode brouillon qui insère `photos.published=false` et `photo_placements.published=false`; sinon les pages legacy peuvent afficher les lignes dès l'insertion de `photos`, même sans `--publish`. | GO seulement quand la simulation montre les deux champs à `false`, n'altère aucune ligne préexistante, et un test de lecture publique confirme qu'aucune photo de test n'est visible. |
+| 10. Lot complet | Seulement après le test limité privé, vérification de capacité et validation du script brouillon. Garder le manifeste et le journal privé inchangés. | 170 photos, 1 020 variantes actuelles, 190 placements, environ 152 280 609 octets; le plan 1200 px à quatre tailles demande une future version de génération/import et un nouveau poids vérifié. Une divergence de poids/SHA ou une ligne photo publiée = arrêt. |
+| 11. Publication/lecture | Après accord, utiliser une action de publication explicitement testée qui publie les photos et placements souhaités, puis activer `VITE_GALLERIES_FROM_STORAGE=true` dans un déploiement distinct et ultérieur. `--publish-existing` ne publie actuellement que les placements. | GO quand la sélection publiée est exacte et la lecture validée sur les pages SEO. Retour au rendu précédent en désactivant le flag; objets conservés. |
 | 12. Rollback du lot | Simuler : `node scripts/photos-storage/rollback-import.mjs --journal <chemin-journal-import.jsonl>`. Si le plan correspond au lot fautif, appliquer avec `--apply --confirm <project-ref>.supabase.co`. | Supprime uniquement les identifiants/objets journalisés `created: true`; un journal `dry-run` est refusé. Vérifier l'absence des lignes/objets du lot et une outbox vide. |
 
 Les migrations 00003–00005 ne sont pas idempotentes et ne doivent pas être recollées après une
