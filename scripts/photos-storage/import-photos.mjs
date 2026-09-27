@@ -38,10 +38,12 @@ if (option("--limit") && (!Number.isSafeInteger(limit) || limit < 1)) {
 }
 
 const manifest = await readManifest();
-const { variants } = JSON.parse(
+const index = JSON.parse(
   await readFile(path.join(VARIANTS_DIR, "variants-index.json"), "utf8"),
 );
-if (manifest.version !== 2 || manifest.variant_formats?.join(",") !== "avif,webp") {
+const { variants } = index;
+if (index.version !== 3) throw new Error("Variantes obsolètes : relancer generate-variants.mjs.");
+if (manifest.version !== 3 || manifest.variant_formats?.join(",") !== "avif,webp") {
   throw new Error("Manifeste AVIF/WebP manquant : régénérer le manifeste et les variantes.");
 }
 const variantsBySource = new Map();
@@ -51,7 +53,7 @@ for (const v of variants) {
 }
 for (const photo of manifest.photos) {
   const own = variantsBySource.get(photo.source_key) ?? [];
-  const expected = 2 * (1 + [400, 800].filter((width) => width < photo.width).length);
+  const expected = 2 * new Set([400, 800, 1600].map((width) => Math.min(width, photo.width))).size;
   if (own.length !== expected || own.some((v) => !["avif", "webp"].includes(v.format))) {
     throw new Error(`Variantes incomplètes pour ${photo.source_key} : exécuter verify-variants.mjs.`);
   }

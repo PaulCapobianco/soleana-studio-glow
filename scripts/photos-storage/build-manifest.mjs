@@ -21,7 +21,6 @@ for (const gallery of GALLERIES) {
       photo = {
         source_key: `galleries/${gallery.category}/${hash.slice(0, 12)}`,
         category: gallery.category,
-        source_file: file.rel,
         source_sha256: hash,
         width: meta.width,
         height: meta.height,
@@ -44,11 +43,11 @@ for (const gallery of GALLERIES) {
 }
 
 const manifest = {
-  version: 2,
+  version: 3,
   phase: "galleries-seo",
-  note: "Généré par scripts/photos-storage/build-manifest.mjs — ne pas éditer à la main.",
+  note: "Généré par build-manifest.mjs puis match-originals.mjs — ne pas éditer à la main.",
   variant_formats: ["avif", "webp"],
-  target_widths: [400, 800, "native"],
+  target_widths: [400, 800, 1600],
   galleries: GALLERIES.map(({ seo, category, slot, dirs }) => ({
     seo,
     category,

@@ -13,17 +13,42 @@ pas À propos. Voir aussi `docs/photos-storage-plan.md` (plan général).
 | `docs/photos-storage/bug-02-activation.md` | État du correctif BUG-02 et ordre d'activation après import. |
 | `supabase/migrations/20260926000003_add_photo_variants_and_placements.sql` | Schéma additif (`photos.source_key`, `photo_variants`, `photo_placements`) avec RLS et politiques aal2. **Non appliquée, inchangée.** |
 | `supabase/migrations/20260926000004_add_avif_photo_variants.sql` | Ajoute le format AVIF à `photo_variants` et autorise deux formats par largeur. **Non appliquée ; à lancer après 000003.** |
-| `docs/photos-storage/manifest-phase1.json` | Manifeste : chaque photo (fichier source, clé opaque, dimensions) et chaque emplacement (galerie, ordre, texte alternatif actuel, cadrage 50/50). Généré par `build-manifest.mjs`. |
-| `scripts/photos-storage/generate-variants.mjs` | Génère AVIF et WebP en 400 px, 800 px et largeur native (sans agrandissement), toujours réencodés sans métadonnées, dans `../soleana-originaux/storage-variants/` (hors dépôt). |
+| `docs/photos-storage/manifest-phase1.json` | Manifeste v3 : clés opaques et empreintes SHA-256, dimensions et emplacements. Aucun chemin ni nom d'original. |
+| `scripts/photos-storage/match-originals.mjs` | Compare chaque WebP du manifeste à **tous** les fichiers des sous-dossiers de `../soleana-originaux/galeries/` par corrélation de pixels. Le tableau des 170 correspondances et les chemins restent hors dépôt dans `../soleana-originaux/storage-variants/matching-report.csv`. |
+| `scripts/photos-storage/generate-variants.mjs` | Génère AVIF et WebP à 400, 800 et 1600 px au plus, sans agrandissement ni métadonnées, depuis les originaux retenus. Repli sur le WebP actuel si aucun original n'atteint le seuil de ressemblance. |
+| `scripts/photos-storage/measure-gallery-bytes.mjs` | Mesure locale dans Chrome les octets réellement chargés pour la galerie couple 1, avant et après, sur trois largeurs d'écran. |
 | `scripts/photos-storage/verify-variants.mjs` | Vérifie dimensions, poids, empreintes, absence d'EXIF/XMP/ICC, clés de stockage. |
 | `scripts/photos-storage/import-photos.mjs` | Import. **Simulation par défaut.** Mode réel : `--apply --confirm <hôte>`. |
 | `scripts/photos-storage/rollback-import.mjs` | Retour arrière à partir du journal (supprime seulement ce que le lot a créé). |
 | `src/lib/photo-storage.ts` | Interrupteur `STORAGE_GALLERIES_ENABLED`, helper unique `publicImageUrl()`, lecture des emplacements. |
 
-Variantes générées : **1 020 fichiers, 43,7 Mo** (AVIF : 16,0 Mo ; WebP : 27,7 Mo).
+Les 171 fichiers des sous-dossiers représentent **170 originaux distincts** : une copie est
+strictement identique à son original. Les 170 photos du manifeste ont chacune un original retenu
+(score minimal **99,677 %** ; aucun repli ni correspondance douteuse). Le tableau complet, avec
+score et deuxième meilleur score, est privé hors dépôt. `../soleana-originaux/pages/` n'est jamais
+lu par ces scripts. Les noms des originaux ne sont ni dans le manifeste ni dans les clés Storage.
+
+Variantes générées : **1 020 fichiers, 78,30 Mo** (26,17 Mo d'AVIF et 52,13 Mo de WebP).
 La vérification a contrôlé dimensions, poids, SHA-256 et absence de métadonnées sur chaque fichier.
 Clés de stockage : `galleries/<catégorie>/<id opaque de 12 caractères>/<hash8>-<largeur>.<avif|webp>`
 (aucun nom de client ni de fichier d'origine ; clé versionnée par le contenu, jamais écrasée).
+La génération utilise au plus six photos en parallèle, garde un index de progression hors dépôt et
+réutilise uniquement les variantes dont la source, le format, les dimensions et l'empreinte sont
+valides. Un essai a réparé un fichier supprimé et un fichier tronqué en conservant les 1 018
+autres variantes. Les 1 190 anciennes sorties hors index ont été retirées ; il reste exactement
+1 020 fichiers dans le dossier des variantes.
+
+Mesure locale dans Chrome, galerie `photographe-couple-marseille/gallery-1` complète (10 images,
+cache désactivé, défilement jusqu'à chaque image) :
+
+| Écran / DPR | WebP actuel | AVIF avec `srcset` | Baisse |
+|---|---:|---:|---:|
+| 360 px / 3 | 1 129 722 octets | 524 896 octets | 53,5 % |
+| 768 px / 2 | 1 129 722 octets | 524 896 octets | 53,5 % |
+| 1 280 px / 1 | 1 129 722 octets | 191 565 octets | 83,0 % |
+
+Ce sont les octets des images servies par le serveur local, pas une mesure du temps de chargement
+en production ni de l'effet d'un CDN. Les dix requêtes après bascule ont bien choisi l'AVIF.
 
 ## Côté site : lecture préparée mais inactive
 
@@ -71,13 +96,14 @@ Rien de ceci n'a été exécuté. Chaque étape a un retour arrière.
    **Puis appliquer `20260926000004_add_avif_photo_variants.sql`** : contrôle par
    `SELECT column_name FROM information_schema.columns WHERE table_schema = 'public' AND
    table_name = 'photo_variants' AND column_name = 'format';` (une ligne attendue).
-4. **Régénérer et vérifier les variantes en local** (déjà fait, rejouable ; environ 10 minutes) :
-   `node scripts/photos-storage/generate-variants.mjs && node scripts/photos-storage/verify-variants.mjs`.
+4. **Régénérer et vérifier les variantes en local** (déjà fait, rejouable) :
+   `node scripts/photos-storage/build-manifest.mjs`, puis `node scripts/photos-storage/match-originals.mjs`,
+   `node scripts/photos-storage/generate-variants.mjs` et `node scripts/photos-storage/verify-variants.mjs`.
    *Retour arrière : supprimer le dossier hors dépôt.*
 5. **Simulations** : `node scripts/photos-storage/import-photos.mjs --limit 4`, puis
    `node scripts/photos-storage/import-photos.mjs` → relire les envois et insertions prévus.
-   Résultats locaux : 4 photos / 24 variantes / 4 emplacements (1,84 Mo), puis 170 photos /
-   1 020 variantes / 190 emplacements (43,70 Mo). Un journal prévisionnel est écrit hors dépôt.
+   Résultats locaux : 4 photos / 24 variantes / 4 emplacements (2,36 Mo), puis 170 photos /
+   1 020 variantes / 190 emplacements (78,30 Mo). Un journal prévisionnel est écrit hors dépôt.
    *Aucun appel réseau, aucun effet en base.*
 6. **Import réel de 4 photos** (les emplacements restent non publiés, donc invisibles du public) :
    ```
@@ -132,7 +158,10 @@ Rien de ceci n'a été exécuté. Chaque étape a un retour arrière.
 
 ## Limites connues
 
-- Les photos sources locales font au plus 1400 px : pas de variante 1600 px (aucun agrandissement).
+- Les originaux de cette phase ont tous au moins 1600 px de large : variantes 400, 800 et 1600 px.
+- Les dossiers `thumbs/` des galeries restent dans le dépôt pour le moment. Ils ne sont ni comparés
+  aux originaux ni importés dans Storage ; prévoir leur suppression avec les anciens WebP au nettoyage
+  final, après l'activation et la validation des galeries.
 - Le texte alternatif actuel est répétitif (« Séance photo … - photo N ») : il est repris tel quel
   pour ne rien changer à l'affichage ; à améliorer photo par photo dans l'admin ensuite.
 - Le mode réel du script n'a pas pu être testé contre un vrai projet (règle : production en lecture

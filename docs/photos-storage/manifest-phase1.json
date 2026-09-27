@@ -1,7 +1,7 @@
 {
-  "version": 2,
+  "version": 3,
   "phase": "galleries-seo",
-  "note": "Généré par scripts/photos-storage/build-manifest.mjs — ne pas éditer à la main.",
+  "note": "Généré par build-manifest.mjs puis match-originals.mjs — ne pas éditer à la main.",
   "variant_formats": [
     "avif",
     "webp"
@@ -9,7 +9,7 @@
   "target_widths": [
     400,
     800,
-    "native"
+    1600
   ],
   "galleries": [
     {
@@ -90,1532 +90,1702 @@
     {
       "source_key": "galleries/grossesse/177d6d0ed591",
       "category": "grossesse",
-      "source_file": "src/assets/grossesse/grossesse_1/20220418-img7119.webp",
       "source_sha256": "177d6d0ed59173783611055e144ecc37f4c83664a4680f8cc031566ea294c375",
-      "width": 1400,
-      "height": 934,
-      "alt_text": "Séance photo maternité à Marseille"
+      "width": 5142,
+      "height": 3429,
+      "alt_text": "Séance photo maternité à Marseille",
+      "source_kind": "original",
+      "original_sha256": "e6746cb68605f0f0f0590269ced1c73df587588909cf56c4834ec677f6d530b6"
     },
     {
       "source_key": "galleries/grossesse/67a7259787b2",
       "category": "grossesse",
-      "source_file": "src/assets/grossesse/grossesse_1/20220418-img7125.webp",
       "source_sha256": "67a7259787b2d95668c824252421eb3fdf26bb4c892173fdc8d38b7c243f0953",
-      "width": 1400,
-      "height": 934,
-      "alt_text": "Séance photo maternité à Marseille"
+      "width": 5472,
+      "height": 3648,
+      "alt_text": "Séance photo maternité à Marseille",
+      "source_kind": "original",
+      "original_sha256": "12dc352587cc81db12f0774377e83f9d7b5d1125cbcd048fa5396ca8e63d521f"
     },
     {
       "source_key": "galleries/grossesse/a1c06f958428",
       "category": "grossesse",
-      "source_file": "src/assets/grossesse/grossesse_1/20220418-img7152.webp",
       "source_sha256": "a1c06f958428da70f2a428909e4415224c957202a17adfc276b60b67cc90bd24",
-      "width": 1400,
-      "height": 934,
-      "alt_text": "Séance photo maternité à Marseille"
+      "width": 5355,
+      "height": 3571,
+      "alt_text": "Séance photo maternité à Marseille",
+      "source_kind": "original",
+      "original_sha256": "0b58a1fc617248cb9946abc4777be213fd8d6c61d955060dd16bc75399973eb6"
     },
     {
       "source_key": "galleries/grossesse/7d534e83e3b5",
       "category": "grossesse",
-      "source_file": "src/assets/grossesse/grossesse_1/20220418-img7232.webp",
       "source_sha256": "7d534e83e3b5c6d87d54f6732373d157e4bed111e3a55048eac3acbb8078d7be",
-      "width": 1400,
-      "height": 934,
-      "alt_text": "Séance photo maternité à Marseille"
+      "width": 5472,
+      "height": 3648,
+      "alt_text": "Séance photo maternité à Marseille",
+      "source_kind": "original",
+      "original_sha256": "e974a7c20a342af2e1f9846d25f4c18347aaec126775993e3adeaf5444e95f29"
     },
     {
       "source_key": "galleries/grossesse/2b15c7128fbe",
       "category": "grossesse",
-      "source_file": "src/assets/grossesse/grossesse_1/20220418-img7326.webp",
       "source_sha256": "2b15c7128fbe4d4e34ea371e9723fea0e8eebba828909d446ff0c0c3d545e833",
-      "width": 1050,
-      "height": 1400,
-      "alt_text": "Séance photo maternité à Marseille"
+      "width": 3617,
+      "height": 4822,
+      "alt_text": "Séance photo maternité à Marseille",
+      "source_kind": "original",
+      "original_sha256": "2d97322f67a2051b277809e4d5170b5068c8897ad6c299a864cc2d808c48a4c9"
     },
     {
       "source_key": "galleries/grossesse/36dfe9c97391",
       "category": "grossesse",
-      "source_file": "src/assets/grossesse/grossesse_1/20220418-img7380.webp",
       "source_sha256": "36dfe9c9739177dff9c36152814ee3bde20874dee4d283cf630fa50ceff9a20a",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo maternité à Marseille"
+      "width": 3648,
+      "height": 5472,
+      "alt_text": "Séance photo maternité à Marseille",
+      "source_kind": "original",
+      "original_sha256": "fa2f1e5820ddfd9f2b734f54ba9e7234e6a5c3e4094a4b46d57aa801544ef698"
     },
     {
       "source_key": "galleries/grossesse/795c0551006e",
       "category": "grossesse",
-      "source_file": "src/assets/grossesse/grossesse_1/20220418-img7397.webp",
       "source_sha256": "795c0551006e54fd7bf88f01f5e7a05dcbeb668c984c45ed908e16435df4f4e7",
-      "width": 1400,
-      "height": 934,
-      "alt_text": "Séance photo maternité à Marseille"
+      "width": 5472,
+      "height": 3648,
+      "alt_text": "Séance photo maternité à Marseille",
+      "source_kind": "original",
+      "original_sha256": "3f9bc4c6d5fd2a3d009b3a3a1c9d14ff0a57d646f4c24307ef532039ca088744"
     },
     {
       "source_key": "galleries/grossesse/a86a4b81c2dc",
       "category": "grossesse",
-      "source_file": "src/assets/grossesse/grossesse_1/20220418-img7401.webp",
       "source_sha256": "a86a4b81c2dc2fb5a00088cccef189fe56eb66b3dd2706032db6bf4101040f64",
-      "width": 1400,
-      "height": 934,
-      "alt_text": "Séance photo maternité à Marseille"
+      "width": 5472,
+      "height": 3648,
+      "alt_text": "Séance photo maternité à Marseille",
+      "source_kind": "original",
+      "original_sha256": "6f864beee06c34181bae26444c9aaec0b9b9a1a1f76d32536c52be1c261b80ae"
     },
     {
       "source_key": "galleries/grossesse/a0e9314ab349",
       "category": "grossesse",
-      "source_file": "src/assets/grossesse/grossesse_1/20220418-img7431.webp",
       "source_sha256": "a0e9314ab34938f9fa78ed65211c3754c8fdb4db55894b5663ceaca38a5279f4",
-      "width": 1400,
-      "height": 933,
-      "alt_text": "Séance photo maternité à Marseille"
+      "width": 5307,
+      "height": 3537,
+      "alt_text": "Séance photo maternité à Marseille",
+      "source_kind": "original",
+      "original_sha256": "daacde4aac941e61e0d5c766dfb238fb478989ac5fac12d6b5bc6503467904c5"
     },
     {
       "source_key": "galleries/grossesse/927bed4af4b2",
       "category": "grossesse",
-      "source_file": "src/assets/grossesse/grossesse_1/20220418-img7441.webp",
       "source_sha256": "927bed4af4b21ea44d91cf431599cb75e6dd36242184e83ef4daf513b992d934",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo maternité à Marseille"
+      "width": 3521,
+      "height": 5282,
+      "alt_text": "Séance photo maternité à Marseille",
+      "source_kind": "original",
+      "original_sha256": "2437c01a9e8a7053da7df5c50fe1c6978b793c06a1b54b631ab11662ab6f2a1e"
     },
     {
       "source_key": "galleries/grossesse/84078f11ba74",
       "category": "grossesse",
-      "source_file": "src/assets/grossesse/grossesse_1/20220418-img7472.webp",
       "source_sha256": "84078f11ba74e8ab66e4b263198ca0f9c24d9e7d15fa8cdf175d59fcfcc4d8cf",
-      "width": 1050,
-      "height": 1400,
-      "alt_text": "Séance photo maternité à Marseille"
+      "width": 3638,
+      "height": 4850,
+      "alt_text": "Séance photo maternité à Marseille",
+      "source_kind": "original",
+      "original_sha256": "f402e7456480a56edb2e7222550da46653f3a08ef687987df25fd689a503d5c5"
     },
     {
       "source_key": "galleries/grossesse/d38872a5803a",
       "category": "grossesse",
-      "source_file": "src/assets/grossesse/maternite_2/20260226maternite-11.webp",
       "source_sha256": "d38872a5803a1bcbc6748ab84a32803b100a29441bd27972703477e5874007db",
-      "width": 933,
-      "height": 1400,
-      "alt_text": "Séance photo maternité à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo maternité à Marseille",
+      "source_kind": "original",
+      "original_sha256": "86827674f8232dff3eb6bc86d0796a3993a7f8bc8113ec755a8f91dddd2fbda6"
     },
     {
       "source_key": "galleries/grossesse/8f93794187a0",
       "category": "grossesse",
-      "source_file": "src/assets/grossesse/maternite_2/20260226maternite-15.webp",
       "source_sha256": "8f93794187a0e8fdabf4d3dbab0bc5b2cf5952b4bcc150bb8287595c4bacf029",
-      "width": 933,
-      "height": 1400,
-      "alt_text": "Séance photo maternité à Marseille"
+      "width": 3949,
+      "height": 5923,
+      "alt_text": "Séance photo maternité à Marseille",
+      "source_kind": "original",
+      "original_sha256": "2cf40b7cf1c8869bb896ed85553917832eaaf46eb0fb08ad45394d636e65a4c7"
     },
     {
       "source_key": "galleries/grossesse/3b92b5262dc8",
       "category": "grossesse",
-      "source_file": "src/assets/grossesse/maternite_2/20260226maternite-2.webp",
       "source_sha256": "3b92b5262dc8c1df4662e4b7a3a7510ea9ebebedfebca83a1b782412b3167919",
-      "width": 933,
-      "height": 1400,
-      "alt_text": "Séance photo maternité à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo maternité à Marseille",
+      "source_kind": "original",
+      "original_sha256": "7dbdc106d4fc7e4f296a85107cdf3465ae02c15c11b07bbddc5c4870f393b1ff"
     },
     {
       "source_key": "galleries/grossesse/c210b0690a13",
       "category": "grossesse",
-      "source_file": "src/assets/grossesse/maternite_2/20260226maternite-20.webp",
       "source_sha256": "c210b0690a13ce0740b9b974f690771e33c8bf2040218ce9e376fe162c949cb2",
-      "width": 1400,
-      "height": 933,
-      "alt_text": "Séance photo maternité à Marseille"
+      "width": 6000,
+      "height": 4000,
+      "alt_text": "Séance photo maternité à Marseille",
+      "source_kind": "original",
+      "original_sha256": "cf1e368ca6a856c117f93418138975f2ebca83ac98269f84ec69470f073c3541"
     },
     {
       "source_key": "galleries/grossesse/79e67bf44544",
       "category": "grossesse",
-      "source_file": "src/assets/grossesse/maternite_2/20260226maternite-21.webp",
       "source_sha256": "79e67bf44544f833021560a9276579e2903c471668d7198b99411d386cef881e",
-      "width": 1400,
-      "height": 933,
-      "alt_text": "Séance photo maternité à Marseille"
+      "width": 6000,
+      "height": 4000,
+      "alt_text": "Séance photo maternité à Marseille",
+      "source_kind": "original",
+      "original_sha256": "8a591632396385a25b71a25ca9b372e516bbe863940468280c047245ac395842"
     },
     {
       "source_key": "galleries/grossesse/fac2b38b5457",
       "category": "grossesse",
-      "source_file": "src/assets/grossesse/maternite_2/20260226maternite-22.webp",
       "source_sha256": "fac2b38b5457a37adb85f0635b2ee1562c161ff9199d387ee2464dbac152be6a",
-      "width": 1400,
-      "height": 933,
-      "alt_text": "Séance photo maternité à Marseille"
+      "width": 5966,
+      "height": 3977,
+      "alt_text": "Séance photo maternité à Marseille",
+      "source_kind": "original",
+      "original_sha256": "7ae63d2fc1f42ce974a916b0e35013034b8929804f54cd04919fad730aee69ce"
     },
     {
       "source_key": "galleries/grossesse/ad095a281583",
       "category": "grossesse",
-      "source_file": "src/assets/grossesse/maternite_2/20260226maternite-23.webp",
       "source_sha256": "ad095a281583d01d1e64689bbcab222411221b4433eaec2e701f2d7e527976ff",
-      "width": 933,
-      "height": 1400,
-      "alt_text": "Séance photo maternité à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo maternité à Marseille",
+      "source_kind": "original",
+      "original_sha256": "e45bc5c16c6baae78d741b549d1093e77414808443ec6cc35b0a9436cb5f46ad"
     },
     {
       "source_key": "galleries/grossesse/00914f063312",
       "category": "grossesse",
-      "source_file": "src/assets/grossesse/maternite_2/20260226maternite-24.webp",
       "source_sha256": "00914f06331281527082af564f85e1907ee182451a231f5f3ce7f938924732f7",
-      "width": 933,
-      "height": 1400,
-      "alt_text": "Séance photo maternité à Marseille"
+      "width": 3845,
+      "height": 5767,
+      "alt_text": "Séance photo maternité à Marseille",
+      "source_kind": "original",
+      "original_sha256": "cc35241dac37c61fa277d4fe792fdef62409f90408e085cb9a0030791edbb16c"
     },
     {
       "source_key": "galleries/grossesse/9cf3d0f45ecf",
       "category": "grossesse",
-      "source_file": "src/assets/grossesse/maternite_2/20260226maternite-25.webp",
       "source_sha256": "9cf3d0f45ecf809e01a79fced94e59370d26a672541130e27c0d4a5b71322032",
-      "width": 933,
-      "height": 1400,
-      "alt_text": "Séance photo maternité à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo maternité à Marseille",
+      "source_kind": "original",
+      "original_sha256": "1a95451fcc13f407793fec9b4faf7f8b0e22edc474bf17fcd362de249a89e275"
     },
     {
       "source_key": "galleries/grossesse/52dfff4da465",
       "category": "grossesse",
-      "source_file": "src/assets/grossesse/maternite_2/20260226maternite-27.webp",
       "source_sha256": "52dfff4da465118b1492d258db4deeeecf140f6e44f13492e109a4c2f5104e12",
-      "width": 933,
-      "height": 1400,
-      "alt_text": "Séance photo maternité à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo maternité à Marseille",
+      "source_kind": "original",
+      "original_sha256": "7323bb7d43f62f9914afa213708d6923f6344674be4785c3f7fc606bde6acf06"
     },
     {
       "source_key": "galleries/grossesse/c43aba9e39f9",
       "category": "grossesse",
-      "source_file": "src/assets/grossesse/maternite_2/20260226maternite-29.webp",
       "source_sha256": "c43aba9e39f988275f3f3e5ef1d5658bdc2866163b075bda4f8f8a198cd34bdd",
-      "width": 933,
-      "height": 1400,
-      "alt_text": "Séance photo maternité à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo maternité à Marseille",
+      "source_kind": "original",
+      "original_sha256": "9f8edc49a7b02fa815d5b771954dded297ac14d4b401789ba16e73a7204cdf77"
     },
     {
       "source_key": "galleries/grossesse/62d5b2eb05aa",
       "category": "grossesse",
-      "source_file": "src/assets/grossesse/maternite_2/20260226maternite-34.webp",
       "source_sha256": "62d5b2eb05aa054cde95d4eb45f18d697caebe62cfd55a2531fa01ded878603b",
-      "width": 933,
-      "height": 1400,
-      "alt_text": "Séance photo maternité à Marseille"
+      "width": 3903,
+      "height": 5854,
+      "alt_text": "Séance photo maternité à Marseille",
+      "source_kind": "original",
+      "original_sha256": "93e2c3a752017c1d35e250ebfaee4a94dbe2f62729adc6bdb9752f456fa59ea8"
     },
     {
       "source_key": "galleries/grossesse/6ebd21174893",
       "category": "grossesse",
-      "source_file": "src/assets/grossesse/maternite_2/20260226maternite-36.webp",
       "source_sha256": "6ebd21174893805393b390e5d141a7e7afc032b7d852a13a4594f6666a575fb1",
-      "width": 933,
-      "height": 1400,
-      "alt_text": "Séance photo maternité à Marseille"
+      "width": 3935,
+      "height": 5903,
+      "alt_text": "Séance photo maternité à Marseille",
+      "source_kind": "original",
+      "original_sha256": "7795d762f3ab6032d29962d344a7115b5615c79415e7ac8a3c81460647ad03a7"
     },
     {
       "source_key": "galleries/grossesse/862ccb7c4c04",
       "category": "grossesse",
-      "source_file": "src/assets/grossesse/maternite_2/20260226maternite-37.webp",
       "source_sha256": "862ccb7c4c04d61a7a1cabf9ecefb02538233aa1c87ccf8ffea4954d9b71941b",
-      "width": 933,
-      "height": 1400,
-      "alt_text": "Séance photo maternité à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo maternité à Marseille",
+      "source_kind": "original",
+      "original_sha256": "59fbb473024b34e18c5386990deef829dc8d8bff6ad62fba7743b901b24b181d"
     },
     {
       "source_key": "galleries/grossesse/56bebc90a656",
       "category": "grossesse",
-      "source_file": "src/assets/grossesse/maternite_2/20260226maternite-39-2.webp",
       "source_sha256": "56bebc90a656ebd7b7496f0a3cd701a8ee48ddc5a5f78f12ef61f3973b872085",
-      "width": 933,
-      "height": 1400,
-      "alt_text": "Séance photo maternité à Marseille"
+      "width": 3817,
+      "height": 5726,
+      "alt_text": "Séance photo maternité à Marseille",
+      "source_kind": "original",
+      "original_sha256": "4e5089037e37dc8053990bc913001655b0809c1291a4fd548d8f7703d33d5ef5"
     },
     {
       "source_key": "galleries/grossesse/0f8afbb29290",
       "category": "grossesse",
-      "source_file": "src/assets/grossesse/maternite_2/20260226maternite-40-2.webp",
       "source_sha256": "0f8afbb29290a332ab9b04b3064897eafed6a0c5de09eaeae4a269d9d93655ff",
-      "width": 1400,
-      "height": 933,
-      "alt_text": "Séance photo maternité à Marseille"
+      "width": 5490,
+      "height": 3660,
+      "alt_text": "Séance photo maternité à Marseille",
+      "source_kind": "original",
+      "original_sha256": "7535410f698effb292985bc98362bdbbbe6633b253632b3a1c630ab713ae11ba"
     },
     {
       "source_key": "galleries/grossesse/05fca553392e",
       "category": "grossesse",
-      "source_file": "src/assets/grossesse/maternite_2/20260226maternite-5.webp",
       "source_sha256": "05fca553392eefa4e27f72ad88f4d7f01e3b8314f66b14faa9c06036bb0c9a07",
-      "width": 933,
-      "height": 1400,
-      "alt_text": "Séance photo maternité à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo maternité à Marseille",
+      "source_kind": "original",
+      "original_sha256": "ccbfb2b15abff42006931d29cfc7d91aaf5ddf0696f1354d0ec154a3dc8c9822"
     },
     {
       "source_key": "galleries/grossesse/bf6fd714b15e",
       "category": "grossesse",
-      "source_file": "src/assets/grossesse/maternite_2/20260226maternite-51.webp",
       "source_sha256": "bf6fd714b15e94003b835fecbad638fbf24a6ec74252ea18276b988e26007313",
-      "width": 933,
-      "height": 1400,
-      "alt_text": "Séance photo maternité à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo maternité à Marseille",
+      "source_kind": "original",
+      "original_sha256": "1e2010a0ef87d720ea69bb112e49b37a5771da22270260815b9daee2ffc75f66"
     },
     {
       "source_key": "galleries/grossesse/b83f3231b3ea",
       "category": "grossesse",
-      "source_file": "src/assets/grossesse/maternite_2/20260226maternite-52.webp",
       "source_sha256": "b83f3231b3ea8d50050c96df9626c2bd6e96b3e073d16f2e02392c9481d04da0",
-      "width": 933,
-      "height": 1400,
-      "alt_text": "Séance photo maternité à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo maternité à Marseille",
+      "source_kind": "original",
+      "original_sha256": "5f9dbe644a770c322372bfc66e3fada7c6657d9b34fa03dd2524466947b330a1"
     },
     {
       "source_key": "galleries/grossesse/7598f13094fd",
       "category": "grossesse",
-      "source_file": "src/assets/grossesse/maternite_2/20260226maternite-53.webp",
       "source_sha256": "7598f13094fd6f606a8cebc787aecb96e51c55266214fa5835f2492ca3daee4e",
-      "width": 933,
-      "height": 1400,
-      "alt_text": "Séance photo maternité à Marseille"
+      "width": 3953,
+      "height": 5929,
+      "alt_text": "Séance photo maternité à Marseille",
+      "source_kind": "original",
+      "original_sha256": "a6ae1c6f48b0b93953595d94ff339572d77194a16f4445fbcf69ef17117f6f7c"
     },
     {
       "source_key": "galleries/famille/7bf9fc38126a",
       "category": "famille",
-      "source_file": "src/assets/famille/famille_1/04042026-vv7a3111.webp",
       "source_sha256": "7bf9fc38126a0215890af9bf4cd05e9cd22cf8a5bcc38174c9ca6775b2c672b4",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo famille à Marseille"
+      "width": 3857,
+      "height": 5785,
+      "alt_text": "Séance photo famille à Marseille",
+      "source_kind": "original",
+      "original_sha256": "e481e17dda21b9dd0d800078f8408c27ab7c4fd72b4bf613c4fd5900dbdf0580"
     },
     {
       "source_key": "galleries/famille/f754a5ea9292",
       "category": "famille",
-      "source_file": "src/assets/famille/famille_1/04042026-vv7a3152.webp",
       "source_sha256": "f754a5ea9292a3f779aa47326c2ab9a8f416f03797be189f21bce5d3332c59d8",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo famille à Marseille"
+      "width": 3720,
+      "height": 5580,
+      "alt_text": "Séance photo famille à Marseille",
+      "source_kind": "original",
+      "original_sha256": "5d9060090750da33ced9773543cebd680451c914660c7dfda6830e6ffc1b50aa"
     },
     {
       "source_key": "galleries/famille/4867508c11a5",
       "category": "famille",
-      "source_file": "src/assets/famille/famille_1/04042026-vv7a3163.webp",
       "source_sha256": "4867508c11a5ab7a754546c89e085705326b3fb41d69632f327c4006f9153117",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo famille à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo famille à Marseille",
+      "source_kind": "original",
+      "original_sha256": "a2374430419155cfd15ff2034a6349977c3183c325e8c3ef2bfb74c59ffb669b"
     },
     {
       "source_key": "galleries/famille/5729dc07b614",
       "category": "famille",
-      "source_file": "src/assets/famille/famille_1/04042026-vv7a3177.webp",
       "source_sha256": "5729dc07b6143667ff45f9ca9248eeae1851a3251f24a9b7dc8be2fbff875cd3",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo famille à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo famille à Marseille",
+      "source_kind": "original",
+      "original_sha256": "73140dbc8e84437b76b40e01b13ae426e734ae3d1e78bf05163d2e591b9c532b"
     },
     {
       "source_key": "galleries/famille/0974d8a42dde",
       "category": "famille",
-      "source_file": "src/assets/famille/famille_1/04042026-vv7a3199.webp",
       "source_sha256": "0974d8a42ddecb2ca817ee2f7d49fedc241763d74f0ccbad1e9a85ec129aa3c3",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo famille à Marseille"
+      "width": 3849,
+      "height": 5773,
+      "alt_text": "Séance photo famille à Marseille",
+      "source_kind": "original",
+      "original_sha256": "2fae742e5a76c7c420f2f3cd1af78d8890c4cbfae1e2c2763602c47b98d3e2ac"
     },
     {
       "source_key": "galleries/famille/cd430ae49a9c",
       "category": "famille",
-      "source_file": "src/assets/famille/famille_1/04042026-vv7a3203.webp",
       "source_sha256": "cd430ae49a9ce921038b895479ffe1d9f6e0b87779ae780eeffc266bd1b517a6",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo famille à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo famille à Marseille",
+      "source_kind": "original",
+      "original_sha256": "16085a4f23a272bcfd94025a14df70598e7c5c554db9d44cda058d57f7c288ea"
     },
     {
       "source_key": "galleries/famille/86095948fefd",
       "category": "famille",
-      "source_file": "src/assets/famille/famille_1/04042026-vv7a3225.webp",
       "source_sha256": "86095948fefd35217568855cc84535bdde214cb5ee1abcdf9296ab9628a135c3",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo famille à Marseille"
+      "width": 3680,
+      "height": 5520,
+      "alt_text": "Séance photo famille à Marseille",
+      "source_kind": "original",
+      "original_sha256": "5ed885ceb67e5b96c433a40da4f593520fa028d05217540d121f7746bedbbeca"
     },
     {
       "source_key": "galleries/famille/8bf0fe845197",
       "category": "famille",
-      "source_file": "src/assets/famille/famille_1/04042026-vv7a3252.webp",
       "source_sha256": "8bf0fe845197c5efc417f94ac4f9cbe7b03aba6b44d0734a40675950159f8fd9",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo famille à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo famille à Marseille",
+      "source_kind": "original",
+      "original_sha256": "eb579ab5327e3203d95a6fd48928ece8f1afd24b36a83f05dfdb87436d79d938"
     },
     {
       "source_key": "galleries/famille/ff194344f215",
       "category": "famille",
-      "source_file": "src/assets/famille/famille_1/04042026-vv7a3273.webp",
       "source_sha256": "ff194344f215b10d8e7630ba1876fce6059d6876fa26a36485e4ae260123a6fe",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo famille à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo famille à Marseille",
+      "source_kind": "original",
+      "original_sha256": "ed1b5d88a3b8c35739650d67aeacfd1e72ca367bb44a4466225b6b40fc5a0229"
     },
     {
       "source_key": "galleries/famille/6748dada991b",
       "category": "famille",
-      "source_file": "src/assets/famille/famille_1/04042026-vv7a3361.webp",
       "source_sha256": "6748dada991b5461f9563792cb821e37f04f252574c1cd127d7170e7216b919a",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo famille à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo famille à Marseille",
+      "source_kind": "original",
+      "original_sha256": "02184cd50f53755cf00057d2532b048013df64860de4778c4c3e7ca8a1cd7733"
     },
     {
       "source_key": "galleries/famille/4bf5e77c9ec4",
       "category": "famille",
-      "source_file": "src/assets/famille/famille_1/04042026-vv7a3419.webp",
       "source_sha256": "4bf5e77c9ec47197ffffbf298ed57fbee8525f542c67d82e135570cd78e4f402",
-      "width": 1400,
-      "height": 934,
-      "alt_text": "Séance photo famille à Marseille"
+      "width": 5735,
+      "height": 3823,
+      "alt_text": "Séance photo famille à Marseille",
+      "source_kind": "original",
+      "original_sha256": "f9e2e73d4976dd7e891ead4493bdbff881b0ab2b00dd2f4d26998d9f16c5fed6"
     },
     {
       "source_key": "galleries/famille/3cbb7078d424",
       "category": "famille",
-      "source_file": "src/assets/famille/famille_1/04042026-vv7a3432.webp",
       "source_sha256": "3cbb7078d4244eb3c49fb3049b1dffdba9c414aa9ff9d4581bc0d09bbe66363d",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo famille à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo famille à Marseille",
+      "source_kind": "original",
+      "original_sha256": "129943f71d385709f7480ed41de46dacb4536b054756b138812e9161309571d7"
     },
     {
       "source_key": "galleries/famille/d023666585f3",
       "category": "famille",
-      "source_file": "src/assets/famille/famille_1/04042026-vv7a3450.webp",
       "source_sha256": "d023666585f30758c285ccb404b09bab4dae0b63eb335cefc27cfb9bbc18c90c",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo famille à Marseille"
+      "width": 3584,
+      "height": 5376,
+      "alt_text": "Séance photo famille à Marseille",
+      "source_kind": "original",
+      "original_sha256": "f96148c488195ffdd434fba7f7b540757838d9a5d48d4566a4e4cef9f8b290e6"
     },
     {
       "source_key": "galleries/famille/055c88d3e098",
       "category": "famille",
-      "source_file": "src/assets/famille/famille_1/04042026-vv7a3456.webp",
       "source_sha256": "055c88d3e098ba9053b7f5c78906b744aeae53b8eb9bc6f6e68b20e513efabac",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo famille à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo famille à Marseille",
+      "source_kind": "original",
+      "original_sha256": "ea0c6ba4997c3391c4feb391870c2588a1eba0d2010970b8103d4e97f612a3a1"
     },
     {
       "source_key": "galleries/famille/97467b1920b9",
       "category": "famille",
-      "source_file": "src/assets/famille/famille_1/04042026-vv7a3467.webp",
       "source_sha256": "97467b1920b9ed85a23a09aaa040cbd3ea38b1a7f7338267408805dd43b61a27",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo famille à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo famille à Marseille",
+      "source_kind": "original",
+      "original_sha256": "5d38c925ea5b04d688256903a4d03085a9213421d7a34557e5cb92b29eafaa8b"
     },
     {
       "source_key": "galleries/famille/9993144136e3",
       "category": "famille",
-      "source_file": "src/assets/famille/famille_1/04042026-vv7a3548.webp",
       "source_sha256": "9993144136e38b645674f5adb1293f4e43204e6351741fb4599bd2f2c840a0fa",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo famille à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo famille à Marseille",
+      "source_kind": "original",
+      "original_sha256": "c07c75f0697421e9605bfb09dd747d9c1557b4ed6372fceac59eeb025370a341"
     },
     {
       "source_key": "galleries/famille/e6d8abf51104",
       "category": "famille",
-      "source_file": "src/assets/famille/famille_1/04042026-vv7a3614.webp",
       "source_sha256": "e6d8abf511044178942eab8ab7656b544514a3d60dab3479f0356b8b691adb9c",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo famille à Marseille"
+      "width": 3629,
+      "height": 5444,
+      "alt_text": "Séance photo famille à Marseille",
+      "source_kind": "original",
+      "original_sha256": "7ba920a6529d40142e65fc2e62cda52c17c397acff2640568d3a9ca6a34a7556"
     },
     {
       "source_key": "galleries/famille/8a647a26e88a",
       "category": "famille",
-      "source_file": "src/assets/famille/famille_1/04042026-vv7a3691.webp",
       "source_sha256": "8a647a26e88a3654958e912605289e6020f0d9672d9d8a8665be6199638482b0",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo famille à Marseille"
+      "width": 3987,
+      "height": 5980,
+      "alt_text": "Séance photo famille à Marseille",
+      "source_kind": "original",
+      "original_sha256": "c8c03a8a795a53e3f7d722e6c3f931d7984307b942026f3cf98f433da0625f65"
     },
     {
       "source_key": "galleries/famille/2235991bd4bb",
       "category": "famille",
-      "source_file": "src/assets/famille/famille_1/04042026-vv7a3695.webp",
       "source_sha256": "2235991bd4bb6f03e40c8ba0d969008c9f5bef0fd14a931ae44bf5bca9e9c908",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo famille à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo famille à Marseille",
+      "source_kind": "original",
+      "original_sha256": "1407530daa62b2e38cf77b6da9870658e0969b41e846c3a0d4c89405a21c4142"
     },
     {
       "source_key": "galleries/famille/f605a9bec309",
       "category": "famille",
-      "source_file": "src/assets/famille/famille_1/04042026-vv7a3793.webp",
       "source_sha256": "f605a9bec309b8d0aaebe5905cb59e15993d5faeafbd86f128652c6177a8a902",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo famille à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo famille à Marseille",
+      "source_kind": "original",
+      "original_sha256": "98b7be89f710c72c896917369330e7dba5dc0819e9d2ff17edc9b39e6592d9b1"
     },
     {
       "source_key": "galleries/famille/6537ffcda248",
       "category": "famille",
-      "source_file": "src/assets/famille/famille_1/04042026-vv7a3863.webp",
       "source_sha256": "6537ffcda2485a21bdce40e20923b7f16503deee83dea8473473db26a6601bd0",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo famille à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo famille à Marseille",
+      "source_kind": "original",
+      "original_sha256": "7fab66e0b702bc01f05a31505fc2c7a3b553fcf7e58289a662e980280edaa079"
     },
     {
       "source_key": "galleries/famille/441b83fb7098",
       "category": "famille",
-      "source_file": "src/assets/famille/famille_1/04042026-vv7a3910.webp",
       "source_sha256": "441b83fb7098d2528101e154605e4a2cc2dc5e5b5ba770ddf5c286bc74447ddc",
-      "width": 1400,
-      "height": 934,
-      "alt_text": "Séance photo famille à Marseille"
+      "width": 6000,
+      "height": 4000,
+      "alt_text": "Séance photo famille à Marseille",
+      "source_kind": "original",
+      "original_sha256": "f01ee374dfdfb8532160fee2f4d12a51bb7c0f234fbfa70c99de85a203a7c13a"
     },
     {
       "source_key": "galleries/famille/820a705c4f09",
       "category": "famille",
-      "source_file": "src/assets/famille/famille_1/04042026-vv7a3948.webp",
       "source_sha256": "820a705c4f09d5a350d1f19871bbf25d47993d5d6b1176154555ea19df9c2350",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo famille à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo famille à Marseille",
+      "source_kind": "original",
+      "original_sha256": "fe233ec273f06f046f79ff2d4e045a87261075e6fcc9745cc61af4052ed3663e"
     },
     {
       "source_key": "galleries/famille/a220c27a2767",
       "category": "famille",
-      "source_file": "src/assets/famille/famille_1/04042026-vv7a4011.webp",
       "source_sha256": "a220c27a276742a4e1c953b51df0eacb243676abe5585669ef807f3f72dbce56",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo famille à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo famille à Marseille",
+      "source_kind": "original",
+      "original_sha256": "76edb6a4cbbd4a1b82a9bf443ccd036019538e202c54c1dcf6044aa3a74901c2"
     },
     {
       "source_key": "galleries/famille/3b24184f8a5d",
       "category": "famille",
-      "source_file": "src/assets/famille/famille_1/04042026-vv7a4160.webp",
       "source_sha256": "3b24184f8a5d1d140f326fc97b9cedf63d1eaac78934efbcd58cf85fd2f58981",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo famille à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo famille à Marseille",
+      "source_kind": "original",
+      "original_sha256": "bdb13c0ddb03ad94d9fd006eea53404d808252c8b48a0d2bf1a7068783438402"
     },
     {
       "source_key": "galleries/famille/9f5c564c8307",
       "category": "famille",
-      "source_file": "src/assets/famille/famille_1/04042026-vv7a4473.webp",
       "source_sha256": "9f5c564c8307719d7fd6baabc9551c79a38399d1427f5d32cf953382ead465e2",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo famille à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo famille à Marseille",
+      "source_kind": "original",
+      "original_sha256": "a7020e11c5de3ddf3078349b877499daaf7fbb56f34c447dcb6bb0091fbe02f4"
     },
     {
       "source_key": "galleries/famille/601cec4542a7",
       "category": "famille",
-      "source_file": "src/assets/famille/famille_1/04042026-vv7a4632.webp",
       "source_sha256": "601cec4542a7b51d9edba0944efd0deb2ea8de9e9004b45d128512aa9ead8520",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo famille à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo famille à Marseille",
+      "source_kind": "original",
+      "original_sha256": "5976e61ce0c9afa750c8deb57e3c61edc06d1c4d45b4d8bda73374873315ffd5"
     },
     {
       "source_key": "galleries/famille/065fd720dfd7",
       "category": "famille",
-      "source_file": "src/assets/famille/famille_2/20260218famille-10.webp",
       "source_sha256": "065fd720dfd748a9bb113e9240b9e24bd47d5fadbfbea89b4cc489c81384b438",
-      "width": 1400,
-      "height": 934,
-      "alt_text": "Séance photo famille à Marseille"
+      "width": 6000,
+      "height": 4000,
+      "alt_text": "Séance photo famille à Marseille",
+      "source_kind": "original",
+      "original_sha256": "3c09e94d6c97b2fa25b2712e7f2bbc318377e47f7f0d9d7f509d6897faafed00"
     },
     {
       "source_key": "galleries/famille/a8fb030f5121",
       "category": "famille",
-      "source_file": "src/assets/famille/famille_2/20260218famille-11.webp",
       "source_sha256": "a8fb030f512166502f28150b7c54583bfdc2485b449e3ffff048ef799dfc63c7",
-      "width": 1400,
-      "height": 934,
-      "alt_text": "Séance photo famille à Marseille"
+      "width": 6000,
+      "height": 4000,
+      "alt_text": "Séance photo famille à Marseille",
+      "source_kind": "original",
+      "original_sha256": "46df6517975a5a854b13844a0f0e7047ceb91cc9e6f983c98573aa79a11b476e"
     },
     {
       "source_key": "galleries/famille/4520720a1a1a",
       "category": "famille",
-      "source_file": "src/assets/famille/famille_2/20260218famille-14.webp",
       "source_sha256": "4520720a1a1a530fc28930c5c6163e885ffa5a37e9cd4839afad6290dc8a5e32",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo famille à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo famille à Marseille",
+      "source_kind": "original",
+      "original_sha256": "1438ca671e9563f784d30205b2aad5b165761e17a4beccf1f4f740b0784b2fc4"
     },
     {
       "source_key": "galleries/famille/dbbd06a9805f",
       "category": "famille",
-      "source_file": "src/assets/famille/famille_2/20260218famille-17.webp",
       "source_sha256": "dbbd06a9805f1c32ff78aba67e46ab5ebf6bc033c3b0d44f8d708c64f1e83265",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo famille à Marseille"
+      "width": 3857,
+      "height": 5785,
+      "alt_text": "Séance photo famille à Marseille",
+      "source_kind": "original",
+      "original_sha256": "31b1fdde7641a072dd61846fe413655c93dd0dab742fe82a1f7245b1fe501709"
     },
     {
       "source_key": "galleries/famille/e9fd89305bf2",
       "category": "famille",
-      "source_file": "src/assets/famille/famille_2/20260218famille-18.webp",
       "source_sha256": "e9fd89305bf26476989f9e2a83f8ba580cf03b3378f52a22f14785acfdd63522",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo famille à Marseille"
+      "width": 3852,
+      "height": 5778,
+      "alt_text": "Séance photo famille à Marseille",
+      "source_kind": "original",
+      "original_sha256": "e60f2e040675736ac04f060c55429a8474eacb7a95f71c8b1c341e0a63161040"
     },
     {
       "source_key": "galleries/famille/76d1ab7b52fc",
       "category": "famille",
-      "source_file": "src/assets/famille/famille_2/20260218famille-2.webp",
       "source_sha256": "76d1ab7b52fcfc6e2c248cbd8d913124ffdb2cb28bed67c315883edd59b4c295",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo famille à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo famille à Marseille",
+      "source_kind": "original",
+      "original_sha256": "7577ca0ade6d85fcbb496bff7b9a1bceb47d95e6d726d3f77761a84356302c43"
     },
     {
       "source_key": "galleries/famille/b1e1608d6b25",
       "category": "famille",
-      "source_file": "src/assets/famille/famille_2/20260218famille-23.webp",
       "source_sha256": "b1e1608d6b25d58f96fa47be472b183b2a41edcaf92fa80624722691af2645e0",
-      "width": 1400,
-      "height": 934,
-      "alt_text": "Séance photo famille à Marseille"
+      "width": 5986,
+      "height": 3991,
+      "alt_text": "Séance photo famille à Marseille",
+      "source_kind": "original",
+      "original_sha256": "5e55974a2aa9036efcf9986d5906f3df802f3b7ebd96b6fe16d22e8b0642dfe8"
     },
     {
       "source_key": "galleries/famille/a62e46f6ed20",
       "category": "famille",
-      "source_file": "src/assets/famille/famille_2/20260218famille-24.webp",
       "source_sha256": "a62e46f6ed203f7fd9a6e52e2f04c35f0f8135eeda314984cffae9e510dadb71",
-      "width": 1400,
-      "height": 934,
-      "alt_text": "Séance photo famille à Marseille"
+      "width": 6000,
+      "height": 4000,
+      "alt_text": "Séance photo famille à Marseille",
+      "source_kind": "original",
+      "original_sha256": "9d4b9f113d6e404978629bd2da0bbea392a9299f815b232930fe144701df53c1"
     },
     {
       "source_key": "galleries/famille/d3b9ac428eb7",
       "category": "famille",
-      "source_file": "src/assets/famille/famille_2/20260218famille-28.webp",
       "source_sha256": "d3b9ac428eb78f30a786a43fe7529053349638b4b34b14515055a4dd77a12c90",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo famille à Marseille"
+      "width": 3876,
+      "height": 5814,
+      "alt_text": "Séance photo famille à Marseille",
+      "source_kind": "original",
+      "original_sha256": "297b43ba1c99b46c16e107daa4d5fe463e14adc37190a8d59b069d41fe86bfb1"
     },
     {
       "source_key": "galleries/famille/a4a9cc2b791c",
       "category": "famille",
-      "source_file": "src/assets/famille/famille_2/20260218famille-3.webp",
       "source_sha256": "a4a9cc2b791c2d91b0edf8a1c409311aef503372efd39d0356428d30e34791c4",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo famille à Marseille"
+      "width": 3517,
+      "height": 5276,
+      "alt_text": "Séance photo famille à Marseille",
+      "source_kind": "original",
+      "original_sha256": "062d3b9598e890b2b7fb0451723b6bb0fbad6c9eebaa2201eb14b1a449a611bc"
     },
     {
       "source_key": "galleries/famille/f9edf4289903",
       "category": "famille",
-      "source_file": "src/assets/famille/famille_2/20260218famille-32.webp",
       "source_sha256": "f9edf4289903a35865cfa5c18e127df67223bfbe2632aa86bc3fbb98954905e5",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo famille à Marseille"
+      "width": 3447,
+      "height": 5170,
+      "alt_text": "Séance photo famille à Marseille",
+      "source_kind": "original",
+      "original_sha256": "1bed2fe1b7a59a8a3ef537ad1512ead79397651f4e52f7681a4c4b0a6f7764f1"
     },
     {
       "source_key": "galleries/famille/d11e684df0d9",
       "category": "famille",
-      "source_file": "src/assets/famille/famille_2/20260218famille-36.webp",
       "source_sha256": "d11e684df0d94496132e8e293bfc1397b5f629b1cfdb71ac54d4a173eddad1db",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo famille à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo famille à Marseille",
+      "source_kind": "original",
+      "original_sha256": "45a3655f44acab898945fd2c71de371fcfbaa8947106fe2bf9d1a71f97f6cce7"
     },
     {
       "source_key": "galleries/famille/2e5d577ca92a",
       "category": "famille",
-      "source_file": "src/assets/famille/famille_2/20260218famille-41.webp",
       "source_sha256": "2e5d577ca92adfe76b3096c7389de640584e63cf4afde0b66f43d95c3510765a",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo famille à Marseille"
+      "width": 3599,
+      "height": 5399,
+      "alt_text": "Séance photo famille à Marseille",
+      "source_kind": "original",
+      "original_sha256": "1f65a447f5fa7bc775a8d4d113b2729f05be6677c70e24487956936936c67a8f"
     },
     {
       "source_key": "galleries/famille/734489d3bcbc",
       "category": "famille",
-      "source_file": "src/assets/famille/famille_2/20260218famille-42.webp",
       "source_sha256": "734489d3bcbce4e8d195f6d939e90435d43f44d83318d872631c08dcee3047df",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo famille à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo famille à Marseille",
+      "source_kind": "original",
+      "original_sha256": "408a9fcdbc452901bcd47fda24a80dd3baa03141e2a32ec59e58e5d484ffc47b"
     },
     {
       "source_key": "galleries/famille/922975469919",
       "category": "famille",
-      "source_file": "src/assets/famille/famille_2/20260218famille-44.webp",
       "source_sha256": "92297546991985054482582487500df0a55c810bf0f10581110df7f04a7feacc",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo famille à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo famille à Marseille",
+      "source_kind": "original",
+      "original_sha256": "6f9f52628ddedd9681942578f96504df19fac46960057ea7a14a18fdb5d814ca"
     },
     {
       "source_key": "galleries/famille/b59b4b2d2bd0",
       "category": "famille",
-      "source_file": "src/assets/famille/famille_2/20260218famille-5.webp",
       "source_sha256": "b59b4b2d2bd02ca425b1fbe9874610c67184664252c35b47e8e163e43c34b8ab",
-      "width": 1400,
-      "height": 934,
-      "alt_text": "Séance photo famille à Marseille"
+      "width": 5544,
+      "height": 3696,
+      "alt_text": "Séance photo famille à Marseille",
+      "source_kind": "original",
+      "original_sha256": "a3ac7234284ef3d628c3c477b077a3a14557e2a216180a8a53c8b43bdb3b8050"
     },
     {
       "source_key": "galleries/famille/8c92952c9f13",
       "category": "famille",
-      "source_file": "src/assets/famille/famille_2/20260218famille-59.webp",
       "source_sha256": "8c92952c9f137be4abe7a0fc3e00ce8c0614727fc3bbb1f4a28cba4f61146317",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo famille à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo famille à Marseille",
+      "source_kind": "original",
+      "original_sha256": "477e2eeb4acf78e3e4b9fe4c8446832180e0497171d31c14089073956c7c4fbd"
     },
     {
       "source_key": "galleries/famille/3d76c9d6e674",
       "category": "famille",
-      "source_file": "src/assets/famille/famille_2/20260218famille-6.webp",
       "source_sha256": "3d76c9d6e6740a7ae9cc1232be5d7d0282fc43ba8adad8223da92a0b0fcfc38f",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo famille à Marseille"
+      "width": 3371,
+      "height": 5056,
+      "alt_text": "Séance photo famille à Marseille",
+      "source_kind": "original",
+      "original_sha256": "5f6c7bb072ae19d2a5a013d9a0063cf303522eb9015734c9147a58da7e28bfc2"
     },
     {
       "source_key": "galleries/famille/13394effd261",
       "category": "famille",
-      "source_file": "src/assets/famille/famille_2/20260218famille-60.webp",
       "source_sha256": "13394effd261659443be98fd26194aec79381e3b4a809de4d4b9c0ff044c5620",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo famille à Marseille"
+      "width": 3865,
+      "height": 5798,
+      "alt_text": "Séance photo famille à Marseille",
+      "source_kind": "original",
+      "original_sha256": "74970e7309b5d1141bdfab8c27a675767a840ced010bc0277a5efbc4d1f8f3fe"
     },
     {
       "source_key": "galleries/famille/20ea7e81b1f1",
       "category": "famille",
-      "source_file": "src/assets/famille/famille_2/20260218famille-62.webp",
       "source_sha256": "20ea7e81b1f10af9478dd7468c476c9b9e36ad9114e91a1f145bbdfee7adc2ad",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo famille à Marseille"
+      "width": 3903,
+      "height": 5854,
+      "alt_text": "Séance photo famille à Marseille",
+      "source_kind": "original",
+      "original_sha256": "2372fd019cbd9b1ffba4afd02bbdda625e8e30bdad9efcc3721972116cf3e068"
     },
     {
       "source_key": "galleries/couple/dd39da108b84",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_1/20250906-couple-003.webp",
       "source_sha256": "dd39da108b84fd307b886d1cb7fa3a3a40d088218a821b33dd47e4b35a0080b8",
-      "width": 1400,
-      "height": 934,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 5472,
+      "height": 3648,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "57f157f50fa9bee7f9257a79ea73c0627d8e6a9de8247cbfc9ec8ad249f618ff"
     },
     {
       "source_key": "galleries/couple/09d36f165169",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_1/20250906-couple-010.webp",
       "source_sha256": "09d36f1651693bff16998abd1cb667c4697afd8301fd2036fa47e0c92cc6e49e",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 3648,
+      "height": 5472,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "a4992ae12d39c75fcb2592f73f468fd31cc4f5c083642ffb38b131ede68fa74c"
     },
     {
       "source_key": "galleries/couple/cf7245d42acf",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_1/20250906-couple-023.webp",
       "source_sha256": "cf7245d42acf631cd85d74bf5d865091c417f3a59028635a62a4f65f9c99d9c3",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 3496,
+      "height": 5244,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "1a8077449e86ab34ef5a308762c6cd298ee8138cf6cc90ce025fa5d56f060dda"
     },
     {
       "source_key": "galleries/couple/7d0b265993f9",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_1/20250906-couple-029.webp",
       "source_sha256": "7d0b265993f9672fda355704f64811a40e76d08127bcda37b1a62247a99f788b",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 3648,
+      "height": 5472,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "a5eb440160c8d2d28ec1abe7cea4912cde417decedd4c6cf6bd8ac79a735d11d"
     },
     {
       "source_key": "galleries/couple/3954017cf240",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_1/20250906-couple-040.webp",
       "source_sha256": "3954017cf2409585e1f172364bf3d6975a13991c6a87454614fdd08dceb7deca",
-      "width": 1400,
-      "height": 934,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 5472,
+      "height": 3648,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "1937ec4d6810d179a8fa70a0a199c3561a0d32852d79eafddfd68dc96696ea04"
     },
     {
       "source_key": "galleries/couple/b16aac64ff64",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_1/20250906-couple-042.webp",
       "source_sha256": "b16aac64ff6462258e17fba23cddd650be1ac958abe0e57a6232923fabba7e0b",
-      "width": 1050,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 3630,
+      "height": 4840,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "1d7b6ed269525af3c9db47ede7ce6411e8a1555510df260bc8450bf6f86f48dc"
     },
     {
       "source_key": "galleries/couple/a31a56a60e9e",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_1/20250906-couple-055.webp",
       "source_sha256": "a31a56a60e9e079c0179dd15f3703c493d5dcb5f3b84a61a95d7f1f2edd4ed3b",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 3648,
+      "height": 5472,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "9a573efc565755238cafacc97fb052ebebb44eab031ef7228945107c1316fb21"
     },
     {
       "source_key": "galleries/couple/528ffc807d6a",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_1/20250906-couple-059.webp",
       "source_sha256": "528ffc807d6a32bd7f4d8c29761e558013fef371bbfe6ac86367af7d9a8b0149",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 3576,
+      "height": 5364,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "92666bfa5b58fc83c682bf437c0dbdb982a2fa93acadd8bd8ca607bb9588a2ec"
     },
     {
       "source_key": "galleries/couple/0b8a3d064ae0",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_1/20250906-couple-068.webp",
       "source_sha256": "0b8a3d064ae04692ded0680d8952e7fb784f4858119f64c1c6ea0341918d7b37",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 3428,
+      "height": 5142,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "b246893f388a43faa41a66149395ba6b290b439a3703e98b102bf4aa77e0c5d1"
     },
     {
       "source_key": "galleries/couple/cf0fed4b2dba",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_1/20250906-couple-079.webp",
       "source_sha256": "cf0fed4b2dba051e8fb544404f51318dd4875ab1f398371584b7a69f388b551a",
-      "width": 1400,
-      "height": 934,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 4693,
+      "height": 3129,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "1c3d24a654dc7416e1461fa24a2fd04ab84a99052789aa19e06270ea6436a0a7"
     },
     {
       "source_key": "galleries/couple/87ef4e6d08ae",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_2/20250912-couple-010.webp",
       "source_sha256": "87ef4e6d08aeba7b7f1489fc2be10743330ef430975786d1741cc14ce608aa7e",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 3027,
+      "height": 4540,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "8567d8b83136c4afe08ef5f60695a29b43410215cc4381af89b64bd7c83a5981"
     },
     {
       "source_key": "galleries/couple/18c8fc47800c",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_2/20250912-couple-012.webp",
       "source_sha256": "18c8fc47800c8b54424c984cd2e2253be168e1659f2a1c18aaf954b9f3a7d3e1",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 3648,
+      "height": 5472,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "da718479ffcaf46e7641a223da5e7a4eb3f54d2175a73ce76c85aee03d039fe7"
     },
     {
       "source_key": "galleries/couple/9b613eac9ffb",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_2/20250912-couple-027.webp",
       "source_sha256": "9b613eac9ffb69ac429e995860d1dc15657d09b27d3dbc12702a1cbc795a0319",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 2942,
+      "height": 4413,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "bf5f134c996fe25d8e04110b95c38db8b44b09ca9505847ded26b105adb55f22"
     },
     {
       "source_key": "galleries/couple/ee881702f520",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_2/20250912-couple-033.webp",
       "source_sha256": "ee881702f5203b8bc6aa26dee2689c219be96a8a2db5ccd8cdba0bdb284a7ed8",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 3100,
+      "height": 4650,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "b2028b7e95c8ae6b7b2a9528ae71432cffb587f59c641207e1bdc0086d0cf051"
     },
     {
       "source_key": "galleries/couple/eb58659eb83e",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_2/20250912-couple-035.webp",
       "source_sha256": "eb58659eb83ef0c055d9ca45df608fa15feffd06834d9c858627acbcf44af2b0",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 3648,
+      "height": 5472,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "7de5e8963f7dec9c9cbcdb7221b953c0e62bc639f766bc733c1b2cf829a3d12c"
     },
     {
       "source_key": "galleries/couple/1c2b40afd891",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_2/20250912-couple-037.webp",
       "source_sha256": "1c2b40afd891f5bee6ca2bdbc5a0c072346f9e7d1f019c6ebdcbb9fbc68bfabc",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 3140,
+      "height": 4710,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "a75bcd7a56d9e72bb8cf70c1aeeb0fe5cff0a287645bd5f531c320bed005ce25"
     },
     {
       "source_key": "galleries/couple/b5473b2931c9",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_2/20250912-couple-041.webp",
       "source_sha256": "b5473b2931c9494789b7cbf9fd726fdbd453da2fc9eb1afa7009298551e32b2c",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 3648,
+      "height": 5472,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "854a427ff18c7f58b00505555ea7d7e99730d34ea627ced1ceb1f596d1299fca"
     },
     {
       "source_key": "galleries/couple/0f79377b7ca0",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_2/20250912-couple-045.webp",
       "source_sha256": "0f79377b7ca03e3fb087bba609fbb71420f423507e156cfa60a9187e66519496",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 3648,
+      "height": 5472,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "560897ca1e2ec09197c132ae35f2c5d8b3c28af65f9304553f99a063168dc66a"
     },
     {
       "source_key": "galleries/couple/620c33d2b3cd",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_2/20250912-couple-046.webp",
       "source_sha256": "620c33d2b3cd76992cb9fe76e2dd3793b7c22146e6f84c4068894e76257e6880",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 3648,
+      "height": 5472,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "2f3c7086149b720b6d1ab67da750d9c8dfb53d597cacd64bdc663097f3f3eadd"
     },
     {
       "source_key": "galleries/couple/1b6533ee61e4",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_2/20250912-couple-058.webp",
       "source_sha256": "1b6533ee61e43ad1321b9dff5ac5197aa8de7e1dde454686a84b447f67e6b54f",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 3496,
+      "height": 5244,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "6ffbbb1f2c1ae1bd39312a2a014a44ef4d444739c8cc4c9058eeea3bfb461419"
     },
     {
       "source_key": "galleries/couple/b93939247a75",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_2/20250912-couple-066.webp",
       "source_sha256": "b93939247a7552be59492598ce6331f2b977494b0ef2922ca150d0d51cea9dac",
-      "width": 1400,
-      "height": 934,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 5472,
+      "height": 3648,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "8963d76fe8f14db8f3b152f8f595849fff9aa13a602dc1124a5a90f0bd84ad36"
     },
     {
       "source_key": "galleries/couple/bd262cef7d1e",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_2/20250912-couple-067.webp",
       "source_sha256": "bd262cef7d1ebd491ea8dfb8b0445fec4a24b9bc47196d6e533ca99df541e676",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 3648,
+      "height": 5472,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "7398b419675eac07382a4967d2eda06a8d685d696d40c356d411820656961fbd"
     },
     {
       "source_key": "galleries/couple/0d7140806c64",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_2/20250912-couple-070.webp",
       "source_sha256": "0d7140806c649edb0a2c4b67fc0aa9430e61ac91a72770a498a71005b2d5d9e9",
-      "width": 1400,
-      "height": 934,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 5472,
+      "height": 3648,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "82d1a7a29fcea16378811d4ce5b95c296cfdda55fbc685e859df5e1b6a594c63"
     },
     {
       "source_key": "galleries/couple/43ac7c479c3e",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_2/20250912-couple-073.webp",
       "source_sha256": "43ac7c479c3eb4eefce1486e89854fa19c45c80924d327dad86b608ef4f21903",
-      "width": 1400,
-      "height": 934,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 5472,
+      "height": 3648,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "417fb83eb836cda5892314d65aa805b4ae7fa401e3821b6a7b6876fa0bc37399"
     },
     {
       "source_key": "galleries/couple/6381f77d5c0d",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_2/20250912-couple-078.webp",
       "source_sha256": "6381f77d5c0d0ecc2590396c63a3feddb179bf1b9fe0bc67129ff53f09b3c242",
-      "width": 1400,
-      "height": 934,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 5472,
+      "height": 3648,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "b9bfe216f8ac2729ee3e017d08a8d0dcf08126ca4b89973845ea09f54329e636"
     },
     {
       "source_key": "galleries/couple/fa2b8128017b",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_2/20250912-couple-084.webp",
       "source_sha256": "fa2b8128017b2b204d988155a2ff39b95cd628200450f9d7aa9ed6d1af13d3af",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 3648,
+      "height": 5472,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "d5727d7fcfbe63a532514dad882cba2cb44371bd6f333a8d982f033606fd94a6"
     },
     {
       "source_key": "galleries/couple/83aa4187596e",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_2/20250912-couple-089.webp",
       "source_sha256": "83aa4187596ee5f6e0c71d708a453852eae558c1665c2ef101e8262822bbea6d",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 3648,
+      "height": 5472,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "169a54938f03705ccdb3c0a8e5a5779e3acae9a63a996b90119a0091f355e250"
     },
     {
       "source_key": "galleries/couple/cbbfb7fb3c2b",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-1.webp",
       "source_sha256": "cbbfb7fb3c2ba019d875fd3be427d4208e4c72dfd38cd01e71ac453b79643166",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "7acb3f81f5d468e62b610e99276d2beee6891585a8ed3423944dae8061f134d1"
     },
     {
       "source_key": "galleries/couple/a7ff026b4b17",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-10.webp",
       "source_sha256": "a7ff026b4b17e508ad50943e4d9bf3c4f3cf1f6182e9d9d1862986059495e934",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "89c90012bec489cf9a089dacb79756e77c5cbb4891cb2faaa99f4b704d314cb2"
     },
     {
       "source_key": "galleries/couple/76f9132a1318",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-11.webp",
       "source_sha256": "76f9132a1318540c82c5e8c0b5189d3613f0b60c467a30ec7c8e312083bb7fdd",
-      "width": 1400,
-      "height": 934,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 5117,
+      "height": 3411,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "6ea537349e4a833b6a3d91b4e819a793711e21233071c1456741c3a958fe7502"
     },
     {
       "source_key": "galleries/couple/fed74204c540",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-12.webp",
       "source_sha256": "fed74204c540262a46a5c341876d41d36bbeb4852526cc6dca5cf07ebf6451c6",
-      "width": 1400,
-      "height": 934,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 6000,
+      "height": 4000,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "2d733807d5261db8e2ad630eba15e00d90d0148b2656a5d2593b132a7e3de2e5"
     },
     {
       "source_key": "galleries/couple/cc0832a13dd6",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-13.webp",
       "source_sha256": "cc0832a13dd6a51ce612b26a7b5ba11fa8ebd292f1b4faa19834f8d2ec918f34",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "3bd72294e5088075464f93c30aa8612b18df4fd74479937d2856c9300555bd67"
     },
     {
       "source_key": "galleries/couple/6a9252eeb29d",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-14.webp",
       "source_sha256": "6a9252eeb29d0c343fdf6ae3df9c1cd1eac37dab784e7dd9aec2ac68f9a7323f",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "52810fa467b1612358346739fc39466d801d2aa75b8ff44bf9d8baa7ddea1e9b"
     },
     {
       "source_key": "galleries/couple/969d198df9e0",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-15.webp",
       "source_sha256": "969d198df9e07a66080b94b6f280867f51dd59b273f33fc313cdbdda1b7f900c",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "2b9f23930a64f2d48e1250736356511d007103e504f8c956b42e8895b88604b5"
     },
     {
       "source_key": "galleries/couple/3c15bee08d2b",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-16.webp",
       "source_sha256": "3c15bee08d2b3a8b01dc1df39518e877c5a542291e415f843fe7496bf775de1f",
-      "width": 1400,
-      "height": 934,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 6000,
+      "height": 4000,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "8c8bcf899c68c2008b121f9b218f6f087de80d9cc67d66ddf1b27f2f5e8704d4"
     },
     {
       "source_key": "galleries/couple/6d623d13db17",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-17.webp",
       "source_sha256": "6d623d13db17b92f416f16bd8875c4157a700afa8357dd88185440e19104257c",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "978c6fcf16128affea989498b790802047d9e00ad44d4fe033111e96d75adb15"
     },
     {
       "source_key": "galleries/couple/38c6b05f1ff4",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-18.webp",
       "source_sha256": "38c6b05f1ff4024c425ddf3422e84831022b6218e6008676f34b4ed20e818ed1",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "c64112df8d52a9a5e3e306e5832311e3fc1afdc77ec25164b1f5de3818d5f471"
     },
     {
       "source_key": "galleries/couple/b3f672198f8b",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-19.webp",
       "source_sha256": "b3f672198f8b59f3775bab81a800becd3fd15f508975cfb2012dd59ab7389bbc",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "97480e4485f90af5266576edda58d4effd09ba7001c88e4226cb316665b42311"
     },
     {
       "source_key": "galleries/couple/f999d8e54d28",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-2.webp",
       "source_sha256": "f999d8e54d283275ad6f5bf72ef7a37932627a74037406d340bd873f5d823a30",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 3537,
+      "height": 5305,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "c95192a996d37991224c4e5deadf5984dee04ce2c656d2b8bb7a283f4dbbcb17"
     },
     {
       "source_key": "galleries/couple/152b5db3a1bb",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-20.webp",
       "source_sha256": "152b5db3a1bb469170978c01bd3268df2a6755b94a005a7bc05a880d867d40d0",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "00b0db20c02106a60db8c4ef0aa8b8b1787695d04636defb83e7fba685e2c6b4"
     },
     {
       "source_key": "galleries/couple/264b85b2b23e",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-21.webp",
       "source_sha256": "264b85b2b23ee5d620ae52a1b30c5f0ea82171df5e82ced64bbb11ce546a0d4e",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "e90d89b74848753738099011edb2c7e2d7d64227bde96c52508ab9d5831cd08d"
     },
     {
       "source_key": "galleries/couple/58f803e1c50a",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-22.webp",
       "source_sha256": "58f803e1c50aa7ee1ccebfc8242f9734029ee940a89b63125b07750df415ffd8",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 3927,
+      "height": 5891,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "23e55dfe8caeeae15c2cb3fea3cc3b5aa1f0413546cf51fd5eeaeedca035efba"
     },
     {
       "source_key": "galleries/couple/06c683e7331e",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-23.webp",
       "source_sha256": "06c683e7331e264faed8ff98905cce813ffc25d5ff247e134252bc99e7c038d5",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "d2b0c530a1777bbb1d84798f4f7aab4518beb6e8d1677d8f431bc360ed97f797"
     },
     {
       "source_key": "galleries/couple/234c38b0bd7f",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-24.webp",
       "source_sha256": "234c38b0bd7f17070423ccf1508ef714ca24ffe66689dac3df0d1dffc523e339",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "c3c11722f5e4769b46c94daafb83d40fc032ca1298ec8df827759e3a37993469"
     },
     {
       "source_key": "galleries/couple/b949b5ffbdf5",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-25.webp",
       "source_sha256": "b949b5ffbdf5b2678c3e2e9f21acf0c0dd6d0b4de0a97e877b56f8530e2e4837",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 3907,
+      "height": 5861,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "dc800da0e6400f0bd3026aa1de1aab6d5a7b06d8d3aa7624b2100aadf3e1a063"
     },
     {
       "source_key": "galleries/couple/a95c2b3afc98",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-26.webp",
       "source_sha256": "a95c2b3afc98c3eac4dfc4b8d95158284a7eadede8efaef48cdd9a6bfd39c970",
-      "width": 1400,
-      "height": 934,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 6000,
+      "height": 4000,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "350468ee3ae57056ba7fc9b0d96286dfd3f33b418b5bb93f1726478625dc2683"
     },
     {
       "source_key": "galleries/couple/15dc8c7af9b1",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-27.webp",
       "source_sha256": "15dc8c7af9b1632096d977f069bb302cabef871a3b2cb1e3f63e578e37c53b28",
-      "width": 1400,
-      "height": 934,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 5933,
+      "height": 3955,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "ddde36727f755e190c642254eb5c9032e895c25105c889c714ea15426247150f"
     },
     {
       "source_key": "galleries/couple/6af7ceabad5e",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-28.webp",
       "source_sha256": "6af7ceabad5ece87738415b4f2d6fee3f6e8d5a516b4e0db1b3c7557ea5215d8",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 3721,
+      "height": 5581,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "649f38cebfc08a9a5efa1d16d13f94f2fe11bdecaa48c9966c6936ee55c29451"
     },
     {
       "source_key": "galleries/couple/d461292a2e8e",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-29.webp",
       "source_sha256": "d461292a2e8e5a8d9484d9edf9622962abb2975b2afca38b29c21358b3f01f16",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "f1191e60df23351301c94fcbff9025e18cb8081580bd6157483aa9d502bc7d91"
     },
     {
       "source_key": "galleries/couple/c05113616755",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-3.webp",
       "source_sha256": "c051136167551090d5db526afb3cc573c7f8991ad62cdc9bd83a15c1646410b4",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 3400,
+      "height": 5100,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "78dbc3874dea91feac29fb6dd33e6e14357033789b0752fd43847e33175929be"
     },
     {
       "source_key": "galleries/couple/ee40db11221e",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-30.webp",
       "source_sha256": "ee40db11221e021165a9f87d09da297a4e170149c7ebe5b6c23ea28cf935cd6b",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 3113,
+      "height": 4670,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "f752946df7b12a2b91aacb4e7b4426fb258c36f65b45daf4d54eea3ca5d852e4"
     },
     {
       "source_key": "galleries/couple/7f18ebb974a6",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-31.webp",
       "source_sha256": "7f18ebb974a6d79ebcb364351cbd0777b043ecc61d9ccbc0cb03878b08e6ce37",
-      "width": 1400,
-      "height": 934,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 5987,
+      "height": 3991,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "1da83b894b79d9685b7f2f8e12c131c5ae20840a85c6438320462cb5b4a17f6a"
     },
     {
       "source_key": "galleries/couple/4973ba89ae7d",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-32.webp",
       "source_sha256": "4973ba89ae7d7a783c681d0ea5e307ea82504245e53ed89062aaecc49dd1388a",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 3850,
+      "height": 5775,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "3b0852d030a8f8f28484b62c07b4d925c837e86a070127f5feafb8e966172d4f"
     },
     {
       "source_key": "galleries/couple/3e4d6dcc2204",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-33.webp",
       "source_sha256": "3e4d6dcc2204242330ee5fa2df63447f369c53c86e307ac235b8301b86373241",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 3741,
+      "height": 5611,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "b3227d328050ea1a26e99f1437856a4fde09c733d4eceed985b1e07b756a9813"
     },
     {
       "source_key": "galleries/couple/2894de009cad",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-34.webp",
       "source_sha256": "2894de009cad6cc0ae00eb365eff1bd63cd9c7f18a8e661f4a1af4dae93e1119",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 3973,
+      "height": 5959,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "01fb5d8fdab1adbe86326039b2475b9bc86c9102bf2b3652a60549bf4f80de40"
     },
     {
       "source_key": "galleries/couple/47c724a32b27",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-35.webp",
       "source_sha256": "47c724a32b279530621b9b41ee4beffcadee70d7a54af8ee2f7fb43f4a7120fb",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 3881,
+      "height": 5821,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "42ce6d6aa72d78bb6e59293b9f2af7faa2ce1f95a6b32679738e785bac608c42"
     },
     {
       "source_key": "galleries/couple/6c82ccc7572e",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-36.webp",
       "source_sha256": "6c82ccc7572e1c244749191c8ffb67e8ceca6f5260b2ac2d6717b295b38c23a9",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "a8d2c0c07b1638ac70f7273aa212a2fa462a10063ca5a7f961929faf5bc748c7"
     },
     {
       "source_key": "galleries/couple/2b40179cc015",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-37.webp",
       "source_sha256": "2b40179cc0158ff7d6df414ab83681864b495b0e160f2f326da4a4f00d32cb07",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 3757,
+      "height": 5635,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "9fd3b2fdacda5d51698938a0223e8fa6e238b56553bc99227d16b6bc3089d298"
     },
     {
       "source_key": "galleries/couple/64439a76ba86",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-38.webp",
       "source_sha256": "64439a76ba86a7790cd3df567b3eadd235b93a54950503aa4599c9ed9641f0d6",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 3824,
+      "height": 5736,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "3852becbb5b17716f686d1f27ad89d208ea5343653dd62b70d94d90e3767b1e0"
     },
     {
       "source_key": "galleries/couple/6187cfeafaa4",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-39.webp",
       "source_sha256": "6187cfeafaa4d164b22e81523eedba9a54ec1063594971380ff176c8e55060e5",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 3669,
+      "height": 5503,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "4fc237bf534e002a8c69938785d010785e1d570797f19b9829c1976d4344a254"
     },
     {
       "source_key": "galleries/couple/8bf325b03957",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-4.webp",
       "source_sha256": "8bf325b0395794f627644e9c49def75640615daad7b58dafd3be5e564b484e7d",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "7653e6355f16ef14ed3b3a9b64522443d2703ba2e977045dfebc546d78f49de6"
     },
     {
       "source_key": "galleries/couple/e3e8d81e113c",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-40.webp",
       "source_sha256": "e3e8d81e113c0b71a49852985faaded968bf7f737dd635ed1a2eacba1c95cd0b",
-      "width": 1400,
-      "height": 934,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 6000,
+      "height": 4000,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "ad0b52aa573994cbf29be082720ea323f778696226f0a3304c5d003aa34fda63"
     },
     {
       "source_key": "galleries/couple/960098b18ac8",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-41.webp",
       "source_sha256": "960098b18ac8dda981d892829799b5caea87dc9e303b80aaea5a3afa80ff52e2",
-      "width": 1400,
-      "height": 934,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 5716,
+      "height": 3811,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "0a943f79f81957f6fc9aca00cd39bbac5ddb725ef9257e69a47f09d6d8142134"
     },
     {
       "source_key": "galleries/couple/cd2c419106f3",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-42.webp",
       "source_sha256": "cd2c419106f3d964a2eca1b24b91bc24ba57829c41c7aa3ac67cfaca01dd8bee",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "43646bc456fde99087d04a941a84d91bf8ee7033e9750250990fa9072c391793"
     },
     {
       "source_key": "galleries/couple/10eb226d113d",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-43.webp",
       "source_sha256": "10eb226d113dbc18ac1ad34f20353b5378ce2622fee8a057cf394062e2440def",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 3855,
+      "height": 5782,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "66af16fe87e3937e043e5170de9ba22f22c31d7f21b9ef305a9b496f2a5e1d48"
     },
     {
       "source_key": "galleries/couple/5e14f8e31107",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-44.webp",
       "source_sha256": "5e14f8e31107d1c1885755f69bc6953456a97bcd5b73bd87bfdc3ff5e9010b4e",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 3623,
+      "height": 5434,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "dc1934485f397e10f8eb6df92d6ed18d357c72c036574678df4c2dcc419c1526"
     },
     {
       "source_key": "galleries/couple/27f6f370f440",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-45.webp",
       "source_sha256": "27f6f370f4404dad599a72a200d28d2783ee1c7067cfac7f32f26300e6247741",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 3735,
+      "height": 5602,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "1e849dd32ff9d786a41cdb754323567140617e42e2f8a1ac9fb912daf36e140d"
     },
     {
       "source_key": "galleries/couple/ae91e60bc49b",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-46.webp",
       "source_sha256": "ae91e60bc49b977e807d68f033a2192c0c66c21cb8fdf0eb4e1ee331267937f7",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 3882,
+      "height": 5823,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "202bd318f73f8ce205f7629b6dec57b62583337489c0ef37f7e96ccbffd506ec"
     },
     {
       "source_key": "galleries/couple/2ae10961e546",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-47.webp",
       "source_sha256": "2ae10961e5462dbef3b0b749edf208402b45e2b2f4923fa60f6cc3fb55836d2b",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 3824,
+      "height": 5736,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "5b455880453a8f6af061b660d549b142e37e391411446cebc242edde72e05310"
     },
     {
       "source_key": "galleries/couple/f847afc11a12",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-48.webp",
       "source_sha256": "f847afc11a12da019ce531ed3088e30acc631511cf6eb3dea20b2466cf1c5c1a",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "5a7e1a47debb8e095420f955b1efa28674b27feddf9043827958093d1eeb5df4"
     },
     {
       "source_key": "galleries/couple/777bcb24a415",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-49.webp",
       "source_sha256": "777bcb24a41552d821811851367aafdd6e6c88f97fe6dfdeebd4e9e41d101f92",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "a0a107db64a0fc7a870f8ea0a6fdc3548a64ab3aa776e756be7018db8c7209b1"
     },
     {
       "source_key": "galleries/couple/31eb357ae9ae",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-5.webp",
       "source_sha256": "31eb357ae9ae230976cdf4c6894685b5055d61c1d142c9cd6738d7ff94dac421",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "6943bbfcc6e51c5e0491b312b9ebfceff5e90f0333cb135f18d7ffeaccc865b2"
     },
     {
       "source_key": "galleries/couple/ac7bdd56fa2f",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-50.webp",
       "source_sha256": "ac7bdd56fa2f4eae3936029cf69a24447f9e5341648456b89bd81a3f95a8261e",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 3953,
+      "height": 5930,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "0ac3fc01dccdf2d22fdd0c448037a4896625b2072e8353964c4e03eb228e0824"
     },
     {
       "source_key": "galleries/couple/049817ee1cf6",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-51.webp",
       "source_sha256": "049817ee1cf64a11e3e1c8caa5b3533f3f937a9de707fcb151fcece797bbac19",
-      "width": 1400,
-      "height": 934,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 5970,
+      "height": 3980,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "01ead0dbf66370c4202805b209fc80e3a4f3ab53c555ce336c1b8aa4ee0fd81f"
     },
     {
       "source_key": "galleries/couple/ceaf9149d498",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-52.webp",
       "source_sha256": "ceaf9149d498da584f0a70874bf2b82410e39e6883ada1e263d7bd852fe11433",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 3441,
+      "height": 5161,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "0305e5650f805aed3b9ebd30ec8239ad774ba0ff0e36c1076c4bcbec22f75a43"
     },
     {
       "source_key": "galleries/couple/2131e0ff9227",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-53.webp",
       "source_sha256": "2131e0ff92278e808bc9ebbb18f4c77e5382200626cff7bc1b134be32d606d4e",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 3893,
+      "height": 5840,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "07763e850b6db7d9fbddf320968643c95178cdf5db73146bc50f915c62632599"
     },
     {
       "source_key": "galleries/couple/d8491d56ff29",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-6.webp",
       "source_sha256": "d8491d56ff294a6a56b4d3d24d6f1c69d5923ab36ebcdbb94b1d7d02dcbb7f6c",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "f271661a68bb5406e223e1eb43be653bc706a83c012ba831c7cc1371d5a96e0a"
     },
     {
       "source_key": "galleries/couple/04f9d957bc12",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-7.webp",
       "source_sha256": "04f9d957bc1224cecea2883594dde634ad4f52cb774375296ac223e2d5803586",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "820f1af89cfa240751b15d1103c96e616729ad4cca0bf9985f8ebb8b3f63e81b"
     },
     {
       "source_key": "galleries/couple/fc0026ae5845",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-8.webp",
       "source_sha256": "fc0026ae58457b45c101d2f0f5e3f21b078a85f862f4234b0f01a20063911ce7",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 4000,
+      "height": 6000,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "1c713401e5ad2e8b3b19678fb69dea216c5453a398e29ae322a8f0dba90cb1ce"
     },
     {
       "source_key": "galleries/couple/a57bd87a8527",
       "category": "couple",
-      "source_file": "src/assets/couple/couple_3/fiancailles-9.webp",
       "source_sha256": "a57bd87a8527d48749296a3d85fb68e8a8abb1519ef6a1f082e6a449b26fd6f6",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo couple à Marseille"
+      "width": 3587,
+      "height": 5380,
+      "alt_text": "Séance photo couple à Marseille",
+      "source_kind": "original",
+      "original_sha256": "41642982714c60409a57f65b0ac32cd64403b77d1167a4b6cb180e53cd45ffa5"
     },
     {
       "source_key": "galleries/portrait/2f3676463bac",
       "category": "portrait",
-      "source_file": "src/assets/portrait/portrait_1/20251025-img5598.webp",
       "source_sha256": "2f3676463bac03fdb9244f1f6cbe935157da9a6210e64a6d815eedaf3e6346ad",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo portrait à Marseille"
+      "width": 3648,
+      "height": 5472,
+      "alt_text": "Séance photo portrait à Marseille",
+      "source_kind": "original",
+      "original_sha256": "e4e6e042371f89696a72e13c5faf0fe618cfc7973ce26771deb93348e7930c55"
     },
     {
       "source_key": "galleries/portrait/bcbb645073ad",
       "category": "portrait",
-      "source_file": "src/assets/portrait/portrait_1/20251025-img5600.webp",
       "source_sha256": "bcbb645073add2b9498de6338f2fbff94904f754437c4fbdc8e84c149e4b913f",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo portrait à Marseille"
+      "width": 3648,
+      "height": 5472,
+      "alt_text": "Séance photo portrait à Marseille",
+      "source_kind": "original",
+      "original_sha256": "df7fdc2e15bed1de51e7e8c519ae74109ff0df99fe7a3e53d23a6ad17643fce0"
     },
     {
       "source_key": "galleries/portrait/945f685aa560",
       "category": "portrait",
-      "source_file": "src/assets/portrait/portrait_1/20251025-img5650.webp",
       "source_sha256": "945f685aa5608336f531ab982fa93c8826b9eb356b049e9789106b78cb5a3f51",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo portrait à Marseille"
+      "width": 3648,
+      "height": 5472,
+      "alt_text": "Séance photo portrait à Marseille",
+      "source_kind": "original",
+      "original_sha256": "f7cc895c116a93a72ea86b448727158957a37dd6e12935244c1c681cf2edfd7a"
     },
     {
       "source_key": "galleries/portrait/14151a90e739",
       "category": "portrait",
-      "source_file": "src/assets/portrait/portrait_1/20251025-img5726.webp",
       "source_sha256": "14151a90e739f2540d85442786e258536e67adf54148f2813c0e4bc9d4534750",
-      "width": 1400,
-      "height": 934,
-      "alt_text": "Séance photo portrait à Marseille"
+      "width": 5472,
+      "height": 3648,
+      "alt_text": "Séance photo portrait à Marseille",
+      "source_kind": "original",
+      "original_sha256": "e033210884f08fb06243a88d44c1406cf7ff7f091a462cf0c877a98df68a7384"
     },
     {
       "source_key": "galleries/portrait/628d9464a088",
       "category": "portrait",
-      "source_file": "src/assets/portrait/portrait_1/20251025-img5732.webp",
       "source_sha256": "628d9464a088b2407539dbe9012dbe94a895759f90126fc51f7bb0b02d44ddb7",
-      "width": 1400,
-      "height": 934,
-      "alt_text": "Séance photo portrait à Marseille"
+      "width": 5472,
+      "height": 3648,
+      "alt_text": "Séance photo portrait à Marseille",
+      "source_kind": "original",
+      "original_sha256": "c9236c7ef2ff6dced07f649d1d9940012a3a43a49251c4f77f97f16d7beb0198"
     },
     {
       "source_key": "galleries/portrait/54a0efcdacdb",
       "category": "portrait",
-      "source_file": "src/assets/portrait/portrait_1/20251025-img5733.webp",
       "source_sha256": "54a0efcdacdb54c7a1d2418d1b5674838879c50479ac5a3be38729d1bcddc3ef",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo portrait à Marseille"
+      "width": 3159,
+      "height": 4738,
+      "alt_text": "Séance photo portrait à Marseille",
+      "source_kind": "original",
+      "original_sha256": "6a5827b2d194465463ee375e91c356e46321075c179ffac327277a1ff67c6518"
     },
     {
       "source_key": "galleries/portrait/cc491bcb5a2c",
       "category": "portrait",
-      "source_file": "src/assets/portrait/portrait_1/20251025-img5761.webp",
       "source_sha256": "cc491bcb5a2c894c1284167403dfb77ce5bf2b9e5434adf4394d9cbbaf33e513",
-      "width": 1400,
-      "height": 934,
-      "alt_text": "Séance photo portrait à Marseille"
+      "width": 5472,
+      "height": 3648,
+      "alt_text": "Séance photo portrait à Marseille",
+      "source_kind": "original",
+      "original_sha256": "e6fdddac14e10bd7add012f1afb630a41669f82ef45a0c5933e0b1a000c940eb"
     },
     {
       "source_key": "galleries/portrait/4223c78d9b10",
       "category": "portrait",
-      "source_file": "src/assets/portrait/portrait_1/20251025-img5783.webp",
       "source_sha256": "4223c78d9b10f2375b784d31dac7911ec5b6f3469c2fc1c5445e04da96179d68",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo portrait à Marseille"
+      "width": 3648,
+      "height": 5472,
+      "alt_text": "Séance photo portrait à Marseille",
+      "source_kind": "original",
+      "original_sha256": "ea80ea08002bba34940b8942274bbc32cfdba0de4483cafb86c74624b4751467"
     },
     {
       "source_key": "galleries/portrait/a634f9b65d5e",
       "category": "portrait",
-      "source_file": "src/assets/portrait/portrait_1/20251025-img5788.webp",
       "source_sha256": "a634f9b65d5e96c84b29af84110cf0097880c66cbd00d70aef9605c61f45102b",
-      "width": 1400,
-      "height": 934,
-      "alt_text": "Séance photo portrait à Marseille"
+      "width": 5472,
+      "height": 3648,
+      "alt_text": "Séance photo portrait à Marseille",
+      "source_kind": "original",
+      "original_sha256": "a56bfec987068c35fa4b54bf3ce747ff72c44467d608b4620bd42cd64208f5e0"
     },
     {
       "source_key": "galleries/portrait/dd83346dedf7",
       "category": "portrait",
-      "source_file": "src/assets/portrait/portrait_1/20251025-img5806.webp",
       "source_sha256": "dd83346dedf75aed21d9e6473e2a45124dd319712e6362274733ebc5802527db",
-      "width": 1400,
-      "height": 934,
-      "alt_text": "Séance photo portrait à Marseille"
+      "width": 5472,
+      "height": 3648,
+      "alt_text": "Séance photo portrait à Marseille",
+      "source_kind": "original",
+      "original_sha256": "30ad78d52f56ae0eb1473a273e5e06a3b5835a3014e74eb9edd83c0e41160ed8"
     },
     {
       "source_key": "galleries/portrait/6d04e30efe92",
       "category": "portrait",
-      "source_file": "src/assets/portrait/portrait_1/20251025-img5817.webp",
       "source_sha256": "6d04e30efe926fdb6cb43b4af54a63a81cff9d6567d46e7889259efd2a7f7408",
-      "width": 1050,
-      "height": 1400,
-      "alt_text": "Séance photo portrait à Marseille"
+      "width": 3337,
+      "height": 4449,
+      "alt_text": "Séance photo portrait à Marseille",
+      "source_kind": "original",
+      "original_sha256": "9926799f5f784ea3f48b8435e6764bc9a5b84d90eae28e3a071c5ec369a8bb61"
     },
     {
       "source_key": "galleries/portrait/a9b980af7fd2",
       "category": "portrait",
-      "source_file": "src/assets/portrait/portrait_1/20251025-img5844.webp",
       "source_sha256": "a9b980af7fd22ff1472d49f89fb2bc1b69402928bdfc7c8e33aa42fe8de17c35",
-      "width": 934,
-      "height": 1400,
-      "alt_text": "Séance photo portrait à Marseille"
+      "width": 3648,
+      "height": 5472,
+      "alt_text": "Séance photo portrait à Marseille",
+      "source_kind": "original",
+      "original_sha256": "4edece1a5723f0dc44714be9086db709c9e7bc54b1cf33c41794af5a443c8c9d"
     }
   ],
   "placements": [
