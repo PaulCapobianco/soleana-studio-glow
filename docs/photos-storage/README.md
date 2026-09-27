@@ -13,10 +13,12 @@ pas À propos. Voir aussi `docs/photos-storage-plan.md` (plan général).
 | `docs/photos-storage/bug-02-activation.md` | État du correctif BUG-02 et ordre d'activation après import. |
 | `supabase/migrations/20260926000003_add_photo_variants_and_placements.sql` | Schéma additif (`photos.source_key`, `photo_variants`, `photo_placements`) avec RLS et politiques aal2. **Non appliquée, inchangée.** |
 | `supabase/migrations/20260926000004_add_avif_photo_variants.sql` | Ajoute le format AVIF à `photo_variants` et autorise deux formats par largeur. **Non appliquée ; à lancer après 000003.** |
+| `supabase/migrations/20260926000005_photo_storage_admin_operations.sql` | Prépare le suivi de capacité, la file compensatoire de suppression et les policies Storage photo. **Non appliquée ; à lancer après 00002, 00003 et 00004.** |
 | `docs/photos-storage/manifest-phase1.json` | Manifeste v3 : clés opaques et empreintes SHA-256, dimensions et emplacements. Aucun chemin ni nom d'original. |
 | `scripts/photos-storage/match-originals.mjs` | Compare chaque WebP du manifeste à **tous** les fichiers des sous-dossiers de `../soleana-originaux/galeries/` par corrélation de pixels. Le tableau des 170 correspondances et les chemins restent hors dépôt dans `../soleana-originaux/storage-variants/matching-report.csv`. |
 | `scripts/photos-storage/generate-variants.mjs` | Génère AVIF et WebP à 400, 800 et 1600 px au plus, sans agrandissement ni métadonnées, depuis les originaux retenus. Repli sur le WebP actuel si aucun original n'atteint le seuil de ressemblance. |
 | `docs/photos-storage/quality-review.md` | Contrôle visuel représentatif, réglages d'encodage, métriques finales et contrat de stockage sans originaux. |
+| `docs/photos-storage/admin-storage-operations.md` | Réglages navigateur, Safari, capacité, suppression fiable, import futur, contrôles et retour arrière. |
 | `scripts/photos-storage/measure-gallery-bytes.mjs` | Mesure locale dans Chrome les octets réellement chargés pour la galerie couple 1, avant et après, sur trois largeurs d'écran. |
 | `scripts/photos-storage/verify-variants.mjs` | Vérifie dimensions, poids, empreintes, absence d'EXIF/XMP/ICC, clés de stockage. |
 | `scripts/photos-storage/import-photos.mjs` | Import. **Simulation par défaut.** Mode réel : `--apply --confirm <hôte>`. |
@@ -68,8 +70,10 @@ en production ni de l'effet d'un CDN. Les dix requêtes après bascule ont bien 
   toucher aux composants (sous-domaine Cloudflare avec cache devant le bucket).
 
 L'écran admin « Photos » reste lisible avant les migrations, mais désactive l'ajout et la suppression
-tant que `photo_variants` et `photo_placements` ne sont pas disponibles. Après application, l'envoi
-réencode sur l'appareil en AVIF (encodeur WASM chargé à la demande) et WebP. Le fichier sélectionné
+tant que `photo_variants`, `photo_placements` et le RPC de capacité 00005 ne sont pas disponibles.
+Après application, l'envoi réencode sur l'appareil en AVIF et WebP avec encodeurs WASM chargés à la
+demande (AVIF 70/effort 4/4:4:4/8 bits ; WebP 90/méthode 4/`use_sharp_yuv`). La calibration et ses
+limites sont décrites dans [admin-storage-operations.md](admin-storage-operations.md). Le fichier sélectionné
 reste dans le navigateur : seul le tableau de blobs des variantes produites est envoyé à Storage.
 L'application ne sauvegarde pas les originaux de la photographe ; ils ne doivent jamais être
 envoyés à Supabase ni ajoutés au dépôt. Le texte alternatif est
@@ -80,8 +84,9 @@ Sur une image JPEG avec orientation EXIF, nom d'auteur et profil ICC, le test Ch
 deux sorties correctement orientées (400 × 600), AVIF et WebP, sans EXIF, ICC, XMP ni IPTC. Un test
 automatisé simule l'envoi, le nettoyage après échec et la suppression confirmée. Si un navigateur
 ne décode pas un HEIC, essayer un JPG ; si l'encodage WebP échoue, changer le format de la source
-ne suffit pas. Voir la [proposition de repli pour Safari iOS](safari-ios.md), à valider sur appareil
-avant d'ajouter une dépendance.
+ne suffit pas. La génération WebP utilise maintenant `@jsquash/webp` en WASM, nécessaire pour éviter
+le repli silencieux de `canvas.toBlob()` vers PNG. Les limites et essais iPhone requis sont dans
+[safari-ios.md](safari-ios.md).
 
 ## Procédure pas à pas : test réel sur 4 photos (à faire par Paul)
 
@@ -93,22 +98,15 @@ Rien de ceci n'a été exécuté. Chaque étape a un retour arrière.
 2. **Sauvegarder** : exporter `photos`, `categories`, `seo_pages`, les objets et leurs métadonnées
    du bucket `photos` (télécharger ses fichiers s'il contient déjà des photos), et conserver les
    exports hors dépôt. Vérifier que les sauvegardes sont lisibles.
-3. **Appliquer la migration** `20260926000003_...sql` dans le SQL Editor (copier le fichier entier).
-   **Décider du bloc final `DO $aal2$ ... $aal2$;` avant de lancer le SQL** : le conserver si
-   `20260926000002_require_aal2_for_admin_writes.sql` a déjà été appliquée après l'enrôlement
-   TOTP et une connexion aal2 réussie de **tous** les admins. Sinon, retirer ce bloc **seulement
-   dans la copie collée au SQL Editor**, jamais du fichier versionné. Les nouvelles tables
-   gardent leur RLS et leurs politiques `has_role`, mais leurs écritures admin n'exigeront pas
-   encore aal2. Dès que tous les admins sont prêts, appliquer manuellement `00002`, puis exécuter
-   **une seule fois** le bloc `DO $aal2$ ... $aal2$;` de `00003` pour les deux nouvelles tables.
-   Ne pas rejouer ce bloc s'il est déjà présent. L'import par clé `service_role` n'est pas soumis
-   à ces politiques. Vérifier aussi les politiques des tables `photos` et `storage.objects`.
-   Contrôle : les deux tables existent, `SELECT count(*) FROM pg_policies WHERE tablename IN
-   ('photo_variants','photo_placements');` (attendu : 4 sans le bloc aal2, 10 avec).
-   *Retour arrière : bloc « Retour arrière » commenté en bas du fichier (tables vides).*
-   **Puis appliquer `20260926000004_add_avif_photo_variants.sql`** : contrôle par
-   `SELECT column_name FROM information_schema.columns WHERE table_schema = 'public' AND
-   table_name = 'photo_variants' AND column_name = 'format';` (une ligne attendue).
+3. **Appliquer les migrations seulement après enrôlement TOTP et connexion aal2 réussie de tous
+   les administrateurs**, dans l'ordre exact : `00002_require_aal2_for_admin_writes.sql`,
+   `00003_add_photo_variants_and_placements.sql` (bloc aal2 inclus),
+   `00004_add_avif_photo_variants.sql`, puis `00005_photo_storage_admin_operations.sql`.
+   Une migration déjà enregistrée ne se rejoue pas. `00005` exige aal2 pour ses opérations admin :
+   ne pas commencer l'import si cette précondition n'est pas remplie. Après chaque migration,
+   vérifier le schéma et les policies avec [admin-storage-operations.md](admin-storage-operations.md)
+   et les requêtes postflight. Les sections de rollback des migrations s'utilisent seulement après
+   rollback des données/imports ; `00005` exige aussi une file de nettoyage vide.
 4. **Régénérer et vérifier les variantes en local** (déjà fait, rejouable) :
    `node scripts/photos-storage/build-manifest.mjs`, puis `node scripts/photos-storage/match-originals.mjs`,
    `node scripts/photos-storage/generate-variants.mjs` et `node scripts/photos-storage/verify-variants.mjs`.

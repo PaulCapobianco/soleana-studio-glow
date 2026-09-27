@@ -4,13 +4,18 @@ import { toast } from "sonner";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
-import { generateBrowserPhotoVariants } from "@/lib/photo-storage";
+import { generateBrowserPhotoVariants, validatePhotoSource } from "@/lib/photo-storage";
 import { SaveButton } from "@/components/site/admin/SaveButton";
 import { FieldHint } from "@/components/site/admin/FieldHint";
 import { confirmDelete } from "@/lib/admin/confirm-delete";
 import { friendlySupabaseError } from "@/lib/admin/friendly-error";
 import { useDirtySet } from "@/lib/admin/use-dirty-set";
 import { useEditableRecord } from "@/lib/admin/use-editable-record";
+import {
+  cleanupOrphanPhotoVariants,
+  getPhotoStorageCapacity,
+  retryPhotoStorageCleanup,
+} from "@/lib/photos/storage-admin.functions";
 
 type PhotoRow = Database["public"]["Tables"]["photos"]["Row"];
 type CategoryRow = Database["public"]["Tables"]["categories"]["Row"];
@@ -56,6 +61,12 @@ function legacyStoragePath(imageUrl: string): string | null {
   } catch {
     return null;
   }
+}
+
+function formatStorageBytes(value: number | null) {
+  if (value === null) return "Indisponible";
+  if (value < 1_000_000) return `${(value / 1_000).toFixed(0)} kB`;
+  return `${(value / 1_000_000).toFixed(2)} MB`;
 }
 
 export const Route = createFileRoute("/admin/_authed/photos")({
@@ -131,8 +142,20 @@ export function PhotosAdmin() {
     retry: false,
   });
 
+  const {
+    data: storageCapacity,
+    isError: storageCapacityUnavailable,
+    refetch: refetchStorageCapacity,
+  } = useQuery({
+    queryKey: ["admin-photo-storage-capacity"],
+    queryFn: () => getPhotoStorageCapacity({ data: {} }),
+    retry: false,
+    refetchInterval: 60_000,
+  });
+
   const storageReady = Boolean(placements && variants && seoPages?.length && cats?.length && photos &&
-    !placementsUnavailable && !variantsUnavailable && !seoPagesUnavailable && !categoriesUnavailable && !photosUnavailable);
+    !placementsUnavailable && !variantsUnavailable && !seoPagesUnavailable && !categoriesUnavailable &&
+    !photosUnavailable && storageCapacity && !storageCapacityUnavailable);
   const selectedPage = seoPages?.find((page) => page.id === seoPageId);
   const availableSlots = selectedPage ? GALLERY_SLOTS[selectedPage.slug] : ["gallery-1"];
   const nextOrder = Math.max(-1, ...(placements ?? [])
@@ -148,8 +171,10 @@ export function PhotosAdmin() {
     const category = cats?.find((item) => item.slug === categorySlug);
     const displayOrder = order.trim() === "" ? nextOrder : Number(order);
     if (!alt) return toast.error("Décrivez la photo dans le texte alternatif.");
-    if (!/^image\/(jpeg|png|webp|avif|heic|heif)$/.test(file.type) || file.size > 25 * 1024 * 1024) {
-      return toast.error("Choisissez une image JPG, PNG, WebP, AVIF ou HEIC de 25 Mo maximum.");
+    try {
+      await validatePhotoSource(file);
+    } catch (error) {
+      return toast.error(error instanceof Error ? error.message : "Choisissez un original JPG/JPEG ou HEIC/HEIF.");
     }
     if (!category || !availableSlots.includes(slot)) return toast.error("Choisissez une galerie valide.");
     if (!Number.isSafeInteger(displayOrder) || displayOrder < 0 ||
@@ -170,7 +195,15 @@ export function PhotosAdmin() {
         generated = await generateBrowserPhotoVariants(file, sourceKey);
       } catch (error) {
         console.error("Préparation locale de la photo impossible", error);
-        return toast.error("Cet appareil ne peut pas préparer cette image. Essayez un JPG ou un navigateur récent.");
+        return toast.error(error instanceof Error ? error.message : "Cet appareil ne peut pas préparer cette image. Essayez un JPG.");
+      }
+      const additionalBytes = generated.reduce((sum, variant) => sum + variant.byte_size, 0);
+      const capacity = await getPhotoStorageCapacity({ data: { additionalBytes } });
+      if (!capacity.canUpload) {
+        return toast.error("L’espace photo configuré serait dépassé. Supprimez d’anciennes photos, nettoyez les variantes inutilisées/orphelines ou augmentez la capacité du projet.");
+      }
+      if (capacity.projectedPercent !== null && capacity.projectedPercent >= 85) {
+        toast.warning(`Après cet envoi, le stockage photo atteindrait ${capacity.projectedPercent.toFixed(1)} % de sa limite configurée.`);
       }
       for (const variant of generated) {
         const { error } = await supabase.storage.from("photos").upload(variant.storage_path, variant.blob, {
@@ -267,16 +300,22 @@ export function PhotosAdmin() {
         <h1 className="font-display text-4xl italic text-primary">Photos</h1>
       </header>
 
+      <PhotoStorageCapacityPanel
+        capacity={storageCapacity}
+        unavailable={storageCapacityUnavailable}
+        onRefresh={() => void refetchStorageCapacity()}
+      />
+
       <form onSubmit={handleUpload} className="space-y-4 border border-border bg-surface p-4 sm:p-6">
         <h2 className="font-display text-2xl italic text-primary">Ajouter une photo</h2>
-        <p className="text-sm text-muted-foreground">Choisissez une photo et sa galerie. Les formats AVIF et WebP sont créés sur cet appareil avant l'envoi.</p>
+        <p className="text-sm text-muted-foreground">Choisissez un original JPG/JPEG, HEIC/HEIF ou PNG. Les six variantes web sont créées sur cet appareil ; le fichier source n'est jamais envoyé.</p>
         {!storageReady && (
           <p role="status" className="text-sm text-muted-foreground">L'ajout sera disponible après l'application des migrations Photos et le chargement des galeries.</p>
         )}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <label className="space-y-1 text-sm">Photo depuis l'appareil
-            <FieldHint>JPG, PNG, WebP, AVIF ou HEIC ; 25 Mo maximum. L'original reste sur votre appareil.</FieldHint>
-            <input type="file" accept="image/jpeg,image/png,image/webp,image/avif,image/heic,image/heif" required
+            <FieldHint>JPG/JPEG, HEIC/HEIF ou PNG ; 25 Mo maximum. La prise en charge HEIC dépend du navigateur et de l'iPhone.</FieldHint>
+            <input type="file" accept="image/jpeg,.jpg,.jpeg,image/heic,image/heif,.heic,.heif,image/png,.png" required
               onChange={(event) => setFile(event.target.files?.[0] ?? null)}
               className="block w-full text-sm file:mr-3 file:border-0 file:bg-primary file:px-3 file:py-2 file:text-primary-foreground" />
           </label>
@@ -390,15 +429,37 @@ function PhotoCard({
     if (!confirmDelete("cette photo")) return;
     if (!storageReady) return toast.error("Attendez que la bibliothèque de photos soit disponible.");
     const legacyPath = variants.length === 0 ? legacyStoragePath(item.image_url) : null;
-    const paths = variants.length ? variants.map((variant) => variant.storage_path) : legacyPath ? [legacyPath] : [];
+    let paths: string[] = [];
+    let cleanupJobId: string | null = null;
     let photoDeleted = false;
     try {
-      // Les références sont retirées avant les fichiers : un échec Storage ne casse pas la galerie.
-      queryError((await supabase.from("photo_placements").delete().eq("photo_id", item.id)).error);
-      queryError((await supabase.from("photo_variants").delete().eq("photo_id", item.id)).error);
-      queryError((await supabase.from("photos").delete().eq("id", item.id)).error);
+      const { data, error } = await supabase.rpc("admin_delete_photo", {
+        p_photo_id: item.id,
+        p_legacy_path: legacyPath,
+      });
+      queryError(error);
+      const deletion = data as { cleanup_job_id: string | null; object_paths: string[] };
+      cleanupJobId = deletion.cleanup_job_id;
+      paths = deletion.object_paths ?? [];
       photoDeleted = true;
-      if (paths.length) queryError((await supabase.storage.from("photos").remove(paths)).error);
+      if (paths.length) {
+        const { error: storageError } = await supabase.storage.from("photos").remove(paths);
+        if (storageError) {
+          if (cleanupJobId) {
+            await supabase.rpc("admin_finish_photo_cleanup", {
+              p_job_id: cleanupJobId,
+              p_error: storageError.message,
+            });
+          }
+          throw storageError;
+        }
+      }
+      if (cleanupJobId) {
+        queryError((await supabase.rpc("admin_finish_photo_cleanup", {
+          p_job_id: cleanupJobId,
+          p_error: null,
+        })).error);
+      }
       toast.success("Photo et fichiers supprimés");
     } catch (error) {
       console.error("Suppression de la photo incomplète", { error, paths });
@@ -409,6 +470,7 @@ function PhotoCard({
       qc.invalidateQueries({ queryKey: ["admin-photos"] });
       qc.invalidateQueries({ queryKey: ["admin-photo-placements"] });
       qc.invalidateQueries({ queryKey: ["admin-photo-variants"] });
+      qc.invalidateQueries({ queryKey: ["admin-photo-storage-capacity"] });
     }
   }
 
@@ -672,5 +734,129 @@ function PlacementEditor({
         onChange={(event) => setField("published", event.target.checked)} />Publié dans la galerie</label>
       <SaveButton isDirty={isDirty} isSaving={isSaving} onClick={savePlacement} className="min-h-11" />
     </div>
+  );
+}
+
+type CapacityData = Awaited<ReturnType<typeof getPhotoStorageCapacity>>;
+
+function PhotoStorageCapacityPanel({
+  capacity,
+  unavailable,
+  onRefresh,
+}: {
+  capacity: CapacityData | undefined;
+  unavailable: boolean;
+  onRefresh: () => void;
+}) {
+  const [busy, setBusy] = useState(false);
+  const level = capacity?.usagePercent === null || capacity?.usagePercent === undefined
+    ? "unknown"
+    : capacity.usagePercent >= 95
+      ? "critical"
+      : capacity.usagePercent >= 85
+        ? "warning"
+        : capacity.usagePercent >= 70
+          ? "info"
+          : "normal";
+
+  async function cleanupOrphans() {
+    if (!capacity?.orphanCount || !confirmDelete(`${capacity.orphanCount} variante(s) inutilisée(s) depuis plus de 24 h`)) return;
+    setBusy(true);
+    try {
+      const result = await cleanupOrphanPhotoVariants();
+      toast.success(`${result.removed} variante(s) orpheline(s) supprimée(s).`);
+      onRefresh();
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Nettoyage des variantes impossible.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function retryCleanup() {
+    setBusy(true);
+    try {
+      const result = await retryPhotoStorageCleanup();
+      toast.success(`${result.completed} nettoyage(s) terminé(s) ; ${result.pending} en attente.`);
+      onRefresh();
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Reprise du nettoyage impossible.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  const message = level === "critical"
+    ? "Alerte critique : le stockage photo a atteint 95 % de la limite configurée. Supprimez d’anciennes photos, nettoyez les variantes inutilisées/orphelines ou augmentez la capacité Supabase."
+    : level === "warning"
+      ? "Avertissement important : le stockage photo a atteint 85 %. Vous pouvez supprimer d’anciennes photos, nettoyer les variantes inutilisées/orphelines ou augmenter la capacité Supabase."
+      : level === "info"
+        ? "Information : le stockage photo a atteint 70 % de la limite configurée. Pensez à contrôler les photos anciennes et les variantes inutilisées."
+        : null;
+
+  return (
+    <section className="space-y-3 border border-border bg-surface p-4 sm:p-6" aria-labelledby="photo-storage-capacity-title">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h2 id="photo-storage-capacity-title" className="font-display text-2xl italic text-primary">Stockage des photos</h2>
+          <p className="text-sm text-muted-foreground">Utilisation réelle de tous les buckets du projet ; le détail du bucket photos est indiqué séparément.</p>
+        </div>
+        <button type="button" onClick={onRefresh} className="min-h-11 border border-border px-3 py-2 text-sm">Actualiser</button>
+      </div>
+      {unavailable ? (
+        <p role="status" className="text-sm text-muted-foreground">
+          Le suivi sera disponible après l’application de la migration Photos 00005 et une session admin aal2.
+        </p>
+      ) : capacity ? (
+        <>
+          {message && <p role={level === "critical" ? "alert" : "status"} className="text-sm">{message}</p>}
+          <dl className="grid gap-3 text-sm sm:grid-cols-2 lg:grid-cols-3">
+            <div><dt className="text-muted-foreground">Utilisé</dt><dd className="font-semibold">{formatStorageBytes(capacity.usedBytes)}</dd></div>
+            <div><dt className="text-muted-foreground">Bucket photos</dt><dd className="font-semibold">{formatStorageBytes(capacity.photoBucketBytes)} · {capacity.photoBucketObjectCount} fichiers</dd></div>
+            <div><dt className="text-muted-foreground">Limite configurée</dt><dd className="font-semibold">{capacity.limitBytes === null ? "À configurer" : formatStorageBytes(capacity.limitBytes)}</dd></div>
+            <div><dt className="text-muted-foreground">Restant</dt><dd className="font-semibold">{capacity.remainingBytes === null ? "À configurer" : formatStorageBytes(capacity.remainingBytes)}</dd></div>
+            <div><dt className="text-muted-foreground">Taux utilisé</dt><dd className="font-semibold">{capacity.usagePercent === null ? "Limite à configurer" : `${capacity.usagePercent.toFixed(1)} %`}</dd></div>
+            <div><dt className="text-muted-foreground">Moyenne des variantes d’une photo complète</dt><dd className="font-semibold">{formatStorageBytes(capacity.averagePhotoBytes)}</dd></div>
+            <div><dt className="text-muted-foreground">Photos supplémentaires estimées</dt><dd className="font-semibold">{capacity.estimatedAdditionalPhotos === null ? "Indisponible" : `≈ ${capacity.estimatedAdditionalPhotos}`}</dd></div>
+          </dl>
+          {capacity.usagePercent !== null && (
+            <div
+              className="h-3 overflow-hidden rounded bg-muted"
+              role="progressbar"
+              aria-label="Capacité de stockage photo utilisée"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={Math.min(100, Math.max(0, capacity.usagePercent))}
+            >
+              <div className={`h-full ${level === "critical" ? "bg-destructive" : level === "warning" ? "bg-amber-500" : "bg-primary"}`}
+                style={{ width: `${Math.min(100, Math.max(0, capacity.usagePercent))}%` }} />
+            </div>
+          )}
+          {capacity.usagePercent === null && <p className="text-sm">Configurez PHOTOS_STORAGE_LIMIT_BYTES côté serveur pour afficher le taux et les estimations.</p>}
+          {capacity.configurationError && <p role="status" className="text-sm">{capacity.configurationError}</p>}
+          {capacity.criticalUploadMode === "block" && level === "critical" && (
+            <p className="text-sm font-medium">Mode configuré : empêcher un nouvel envoi si ses variantes feraient dépasser la limite.</p>
+          )}
+          {capacity.missingVariantCount > 0 && <p role="alert" className="text-sm">{capacity.missingVariantCount} variante(s) référencée(s) en base manque(nt) dans Storage ; vérifiez avant toute suppression.</p>}
+          {capacity.pendingCleanupCount > 0 && (
+            <button type="button" disabled={busy} onClick={() => void retryCleanup()}
+              className="min-h-11 border border-border px-3 py-2 text-sm disabled:opacity-50">
+              Reprendre le nettoyage de {capacity.pendingCleanupCount} photo(s)
+            </button>
+          )}
+          {capacity.orphanCount > 0 && (
+            <p className="flex flex-wrap items-center gap-3 text-sm">
+              <span>{capacity.orphanCount} variante(s) orpheline(s) après le délai de sécurité, {formatStorageBytes(capacity.orphanBytes)}.</span>
+              <button type="button" disabled={busy} onClick={() => void cleanupOrphans()}
+                className="min-h-11 border border-border px-3 py-2 disabled:opacity-50">
+                Nettoyer les variantes orphelines
+              </button>
+            </p>
+          )}
+        </>
+      ) : (
+        <p role="status" className="text-sm text-muted-foreground">Chargement de la capacité Storage…</p>
+      )}
+    </section>
   );
 }

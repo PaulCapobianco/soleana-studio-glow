@@ -1,3 +1,4 @@
+// @vitest-environment jsdom
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -12,13 +13,25 @@ const state = vi.hoisted(() => ({
   deletes: [] as string[],
   uploads: [] as string[],
   removes: [] as string[][],
+  rpcCalls: [] as string[],
   failVariants: false,
   existingPhoto: false,
+  capacityBlocked: false,
 }));
 
-vi.mock("sonner", () => ({ toast: { success: vi.fn(), error: vi.fn() } }));
+vi.mock("sonner", () => ({ toast: { success: vi.fn(), error: vi.fn(), warning: vi.fn() } }));
 vi.mock("@/lib/admin/use-dirty-set", () => ({ useDirtySet: () => () => {} }));
-vi.mock("@/lib/photo-storage", () => ({ generateBrowserPhotoVariants: vi.fn() }));
+vi.mock("@/lib/photo-storage", () => ({ generateBrowserPhotoVariants: vi.fn(), validatePhotoSource: vi.fn() }));
+vi.mock("@/lib/photos/storage-admin.functions", () => ({
+  getPhotoStorageCapacity: vi.fn(async () => ({
+    usedBytes: 1_000, objectCount: 6, limitBytes: 2_000, remainingBytes: 1_000,
+    usagePercent: 50, projectedPercent: 51, averagePhotoBytes: 500, completePhotoCount: 2,
+    estimatedAdditionalPhotos: 2, orphanCount: 0, orphanBytes: 0, missingVariantCount: 0,
+    pendingCleanupCount: 0, criticalUploadMode: "warn", canUpload: !state.capacityBlocked,
+  })),
+  cleanupOrphanPhotoVariants: vi.fn(async () => ({ removed: 0 })),
+  retryPhotoStorageCleanup: vi.fn(async () => ({ completed: 0, pending: 0 })),
+}));
 vi.mock("@/lib/admin/confirm-delete", () => ({ confirmDelete: vi.fn() }));
 vi.mock("@/integrations/supabase/client", () => ({
   supabase: {
@@ -28,6 +41,12 @@ vi.mock("@/integrations/supabase/client", () => ({
         remove: async (paths: string[]) => { state.removes.push(paths); return { error: null }; },
         getPublicUrl: (path: string) => ({ data: { publicUrl: `https://images.example/photos/${path}` } }),
       }),
+    },
+    rpc: async (name: string) => {
+      state.rpcCalls.push(name);
+      return name === "admin_delete_photo"
+        ? { data: { cleanup_job_id: "cleanup-1", object_paths: ["galleries/portrait/abc/400.avif", "galleries/portrait/abc/400.webp"] }, error: null }
+        : { data: null, error: null };
     },
     from: (table: string) => ({
       select: () => {
@@ -75,14 +94,17 @@ async function fillUpload() {
   fireEvent.submit(screen.getByRole("button", { name: "Ajouter à la galerie" }).closest("form")!);
 }
 
-beforeEach(() => {
+beforeEach(async () => {
   vi.clearAllMocks();
   state.inserts = [];
   state.deletes = [];
   state.uploads = [];
   state.removes = [];
+  state.rpcCalls = [];
   state.failVariants = false;
   state.existingPhoto = false;
+  state.capacityBlocked = false;
+  vi.mocked((await import("@/lib/photo-storage")).validatePhotoSource).mockResolvedValue("jpeg");
   vi.mocked(confirmDelete).mockReturnValue(true);
   vi.mocked(generateBrowserPhotoVariants).mockImplementation(async (_, sourceKey) => [
     { blob: new Blob(["avif"], { type: "image/avif" }), format: "avif", width: 400, height: 600, byte_size: 4, sha256: "a".repeat(64), storage_path: `${sourceKey}/aaaaaaaa-400.avif` },
@@ -113,6 +135,15 @@ describe("Administration Photos sans réseau réel", () => {
     expect(state.deletes).toEqual(["photo_placements", "photo_variants", "photos"]);
   });
 
+  it("bloque l'envoi avant Storage si le mode capacité configuré refuse le dépassement", async () => {
+    state.capacityBlocked = true;
+    renderAdmin();
+    await waitFor(() => expect((screen.getByRole("button", { name: "Ajouter à la galerie" }) as HTMLButtonElement).disabled).toBe(false));
+    await fillUpload();
+    await waitFor(() => expect(toast.error).toHaveBeenCalledWith(expect.stringContaining("dépassé")));
+    expect(state.uploads).toHaveLength(0);
+  });
+
   it("demande confirmation avant de supprimer fichiers et lignes", async () => {
     state.existingPhoto = true;
     renderAdmin();
@@ -123,7 +154,7 @@ describe("Administration Photos sans réseau réel", () => {
     expect(state.deletes).toHaveLength(0);
     await userEvent.setup().click(button);
     await waitFor(() => expect(toast.success).toHaveBeenCalled());
-    expect(state.deletes).toEqual(["photo_placements", "photo_variants", "photos"]);
+    expect(state.rpcCalls).toEqual(["admin_delete_photo", "admin_finish_photo_cleanup"]);
     expect(state.removes).toEqual([["galleries/portrait/abc/400.avif", "galleries/portrait/abc/400.webp"]]);
   });
 });

@@ -111,23 +111,22 @@ Flux admin analysé (aucune migration ni écriture réseau effectuée durant cet
    l'original. Une modification future doit remplacer les variantes par des clés de contenu puis
    nettoyer les anciennes après validation de la nouvelle écriture.
 
-Adaptations avant d'activer ce flux :
+Adaptations préparées avant d'activer ce flux :
 
 - Les migrations `00003` et `00004` restent non appliquées ; l'écran désactive déjà l'ajout et la
   suppression tant que les tables requises ne sont pas présentes. Après import des variantes, les
   appliquer selon la procédure documentée et valider RLS avant usage.
-- Le générateur navigateur actuel encode AVIF à qualité 50 via `@jsquash/avif` et WebP via
-  `canvas.toBlob(..., 0.8)`. Ces réglages ne correspondent pas aux réglages locaux AVIF 70/WebP 90.
-  Avant activation admin, choisir et contrôler des réglages navigateur de qualité équivalente, ou
-  centraliser le traitement dans un service temporaire explicitement conçu pour ne jamais conserver
-  les sources. Aucun service de traitement n'est implémenté dans cette étape.
-- Tester sur appareils réels le décodage JPG/HEIC, l'orientation et l'encodage WebP de Safari iOS.
-  La proposition `@jsquash/webp` de secours reste non ajoutée et est décrite dans
+- Le générateur navigateur est désormais calé visuellement sur les réglages de référence avec AVIF
+  WASM 70/effort 4/4:4:4/8 bits et WebP WASM 90/méthode 4. Une comparaison côte à côte distincte
+  des huit cas du lot a contrôlé six photos à 1600 px ; les versions d'encodeurs diffèrent, donc
+  l'égalité numérique ou binaire n'est pas promise. Les détails figurent dans
+  [admin-storage-operations.md](admin-storage-operations.md).
+- Safari utilise les codecs WASM pour AVIF et WebP, et son décodeur natif puis `Image.decode()` pour
+  HEIC. Aucun essai physique iPhone n'a encore été réalisé ; les limites sont décrites dans
   [safari-ios.md](safari-ios.md).
-- Les suppressions compensatoires actuelles nettoient une erreur remontée par l'opération, mais une
-  coupure réseau ambiguë peut laisser un objet orphelin. Ajouter une reprise/réconciliation basée
-  sur les clés de contenu avant un usage admin large ; ne jamais résoudre ce cas en conservant
-  l'original dans Storage.
+- La suppression prépare désormais un outbox SQL : lignes de base retirées atomiquement avec leurs
+  chemins, suppression Storage via API, puis reprise de la tâche en cas d'échec. La migration
+  00005 reste à appliquer. Voir [admin-storage-operations.md](admin-storage-operations.md).
 
 Les simulations locales 4 photos (24 variantes, 4 emplacements, 4,27 Mo) et 170 photos
 (1 020 variantes, 190 emplacements, 152,28 Mo) n'ont effectué aucun appel réseau ni écriture en

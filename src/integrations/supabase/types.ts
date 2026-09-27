@@ -481,6 +481,22 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      admin_photo_storage_status: {
+        Args: Record<PropertyKey, never>;
+        Returns: Json;
+      };
+      admin_delete_photo: {
+        Args: { p_legacy_path?: string | null; p_photo_id: string };
+        Returns: Json;
+      };
+      admin_pending_photo_cleanup_jobs: {
+        Args: Record<PropertyKey, never>;
+        Returns: { job_id: string; object_paths: string[] }[];
+      };
+      admin_finish_photo_cleanup: {
+        Args: { p_error?: string | null; p_job_id: string };
+        Returns: undefined;
+      };
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"];

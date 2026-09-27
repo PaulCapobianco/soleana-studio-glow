@@ -18,7 +18,7 @@
 // placements du manifeste déjà importés).
 import { appendFile, mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { VARIANTS_DIR, readManifest } from "./lib.mjs";
+import { VARIANTS_DIR, readManifest, sha256 } from "./lib.mjs";
 
 const args = process.argv.slice(2);
 const flag = (name) => args.includes(name);
@@ -47,7 +47,12 @@ if (manifest.version !== 3 || manifest.variant_formats?.join(",") !== "avif,webp
   throw new Error("Manifeste AVIF/WebP manquant : régénérer le manifeste et les variantes.");
 }
 const variantsBySource = new Map();
+const storagePaths = new Map();
 for (const v of variants) {
+  if (storagePaths.has(v.storage_path)) {
+    throw new Error(`Clé Storage en double ${v.storage_path} (${storagePaths.get(v.storage_path)} / ${v.source_key}).`);
+  }
+  storagePaths.set(v.storage_path, v.source_key);
   if (!variantsBySource.has(v.source_key)) variantsBySource.set(v.source_key, []);
   variantsBySource.get(v.source_key).push(v);
 }
@@ -189,11 +194,20 @@ for (const [n, photo] of selected.entries()) {
     });
     if (error) {
       if (/already exists|Duplicate|409/i.test(`${error.message} ${error.statusCode ?? ""}`)) {
+        const { data: existing, error: downloadError } = await db.storage.from(BUCKET).download(v.storage_path);
+        if (downloadError || !existing) {
+          throw new Error(`Objet déjà présent, mais illisible pour vérifier sa reprise : ${v.storage_path}`);
+        }
+        const existingBytes = Buffer.from(await existing.arrayBuffer());
+        if (existingBytes.length !== v.byte_size || sha256(existingBytes) !== v.sha256) {
+          throw new Error(`Objet déjà présent avec un contenu différent ; aucun écrasement effectué : ${v.storage_path}`);
+        }
         await journal({
           op: "upload",
           path: v.storage_path,
           created: false,
-          skipped: "existe déjà",
+          verified: true,
+          skipped: "existe déjà avec taille et SHA-256 concordants",
         });
         continue;
       }
@@ -205,16 +219,17 @@ for (const [n, photo] of selected.entries()) {
 
   // 2) Photo (reprise possible grâce à source_key).
   let photoRow = must(
-    await db.from("photos").select("id").eq("source_key", photo.source_key).maybeSingle(),
+    await db.from("photos").select("id, category_id, alt_text, image_url").eq("source_key", photo.source_key).maybeSingle(),
     "lecture photo",
   );
+  const largest = own.filter((v) => v.format === "webp").reduce((a, b) => (b.width > a.width ? b : a));
+  const expectedImageUrl = publicUrl(largest.storage_path);
   if (!photoRow) {
-    const largest = own.filter((v) => v.format === "webp").reduce((a, b) => (b.width > a.width ? b : a));
     photoRow = must(
       await db
         .from("photos")
         .insert({
-          image_url: publicUrl(largest.storage_path),
+          image_url: expectedImageUrl,
           alt_text: photo.alt_text,
           category_id: categoryId,
           published: true,
@@ -235,6 +250,9 @@ for (const [n, photo] of selected.entries()) {
       created: true,
     });
   } else {
+    if (photoRow.category_id !== categoryId || photoRow.alt_text !== photo.alt_text || photoRow.image_url !== expectedImageUrl) {
+      throw new Error(`Photo déjà présente avec des données divergentes : ${photo.source_key}`);
+    }
     await journal({
       op: "insert_photo",
       id: photoRow.id,
@@ -247,10 +265,16 @@ for (const [n, photo] of selected.entries()) {
   // 3) Variantes.
   for (const v of own) {
     const exists = must(
-      await db.from("photo_variants").select("id").eq("storage_path", v.storage_path).maybeSingle(),
+      await db.from("photo_variants").select("id, photo_id, format, width, height, byte_size, sha256").eq("storage_path", v.storage_path).maybeSingle(),
       "lecture variante",
     );
-    if (exists) continue;
+    if (exists) {
+      if (exists.photo_id !== photoRow.id || exists.format !== v.format || exists.width !== v.width ||
+          exists.height !== v.height || exists.byte_size !== v.byte_size || exists.sha256 !== v.sha256) {
+        throw new Error(`Variante déjà présente avec des données divergentes : ${v.storage_path}`);
+      }
+      continue;
+    }
     const row = must(
       await db
         .from("photo_variants")
@@ -278,12 +302,20 @@ for (const [n, photo] of selected.entries()) {
     const exists = must(
       await db
         .from("photo_placements")
-        .select("id")
+        .select("id, photo_id, seo_page_id, slot, display_order, object_position_x_pct, object_position_y_pct, alt_text_override, published")
         .eq("placement_key", pl.placement_key)
         .maybeSingle(),
       "lecture emplacement",
     );
-    if (exists) continue;
+    if (exists) {
+      if (exists.photo_id !== photoRow.id || exists.seo_page_id !== seoId || exists.slot !== pl.slot ||
+          exists.display_order !== pl.display_order || Number(exists.object_position_x_pct) !== pl.object_position_x_pct ||
+          Number(exists.object_position_y_pct) !== pl.object_position_y_pct || exists.alt_text_override !== pl.alt ||
+          exists.published !== publish) {
+        throw new Error(`Emplacement déjà présent avec des données divergentes : ${pl.placement_key}`);
+      }
+      continue;
+    }
     const row = must(
       await db
         .from("photo_placements")
