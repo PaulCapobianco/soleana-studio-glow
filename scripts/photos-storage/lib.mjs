@@ -92,7 +92,8 @@ export async function readManifest() {
   return JSON.parse(await readFile(MANIFEST_PATH, "utf8"));
 }
 
-/** Clé de stockage d'une variante : galleries/<catégorie>/<id opaque>/<hash8>-<largeur>.webp */
-export const variantPath = (sourceKey, hash8, width) => `${sourceKey}/${hash8}-${width}.webp`;
+/** Clé de stockage immuable d'une variante, versionnée par le contenu. */
+export const variantPath = (sourceKey, hash8, width, format) =>
+  `${sourceKey}/${hash8}-${width}.${format}`;
 
 export const pad = (n, size = 3) => String(n).padStart(size, "0");

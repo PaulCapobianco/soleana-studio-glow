@@ -7,7 +7,7 @@
 //
 // Mode réel (à lancer uniquement par Paul, d'abord sur 3 ou 4 photos) :
 //   export SUPABASE_URL=https://<projet>.supabase.co
-//   export SUPABASE_SERVICE_ROLE_KEY=<clé service_role>      # jamais dans un fichier du dépôt
+//   read -rsp 'Clé service_role : ' SUPABASE_SERVICE_ROLE_KEY; echo; export SUPABASE_SERVICE_ROLE_KEY
 //   node scripts/photos-storage/import-photos.mjs --apply --confirm <projet>.supabase.co --limit 4
 // Le script ne lit aucun fichier .env. Il n'écrase jamais un objet (upsert: false), ne supprime
 // rien, saute ce qui existe déjà (reprise possible) et journalise chaque création dans
@@ -33,15 +33,28 @@ const publishExisting = flag("--publish-existing");
 const limit = option("--limit") ? Number(option("--limit")) : undefined;
 const only = option("--only")?.split(",").filter(Boolean);
 const BUCKET = "photos";
+if (option("--limit") && (!Number.isSafeInteger(limit) || limit < 1)) {
+  throw new Error("--limit doit être un entier positif.");
+}
 
 const manifest = await readManifest();
 const { variants } = JSON.parse(
   await readFile(path.join(VARIANTS_DIR, "variants-index.json"), "utf8"),
 );
+if (manifest.version !== 2 || manifest.variant_formats?.join(",") !== "avif,webp") {
+  throw new Error("Manifeste AVIF/WebP manquant : régénérer le manifeste et les variantes.");
+}
 const variantsBySource = new Map();
 for (const v of variants) {
   if (!variantsBySource.has(v.source_key)) variantsBySource.set(v.source_key, []);
   variantsBySource.get(v.source_key).push(v);
+}
+for (const photo of manifest.photos) {
+  const own = variantsBySource.get(photo.source_key) ?? [];
+  const expected = 2 * (1 + [400, 800].filter((width) => width < photo.width).length);
+  if (own.length !== expected || own.some((v) => !["avif", "webp"].includes(v.format))) {
+    throw new Error(`Variantes incomplètes pour ${photo.source_key} : exécuter verify-variants.mjs.`);
+  }
 }
 
 let selected = manifest.photos;
@@ -129,16 +142,22 @@ if (publishExisting) {
   const keys = manifest.placements.map((p) => p.placement_key);
   for (let i = 0; i < keys.length; i += 100) {
     const chunk = keys.slice(i, i + 100);
+    const unpublished = must(
+      await db.from("photo_placements").select("placement_key").in("placement_key", chunk).eq("published", false),
+      "lecture des emplacements non publiés",
+    );
+    if (unpublished.length === 0) continue;
     const rows = must(
       await db
         .from("photo_placements")
         .update({ published: true, updated_at: new Date().toISOString() })
-        .in("placement_key", chunk)
+        .in("placement_key", unpublished.map((row) => row.placement_key))
+        .eq("published", false)
         .select("placement_key"),
       "publication des emplacements",
     );
     for (const r of rows)
-      await journal({ op: "publish_placement", placement_key: r.placement_key, created: false });
+      await journal({ op: "publish_placement", placement_key: r.placement_key, previous_published: false, updated: true });
   }
   console.log("Emplacements du manifeste publiés.");
   process.exit(0);
@@ -162,7 +181,7 @@ for (const [n, photo] of selected.entries()) {
   for (const v of own) {
     const bytes = await readFile(path.join(VARIANTS_DIR, v.file));
     const { error } = await db.storage.from(BUCKET).upload(v.storage_path, bytes, {
-      contentType: "image/webp",
+      contentType: `image/${v.format}`,
       cacheControl: "31536000",
       upsert: false,
     });
@@ -188,7 +207,7 @@ for (const [n, photo] of selected.entries()) {
     "lecture photo",
   );
   if (!photoRow) {
-    const largest = own.reduce((a, b) => (b.width > a.width ? b : a));
+    const largest = own.filter((v) => v.format === "webp").reduce((a, b) => (b.width > a.width ? b : a));
     photoRow = must(
       await db
         .from("photos")
@@ -236,6 +255,7 @@ for (const [n, photo] of selected.entries()) {
         .insert({
           photo_id: photoRow.id,
           storage_path: v.storage_path,
+          format: v.format,
           width: v.width,
           height: v.height,
           byte_size: v.byte_size,

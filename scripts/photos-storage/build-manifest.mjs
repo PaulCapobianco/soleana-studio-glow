@@ -44,9 +44,11 @@ for (const gallery of GALLERIES) {
 }
 
 const manifest = {
-  version: 1,
+  version: 2,
   phase: "galleries-seo",
   note: "Généré par scripts/photos-storage/build-manifest.mjs — ne pas éditer à la main.",
+  variant_formats: ["avif", "webp"],
+  target_widths: [400, 800, "native"],
   galleries: GALLERIES.map(({ seo, category, slot, dirs }) => ({
     seo,
     category,

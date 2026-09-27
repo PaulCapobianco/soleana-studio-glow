@@ -9,16 +9,18 @@ pas À propos. Voir aussi `docs/photos-storage-plan.md` (plan général).
 | Élément | Rôle |
 |---|---|
 | `docs/photos-storage/preflight-selects.sql` | Requêtes de vérification en lecture seule (bucket, politiques, tables, comptes). |
-| `supabase/migrations/20260926000003_add_photo_variants_and_placements.sql` | Schéma additif (`photos.source_key`, `photo_variants`, `photo_placements`) avec RLS et politiques aal2. **Non appliquée.** |
+| `supabase/migrations/20260926000003_add_photo_variants_and_placements.sql` | Schéma additif (`photos.source_key`, `photo_variants`, `photo_placements`) avec RLS et politiques aal2. **Non appliquée, inchangée.** |
+| `supabase/migrations/20260926000004_add_avif_photo_variants.sql` | Ajoute le format AVIF à `photo_variants` et autorise deux formats par largeur. **Non appliquée ; à lancer après 000003.** |
 | `docs/photos-storage/manifest-phase1.json` | Manifeste : chaque photo (fichier source, clé opaque, dimensions) et chaque emplacement (galerie, ordre, texte alternatif actuel, cadrage 50/50). Généré par `build-manifest.mjs`. |
-| `scripts/photos-storage/generate-variants.mjs` | Génère 400 px, 800 px et la copie native (jamais d'agrandissement), sans métadonnées, dans `../soleana-originaux/storage-variants/` (hors dépôt). |
+| `scripts/photos-storage/generate-variants.mjs` | Génère AVIF et WebP en 400 px, 800 px et largeur native (sans agrandissement), toujours réencodés sans métadonnées, dans `../soleana-originaux/storage-variants/` (hors dépôt). |
 | `scripts/photos-storage/verify-variants.mjs` | Vérifie dimensions, poids, empreintes, absence d'EXIF/XMP/ICC, clés de stockage. |
 | `scripts/photos-storage/import-photos.mjs` | Import. **Simulation par défaut.** Mode réel : `--apply --confirm <hôte>`. |
 | `scripts/photos-storage/rollback-import.mjs` | Retour arrière à partir du journal (supprime seulement ce que le lot a créé). |
 | `src/lib/photo-storage.ts` | Interrupteur `STORAGE_GALLERIES_ENABLED`, helper unique `publicImageUrl()`, lecture des emplacements. |
 
-Variantes générées : 510 fichiers, 28,1 Mo (400 px : 3,9 Mo ; 800 px : 9,7 Mo ; natif : 14,4 Mo).
-Clés de stockage : `galleries/<catégorie>/<id opaque de 12 caractères>/<hash8>-<largeur>.webp`
+Variantes générées : **1 020 fichiers, 43,7 Mo** (AVIF : 16,0 Mo ; WebP : 27,7 Mo).
+La vérification a contrôlé dimensions, poids, SHA-256 et absence de métadonnées sur chaque fichier.
+Clés de stockage : `galleries/<catégorie>/<id opaque de 12 caractères>/<hash8>-<largeur>.<avif|webp>`
 (aucun nom de client ni de fichier d'origine ; clé versionnée par le contenu, jamais écrasée).
 
 ## Côté site : lecture préparée mais inactive
@@ -28,10 +30,13 @@ Clés de stockage : `galleries/<catégorie>/<id opaque de 12 caractères>/<hash8
 - Activé, le `loader` de `/$slug` lit les emplacements publiés (rendu serveur conservé). Une galerie
   n'est remplacée que si elle est **complète** (même nombre de photos que la version locale) ; sinon
   ou en cas d'erreur, les fichiers locaux restent affichés.
+- Une photo Storage n'est utilisable que si elle possède les variantes AVIF et WebP aux mêmes
+  largeurs. La galerie affiche alors `<picture>` (AVIF, puis WebP) ; les photos locales conservent
+  exactement leurs balises `<img>` actuelles.
 - `VITE_IMAGE_BASE_URL` (ex. `https://images.soleanastudio.fr`) remplace l'hôte des images sans
   toucher aux composants (sous-domaine Cloudflare avec cache devant le bucket).
 
-## Procédure pas à pas : test réel sur 3 ou 4 photos (à faire par Paul)
+## Procédure pas à pas : test réel sur 4 photos (à faire par Paul)
 
 Rien de ceci n'a été exécuté. Chaque étape a un retour arrière.
 
@@ -45,30 +50,41 @@ Rien de ceci n'a été exécuté. Chaque étape a un retour arrière.
    Contrôle : les deux tables existent, `SELECT count(*) FROM pg_policies WHERE tablename IN
    ('photo_variants','photo_placements');` (attendu : 4 sans le bloc aal2, 10 avec).
    *Retour arrière : bloc « Retour arrière » commenté en bas du fichier (tables vides).*
-3. **Régénérer et vérifier les variantes en local** (déjà fait, rejouable) :
+   **Puis appliquer `20260926000004_add_avif_photo_variants.sql`** : contrôle par
+   `SELECT column_name FROM information_schema.columns WHERE table_schema = 'public' AND
+   table_name = 'photo_variants' AND column_name = 'format';` (une ligne attendue).
+3. **Régénérer et vérifier les variantes en local** (déjà fait, rejouable ; environ 10 minutes) :
    `node scripts/photos-storage/generate-variants.mjs && node scripts/photos-storage/verify-variants.mjs`.
    *Retour arrière : supprimer le dossier hors dépôt.*
-4. **Simulation** : `node scripts/photos-storage/import-photos.mjs --limit 4` → relire les envois et
-   insertions prévus. Un journal prévisionnel est écrit hors dépôt. *Aucun effet.*
+4. **Simulations** : `node scripts/photos-storage/import-photos.mjs --limit 4`, puis
+   `node scripts/photos-storage/import-photos.mjs` → relire les envois et insertions prévus.
+   Résultats locaux : 4 photos / 24 variantes / 4 emplacements (1,84 Mo), puis 170 photos /
+   1 020 variantes / 190 emplacements (43,70 Mo). Un journal prévisionnel est écrit hors dépôt.
+   *Aucun appel réseau, aucun effet en base.*
 5. **Import réel de 4 photos** (les emplacements restent non publiés, donc invisibles du public) :
    ```
    export SUPABASE_URL=https://<projet>.supabase.co
-   export SUPABASE_SERVICE_ROLE_KEY=<clé service_role>     # dans le terminal seulement
+   read -rsp 'Clé service_role : ' SUPABASE_SERVICE_ROLE_KEY; echo
+   export SUPABASE_SERVICE_ROLE_KEY
    node scripts/photos-storage/import-photos.mjs --apply --confirm <projet>.supabase.co --limit 4
+   unset SUPABASE_SERVICE_ROLE_KEY
    ```
    Le script vérifie l'hôte, n'écrase rien, saute ce qui existe et écrit un journal
    `import-<date>.jsonl` dans `../soleana-originaux/storage-variants/journals/`.
+   Désactiver l'historique du shell le temps de saisir les commandes si le shell les enregistre ;
+   `read -s` ne montre jamais la valeur et elle n'est écrite dans aucun fichier.
 6. **Vérifier** : (a) `SELECT count(*)` sur `photos` (avec `source_key IS NOT NULL`),
-   `photo_variants`, `photo_placements` (attendu : 4, 12, 4) ; (b) ouvrir dans un navigateur
+   `photo_variants`, `photo_placements` (attendu : 4, 24, 4) ; (b) ouvrir dans un navigateur
    l'URL publique d'une variante (`https://<projet>.supabase.co/storage/v1/object/public/photos/<storage_path>`)
-   et vérifier `content-type: image/webp` et l'en-tête de cache ; (c) avec la clé publique (anon),
+   et vérifier `content-type: image/avif` puis `image/webp` et l'en-tête de cache ; (c) avec la clé publique (anon),
    `photo_placements` doit renvoyer une liste vide (non publiés) ; (d) l'écran admin « Photos » liste
    les 4 photos avec leur texte alternatif.
 7. **Retour arrière du test** si besoin : `node scripts/photos-storage/rollback-import.mjs --journal
    <journal>` (simulation), puis avec `--apply --confirm <hôte>`. Il supprime seulement les lignes et
    objets créés par ce lot.
 8. **Import complet** (une fois le test validé) : même commande sans `--limit` ; puis publier les
-   emplacements : `... --apply --confirm <hôte> --publish-existing`.
+   emplacements : `node scripts/photos-storage/import-photos.mjs --apply --confirm <hôte> --publish-existing`.
+   Ce dernier passage écrit aussi un journal permettant d'annuler la publication.
 9. **Activation côté site** : construire avec `VITE_GALLERIES_FROM_STORAGE=true`, vérifier les 4 pages
    (ordre, texte alternatif, cadrage, chargement des images à 360, 768 et 1280 px), puis déployer.
    *Retour arrière immédiat : redéployer sans la variable (les fichiers locaux sont toujours dans le code).*

@@ -26,7 +26,7 @@ page, générique, pilotée par les données.
    `seo_pages` ou une route statique existante doit être bloquée par une liste de réserve.
 4. **Contrôle de lisibilité (WCAG AA)** : **bloquant**, avec proposition automatique de la nuance
    conforme la plus proche (même teinte, luminosité ajustée).
-5. **Photos** : redimensionnement (400/800/1600) et conversion WebP **dans le navigateur**, avant
+5. **Photos** : redimensionnement (400/800/1600) et conversion AVIF + WebP **dans le navigateur**, avant
    l'envoi. Pas de génération de variantes côté serveur. Les métadonnées (EXIF) sont supprimées par
    le réencodage — **à vérifier techniquement** (l'orientation EXIF doit être appliquée avant
    suppression, sous peine de photos pivotées).
@@ -39,7 +39,8 @@ page, générique, pilotée par les données.
    obsolète et ne doit pas être utilisée comme référence.
 9. **Import Noël 2026** : script one-shot écrit par Claude, exécuté par Paul (jamais par Claude, et
    jamais contre la production sans vérification préalable en lecture seule).
-10. **Amendement de `20260926000003`** avant application : validé (voir §5).
+10. **`20260926000003` reste inchangée** : la table `events` n'existe pas encore. Le module
+    Événements ajoutera ses colonnes et politiques à `photo_placements` dans sa propre migration.
 11. **Pas de génération de variantes côté serveur** : confirmé, cohérent avec la décision 5.
 
 ---
@@ -213,7 +214,12 @@ CREATE TRIGGER events_single_active_teaser BEFORE INSERT OR UPDATE ON public.eve
 des deux dates de teaser est vide, l'admin doit l'imposer comme obligatoire dès que `teaser_enabled
 = true`, sans quoi un teaser « toujours actif » bloquerait tout autre teaser indéfiniment.
 
-### 1.4 Extension de `photo_placements` (avant application de `000003`)
+### 1.4 Extension de `photo_placements` (dans la migration du module Événements)
+
+Appliquer d'abord `20260926000003` et `20260926000004` telles quelles. Le SQL suivant est une
+ébauche pour la future migration du module, à exécuter seulement après la création de `events` et
+`event_sessions`. La migration finale devra identifier le nom réel de la contrainte XOR existante,
+adapter la politique de lecture publique et vérifier la RLS après l'ajout des colonnes.
 
 ```sql
 ALTER TABLE public.photo_placements
@@ -257,8 +263,8 @@ source hors-dépôt à référencer. `source_key` reste `NULL` pour ces lignes �
 
 ### 1.5 `photo_variants` : qui les insère ?
 
-Avec la génération dans le navigateur, c'est l'admin (client authentifié) qui envoie les 3 tailles
-et insère les 3 lignes `photo_variants`, pas `service_role` via un script hors-ligne. Les politiques
+Avec la génération dans le navigateur, c'est l'admin (client authentifié) qui envoie AVIF et WebP
+pour chaque taille disponible et insère jusqu'à 6 lignes `photo_variants`, pas `service_role` via un script hors-ligne. Les politiques
 RLS existantes de `photo_variants` (« Admin manage photo variants », `FOR ALL TO authenticated USING
 has_role admin`) couvrent déjà ce cas sans modification.
 
@@ -376,20 +382,21 @@ Tokens dérivés (généralisation de `NoelCampaign.module.css` L7-14, qui codai
 Décision : pas de génération de variantes côté serveur, ni de script hors-ligne pour les photos
 d'événements. L'admin envoie un fichier ; le navigateur produit les 3 tailles (400/800/1600, largeur
 maximale — pas d'agrandissement au-delà de l'image source, comme `generate-variants.mjs` sur
-`photos-storage`) et les convertit en WebP avant l'envoi.
+`photos-storage`) et les convertit en AVIF et WebP avant l'envoi.
 
 **Mécanisme proposé** (nouveau, à écrire — `src/lib/admin/image-variants.ts`) :
 1. `createImageBitmap(file, { imageOrientation: "from-image" })` — applique l'orientation EXIF
    avant tout dessin, pour ne pas livrer de photo pivotée une fois les métadonnées supprimées.
 2. Pour chaque largeur cible ≤ largeur source : dessiner sur un `OffscreenCanvas` (ou `<canvas>`) à
-   cette largeur, `canvas.convertToBlob({ type: "image/webp", quality: 0.8 })`.
+   cette largeur, puis exporter en `image/avif` et `image/webp` (avec vérification du type réellement
+   renvoyé par le navigateur ; si AVIF est indisponible, signaler le blocage clairement).
 3. Le blob obtenu ne contient que les pixels réencodés : **aucune métadonnée EXIF/XMP/ICC n'est
    recopiée par le canvas**, donc la suppression est effectivement garantie par le réencodage — la
    vérification demandée porte surtout sur l'étape 1 (l'orientation doit être correcte malgré tout,
    sous peine de photos pivotées sans métadonnée pour le signaler). **À tester réellement sur un
    échantillon de photos avec orientation EXIF non neutre avant de considérer ce point acquis.**
-4. Envoi des 3 blobs vers le bucket `photos` (chemins distincts par largeur), puis insertion des 3
-   lignes `photo_variants` (largeur, hauteur, poids, `sha256` calculé côté client via `SubtleCrypto`)
+4. Envoi des 6 blobs au plus vers le bucket `photos` (chemins distincts par largeur et format), puis
+   insertion des lignes `photo_variants` (format, largeur, hauteur, poids, `sha256` calculé côté client via `SubtleCrypto`)
    et d'une ligne `photo_placements`.
 
 Limite connue : le traitement dans le navigateur dépend de l'appareil de la photographe (mobile
@@ -406,8 +413,8 @@ créée — attend la fin du chantier vitesse mobile et des pages SEO, comme dem
 
 | # | Étape | Qui applique/teste |
 |---|---|---|
-| 1 | Migration fondation photos (`000003` amendée §1.4) | Paul applique |
-| 2 | Migration `events` + tables filles + triggers (§1.2, §1.3) + RLS + aal2 | Paul applique |
+| 1 | Migrations fondation photos (`000003` inchangée, puis `000004` AVIF) | Paul applique |
+| 2 | Migration `events` + tables filles + extension de `photo_placements` (§1.4) + triggers + RLS + aal2 | Paul applique |
 | 3 | Admin : liste, création, duplication, textes/dates/formules/FAQ | Paul teste avec son compte |
 | 4 | Admin : photos (redimensionnement navigateur, rattachement, ordre) | Paul teste avec de vraies photos |
 | 5 | Admin : couleurs (grille, presets, sélecteur, contrôle WCAG bloquant) + tests | Paul valide visuellement les teintes proposées |
@@ -442,6 +449,5 @@ Ces points n'ont pas encore de réponse et devront être tranchés avant l'impl�
    créées, pour éviter une collision future ?
 2. Les 5 paires de teintes par ambiance (§4) sont des propositions : à valider visuellement avant
    de les figer dans le code.
-3. Le seuil de qualité WebP (proposé à 0,8) et les 3 largeurs (400/800/1600) sont repris tels quels
-   de `generate-variants.mjs` sur `photos-storage` — à confirmer qu'ils conviennent aussi aux photos
+3. Les qualités AVIF/WebP et les 3 largeurs (400/800/1600) sont à confirmer pour les photos
    d'événements (mêmes usages : galerie, hero).
