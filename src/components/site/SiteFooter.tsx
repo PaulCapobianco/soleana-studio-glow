@@ -4,8 +4,11 @@ import { Instagram, Mail, MessageCircle } from "lucide-react";
 import { TikTokIcon } from "@/components/site/TikTokIcon";
 import { useSiteSettings } from "@/lib/site-settings";
 import logoSoleana180 from "@/assets/logo-soleana-180.webp";
+import logoSoleana180Avif from "@/assets/logo-soleana-180.avif";
 import logoSoleana280 from "@/assets/logo-soleana-280.webp";
+import logoSoleana280Avif from "@/assets/logo-soleana-280.avif";
 import logoSoleana from "@/assets/logo-soleana.webp";
+import logoSoleanaAvif from "@/assets/logo-soleana.avif";
 
 export function SiteFooter() {
   const settings = useSiteSettings();
@@ -15,15 +18,22 @@ export function SiteFooter() {
         <div className="mb-14 grid grid-cols-1 gap-12 sm:grid-cols-2 xl:grid-cols-12 xl:gap-12">
           <div className="flex flex-col items-center space-y-6 text-center sm:col-span-2 xl:col-span-5 xl:items-center xl:text-center">
             <Link to="/" className="inline-flex items-center" aria-label="Soleana Studio — accueil">
-              <img
-                src={logoSoleana280}
-                srcSet={`${logoSoleana180} 180w, ${logoSoleana280} 280w, ${logoSoleana} 404w`}
-                sizes="80px"
-                alt="Soleana Studio"
-                width={180}
-                height={180}
-                className="h-auto w-[72px] object-contain sm:w-[76px] lg:w-[80px]"
-              />
+              <picture>
+                <source
+                  type="image/avif"
+                  srcSet={`${logoSoleana180Avif} 180w, ${logoSoleana280Avif} 280w, ${logoSoleanaAvif} 404w`}
+                  sizes="80px"
+                />
+                <img
+                  src={logoSoleana280}
+                  srcSet={`${logoSoleana180} 180w, ${logoSoleana280} 280w, ${logoSoleana} 404w`}
+                  sizes="80px"
+                  alt="Soleana Studio"
+                  width={180}
+                  height={180}
+                  className="h-auto w-[72px] object-contain sm:w-[76px] lg:w-[80px]"
+                />
+              </picture>
             </Link>
             <p className="max-w-sm italic leading-relaxed text-white/92">
               {`« ${settings.footerText} »`}

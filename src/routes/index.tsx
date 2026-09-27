@@ -13,6 +13,7 @@ import hero3Avif from "@/assets/accueil/hero_3.avif";
 import hero4 from "@/assets/accueil/hero_4.webp";
 import hero4Avif from "@/assets/accueil/hero_4.avif";
 import logoSoleana from "@/assets/logo-soleana.webp";
+import logoSoleanaAvif from "@/assets/logo-soleana.avif";
 import catGrossesse from "@/assets/portfolio/grossesse.webp";
 import catGrossesseAvif from "@/assets/portfolio/grossesse.avif";
 import catGrossesseSm from "@/assets/portfolio/grossesse-350.webp";
@@ -56,7 +57,9 @@ import catPortraitXlAvif from "@/assets/portfolio/portrait-1200.avif";
 import aboutPortrait from "@/assets/accueil/anais_1.webp";
 import aboutPortraitAvif from "@/assets/accueil/anais_1.avif";
 import logoSoleana180 from "@/assets/logo-soleana-180.webp";
+import logoSoleana180Avif from "@/assets/logo-soleana-180.avif";
 import logoSoleana280 from "@/assets/logo-soleana-280.webp";
+import logoSoleana280Avif from "@/assets/logo-soleana-280.avif";
 import type { Database } from "@/integrations/supabase/types";
 import { isGoogleReviewUrl } from "@/lib/google-review-url";
 import { absoluteUrl, buildPageSeo } from "@/lib/seo";
@@ -118,7 +121,13 @@ export const Route = createFileRoute("/")({
       meta: [...seo.meta, { property: "og:image", content: absoluteUrl(hero1) }],
       links: [
         ...seo.links,
-        { rel: "preload", as: "image", href: logoSoleana280, fetchPriority: "high" as const },
+        {
+          rel: "preload",
+          as: "image",
+          href: logoSoleana280Avif,
+          type: "image/avif",
+          fetchPriority: "high" as const,
+        },
         {
           rel: "preload",
           as: "image",
@@ -304,33 +313,47 @@ function Home() {
           }`}
           aria-hidden={scrolled}
         >
-          <img
-            src={logoSoleana280}
-            srcSet={`${logoSoleana180} 180w, ${logoSoleana280} 280w, ${logoSoleana} 404w`}
-            sizes="(min-width: 1280px) 350px, 280px"
-            alt="Soleana Studio"
-            width={360}
-            height={180}
-            className="w-[260px] max-w-[24vw] h-auto object-contain drop-shadow-[0_14px_24px_rgba(0,0,0,0.22)] xl:w-[350px] xl:max-w-[35vw]"
-            loading="eager"
-            fetchPriority="high"
-            decoding="async"
-          />
-        </div>
-        <div className="relative z-10 flex min-h-[100svh] flex-col items-center justify-center px-6 py-24 text-center lg:pt-28 xl:pt-24">
-          <div className="mb-8 flex justify-center xl:hidden">
+          <picture>
+            <source
+              type="image/avif"
+              srcSet={`${logoSoleana180Avif} 180w, ${logoSoleana280Avif} 280w, ${logoSoleanaAvif} 404w`}
+              sizes="(min-width: 1280px) 350px, 280px"
+            />
             <img
               src={logoSoleana280}
               srcSet={`${logoSoleana180} 180w, ${logoSoleana280} 280w, ${logoSoleana} 404w`}
-              sizes="(max-width: 1279px) 280px, 350px"
+              sizes="(min-width: 1280px) 350px, 280px"
               alt="Soleana Studio"
-              width={240}
-              height={120}
-              className="w-[clamp(180px,56vw,280px)] lg:w-[220px] h-auto object-contain drop-shadow-[0_14px_24px_rgba(0,0,0,0.22)]"
+              width={360}
+              height={180}
+              className="w-[260px] max-w-[24vw] h-auto object-contain drop-shadow-[0_14px_24px_rgba(0,0,0,0.22)] xl:w-[350px] xl:max-w-[35vw]"
               loading="eager"
               fetchPriority="high"
               decoding="async"
             />
+          </picture>
+        </div>
+        <div className="relative z-10 flex min-h-[100svh] flex-col items-center justify-center px-6 py-24 text-center lg:pt-28 xl:pt-24">
+          <div className="mb-8 flex justify-center xl:hidden">
+            <picture>
+              <source
+                type="image/avif"
+                srcSet={`${logoSoleana180Avif} 180w, ${logoSoleana280Avif} 280w, ${logoSoleanaAvif} 404w`}
+                sizes="(max-width: 1279px) 280px, 350px"
+              />
+              <img
+                src={logoSoleana280}
+                srcSet={`${logoSoleana180} 180w, ${logoSoleana280} 280w, ${logoSoleana} 404w`}
+                sizes="(max-width: 1279px) 280px, 350px"
+                alt="Soleana Studio"
+                width={240}
+                height={120}
+                className="w-[clamp(180px,56vw,280px)] lg:w-[220px] h-auto object-contain drop-shadow-[0_14px_24px_rgba(0,0,0,0.22)]"
+                loading="eager"
+                fetchPriority="high"
+                decoding="async"
+              />
+            </picture>
           </div>
           <h1
             className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl text-white italic leading-[1.05] mb-8 sm:mb-10 max-w-5xl animate-slide-up"
