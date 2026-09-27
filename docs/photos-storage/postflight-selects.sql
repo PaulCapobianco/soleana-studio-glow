@@ -32,6 +32,27 @@ HAVING count(*) <> 2 OR count(*) FILTER (WHERE format = 'avif') <> 1
    OR count(*) FILTER (WHERE format = 'webp') <> 1;
 -- Dernière requête : zéro ligne attendue.
 
+-- 2a. Cible du lot : 170 photos sources, 680 variantes par format, 340 par largeur.
+-- Adapter les égalités uniquement si une source ne permet pas une taille cible sans agrandissement.
+SELECT format, count(*) AS variantes
+FROM public.photo_variants v
+JOIN public.photos p ON p.id = v.photo_id
+WHERE p.source_key IS NOT NULL
+GROUP BY format ORDER BY format;
+
+SELECT width, count(*) AS variantes
+FROM public.photo_variants v
+JOIN public.photos p ON p.id = v.photo_id
+WHERE p.source_key IS NOT NULL
+GROUP BY width ORDER BY width;
+
+-- Avant publication, toutes les photos importées doivent rester brouillons sans catégorie legacy.
+SELECT id, source_key, published, category_id, on_home, on_portfolio
+FROM public.photos
+WHERE source_key IS NOT NULL AND (published IS DISTINCT FROM FALSE OR category_id IS NOT NULL
+   OR on_home IS DISTINCT FROM FALSE OR on_portfolio IS DISTINCT FROM FALSE);
+-- Zéro ligne attendue avant l'étape de publication séparée, et les flags accueil/portfolio restent faux ensuite.
+
 -- 3. Emplacements et publication. Après le test : 4 emplacements non publiés.
 -- Après l'import complet : 190 ; après activation : 190 publiés (hors éditions ultérieures).
 SELECT count(*) AS emplacements,

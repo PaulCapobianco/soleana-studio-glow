@@ -7,26 +7,27 @@
 
 Les fichiers de `../soleana-originaux/` sont des sources locales de génération seulement. Ils ne
 sont jamais uploadés, ni ajoutés à Git ; le site n'assure pas leur sauvegarde. Le rapport privé qui
-relie originaux et clés anonymes reste hors dépôt. Supabase Storage ne reçoit que six variantes web
-par photo : 400, 800 et 1600 px en AVIF et WebP. Chaque variante est calculée directement depuis le
+relie originaux et clés anonymes reste hors dépôt. Supabase Storage ne reçoit que huit variantes web
+par photo : 400, 800, 1200 et 1600 px en AVIF et WebP. Chaque variante est calculée directement depuis le
 fichier source local, sans recadrage, sans agrandissement, en conservant le ratio et l'orientation.
 Si une source est plus petite que la cible, la plus grande variante garde sa largeur native (au plus
-1600 px) plutôt que d'être agrandie ; ses six chemins ne sont donc pas toujours exactement 400/800/1600.
+1600 px) plutôt que d'être agrandie ; ses chemins ne sont donc pas toujours exactement 400/800/1200/1600.
 L'interface ne propose jamais de réutiliser une variante compressée comme source.
 
 ## Génération du panel et qualité
 
-Les réglages de référence hors ligne de `generate-variants.mjs` sont Sharp 0.34.5, libvips 8.17.3,
-AOM 3.13.1 et libwebp 1.6.0 : AVIF qualité 70, effort 4, 4:4:4, 8 bits ; WebP qualité 90,
-effort 4, `smartSubsample: true`, `alphaQuality: 100`.
+Les réglages définitifs hors ligne de `generate-variants.mjs` sont Sharp 0.34.5, libvips 8.17.3,
+AOM 3.13.1 et libwebp 1.6.0 : AVIF qualité 55, effort 4, 4:4:4, 8 bits ; WebP qualité 80,
+effort 4, `smartSubsample: true`, `alphaQuality: 100`. q55 a été validé visuellement par la
+photographe. Chaque fichier est encodé depuis l'original local, jamais depuis un dérivé.
 
 Le navigateur utilise désormais des encodeurs WASM chargés à la demande : `@jsquash/avif` (libavif)
-en qualité 70, vitesse/effort 4, chroma 4:4:4 (`subsample: 3`), 8 bits ; `@jsquash/webp` (libwebp)
-en qualité 90, méthode 4, `use_sharp_yuv: 1` (équivalent pratique visé de `smartSubsample`),
+en qualité 55, vitesse/effort 4, chroma 4:4:4 (`subsample: 3`), 8 bits ; `@jsquash/webp` (libwebp)
+en qualité 80, méthode 4, `use_sharp_yuv: 1` (équivalent pratique visé de `smartSubsample`),
 qualité alpha 100. Les nombres de qualité entre versions ou encodeurs ne sont pas une échelle
 commune. Les paramètres navigateur ont été retenus après comparaison côte à côte de six photos
 représentatives à 1600 px contre les variantes Sharp : portrait/peau, cheveux, tissu, sombre, ciel,
-et scène très détaillée. Les sorties WASM 70/90 étaient visuellement proches des sorties Sharp ;
+et scène très détaillée. Les sorties WASM q55/q80 ont été validées visuellement par la photographe ;
 le contrôle qualité huit cas du lot est décrit dans [quality-review.md](quality-review.md). Ces
 versions de codecs, leurs choix de quantification et leurs profils de conteneur diffèrent, donc une
 égalité binaire ou une équivalence universelle n'est pas promise.
@@ -95,14 +96,14 @@ agrégation.
 ### Estimations avec 2 Go configurés
 
 Les **2 000 000 000 octets** ci-dessous sont un exemple de configuration du projet, pas une limite
-universelle de Supabase. Au ratio actuel de 152,28 Mo pour 170 photos (environ 895 768 octets par
+universelle de Supabase. Au ratio final de 126 260 045 octets pour 170 photos (742 706 octets par
 photo complète), en supposant qu'aucun autre bucket ne consomme de capacité :
 
 | Seuil | Octets utilisés | Photos totales équivalentes | Ajouts après les 170 actuelles |
 |---:|---:|---:|---:|
-| 70 % | 1,4 Go | ≈ 1 562 | ≈ 1 392 |
-| 85 % | 1,7 Go | ≈ 1 897 | ≈ 1 727 |
-| 95 % | 1,9 Go | ≈ 2 121 | ≈ 1 951 |
+| 70 % | 1,4 Go | ≈ 1 886 | ≈ 1 716 |
+| 85 % | 1,7 Go | ≈ 2 287 | ≈ 2 117 |
+| 95 % | 1,9 Go | ≈ 2 556 | ≈ 2 386 |
 
 Dans le panel, l'estimation est plus prudente et dynamique : `(limite - octets globaux mesurés) /
 moyenne actuelle des variantes par photo`, arrondie vers le bas. Elle tient donc compte des autres
@@ -111,7 +112,7 @@ buckets et des variations du poids des photos ajoutées.
 ## Suppression admin et cohérence des données
 
 `admin_delete_photo()` (admin + aal2) réalise dans une transaction SQL unique : verrouillage de la
-photo, copie des six chemins Storage (ou du seul chemin historique reconnu) dans une file durable,
+photo, copie des huit chemins Storage (ou du seul chemin historique reconnu) dans une file durable,
 puis suppression des placements, des lignes de variantes et de la ligne photo. Après le commit, le
 client appelle `storage.from('photos').remove(paths)`, puis ferme la tâche. Si Storage échoue, la
 tâche garde l'erreur et le panneau permet de relancer la suppression. Il n'y a pas de transaction
@@ -133,45 +134,26 @@ pas à eux seuls que les octets sont une image valide : le générateur vérifie
 l'envoi. `photo_variants` et `photo_placements` gardent leurs RLS : lecture publique des seuls
 emplacements publiés et gestion admin, avec aal2 lorsque la politique correspondante est activée.
 
-## Procédure future : 170 photos / 1 020 variantes
+## Procédure future : 170 photos / 1 360 variantes
 
-Ne pas lancer avant validation explicite de la phase. Préconditions : accès confirmé au bon projet,
-second facteur configuré par chaque admin, sauvegarde vérifiée, fenêtre de changement planifiée et
-lecture des `preflight-selects.sql`. Ne jamais placer de clé privilégiée dans `.env`, le dépôt ou le
-client ; l'import historique utilise un secret en mémoire dans un terminal contrôlé, jamais pour
-uploader les originaux.
+Ne pas lancer une migration ou un import distant sans fenêtre opératoire et GO. Les originaux sont
+des sources locales uniquement; les envois Storage se limitent aux variantes WebP/AVIF. Garder les
+journaux, correspondances et secrets hors du dépôt.
 
-1. Confirmer que le bucket `photos` existe et est public, relever toutes ses policies, l'état du
-   schéma, les comptes admin et la présence d'objets ; sauvegarder les tables et objets avant action.
-2. Tous les admins s'étant enrôlés au TOTP et ayant ouvert une session aal2, appliquer dans l'ordre
-   `20260926000002_require_aal2_for_admin_writes.sql`, puis
-   `20260926000003_add_photo_variants_and_placements.sql` (bloc aal2 inclus),
-   `20260926000004_add_avif_photo_variants.sql`, et enfin
-   `20260926000005_photo_storage_admin_operations.sql`. Si 00002 ne peut pas encore être activée,
-   arrêter avant 00005 : la migration 00005 exige aal2 pour ses opérations admin. Ne pas rejouer une
-   migration déjà enregistrée.
-3. Relire les policies et privilèges dans les tables concernées, le bucket public `photos`, les
-   règles de liste/upload/update/delete, et vérifier que les fonctions admin sont exécutables
-   seulement par `authenticated` et refusent une session sans admin + aal2. Les buckets non
-   concernés ne doivent pas changer de politique métier.
-4. Vérifier localement les sources et variantes avec `verify-variants.mjs`, puis refaire les
-   simulations d'import : `node scripts/photos-storage/import-photos.mjs --limit 4` puis
-   `node scripts/photos-storage/import-photos.mjs`. Attendus : 4 photos / 24 variantes / 4
-   placements / 4,27 Mo, puis 170 photos / 1 020 variantes / 190 placements / 152,28 Mo. Simulation
-   uniquement : elle ne fait aucun appel réseau.
-5. Après validation du test de 4 photos, exécuter l'import avec confirmation explicite de l'hôte,
-   vérifier les comptes et les hashes par `postflight-selects.sql`, puis rollback via le journal si
-   nécessaire. Les emplacements de test doivent rester non publiés.
-6. Exécuter le lot complet. Le script vérifie les objets/lignes présents avant reprise, réutilise
-   seulement les contenus identiques et consigne les créations dans un journal privé hors dépôt.
-   Vérifier 170 photos, 510 lignes AVIF, 510 lignes WebP, 190 placements et 1 020 objets, ainsi que
-   chaque hash et format. En cas d'interruption, rejouer avec le même manifeste ; ne pas changer la
-   clé ou écraser un objet divergent. Les uploads interrompus avant insertion DB seront candidats
-   à la réconciliation, pas effacés immédiatement.
-7. Publier les emplacements après inspection visuelle du site et des galeries. Activer
-   `VITE_GALLERIES_FROM_STORAGE` et déployer seulement dans une étape ultérieure distincte. Le
-   retour immédiat côté rendu consiste à désactiver le flag ; conserver les fichiers locaux durant
-   la période d'observation.
+1. Vérifier le projet, le schéma, les policies, le bucket, les admins, les sauvegardes et la capacité
+   via `preflight-selects.sql` et les contrôles opérateur. Tout écart inexpliqué est NO-GO.
+2. Avant le déploiement, vérifier le manifeste, générer q55, valider 1 360 variantes et simuler 4 puis
+   170 photos. Appliquer 00003 puis 00004, vérifier avec `postflight-selects.sql`, importer un test
+   de 4 photos en brouillon et l'annuler après vérification. Après GO, importer le lot complet en
+   brouillon. Les photos ont `published=false`, `category_id=NULL`; les placements sont non publiés.
+3. Déployer `apres-noel`, faire enrôler tous les admins au TOTP et confirmer une session AAL2 par
+   compte. Un admin manquant ou AAL1 = NO-GO.
+4. Après déploiement et MFA, appliquer 00002 puis 00005. Vérifier les policies et RPC en lecture
+   seule. Ne pas rejouer une migration réussie.
+5. Publier les photos et placements dans une étape séparée, après inspection et accord. Les
+   imports brouillons n'exposent pas les photos via `CategoryGallery` ni les autres galeries legacy.
+6. Activer `VITE_GALLERIES_FROM_STORAGE` dans un déploiement ultérieur distinct, vérifier les pages
+   SEO et la lightbox, puis traiter BUG-02 selon son runbook.
 
 ### Retour arrière
 

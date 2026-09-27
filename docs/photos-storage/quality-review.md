@@ -1,7 +1,9 @@
 # Contrôle qualité et contrat de stockage des photos
 
-État au 27 septembre 2026. Contrôle effectué sur le lot local des galeries : **170 photos uniques**,
-190 emplacements et **1 020 variantes**. Aucun original n'a été envoyé à Supabase ou ajouté au dépôt.
+État au 28 septembre 2026. Les tableaux initiaux ci-dessous décrivent le lot antérieur q70/q90 et
+sont historiques; la section « Régénération définitive q55 » donne les réglages et mesures qui font
+foi. Contrôle effectué sur **170 photos uniques** et 190 emplacements. Aucun original n'a été envoyé
+à Supabase ou ajouté au dépôt.
 Les originaux de `../soleana-originaux/` sont uniquement des sources locales de génération ; leur
 sauvegarde relève de la photographe et de son dispositif externe, jamais du site.
 
@@ -12,8 +14,8 @@ Le générateur hors ligne est `scripts/photos-storage/generate-variants.mjs`. I
 
 | Format | Réglages actuels | Sous-échantillonnage / profondeur |
 |---|---|---|
-| AVIF | qualité 70/100, effort 4, avec perte | 4:4:4, 8 bits, explicitement fixé |
-| WebP | qualité 90/100, effort 4, `smartSubsample: true`, `alphaQuality: 100` | WebP lossy 8 bits, YUV 4:2:0 ; `smartSubsample` améliore le calcul du chroma |
+| AVIF, ancien profil | qualité 70/100, effort 4, avec perte | 4:4:4, 8 bits, explicitement fixé |
+| WebP, ancien profil | qualité 90/100, effort 4, `smartSubsample: true`, `alphaQuality: 100` | WebP lossy 8 bits, YUV 4:2:0 ; `smartSubsample` améliore le calcul du chroma |
 
 Les réglages précédents étaient AVIF qualité 50, effort 4 et WebP qualité 80 avec l'effort par défaut
 4. L'examen visuel a révélé une perte de microtexture sur des cheveux, du tricot et des détails fins,
@@ -67,7 +69,7 @@ les originaux a été vérifiée localement, et le rapport contenant chemins et 
 | **Total** | **55,40 Mo** | **96,88 Mo** | **152,28 Mo** |
 
 Les largeurs sont plafonnées à la largeur source si elle est inférieure à la cible. Le poids moyen
-est de **895 768 octets (895,8 kB décimaux) par photo** pour les six variantes. Au même ratio moyen,
+historique était de **895 768 octets (895,8 kB décimaux) par photo** pour les six variantes. Au même ratio moyen,
 le stockage des seules variantes serait d'environ :
 
 | Photos | Variantes | Estimation |
@@ -94,7 +96,7 @@ Mesure du serveur local et du choix de `srcset`, non une mesure de production ni
 ## Architecture de stockage verrouillée
 
 Le bucket Supabase `photos` contiendra uniquement les variantes web nécessaires au site et au panel :
-400, 800 et 1600 px, AVIF et WebP, sans métadonnées. Les originaux JPG/HEIC/HEIF sont des entrées
+400, 800, 1200 et 1600 px, AVIF et WebP, sans métadonnées. Les originaux JPG/HEIC/HEIF sont des entrées
 éphémères de traitement : ils ne sont ni uploadés, ni conservés en Storage, ni déposés dans Git.
 Le site n'assure aucune sauvegarde des originaux. Le manifeste publicisé au dépôt ne contient que
 des clés anonymes et des informations de variantes ; le rapport privé de correspondance reste
@@ -114,12 +116,11 @@ Flux admin analysé (aucune migration ni écriture réseau effectuée durant cet
 Adaptations préparées avant d'activer ce flux :
 
 - Les migrations `00003` et `00004` restent non appliquées ; l'écran désactive déjà l'ajout et la
-  suppression tant que les tables requises ne sont pas présentes. Après import des variantes, les
-  appliquer selon la procédure documentée et valider RLS avant usage.
-- Le générateur navigateur est désormais calé visuellement sur les réglages de référence avec AVIF
-  WASM 70/effort 4/4:4:4/8 bits et WebP WASM 90/méthode 4. Une comparaison côte à côte distincte
-  des huit cas du lot a contrôlé six photos à 1600 px ; les versions d'encodeurs diffèrent, donc
-  l'égalité numérique ou binaire n'est pas promise. Les détails figurent dans
+  suppression tant que les tables requises ne sont pas présentes. Pour la voie approuvée, les
+  appliquer avant l'import brouillon et valider RLS avec le runbook.
+- Le générateur navigateur est désormais calé visuellement sur le profil final avec AVIF
+  WASM q55/effort 4/4:4:4/8 bits et WebP WASM q80/méthode 4. Les versions d'encodeurs diffèrent,
+  donc l'égalité numérique ou binaire n'est pas promise. Les détails figurent dans
   [admin-storage-operations.md](admin-storage-operations.md).
 - Safari utilise les codecs WASM pour AVIF et WebP, et son décodeur natif puis `Image.decode()` pour
   HEIC. Aucun essai physique iPhone n'a encore été réalisé ; les limites sont décrites dans
@@ -128,6 +129,35 @@ Adaptations préparées avant d'activer ce flux :
   chemins, suppression Storage via API, puis reprise de la tâche en cas d'échec. La migration
   00005 reste à appliquer. Voir [admin-storage-operations.md](admin-storage-operations.md).
 
-Les simulations locales 4 photos (24 variantes, 4 emplacements, 4,27 Mo) et 170 photos
-(1 020 variantes, 190 emplacements, 152,28 Mo) n'ont effectué aucun appel réseau ni écriture en
-base. Les migrations et l'upload Supabase restent hors de cette phase.
+Les simulations initiales indiquées ci-dessus sont historiques. Les simulations q55 actuelles
+(4 photos : 32 variantes, 4 emplacements, 3,88 Mo; 170 photos : 1 360 variantes, 190 emplacements,
+126,26 Mo) n'ont effectué aucun appel réseau ni écriture en base. Les migrations et l'upload
+Supabase restent hors de cette phase.
+
+## Régénération définitive q55
+
+La photographe a validé visuellement AVIF q55. Le profil final de `generate-variants.mjs` est Sharp
+0.34.5 / libvips 8.17.3, AVIF q55, effort 4, 4:4:4 et 8 bits; WebP q80, effort 4,
+`smartSubsample: true`, `alphaQuality: 100`. Il ne reste aucun profil q60 comme option d'exécution
+du lot. La génération complète a produit 1 360 fichiers, puis `verify-variants.mjs` a validé chaque
+format, dimension, taille, SHA-256, signature et absence de métadonnées, et n'a trouvé aucun fichier
+orphelin ou doublon.
+
+| Mesure finale | AVIF | WebP | Total |
+|---|---:|---:|---:|
+| 400 px | 3 033 836 o | 4 324 448 o | 7 358 284 o |
+| 800 px | 8 254 401 o | 12 515 120 o | 20 769 521 o |
+| 1200 px | 14 778 161 o | 23 387 460 o | 38 165 621 o |
+| 1600 px | 22 736 459 o | 37 230 160 o | 59 966 619 o |
+| **Total** | **48 802 857 o** | **77 457 188 o** | **126 260 045 o** |
+
+Cela représente 126,26 Mo décimaux (120,36 Mio), soit **742 706 octets par photo** en moyenne.
+Au même ratio, estimation de stockage des seules variantes : 371 353 074 o pour 500 photos,
+742 706 147 o pour 1 000 et 1 485 412 294 o (1,49 Go) pour 2 000. Ces projections n'incluent pas
+les autres buckets, sauvegardes, versions internes, cache ni frais de requêtes.
+
+Les empreintes des 170 originaux ont été vérifiées avant et après la génération; elles correspondent
+aux `original_sha256` du manifeste et au rapport privé de correspondance. Les dimensions de chaque
+entrée du manifeste correspondent aux métadonnées de l'original après prise en compte de l'orientation
+EXIF. Aucun champ vérifié de l'original n'a été remplacé par les dimensions d'une source WebP locale.
+Les originaux n'ont pas été modifiés.

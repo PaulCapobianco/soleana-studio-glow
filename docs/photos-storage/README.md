@@ -16,7 +16,7 @@ pas À propos. Voir aussi `docs/photos-storage-plan.md` (plan général).
 | `supabase/migrations/20260926000005_photo_storage_admin_operations.sql` | Prépare le suivi de capacité, la file compensatoire de suppression et les policies Storage photo. **Non appliquée ; à lancer après 00002, 00003 et 00004.** |
 | `docs/photos-storage/manifest-phase1.json` | Manifeste v3 : clés opaques et empreintes SHA-256, dimensions et emplacements. Aucun chemin ni nom d'original. |
 | `scripts/photos-storage/match-originals.mjs` | Compare chaque WebP du manifeste à **tous** les fichiers des sous-dossiers de `../soleana-originaux/galeries/` par corrélation de pixels. Le tableau des 170 correspondances et les chemins restent hors dépôt dans `../soleana-originaux/storage-variants/matching-report.csv`. |
-| `scripts/photos-storage/generate-variants.mjs` | Génère AVIF et WebP à 400, 800 et 1600 px au plus, sans agrandissement ni métadonnées, depuis les originaux retenus. Repli sur le WebP actuel si aucun original n'atteint le seuil de ressemblance. |
+| `scripts/photos-storage/generate-variants.mjs` | Génère AVIF et WebP à 400, 800, 1200 et 1600 px au plus, sans agrandissement ni métadonnées, depuis les originaux retenus. Profil définitif : `--profile q55`. |
 | `docs/photos-storage/quality-review.md` | Contrôle visuel représentatif, réglages d'encodage, métriques finales et contrat de stockage sans originaux. |
 | `docs/photos-storage/admin-storage-operations.md` | Réglages navigateur, Safari, capacité, suppression fiable, import futur, contrôles et retour arrière. |
 | `docs/photos-storage/migration-preflight.md` | Audit final 00002–00005, résultats READY/NOT READY et procédure opérateur avec critères GO/NO-GO. |
@@ -32,17 +32,22 @@ strictement identique à son original. Les 170 photos du manifeste ont chacune u
 score et deuxième meilleur score, est privé hors dépôt. `../soleana-originaux/pages/` n'est jamais
 lu par ces scripts. Les noms des originaux ne sont ni dans le manifeste ni dans les clés Storage.
 
-Variantes générées : **1 020 fichiers, 152,28 Mo** (55,40 Mo d'AVIF et 96,88 Mo de WebP).
-La vérification a contrôlé dimensions, poids, SHA-256 et absence de métadonnées sur chaque fichier.
+Le lot q55 définitif a été généré et vérifié : **1 360 fichiers, 126 260 045 octets (126,26 Mo)**,
+680 AVIF et 680 WebP, huit variantes par photo. Les 170 sources ont une largeur suffisante pour les
+quatre tailles, soit 340 variantes par largeur. Les anciens dérivés des trois tailles ont été retirés
+du dossier externe après génération; tous les fichiers de sortie restent hors dépôt.
+`verify-variants.mjs` a contrôlé dimensions, poids, SHA-256, signatures, métadonnées et absence de
+fichiers image non indexés sur les 1 360 fichiers.
 Clés de stockage : `galleries/<catégorie>/<id opaque de 12 caractères>/<hash8>-<largeur>.<avif|webp>`
 (aucun nom de client ni de fichier d'origine ; clé versionnée par le contenu, jamais écrasée).
 La génération utilise au plus six photos en parallèle, garde un index de progression hors dépôt et
 réutilise uniquement les variantes dont la source, le format, les dimensions et l'empreinte sont
 valides. Un essai a réparé un fichier supprimé et un fichier tronqué en conservant les 1 018
 autres variantes. Les 1 190 anciennes sorties hors index ont été retirées ; il reste exactement
-1 020 fichiers dans le dossier des variantes. Le contrôle qualité a relevé une perte visible de
-détails fins avec les réglages antérieurs ; les réglages conservateurs actuels et le contrôle par
-cas sont détaillés dans [quality-review.md](quality-review.md).
+1 020 fichiers dans l'ancien dossier avant la régénération. Le contrôle qualité a relevé une perte
+visible de détails fins avec les réglages q70/q90 antérieurs; q55 a depuis été validé visuellement
+par la photographe. Le profil final et le contrôle par cas sont détaillés dans
+[quality-review.md](quality-review.md).
 
 Mesure locale dans Chrome, galerie `photographe-couple-marseille/gallery-1` complète (10 images,
 cache désactivé, défilement jusqu'à chaque image) :
@@ -73,8 +78,9 @@ en production ni de l'effet d'un CDN. Les dix requêtes après bascule ont bien 
 L'écran admin « Photos » reste lisible avant les migrations, mais désactive l'ajout et la suppression
 tant que `photo_variants`, `photo_placements` et le RPC de capacité 00005 ne sont pas disponibles.
 Après application, l'envoi réencode sur l'appareil en AVIF et WebP avec encodeurs WASM chargés à la
-demande (AVIF 70/effort 4/4:4:4/8 bits ; WebP 90/méthode 4/`use_sharp_yuv`). La calibration et ses
-limites sont décrites dans [admin-storage-operations.md](admin-storage-operations.md). Le fichier sélectionné
+demande (AVIF q55/effort 4/4:4:4/8 bits ; WebP q80/méthode 4/`use_sharp_yuv`). q55 a été validé
+visuellement par la photographe. La calibration et ses limites sont décrites dans
+[admin-storage-operations.md](admin-storage-operations.md). Le fichier sélectionné
 reste dans le navigateur : seul le tableau de blobs des variantes produites est envoyé à Storage.
 L'application ne sauvegarde pas les originaux de la photographe ; ils ne doivent jamais être
 envoyés à Supabase ni ajoutés au dépôt. Le texte alternatif est
@@ -89,88 +95,69 @@ ne suffit pas. La génération WebP utilise maintenant `@jsquash/webp` en WASM, 
 le repli silencieux de `canvas.toBlob()` vers PNG. Les limites et essais iPhone requis sont dans
 [safari-ios.md](safari-ios.md).
 
-## Procédure pas à pas : test réel sur 4 photos (à faire par Paul)
+## Runbook : import avant déploiement, activation après MFA
 
-Rien de ceci n'a été exécuté. Chaque étape a un retour arrière.
+Cette voie n'a pas été exécutée. Les originaux restent hors dépôt et ne sont jamais envoyés; tous les
+fichiers Storage issus de l'import sont des variantes AVIF/WebP. Les photos de l'import sont créées
+`published=false` et `category_id=NULL`, donc elles ne sont pas sélectionnées par les galeries
+legacy `CategoryGallery`.
 
-1. **Vérifier l'état de production** : exécuter les requêtes de `preflight-selects.sql` une à une
-   (lecture seule) et noter : bucket `photos` public, politiques du stockage, `source_key` absente,
-   nouvelles tables absentes, nombre de lignes de `photos`. *Retour arrière : sans objet.*
-2. **Sauvegarder** : exporter `photos`, `categories`, `seo_pages`, les objets et leurs métadonnées
-   du bucket `photos` (télécharger ses fichiers s'il contient déjà des photos), et conserver les
-   exports hors dépôt. Vérifier que les sauvegardes sont lisibles.
-3. **Appliquer les migrations seulement après enrôlement TOTP et connexion aal2 réussie de tous
-   les administrateurs**, dans l'ordre exact : `00002_require_aal2_for_admin_writes.sql`,
-   `00003_add_photo_variants_and_placements.sql` (bloc aal2 inclus),
-   `00004_add_avif_photo_variants.sql`, puis `00005_photo_storage_admin_operations.sql`.
-   Une migration déjà enregistrée ne se rejoue pas. `00005` exige aal2 pour ses opérations admin :
-   ne pas commencer l'import si cette précondition n'est pas remplie. Après chaque migration,
-   vérifier le schéma et les policies avec [admin-storage-operations.md](admin-storage-operations.md)
-   et les requêtes postflight. Les sections de rollback des migrations s'utilisent seulement après
-   rollback des données/imports ; `00005` exige aussi une file de nettoyage vide.
-4. **Régénérer et vérifier les variantes en local** (déjà fait, rejouable) :
-   `node scripts/photos-storage/build-manifest.mjs`, puis `node scripts/photos-storage/match-originals.mjs`,
-   `node scripts/photos-storage/generate-variants.mjs` et `node scripts/photos-storage/verify-variants.mjs`.
-   *Retour arrière : supprimer le dossier hors dépôt.*
-5. **Simulations** : `node scripts/photos-storage/import-photos.mjs --limit 4`, puis
-   `node scripts/photos-storage/import-photos.mjs` → relire les envois et insertions prévus.
-   Résultats locaux : 4 photos / 24 variantes / 4 emplacements (4,27 Mo), puis 170 photos /
-   1 020 variantes / 190 emplacements (152,28 Mo). Un journal prévisionnel est écrit hors dépôt.
-   *Aucun appel réseau, aucun effet en base.*
-6. **Import réel de 4 photos** (les emplacements restent non publiés, donc invisibles du public) :
+1. **Vérifier l'état et sauvegarder** : exécuter `preflight-selects.sql` en lecture seule; confirmer
+   le bon projet, le bucket, les policies, le schéma et l'état actuel des galeries. Sauvegarder
+   `photos`, `categories`, `seo_pages`, leurs objets et métadonnées hors dépôt. Tout écart non
+   expliqué est NO-GO.
+2. **Préparer le lot q55** : profil validé par la photographe : AVIF q55 + WebP q80. Vérifier le
+   manifeste et les correspondances; le rapport des chemins reste privé hors dépôt. Générer avec
+   `node scripts/photos-storage/generate-variants.mjs --profile q55`, puis vérifier avec
+   `node scripts/photos-storage/verify-variants.mjs`. Attendu : 170 photos, 1 360 variantes (680
+   par format) aux tailles 400/800/1200/1600; poids exact indiqué par le vérificateur.
+3. **Simuler avant migration**, sans réseau :
    ```
-   export SUPABASE_URL='https://<projet>.supabase.co'
-   read -rsp 'Clé service_role : ' SUPABASE_SERVICE_ROLE_KEY; echo
-   export SUPABASE_SERVICE_ROLE_KEY
-   SUPABASE_HOST_TO_CONFIRM="$(node -p 'new URL(process.env.SUPABASE_URL).host')"
-   node scripts/photos-storage/import-photos.mjs --apply --confirm "$SUPABASE_HOST_TO_CONFIRM" --limit 4
-   unset SUPABASE_SERVICE_ROLE_KEY
+   node scripts/photos-storage/import-photos.mjs --plan-only --profile q55 --limit 4
+   node scripts/photos-storage/import-photos.mjs --plan-only --profile q55
+   node scripts/photos-storage/import-photos.mjs --limit 4 --profile q55
+   node scripts/photos-storage/import-photos.mjs --profile q55
    ```
-   Le script vérifie l'hôte, n'écrase rien, saute ce qui existe et écrit un journal
-   `import-<date>.jsonl` dans `../soleana-originaux/storage-variants/journals/`.
-   Désactiver l'historique du shell le temps de saisir les commandes si le shell les enregistre ;
-   `read -s` ne montre jamais la valeur et elle n'est écrite dans aucun fichier.
-7. **Vérifier** : exécuter `postflight-selects.sql` (attendu après le test : 4 photos, 12 AVIF,
-   12 WebP, 4 emplacements non publiés, 24 objets) ; puis ouvrir dans un navigateur
-   l'URL publique d'une variante (`https://<projet>.supabase.co/storage/v1/object/public/photos/<storage_path>`)
-   et vérifier `content-type: image/avif` puis `image/webp` et l'en-tête de cache ; avec la clé publique (anon),
-   `photo_placements` doit renvoyer une liste vide (non publiés) ; l'écran admin « Photos » liste
-   les 4 photos avec leur texte alternatif.
-8. **Retour arrière du test** si besoin : `node scripts/photos-storage/rollback-import.mjs --journal
-   <journal>` (simulation), puis avec `--apply --confirm <hôte>`. Il supprime seulement les lignes et
-   objets créés par ce lot.
-9. **Import complet** (une fois le test validé) : saisir de nouveau la clé en mémoire, puis :
-   ```
-   export SUPABASE_URL='https://<projet>.supabase.co'
-   read -rsp 'Clé service_role : ' SUPABASE_SERVICE_ROLE_KEY; echo
-   export SUPABASE_SERVICE_ROLE_KEY
-   SUPABASE_HOST_TO_CONFIRM="$(node -p 'new URL(process.env.SUPABASE_URL).host')"
-   node scripts/photos-storage/import-photos.mjs --apply --confirm "$SUPABASE_HOST_TO_CONFIRM"
-   unset SUPABASE_SERVICE_ROLE_KEY
-   ```
-   Refaire `postflight-selects.sql` : 170 photos, 510 AVIF, 510 WebP, 190 emplacements
-   non publiés, 1 020 objets. Comparer chaque galerie au manifeste avant publication.
-10. **Publier puis activer côté site** : ressaisir la clé et publier uniquement les emplacements
-    du manifeste, avec journal de retour arrière :
-   ```
-   export SUPABASE_URL='https://<projet>.supabase.co'
-   read -rsp 'Clé service_role : ' SUPABASE_SERVICE_ROLE_KEY; echo
-   export SUPABASE_SERVICE_ROLE_KEY
-   SUPABASE_HOST_TO_CONFIRM="$(node -p 'new URL(process.env.SUPABASE_URL).host')"
-   node scripts/photos-storage/import-photos.mjs --publish-existing
-   node scripts/photos-storage/import-photos.mjs --apply --confirm "$SUPABASE_HOST_TO_CONFIRM" --publish-existing
-   unset SUPABASE_SERVICE_ROLE_KEY
-   ```
-   Vérifier 190 emplacements publiés dans `postflight-selects.sql`. Construire avec
-   `VITE_GALLERIES_FROM_STORAGE=true`, vérifier les 4 pages
-   (ordre, texte alternatif, cadrage, chargement des images à 360, 768 et 1280 px), puis déployer.
-   *Retour arrière immédiat : redéployer sans la variable (les fichiers locaux sont toujours dans le code).*
-11. **Ensuite seulement** : BUG-02 suivant `bug-02-activation.md` (pages `/portfolio/<catégorie>`), sous-domaine d'images Cloudflare,
-    puis chantier séparé de suppression des anciens fichiers du dépôt.
+   Les deux premières commandes comptent le plan sans lire de variantes; les deux suivantes,
+   après génération, vérifient fichiers, empreintes et poids et écrivent un journal prévisionnel
+   hors dépôt. Attendus : 4 photos / 32 variantes / 4 emplacements puis 170 photos / 1 360 variantes
+   / 190 emplacements. Tous les plans prévoient `photos.published=false`,
+   `photos.category_id=NULL` et `photo_placements.published=false`.
+4. **GO/NO-GO avant import** : manifeste et lot vérifiés; 170 clés uniques; hashes/dimensions/métadonnées
+   conformes; simulation exacte; capacité suffisante; sauvegarde et policies concordantes. Tout
+   écart = NO-GO.
+5. **Avant déploiement, appliquer 00003 puis 00004**, une fois chacune dans une transaction distincte.
+   Vérifier RLS, policies, colonnes et contraintes avec `postflight-selects.sql`. Les politiques
+   AAL2 de 00003 ne bloquent pas l'import par `service_role`.
+6. **Importer avant déploiement en brouillon** : essai réel limité à 4 photos, contrôle des lignes,
+   hashes et objets, puis rollback du journal de cet essai; ensuite import complet des 170 photos.
+   Les deux actions utilisent `--apply --confirm <hôte> --profile q55` dans un terminal contrôlé,
+   avec `SUPABASE_URL` et `SUPABASE_SERVICE_ROLE_KEY` en mémoire. Aucun original n'est lu par
+   l'importeur. GO seulement si les lignes nouvelles sont toutes `published=false` et
+   `category_id IS NULL`, les placements non publiés, et aucune requête legacy par catégorie ne
+   retourne ces photos. Sinon rollback du lot concerné = NO-GO. Cette préparation n'a effectué aucun
+   import réel.
+7. **Déployer `apres-noel`** après validation du parcours admin. Faire enrôler le TOTP à tous les
+   admins et confirmer une session AAL2 pour chacun. Un compte absent ou en AAL1 = NO-GO.
+8. **Après déploiement et MFA, appliquer 00002**, puis vérifier les 26 policies et l'accès admin.
+9. **Appliquer 00005**; confirmer policies Storage, quatre RPC, outbox et capacité. Les chemins de
+   variantes acceptent 400/800/1200/1600 et les largeurs natives inférieures à 1600. Une policy
+   inconnue ou RPC accessible sans admin+AAL2 = NO-GO.
+10. **Publier séparément**, après inspection : simulation puis exécution de
+    `import-photos.mjs --publish-existing --profile q55` (avec `--apply --confirm <hôte>`). Cette
+    étape publie les photos et leurs placements, conserve `category_id=NULL` et journalise chaque
+    modification; aucune galerie legacy par catégorie ne peut les sélectionner.
+11. **Activer les galeries** dans un déploiement distinct avec
+    `VITE_GALLERIES_FROM_STORAGE=true`. Vérifier les quatre pages SEO, le choix des tailles 400/800/
+    1200/1600, ordre, texte alternatif, cadrage et lightbox. Pour revenir au rendu local, désactiver
+    le flag; conserver les objets.
+12. **Enfin, traiter BUG-02** suivant [bug-02-activation.md](bug-02-activation.md), dans une étape
+    distincte après validation des galeries Storage.
 
 ## Limites connues
 
-- Les originaux de cette phase ont tous au moins 1600 px de large : variantes 400, 800 et 1600 px.
+- Les originaux de cette phase ont tous au moins 1600 px de large : les quatre tailles cibles sont
+  bien créées pour chacun d'eux.
 - Les dossiers `thumbs/` des galeries restent dans le dépôt pour le moment. Ils ne sont ni comparés
   aux originaux ni importés dans Storage ; prévoir leur suppression avec les anciens WebP au nettoyage
   final, après l'activation et la validation des galeries.
