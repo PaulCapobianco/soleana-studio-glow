@@ -88,10 +88,15 @@ Rien de ceci n'a été exécuté. Chaque étape a un retour arrière.
    du bucket `photos` (télécharger ses fichiers s'il contient déjà des photos), et conserver les
    exports hors dépôt. Vérifier que les sauvegardes sont lisibles.
 3. **Appliquer la migration** `20260926000003_...sql` dans le SQL Editor (copier le fichier entier).
-   Si les admins sont déjà enrôlés au second facteur, conserver le bloc final « aal2 ». Sinon,
-   retirer ce bloc **seulement dans la copie collée au SQL Editor**, jamais du fichier versionné,
-   et prévoir son ajout quand les admins seront enrôlés. Vérifier aussi les politiques aal2
-   existantes des tables `photos` et `storage.objects` : elles peuvent déjà imposer ce facteur.
+   **Décider du bloc final `DO $aal2$ ... $aal2$;` avant de lancer le SQL** : le conserver si
+   `20260926000002_require_aal2_for_admin_writes.sql` a déjà été appliquée après l'enrôlement
+   TOTP et une connexion aal2 réussie de **tous** les admins. Sinon, retirer ce bloc **seulement
+   dans la copie collée au SQL Editor**, jamais du fichier versionné. Les nouvelles tables
+   gardent leur RLS et leurs politiques `has_role`, mais leurs écritures admin n'exigeront pas
+   encore aal2. Dès que tous les admins sont prêts, appliquer manuellement `00002`, puis exécuter
+   **une seule fois** le bloc `DO $aal2$ ... $aal2$;` de `00003` pour les deux nouvelles tables.
+   Ne pas rejouer ce bloc s'il est déjà présent. L'import par clé `service_role` n'est pas soumis
+   à ces politiques. Vérifier aussi les politiques des tables `photos` et `storage.objects`.
    Contrôle : les deux tables existent, `SELECT count(*) FROM pg_policies WHERE tablename IN
    ('photo_variants','photo_placements');` (attendu : 4 sans le bloc aal2, 10 avec).
    *Retour arrière : bloc « Retour arrière » commenté en bas du fichier (tables vides).*
