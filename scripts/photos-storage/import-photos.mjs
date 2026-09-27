@@ -13,12 +13,13 @@
 // rien, saute ce qui existe déjà (reprise possible) et journalise chaque création dans
 // ../soleana-originaux/storage-variants/journals/ pour le retour arrière (rollback-import.mjs).
 //
-// Options : --limit N | --only cle1,cle2 | --publish (placements visibles dès l'insertion,
-// sinon ils restent non publiés) | --publish-existing (met seulement published = true sur les
-// placements du manifeste déjà importés).
+// Options : --profile q55 | --limit N | --only cle1,cle2 | --plan-only | --preflight
+// | --publish-existing (publication distincte des photos et placements déjà importés).
 import { appendFile, mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { VARIANTS_DIR, readManifest, sha256 } from "./lib.mjs";
+import { buildImportPlan, IMPORT_PHOTO_DEFAULTS, selectImportPhotos } from "./import-plan.mjs";
+import { expectedVariantCount, expectedWidthsFor, GENERATION_VERSION, getQualityProfile } from "./quality-profiles.mjs";
 
 const args = process.argv.slice(2);
 const flag = (name) => args.includes(name);
@@ -29,26 +30,51 @@ const option = (name) => {
 
 const apply = flag("--apply");
 const preflightOnly = flag("--preflight");
-const publish = flag("--publish");
+const planOnly = flag("--plan-only");
+if (flag("--publish")) {
+  throw new Error("--publish est supprimé : l'import est toujours en brouillon; utiliser --publish-existing plus tard.");
+}
 const publishExisting = flag("--publish-existing");
+const profileName = option("--profile");
 const limit = option("--limit") ? Number(option("--limit")) : undefined;
 const only = option("--only")?.split(",").filter(Boolean);
 const BUCKET = "photos";
 if (option("--limit") && (!Number.isSafeInteger(limit) || limit < 1)) {
   throw new Error("--limit doit être un entier positif.");
 }
-if (preflightOnly && (apply || limit || only?.length || publish || publishExisting)) {
+if (preflightOnly && (apply || limit || only?.length || publishExisting || planOnly)) {
   throw new Error("--preflight se lance seul, sans limite, publication ni écriture.");
 }
+if (planOnly && (apply || preflightOnly || publishExisting)) {
+  throw new Error("--plan-only se lance sans écriture, import réel ou publication.");
+}
+if (profileName) getQualityProfile(profileName);
+if (planOnly && !profileName) throw new Error("--plan-only exige --profile q55.");
 
 const manifest = await readManifest();
+if (manifest.version !== 3 || manifest.variant_formats?.join(",") !== "avif,webp" ||
+    manifest.target_widths?.join(",") !== "400,800,1200,1600") {
+  throw new Error("Le manifeste doit prévoir AVIF/WebP aux tailles 400/800/1200/1600.");
+}
+if (planOnly) {
+  const plan = buildImportPlan(manifest, { limit, only });
+  console.log(`PLAN SEUL — profil ${profileName}; aucune variante lue, aucune écriture ou journal.`);
+  console.log(`Photos : ${plan.photoCount}/${manifest.photos.length}; variantes prévues : ${plan.variantCount}.`);
+  console.log(`Par largeur : ${Object.entries(plan.variantCountsByWidth).map(([width, count]) => `${width}=${count}`).join(", ")}.`);
+  console.log(`Emplacements : ${plan.placementCount}; photos insérées published=false, category_id=NULL, on_home=false, on_portfolio=false; placements published=false.`);
+  console.log("Poids exact indisponible tant que les variantes de ce profil n'ont pas été générées et vérifiées.");
+  process.exit(0);
+}
 const index = JSON.parse(
   await readFile(path.join(VARIANTS_DIR, "variants-index.json"), "utf8"),
 );
 const { variants } = index;
-if (index.version !== 3) throw new Error("Variantes obsolètes : relancer generate-variants.mjs.");
-if (manifest.version !== 3 || manifest.variant_formats?.join(",") !== "avif,webp") {
-  throw new Error("Manifeste AVIF/WebP manquant : régénérer le manifeste et les variantes.");
+if (index.version !== GENERATION_VERSION || index.target_widths?.join(",") !== manifest.target_widths.join(",")) {
+  throw new Error("Variantes obsolètes : génération v4 requise avec les quatre tailles.");
+}
+const indexProfile = getQualityProfile(index.encoder_settings?.quality_profile);
+if (profileName && indexProfile.name !== profileName) {
+  throw new Error(`L'index est encodé en ${indexProfile.name}, pas avec le profil demandé ${profileName}.`);
 }
 const variantsBySource = new Map();
 const storagePaths = new Map();
@@ -62,7 +88,7 @@ for (const v of variants) {
 }
 for (const photo of manifest.photos) {
   const own = variantsBySource.get(photo.source_key) ?? [];
-  const expected = 2 * new Set([400, 800, 1600].map((width) => Math.min(width, photo.width))).size;
+  const expected = expectedWidthsFor(photo.width, manifest.target_widths).length * manifest.variant_formats.length;
   if (own.length !== expected || own.some((v) => !["avif", "webp"].includes(v.format))) {
     throw new Error(`Variantes incomplètes pour ${photo.source_key} : exécuter verify-variants.mjs.`);
   }
@@ -72,7 +98,8 @@ if (preflightOnly) {
   const photoKeys = new Set(manifest.photos.map((photo) => photo.source_key));
   if (photoKeys.size !== manifest.photos.length) blockers.push("source_key en double dans le manifeste");
   if (manifest.photos.length !== 170) blockers.push(`170 photos attendues, ${manifest.photos.length} trouvées`);
-  if (variants.length !== 1020) blockers.push(`1 020 variantes attendues, ${variants.length} trouvées`);
+  const expectedVariants = expectedVariantCount(manifest.photos, manifest.target_widths, manifest.variant_formats);
+  if (variants.length !== expectedVariants) blockers.push(`${expectedVariants} variantes attendues, ${variants.length} trouvées`);
   if (manifest.placements.length !== 190) blockers.push(`190 emplacements attendus, ${manifest.placements.length} trouvés`);
   for (const photo of manifest.photos) {
     if (photo.source_key !== `galleries/${photo.category}/${photo.source_sha256?.slice(0, 12)}`) {
@@ -80,7 +107,7 @@ if (preflightOnly) {
     }
     if (!photo.alt_text?.trim()) blockers.push(`${photo.source_key}: texte alternatif photo manquant`);
     const own = variantsBySource.get(photo.source_key) ?? [];
-    for (const width of new Set([400, 800, 1600].map((target) => Math.min(target, photo.width)))) {
+    for (const width of expectedWidthsFor(photo.width, manifest.target_widths)) {
       for (const format of ["avif", "webp"]) {
         const matches = own.filter((variant) => variant.width === width && variant.format === format);
         if (matches.length !== 1) blockers.push(`${photo.source_key}: ${matches.length} variante(s) ${width}px ${format}, une attendue`);
@@ -111,9 +138,7 @@ if (preflightOnly) {
   process.exit(0);
 }
 
-let selected = manifest.photos;
-if (only?.length) selected = selected.filter((p) => only.includes(p.source_key));
-if (limit) selected = selected.slice(0, limit);
+const selected = selectImportPhotos(manifest, { limit, only });
 const selectedKeys = new Set(selected.map((p) => p.source_key));
 const selectedPlacements = manifest.placements.filter((p) => selectedKeys.has(p.source_key));
 
@@ -128,21 +153,21 @@ async function journal(entry) {
 const mb = (bytes) => `${(bytes / 1e6).toFixed(2)} Mo`;
 const plannedUploads = selected.flatMap((p) => variantsBySource.get(p.source_key) ?? []);
 console.log(apply ? "MODE RÉEL" : "SIMULATION (aucune écriture ; ajouter --apply pour exécuter)");
+console.log(`Profil qualité : ${indexProfile.name}`);
 console.log(`Photos sélectionnées : ${selected.length} / ${manifest.photos.length}`);
 console.log(
   `Variantes à envoyer   : ${plannedUploads.length} (${mb(plannedUploads.reduce((s, v) => s + v.byte_size, 0))})`,
 );
-console.log(`Emplacements          : ${selectedPlacements.length} (published = ${publish})`);
+console.log(`Emplacements          : ${selectedPlacements.length} (photos published = false, category_id = NULL; placements published = false)`);
 
 // ---------- Simulation ----------
 if (!apply) {
   if (publishExisting) {
-    console.log(
-      "\n[simulation] UPDATE photo_placements SET published = true pour les placement_key du manifeste :",
-    );
-    console.log(
-      `  ${manifest.placements.length} clés (seules les lignes déjà importées seraient modifiées)`,
-    );
+    console.log(`\n[simulation] publier les photos et emplacements déjà importés de ${selected.length} photo(s) :`);
+    console.log(`  UPDATE photos SET published=true, category_id=NULL WHERE source_key IN (${selected.length} clés)`);
+    console.log(`  UPDATE photo_placements SET published=true WHERE placement_key IN (${selectedPlacements.length} clés)`);
+    console.log("Aucun fichier n'a été envoyé; aucune ligne n'a été modifiée.");
+    process.exit(0);
   }
   for (const photo of selected) {
     console.log(`\nPHOTO ${photo.source_key}  (${photo.category}, ${photo.width}x${photo.height})`);
@@ -153,7 +178,7 @@ if (!apply) {
       await journal({ op: "upload", path: v.storage_path, bytes: v.byte_size, planned: true });
     }
     console.log(
-      `  INSERT  photos            source_key=${photo.source_key} category=${photo.category} published=true alt="${photo.alt_text}"`,
+      `  INSERT  photos            source_key=${photo.source_key} category_id=NULL published=false on_home=false on_portfolio=false alt="${photo.alt_text}"`,
     );
     await journal({ op: "insert_photo", source_key: photo.source_key, planned: true });
     for (const v of variantsBySource.get(photo.source_key) ?? []) {
@@ -193,33 +218,78 @@ const must = (result, what) => {
 };
 
 if (publishExisting) {
-  const keys = manifest.placements.map((p) => p.placement_key);
-  for (let i = 0; i < keys.length; i += 100) {
-    const chunk = keys.slice(i, i + 100);
-    const unpublished = must(
-      await db.from("photo_placements").select("placement_key").in("placement_key", chunk).eq("published", false),
-      "lecture des emplacements non publiés",
-    );
-    if (unpublished.length === 0) continue;
+  const photoByKey = new Map();
+  const sourceKeys = selected.map((photo) => photo.source_key);
+  for (let i = 0; i < sourceKeys.length; i += 100) {
+    const chunk = sourceKeys.slice(i, i + 100);
     const rows = must(
-      await db
-        .from("photo_placements")
+      await db.from("photos").select("id, source_key, category_id, published, on_home, on_portfolio").in("source_key", chunk),
+      "lecture des photos brouillon",
+    );
+    for (const row of rows) photoByKey.set(row.source_key, row);
+  }
+  for (const photo of selected) {
+    const row = photoByKey.get(photo.source_key);
+    if (!row) throw new Error(`Photo non importée : ${photo.source_key}`);
+    if (row.category_id !== null || row.on_home !== false || row.on_portfolio !== false) {
+      throw new Error(`Refus de publication : ${photo.source_key} a une exposition legacy`);
+    }
+  }
+  const unpublishedPhotos = [...photoByKey.values()].filter((row) => !row.published);
+  for (let i = 0; i < unpublishedPhotos.length; i += 100) {
+    const chunk = unpublishedPhotos.slice(i, i + 100);
+    const rows = must(
+      await db.from("photos")
         .update({ published: true, updated_at: new Date().toISOString() })
-        .in("placement_key", unpublished.map((row) => row.placement_key))
+        .in("source_key", chunk.map((row) => row.source_key))
         .eq("published", false)
-        .select("placement_key"),
+        .is("category_id", null)
+        .select("id, source_key"),
+      "publication des photos importées",
+    );
+    for (const row of rows) {
+      await journal({ op: "publish_photo", id: row.id, source_key: row.source_key, previous_published: false, created: true });
+    }
+  }
+
+  const placementByKey = new Map();
+  const placementKeys = selectedPlacements.map((placement) => placement.placement_key);
+  for (let i = 0; i < placementKeys.length; i += 100) {
+    const chunk = placementKeys.slice(i, i + 100);
+    const rows = must(
+      await db.from("photo_placements")
+        .select("id, placement_key, photo_id, published")
+        .in("placement_key", chunk),
+      "lecture des emplacements brouillon",
+    );
+    for (const row of rows) placementByKey.set(row.placement_key, row);
+  }
+  for (const placement of selectedPlacements) {
+    const row = placementByKey.get(placement.placement_key);
+    const photo = photoByKey.get(placement.source_key);
+    if (!row || row.photo_id !== photo?.id || !photo.published) {
+      throw new Error(`Emplacement incomplet ou photo non publiée : ${placement.placement_key}`);
+    }
+  }
+  const unpublishedPlacements = [...placementByKey.values()].filter((row) => !row.published);
+  for (let i = 0; i < unpublishedPlacements.length; i += 100) {
+    const chunk = unpublishedPlacements.slice(i, i + 100);
+    const rows = must(
+      await db.from("photo_placements")
+        .update({ published: true, updated_at: new Date().toISOString() })
+        .in("placement_key", chunk.map((row) => row.placement_key))
+        .eq("published", false)
+        .select("id, placement_key"),
       "publication des emplacements",
     );
-    for (const r of rows)
-      await journal({ op: "publish_placement", placement_key: r.placement_key, previous_published: false, updated: true });
+    for (const row of rows) {
+      await journal({ op: "publish_placement", id: row.id, placement_key: row.placement_key, previous_published: false, created: true });
+    }
   }
-  console.log("Emplacements du manifeste publiés.");
+  console.log(`Photos et emplacements publiés pour ${selected.length} photo(s); category_id reste NULL.`);
   process.exit(0);
 }
 
-const categories = new Map(
-  must(await db.from("categories").select("id, slug"), "catégories").map((c) => [c.slug, c.id]),
-);
 const seoPages = new Map(
   must(await db.from("seo_pages").select("id, slug"), "pages SEO").map((s) => [s.slug, s.id]),
 );
@@ -227,8 +297,6 @@ const publicUrl = (p) => db.storage.from(BUCKET).getPublicUrl(p).data.publicUrl;
 
 let created = { objects: 0, photos: 0, variants: 0, placements: 0 };
 for (const [n, photo] of selected.entries()) {
-  const categoryId = categories.get(photo.category);
-  if (!categoryId) throw new Error(`Catégorie introuvable : ${photo.category}`);
   const own = variantsBySource.get(photo.source_key) ?? [];
 
   // 1) Objets Storage (jamais d'écrasement).
@@ -266,7 +334,7 @@ for (const [n, photo] of selected.entries()) {
 
   // 2) Photo (reprise possible grâce à source_key).
   let photoRow = must(
-    await db.from("photos").select("id, category_id, alt_text, image_url").eq("source_key", photo.source_key).maybeSingle(),
+    await db.from("photos").select("id, category_id, alt_text, image_url, published, on_home, on_portfolio").eq("source_key", photo.source_key).maybeSingle(),
     "lecture photo",
   );
   const largest = own.filter((v) => v.format === "webp").reduce((a, b) => (b.width > a.width ? b : a));
@@ -278,10 +346,7 @@ for (const [n, photo] of selected.entries()) {
         .insert({
           image_url: expectedImageUrl,
           alt_text: photo.alt_text,
-          category_id: categoryId,
-          published: true,
-          on_home: false,
-          on_portfolio: false,
+          ...IMPORT_PHOTO_DEFAULTS,
           display_order: n,
           source_key: photo.source_key,
         })
@@ -297,7 +362,8 @@ for (const [n, photo] of selected.entries()) {
       created: true,
     });
   } else {
-    if (photoRow.category_id !== categoryId || photoRow.alt_text !== photo.alt_text || photoRow.image_url !== expectedImageUrl) {
+    if (photoRow.category_id !== null || photoRow.published !== false || photoRow.on_home !== false || photoRow.on_portfolio !== false ||
+        photoRow.alt_text !== photo.alt_text || photoRow.image_url !== expectedImageUrl) {
       throw new Error(`Photo déjà présente avec des données divergentes : ${photo.source_key}`);
     }
     await journal({
@@ -358,7 +424,7 @@ for (const [n, photo] of selected.entries()) {
       if (exists.photo_id !== photoRow.id || exists.seo_page_id !== seoId || exists.slot !== pl.slot ||
           exists.display_order !== pl.display_order || Number(exists.object_position_x_pct) !== pl.object_position_x_pct ||
           Number(exists.object_position_y_pct) !== pl.object_position_y_pct || exists.alt_text_override !== pl.alt ||
-          exists.published !== publish) {
+          exists.published !== false) {
         throw new Error(`Emplacement déjà présent avec des données divergentes : ${pl.placement_key}`);
       }
       continue;
@@ -376,7 +442,7 @@ for (const [n, photo] of selected.entries()) {
           object_position_x_pct: pl.object_position_x_pct,
           object_position_y_pct: pl.object_position_y_pct,
           alt_text_override: pl.alt,
-          published: publish,
+          published: false,
         })
         .select("id")
         .single(),
