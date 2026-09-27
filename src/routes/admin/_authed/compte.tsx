@@ -2,13 +2,11 @@ import { useEffect, useId, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  friendlyAuthError,
-  isInsufficientAal,
-  isReauthenticationNeeded,
-} from "@/lib/admin/auth-errors";
+import { HiddenUsernameField } from "@/components/site/admin/HiddenUsernameField";
+import { PasswordVisibilityToggle } from "@/components/site/admin/PasswordVisibilityToggle";
+import { friendlyAuthError, isInsufficientAal } from "@/lib/admin/auth-errors";
+import { changePassword } from "@/lib/admin/change-password";
 import { getMfaState, normalizeTotpCode, TOTP_CODE, type MfaState } from "@/lib/admin/mfa";
-import { validateNewPassword, validatePasswordConfirmation } from "@/lib/admin/password-rules";
 import { verifyCurrentPassword } from "@/lib/admin/verify-password";
 
 export const Route = createFileRoute("/admin/_authed/compte")({
@@ -72,6 +70,8 @@ function Field({
   maxLength?: number;
 }) {
   const id = useId();
+  const [visible, setVisible] = useState(false);
+  const isPassword = type === "password";
   return (
     <div>
       <label
@@ -80,17 +80,22 @@ function Field({
       >
         {label}
       </label>
-      <input
-        id={id}
-        type={type}
-        value={value}
-        autoComplete={autoComplete}
-        inputMode={inputMode}
-        maxLength={maxLength}
-        aria-describedby={hint ? `${id}-hint` : undefined}
-        onChange={(e) => onChange(e.target.value)}
-        className="mt-1 w-full bg-background border border-border px-3 py-2 text-sm"
-      />
+      <div className="relative mt-1">
+        <input
+          id={id}
+          type={isPassword ? (visible ? "text" : "password") : type}
+          value={value}
+          autoComplete={autoComplete}
+          inputMode={inputMode}
+          maxLength={maxLength}
+          aria-describedby={hint ? `${id}-hint` : undefined}
+          onChange={(e) => onChange(e.target.value)}
+          className={`w-full bg-background border border-border px-3 py-2 text-sm ${isPassword ? "pr-11" : ""}`}
+        />
+        {isPassword && (
+          <PasswordVisibilityToggle visible={visible} onToggle={() => setVisible((v) => !v)} />
+        )}
+      </div>
       {hint && (
         <p id={`${id}-hint`} className="mt-1 text-xs text-muted-foreground">
           {hint}
@@ -125,7 +130,7 @@ function PrimaryButton({
 
 // --- Mot de passe -----------------------------------------------------------------------------
 
-function PasswordSection({ email }: { email: string }) {
+export function PasswordSection({ email }: { email: string }) {
   const [current, setCurrent] = useState("");
   const [next, setNext] = useState("");
   const [confirm, setConfirm] = useState("");
@@ -135,42 +140,45 @@ function PasswordSection({ email }: { email: string }) {
   const [nonce, setNonce] = useState("");
 
   async function submit() {
-    const problem =
-      validateNewPassword(next, { email, current }) ?? validatePasswordConfirmation(next, confirm);
-    if (!current) return toast.error("Saisissez votre mot de passe actuel.");
-    if (problem) return toast.error(problem);
-
     setBusy(true);
     try {
-      if (!(await verifyCurrentPassword(email, current))) {
-        toast.error("Le mot de passe actuel est incorrect.");
-        return;
-      }
-      const { error } = await supabase.auth.updateUser({
-        password: next,
-        ...(needsNonce && nonce.trim() ? { nonce: nonce.trim() } : {}),
-      });
-      if (error) {
-        if (isReauthenticationNeeded(error) && !needsNonce) {
-          const { error: sendError } = await supabase.auth.reauthenticate();
-          if (sendError) return toast.error(friendlyAuthError(sendError));
+      const result = await changePassword(
+        { email, current, next, confirm, needsNonce, nonce },
+        {
+          verifyCurrentPassword,
+          updateUser: (attrs) => supabase.auth.updateUser(attrs),
+          reauthenticate: () => supabase.auth.reauthenticate(),
+        },
+      );
+
+      switch (result.status) {
+        case "missing-current":
+          toast.error("Saisissez votre mot de passe actuel.");
+          return;
+        case "wrong-current":
+          // Vidé pour ne pas laisser une valeur fausse ou obsolète fausser le prochain essai.
+          setCurrent("");
+          toast.error("Le mot de passe actuel est incorrect.");
+          return;
+        case "needs-nonce":
+          // Le mot de passe actuel vient d'être vérifié avec succès : on le garde pour le
+          // second envoi (avec le code), qui en a de nouveau besoin.
           setNeedsNonce(true);
           toast.message("Un code de confirmation vient d'être envoyé à votre adresse e-mail.");
           return;
-        }
-        if (isInsufficientAal(error)) {
-          toast.error("Reconnectez-vous avec votre code d'authentification, puis réessayez.");
+        case "error":
+          setCurrent("");
+          toast.error(result.message);
           return;
-        }
-        toast.error(friendlyAuthError(error));
-        return;
+        case "success":
+          toast.success("Mot de passe modifié.");
+          setCurrent("");
+          setNext("");
+          setConfirm("");
+          setNonce("");
+          setNeedsNonce(false);
+          return;
       }
-      toast.success("Mot de passe modifié.");
-      setCurrent("");
-      setNext("");
-      setConfirm("");
-      setNonce("");
-      setNeedsNonce(false);
     } finally {
       setBusy(false);
     }
@@ -185,6 +193,7 @@ function PasswordSection({ email }: { email: string }) {
           void submit();
         }}
       >
+        <HiddenUsernameField email={email} />
         <Field
           label="Mot de passe actuel"
           type="password"

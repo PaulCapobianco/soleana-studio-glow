@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 import { SaveButton } from "@/components/site/admin/SaveButton";
+import { FieldHint } from "@/components/site/admin/FieldHint";
 import { confirmDelete } from "@/lib/admin/confirm-delete";
 import { friendlySupabaseError } from "@/lib/admin/friendly-error";
 import { useDirtySet } from "@/lib/admin/use-dirty-set";
@@ -136,9 +137,13 @@ function FaqCard({
               onChange={(e) => setField("published", e.target.checked)}
             />
             Publié
+            <FieldHint>visible sur le site</FieldHint>
           </label>
           <label className="flex items-center gap-2">
-            <span>Ordre d&apos;affichage</span>
+            <span>
+              Ordre d&apos;affichage
+              <FieldHint>position dans la liste : 1 = en premier</FieldHint>
+            </span>
             <input
               type="number"
               min={0}

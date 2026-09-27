@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 import { SaveButton } from "@/components/site/admin/SaveButton";
+import { FieldHint } from "@/components/site/admin/FieldHint";
 import { friendlySupabaseError } from "@/lib/admin/friendly-error";
 import { useDirtySet } from "@/lib/admin/use-dirty-set";
 import { useEditableRecord } from "@/lib/admin/use-editable-record";
@@ -190,6 +191,7 @@ function SettingsForm({
       <div className="sm:col-span-2">
         <Field
           label="Zone d'intervention"
+          hint="affichée sur la page d'accueil et utilisée par Google pour savoir où vous intervenez"
           value={draft.service_area}
           error={errors.service_area}
           onChange={(v) => setField("service_area", v)}
@@ -198,6 +200,7 @@ function SettingsForm({
       <div className="sm:col-span-2">
         <Field
           label="Phrase du pied de page"
+          hint="texte affiché tout en bas de chaque page du site"
           value={draft.footer_text}
           error={errors.footer_text}
           textarea
@@ -213,6 +216,7 @@ function SettingsForm({
 
 function Field({
   label,
+  hint,
   value,
   onChange,
   error,
@@ -221,6 +225,7 @@ function Field({
   placeholder,
 }: {
   label: string;
+  hint?: string;
   value: string;
   onChange: (v: string) => void;
   error?: string;
@@ -245,6 +250,7 @@ function Field({
         className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground"
       >
         {label}
+        {hint && <FieldHint>{hint}</FieldHint>}
       </label>
       {textarea ? (
         <textarea rows={3} onChange={(e) => onChange(e.target.value)} {...common} />
