@@ -58,11 +58,8 @@ function LegalNoticePage() {
                 </li>
                 <li>
                   <strong className="text-foreground">E-mail :</strong>{" "}
-                  <a
-                    href="mailto:anaischartonphotographie@gmail.com"
-                    className="text-foreground story-link"
-                  >
-                    anaischartonphotographie@gmail.com
+                  <a href={`mailto:${settings.email}`} className="text-foreground story-link">
+                    {settings.email}
                   </a>
                 </li>
                 <li>
@@ -110,30 +107,45 @@ function LegalNoticePage() {
                 prestation et assurer le suivi client.
               </p>
               <p className="mt-4">
-                Ces données ne sont jamais revendues, ni cédées, ni transmises à des tiers, sauf
-                obligation légale.
+                Ces données sont traitées par des prestataires techniques nommés (Pelli, Supabase,
+                Cloudflare), en qualité de sous-traitants. Elles ne sont jamais vendues ni cédées à
+                des tiers à des fins commerciales. Le détail de ces sous-traitants et des transferts
+                éventuels de données est précisé dans notre{" "}
+                <Link to="/confidentialite" className="text-foreground story-link">
+                  politique de confidentialité
+                </Link>
+                .
               </p>
             </LegalSection>
 
             <LegalSection title="5. Conservation et droits des utilisateurs">
               <p>
-                Conformément au RGPD et à la loi « Informatique et Libertés », vous disposez des
-                droits suivants : droit d&apos;accès, droit de rectification, droit
-                d&apos;opposition et droit de suppression de vos données.
-              </p>
-              <p className="mt-4">
-                Pour exercer vos droits, vous pouvez écrire à{" "}
-                <a
-                  href="mailto:anaischartonphotographie@gmail.com"
-                  className="text-foreground story-link"
-                >
-                  anaischartonphotographie@gmail.com
-                </a>
+                Les données sont conservées uniquement pendant la durée nécessaire aux échanges et
+                au suivi administratif légal ; le détail des durées de conservation par type de
+                donnée est précisé dans notre{" "}
+                <Link to="/confidentialite" className="text-foreground story-link">
+                  politique de confidentialité
+                </Link>
                 .
               </p>
               <p className="mt-4">
-                Les données sont conservées uniquement pendant la durée nécessaire aux échanges et
-                au suivi administratif légal.
+                Conformément au RGPD et à la loi « Informatique et Libertés », vous disposez
+                d&apos;un droit d&apos;accès, de rectification, d&apos;effacement,
+                d&apos;opposition, de limitation du traitement et de portabilité de vos données,
+                ainsi que du droit de retirer votre consentement à tout moment. Vous pouvez
+                également introduire une réclamation auprès de la CNIL. Le détail de ces droits et
+                la procédure pour les exercer sont décrits dans notre{" "}
+                <Link to="/confidentialite" className="text-foreground story-link">
+                  politique de confidentialité
+                </Link>
+                .
+              </p>
+              <p className="mt-4">
+                Pour exercer vos droits, vous pouvez écrire à{" "}
+                <a href={`mailto:${settings.email}`} className="text-foreground story-link">
+                  {settings.email}
+                </a>
+                . Nous répondons à votre demande dans un délai d&apos;un mois.
               </p>
             </LegalSection>
 
