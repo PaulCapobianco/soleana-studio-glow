@@ -16,6 +16,7 @@ pas À propos. Voir aussi `docs/photos-storage-plan.md` (plan général).
 | `docs/photos-storage/manifest-phase1.json` | Manifeste v3 : clés opaques et empreintes SHA-256, dimensions et emplacements. Aucun chemin ni nom d'original. |
 | `scripts/photos-storage/match-originals.mjs` | Compare chaque WebP du manifeste à **tous** les fichiers des sous-dossiers de `../soleana-originaux/galeries/` par corrélation de pixels. Le tableau des 170 correspondances et les chemins restent hors dépôt dans `../soleana-originaux/storage-variants/matching-report.csv`. |
 | `scripts/photos-storage/generate-variants.mjs` | Génère AVIF et WebP à 400, 800 et 1600 px au plus, sans agrandissement ni métadonnées, depuis les originaux retenus. Repli sur le WebP actuel si aucun original n'atteint le seuil de ressemblance. |
+| `docs/photos-storage/quality-review.md` | Contrôle visuel représentatif, réglages d'encodage, métriques finales et contrat de stockage sans originaux. |
 | `scripts/photos-storage/measure-gallery-bytes.mjs` | Mesure locale dans Chrome les octets réellement chargés pour la galerie couple 1, avant et après, sur trois largeurs d'écran. |
 | `scripts/photos-storage/verify-variants.mjs` | Vérifie dimensions, poids, empreintes, absence d'EXIF/XMP/ICC, clés de stockage. |
 | `scripts/photos-storage/import-photos.mjs` | Import. **Simulation par défaut.** Mode réel : `--apply --confirm <hôte>`. |
@@ -28,7 +29,7 @@ strictement identique à son original. Les 170 photos du manifeste ont chacune u
 score et deuxième meilleur score, est privé hors dépôt. `../soleana-originaux/pages/` n'est jamais
 lu par ces scripts. Les noms des originaux ne sont ni dans le manifeste ni dans les clés Storage.
 
-Variantes générées : **1 020 fichiers, 78,30 Mo** (26,17 Mo d'AVIF et 52,13 Mo de WebP).
+Variantes générées : **1 020 fichiers, 152,28 Mo** (55,40 Mo d'AVIF et 96,88 Mo de WebP).
 La vérification a contrôlé dimensions, poids, SHA-256 et absence de métadonnées sur chaque fichier.
 Clés de stockage : `galleries/<catégorie>/<id opaque de 12 caractères>/<hash8>-<largeur>.<avif|webp>`
 (aucun nom de client ni de fichier d'origine ; clé versionnée par le contenu, jamais écrasée).
@@ -36,16 +37,18 @@ La génération utilise au plus six photos en parallèle, garde un index de prog
 réutilise uniquement les variantes dont la source, le format, les dimensions et l'empreinte sont
 valides. Un essai a réparé un fichier supprimé et un fichier tronqué en conservant les 1 018
 autres variantes. Les 1 190 anciennes sorties hors index ont été retirées ; il reste exactement
-1 020 fichiers dans le dossier des variantes.
+1 020 fichiers dans le dossier des variantes. Le contrôle qualité a relevé une perte visible de
+détails fins avec les réglages antérieurs ; les réglages conservateurs actuels et le contrôle par
+cas sont détaillés dans [quality-review.md](quality-review.md).
 
 Mesure locale dans Chrome, galerie `photographe-couple-marseille/gallery-1` complète (10 images,
 cache désactivé, défilement jusqu'à chaque image) :
 
 | Écran / DPR | WebP actuel | AVIF avec `srcset` | Baisse |
 |---|---:|---:|---:|
-| 360 px / 3 | 1 129 722 octets | 524 896 octets | 53,5 % |
-| 768 px / 2 | 1 129 722 octets | 524 896 octets | 53,5 % |
-| 1 280 px / 1 | 1 129 722 octets | 191 565 octets | 83,0 % |
+| 360 px / 3 | 1 129 722 octets | 1 039 887 octets | 8,0 % |
+| 768 px / 2 | 1 129 722 octets | 1 039 887 octets | 8,0 % |
+| 1 280 px / 1 | 1 129 722 octets | 380 579 octets | 66,3 % |
 
 Ce sont les octets des images servies par le serveur local, pas une mesure du temps de chargement
 en production ni de l'effet d'un CDN. Les dix requêtes après bascule ont bien choisi l'AVIF.
@@ -66,7 +69,10 @@ en production ni de l'effet d'un CDN. Les dix requêtes après bascule ont bien 
 
 L'écran admin « Photos » reste lisible avant les migrations, mais désactive l'ajout et la suppression
 tant que `photo_variants` et `photo_placements` ne sont pas disponibles. Après application, l'envoi
-réencode sur l'appareil en AVIF (encodeur WASM chargé à la demande) et WebP. Le texte alternatif est
+réencode sur l'appareil en AVIF (encodeur WASM chargé à la demande) et WebP. Le fichier sélectionné
+reste dans le navigateur : seul le tableau de blobs des variantes produites est envoyé à Storage.
+L'application ne sauvegarde pas les originaux de la photographe ; ils ne doivent jamais être
+envoyés à Supabase ni ajoutés au dépôt. Le texte alternatif est
 obligatoire. Les emplacements SEO ont une page, une galerie, un ordre libre, un cadrage et un état de
 publication. Les cases Accueil / Portfolio restent masquées : ces pages ne lisent toujours pas ces
 colonnes. L'envoi n'a **pas** été exécuté contre la production ; la logique est testée localement.
@@ -109,8 +115,8 @@ Rien de ceci n'a été exécuté. Chaque étape a un retour arrière.
    *Retour arrière : supprimer le dossier hors dépôt.*
 5. **Simulations** : `node scripts/photos-storage/import-photos.mjs --limit 4`, puis
    `node scripts/photos-storage/import-photos.mjs` → relire les envois et insertions prévus.
-   Résultats locaux : 4 photos / 24 variantes / 4 emplacements (2,36 Mo), puis 170 photos /
-   1 020 variantes / 190 emplacements (78,30 Mo). Un journal prévisionnel est écrit hors dépôt.
+   Résultats locaux : 4 photos / 24 variantes / 4 emplacements (4,27 Mo), puis 170 photos /
+   1 020 variantes / 190 emplacements (152,28 Mo). Un journal prévisionnel est écrit hors dépôt.
    *Aucun appel réseau, aucun effet en base.*
 6. **Import réel de 4 photos** (les emplacements restent non publiés, donc invisibles du public) :
    ```

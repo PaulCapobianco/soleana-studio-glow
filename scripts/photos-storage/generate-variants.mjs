@@ -9,6 +9,21 @@ import { MANIFEST_PATH, ROOT, VARIANTS_DIR, readManifest, sha256, variantPath } 
 
 const TARGET_WIDTHS = [400, 800, 1600];
 const FORMATS = ["avif", "webp"];
+const ENCODER_SETTINGS = {
+  sharp: sharp.versions.sharp,
+  libvips: sharp.versions.vips,
+  aom: sharp.versions.aom,
+  webpEncoder: sharp.versions.webp,
+  avif: { quality: 70, effort: 4, lossless: false, chromaSubsampling: "4:4:4", bitdepth: 8 },
+  webp: {
+    quality: 90,
+    effort: 4,
+    alphaQuality: 100,
+    lossless: false,
+    nearLossless: false,
+    smartSubsample: true,
+  },
+};
 
 if (path.relative(ROOT, VARIANTS_DIR).split(path.sep)[0] !== "..") {
   throw new Error("Le dossier de sortie doit être hors du dépôt.");
@@ -23,7 +38,11 @@ const matchesByKey = new Map(mapping.matches.map((match) => [match.source_key, m
 const filesDir = path.join(VARIANTS_DIR, "files");
 const indexPath = path.join(VARIANTS_DIR, "variants-index.json");
 const progressPath = path.join(VARIANTS_DIR, "variants-index.progress.json");
-const inputHash = sha256(await readFile(MANIFEST_PATH)) + sha256(await readFile(path.join(VARIANTS_DIR, "original-matches.json")));
+const inputHash = sha256(Buffer.from(JSON.stringify({
+  manifest: sha256(await readFile(MANIFEST_PATH)),
+  matches: sha256(await readFile(path.join(VARIANTS_DIR, "original-matches.json"))),
+  encoder: ENCODER_SETTINGS,
+})));
 const perPhoto = new Array(manifest.photos.length);
 let nextPhoto = 0;
 let completed = 0;
@@ -75,7 +94,7 @@ async function saveProgress() {
   progressWrite = progressWrite.then(async () => {
     const variants = perPhoto.flatMap((items) => items ?? []);
     const temporary = `${progressPath}.tmp`;
-    await writeFile(temporary, `${JSON.stringify({ version: 3, input_hash: inputHash, variants }, null, 2)}\n`);
+    await writeFile(temporary, `${JSON.stringify({ version: 3, input_hash: inputHash, encoder_settings: ENCODER_SETTINGS, variants }, null, 2)}\n`);
     await rename(temporary, progressPath);
   });
   await progressWrite;
@@ -110,8 +129,8 @@ async function generatePhoto(photo, photoIndex) {
       // .rotate() applique l'orientation éventuelle ; sharp retire les métadonnées par défaut.
       const pipeline = sharp(bytes).rotate().resize({ width, withoutEnlargement: true });
       const { data, info } = await (format === "avif"
-        ? pipeline.avif({ quality: 50, effort: 4 })
-        : pipeline.webp({ quality: 80 })
+        ? pipeline.avif(ENCODER_SETTINGS.avif)
+        : pipeline.webp(ENCODER_SETTINGS.webp)
       ).toBuffer({ resolveWithObject: true });
       const hash = sha256(data);
       const storagePath = variantPath(photo.source_key, hash.slice(0, 8), info.width, format);
@@ -163,7 +182,7 @@ for (const [photoIndex, photo] of manifest.photos.entries()) {
 await mkdir(VARIANTS_DIR, { recursive: true });
 await writeFile(
   `${indexPath}.tmp`,
-  `${JSON.stringify({ version: 3, input_hash: inputHash, generated_at: new Date().toISOString(), variants: index }, null, 2)}\n`,
+  `${JSON.stringify({ version: 3, input_hash: inputHash, encoder_settings: ENCODER_SETTINGS, generated_at: new Date().toISOString(), variants: index }, null, 2)}\n`,
 );
 await rename(`${indexPath}.tmp`, indexPath);
 await rm(progressPath, { force: true });
