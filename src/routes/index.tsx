@@ -14,26 +14,47 @@ import hero4 from "@/assets/accueil/hero_4.webp";
 import hero4Avif from "@/assets/accueil/hero_4.avif";
 import logoSoleana from "@/assets/logo-soleana.webp";
 import catGrossesse from "@/assets/portfolio/grossesse.webp";
+import catGrossesseAvif from "@/assets/portfolio/grossesse.avif";
 import catGrossesseSm from "@/assets/portfolio/grossesse-350.webp";
+import catGrossesseSmAvif from "@/assets/portfolio/grossesse-350.avif";
 import catGrossesseMd from "@/assets/portfolio/grossesse-500.webp";
+import catGrossesseMdAvif from "@/assets/portfolio/grossesse-500.avif";
 import catGrossesseLg from "@/assets/portfolio/grossesse-800.webp";
+import catGrossesseLgAvif from "@/assets/portfolio/grossesse-800.avif";
 import catGrossesseXl from "@/assets/portfolio/grossesse-1200.webp";
+import catGrossesseXlAvif from "@/assets/portfolio/grossesse-1200.avif";
 import catFamille from "@/assets/portfolio/famille.webp";
+import catFamilleAvif from "@/assets/portfolio/famille.avif";
 import catFamilleSm from "@/assets/portfolio/famille-350.webp";
+import catFamilleSmAvif from "@/assets/portfolio/famille-350.avif";
 import catFamilleMd from "@/assets/portfolio/famille-500.webp";
+import catFamilleMdAvif from "@/assets/portfolio/famille-500.avif";
 import catFamilleLg from "@/assets/portfolio/famille-800.webp";
+import catFamilleLgAvif from "@/assets/portfolio/famille-800.avif";
 import catFamilleXl from "@/assets/portfolio/famille-1200.webp";
+import catFamilleXlAvif from "@/assets/portfolio/famille-1200.avif";
 import catCouple from "@/assets/portfolio/couple.webp";
+import catCoupleAvif from "@/assets/portfolio/couple.avif";
 import catCoupleSm from "@/assets/portfolio/couple-350.webp";
+import catCoupleSmAvif from "@/assets/portfolio/couple-350.avif";
 import catCoupleMd from "@/assets/portfolio/couple-500.webp";
+import catCoupleMdAvif from "@/assets/portfolio/couple-500.avif";
 import catCoupleLg from "@/assets/portfolio/couple-800.webp";
+import catCoupleLgAvif from "@/assets/portfolio/couple-800.avif";
 import catCoupleXl from "@/assets/portfolio/couple-1200.webp";
+import catCoupleXlAvif from "@/assets/portfolio/couple-1200.avif";
 import catPortrait from "@/assets/portfolio/portrait.webp";
+import catPortraitAvif from "@/assets/portfolio/portrait.avif";
 import catPortraitSm from "@/assets/portfolio/portrait-350.webp";
+import catPortraitSmAvif from "@/assets/portfolio/portrait-350.avif";
 import catPortraitMd from "@/assets/portfolio/portrait-500.webp";
+import catPortraitMdAvif from "@/assets/portfolio/portrait-500.avif";
 import catPortraitLg from "@/assets/portfolio/portrait-800.webp";
+import catPortraitLgAvif from "@/assets/portfolio/portrait-800.avif";
 import catPortraitXl from "@/assets/portfolio/portrait-1200.webp";
+import catPortraitXlAvif from "@/assets/portfolio/portrait-1200.avif";
 import aboutPortrait from "@/assets/accueil/anais_1.webp";
+import aboutPortraitAvif from "@/assets/accueil/anais_1.avif";
 import logoSoleana180 from "@/assets/logo-soleana-180.webp";
 import logoSoleana280 from "@/assets/logo-soleana-280.webp";
 import type { Database } from "@/integrations/supabase/types";
@@ -156,10 +177,15 @@ const categories = [
     slug: "grossesse",
     label: "Grossesse",
     img: catGrossesse,
+    imgAvif: catGrossesseAvif,
     imgSmall: catGrossesseSm,
+    imgSmallAvif: catGrossesseSmAvif,
     imgMedium: catGrossesseMd,
+    imgMediumAvif: catGrossesseMdAvif,
     imgLarge: catGrossesseLg,
+    imgLargeAvif: catGrossesseLgAvif,
     imgXLarge: catGrossesseXl,
+    imgXLargeAvif: catGrossesseXlAvif,
     offset: false,
     // Plain percentage only — DO NOT use calc(). object-position resolves
     // as (containerSize - objectSize) * percentage + pxOffset. This image's
@@ -175,20 +201,30 @@ const categories = [
     slug: "famille",
     label: "Famille",
     img: catFamille,
+    imgAvif: catFamilleAvif,
     imgSmall: catFamilleSm,
+    imgSmallAvif: catFamilleSmAvif,
     imgMedium: catFamilleMd,
+    imgMediumAvif: catFamilleMdAvif,
     imgLarge: catFamilleLg,
+    imgLargeAvif: catFamilleLgAvif,
     imgXLarge: catFamilleXl,
+    imgXLargeAvif: catFamilleXlAvif,
     offset: true,
   },
   {
     slug: "couple",
     label: "Couple",
     img: catCouple,
+    imgAvif: catCoupleAvif,
     imgSmall: catCoupleSm,
+    imgSmallAvif: catCoupleSmAvif,
     imgMedium: catCoupleMd,
+    imgMediumAvif: catCoupleMdAvif,
     imgLarge: catCoupleLg,
+    imgLargeAvif: catCoupleLgAvif,
     imgXLarge: catCoupleXl,
+    imgXLargeAvif: catCoupleXlAvif,
     offset: false,
     // Frame on the top of the photo to keep both faces/the kiss in view —
     // this box is also width-driven cover (portrait image, see grossesse's
@@ -199,10 +235,15 @@ const categories = [
     slug: "portrait",
     label: "Portrait",
     img: catPortrait,
+    imgAvif: catPortraitAvif,
     imgSmall: catPortraitSm,
+    imgSmallAvif: catPortraitSmAvif,
     imgMedium: catPortraitMd,
+    imgMediumAvif: catPortraitMdAvif,
     imgLarge: catPortraitLg,
+    imgLargeAvif: catPortraitLgAvif,
     imgXLarge: catPortraitXl,
+    imgXLargeAvif: catPortraitXlAvif,
     offset: true,
     // Subject is already close to horizontally centered in the source
     // photo; the default (centered) object-position already frames her
@@ -366,25 +407,36 @@ function Home() {
                 params={{ slug: seoMap[c.slug] }}
                 className={`relative group block aspect-[3/4] overflow-hidden bg-[#3E2F28] ${c.offset ? "md:mt-12" : ""}`}
               >
-                <img
-                  src={c.img}
-                  srcSet={[
-                    `${c.imgSmall} 350w`,
-                    `${c.imgMedium} 500w`,
-                    `${c.img} 700w`,
-                    "imgLarge" in c ? `${c.imgLarge} 800w` : null,
-                    "imgXLarge" in c ? `${c.imgXLarge} 1200w` : null,
-                  ]
-                    .filter(Boolean)
-                    .join(", ")}
-                  sizes="(min-width: 768px) 25vw, 42vw"
-                  alt={`Photographe ${c.label.toLowerCase()} à Marseille`}
-                  width={1200}
-                  height={1600}
-                  className={`absolute inset-0 block h-full w-full object-cover transition-transform duration-[1200ms] group-hover:scale-[1.05] ${c.slug === "famille" ? "object-[68%_50%]" : ""} ${c.objectClass ?? ""}`}
-                  loading="lazy"
-                  decoding="async"
-                />
+                <picture>
+                  <source
+                    type="image/avif"
+                    srcSet={[
+                      `${c.imgSmallAvif} 350w`,
+                      `${c.imgMediumAvif} 500w`,
+                      `${c.imgAvif} 700w`,
+                      `${c.imgLargeAvif} 800w`,
+                      `${c.imgXLargeAvif} 1200w`,
+                    ].join(", ")}
+                    sizes="(min-width: 768px) 25vw, 42vw"
+                  />
+                  <img
+                    src={c.img}
+                    srcSet={[
+                      `${c.imgSmall} 350w`,
+                      `${c.imgMedium} 500w`,
+                      `${c.img} 700w`,
+                      `${c.imgLarge} 800w`,
+                      `${c.imgXLarge} 1200w`,
+                    ].join(", ")}
+                    sizes="(min-width: 768px) 25vw, 42vw"
+                    alt={`Photographe ${c.label.toLowerCase()} à Marseille`}
+                    width={1200}
+                    height={1600}
+                    className={`absolute inset-0 block h-full w-full object-cover transition-transform duration-[1200ms] group-hover:scale-[1.05] ${c.slug === "famille" ? "object-[68%_50%]" : ""} ${c.objectClass ?? ""}`}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </picture>
                 <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-t from-foreground/70 via-foreground/10 to-transparent" />
                 <div className="absolute bottom-0 left-0 z-20 p-6 md:p-8">
                   <h3 className="text-white font-display text-2xl md:text-3xl italic">{c.label}</h3>
@@ -406,15 +458,18 @@ function Home() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex flex-col md:flex-row gap-16 md:gap-24 items-center">
             <Reveal className="w-full md:w-1/2">
-              <img
-                src={aboutPortrait}
-                alt="Soleana, photographe lifestyle à Marseille"
-                width={1200}
-                height={1500}
-                className="w-full aspect-[4/5] object-cover"
-                loading="lazy"
-                decoding="async"
-              />
+              <picture>
+                <source type="image/avif" srcSet={aboutPortraitAvif} />
+                <img
+                  src={aboutPortrait}
+                  alt="Soleana, photographe lifestyle à Marseille"
+                  width={1200}
+                  height={1500}
+                  className="w-full aspect-[4/5] object-cover"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </picture>
             </Reveal>
             <div className="w-full md:w-1/2 space-y-12">
               <Reveal>
