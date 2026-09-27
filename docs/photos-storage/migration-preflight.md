@@ -47,6 +47,47 @@ exclue par le prédicat SQL strict `created_at < now() - interval '24 hours'`; u
 ancienne que 24 h devient candidate si aucune ligne `photo_variants` ni `photos.image_url` ne la
 référence. Ce prédicat a été relu statiquement, pas exécuté sur PostgreSQL.
 
+### Poids au premier affichage et à l'ouverture de la lightbox
+
+Mesure locale des huit sections des quatre pages SEO. Elles utilisent `variant="single"` : le
+premier affichage montre une seule photo, puis la lightbox s'ouvre sur cette même photo. La version
+actuelle sert son WebP local complet (933 ou 1 400 px, selon la photo). En Storage, les attributs
+`sizes` font choisir le candidat AVIF 1 600 px sur les profils testés : 390 px à DPR 3 (`100vw` ×
+DPR) et 1 280 px à DPR 1 (`960px` pour l'aperçu, `1280px` dans la lightbox). L'ouverture reprend
+le même candidat en cache : **0 octet supplémentaire** pour cette première image. Le WebP q90
+serait le repli si le navigateur n'utilise pas AVIF.
+
+Chaque ligne indique le poids de l'image au premier affichage **et** le total après ouverture de la
+lightbox pour cette image. Les nombres sont identiques aux deux profils, qui choisissent tous deux
+la variante 1 600 px.
+
+| Page / section | WebP local actuel | Storage AVIF q70 | Écart | Storage WebP q90 (repli) |
+|---|---:|---:|---:|---:|
+| Grossesse / galerie 1 | 156 726 o | 258 993 o | +65,3 % | 402 880 o |
+| Grossesse / galerie 2 | 148 334 o | 495 037 o | +233,7 % | 790 320 o |
+| Famille / galerie 1 | 155 548 o | 436 036 o | +180,3 % | 694 498 o |
+| Famille / galerie 2 | 90 876 o | 144 583 o | +59,1 % | 252 316 o |
+| Couple / galerie 1 | 66 228 o | 83 139 o | +25,5 % | 163 688 o |
+| Couple / galerie 2 | 68 878 o | 176 927 o | +156,9 % | 357 298 o |
+| Couple / galerie 3 | 86 202 o | 231 591 o | +168,7 % | 422 564 o |
+| Portrait / galerie 1 | 93 774 o | 294 615 o | +214,2 % | 550 892 o |
+
+L'AVIF q70 du Storage est donc plus lourd que le WebP local sur les huit images comparées. L'écart
+vient aussi du choix de résolution : le WebP local fait 933/1 400 px tandis que le candidat
+Storage servi fait 1 600 px. Le navigateur a sélectionné le candidat 1 600 px dans Chrome headless;
+les tailles d'octets viennent des fichiers servis localement, sans entêtes HTTP ni cache CDN. La
+planche côte à côte, hors dépôt, est
+`/tmp/soleana-storage-first-display-comparison.png`; elle compare le WebP local, l'AVIF q70 et le
+WebP q90 pour la première image de chaque section. À sa taille d'affichage, aucun défaut évident
+n'apparaît, mais elle ne remplace pas l'examen des détails fins à taille réelle.
+
+Un essai **AVIF q55 / WebP q80** est une piste, pas un réglage validé. Aucune variante n'a été
+régénérée pour cet essai, conformément à la consigne. Le lot antérieur AVIF q50 / WebP q80 pesait
+78,30 Mo, avec une perte visible de microtexture à 1 600 px; il ne permet pas de déduire précisément
+le poids q55/q80. Le poids total et la comparaison visuelle des candidats q55/q80 restent à mesurer
+après accord pour produire des fichiers d'essai temporaires. Le total actuellement validé reste
+**152,28 Mo**.
+
 ## Audit des migrations 00002–00005
 
 Ordre obligatoire, chaque fichier une seule fois et dans une transaction de migration distincte :
@@ -83,6 +124,11 @@ validées, jamais un original.
 
 ## AAL2 : effet et récupération
 
+Ordre obligatoire avant toute migration photos : **déployer `apres-noel`**, vérifier que son écran
+`/admin/compte` et son parcours MFA sont accessibles, faire activer et vérifier la double
+authentification par **tous** les admins, confirmer une session `aal2` pour chacun, puis seulement
+appliquer 00002 à 00005. Aucun de ces déploiements ou enrôlements ne fait partie du présent préflight.
+
 Si 00002 est appliquée avant l'enrôlement, un admin AAL1 peut encore se connecter et lire ce que ses
 policies de lecture permettent, mais toutes ses écritures admin protégées sont refusées. Les
 policies des nouvelles tables de 00003 exigent aussi AAL2. L'accès au tableau admin n'est pas
@@ -112,16 +158,17 @@ confirmé. Conserver les sorties privées de préflight et les journaux d'import
 | Étape | Action exacte | Résultat attendu et décision |
 |---|---|---|
 | 1. État/sauvegarde | Dans Supabase Dashboard, confirmer le project ref. Exécuter `docs/photos-storage/preflight-selects.sql` en lecture seule; sauvegarder les tables éditoriales concernées et la liste/état des objets `photos` selon la procédure de sauvegarde du projet. Ne pas copier de clé dans le dépôt. | Vérifier bucket `photos` existant/public, policies connues, schéma pré-migration, aucune table nouvelle préexistante, taille/collisions compris. Tout écart non expliqué = **NO-GO**. |
-| 2. AAL2 | Vérifier tous les comptes `user_roles.role='admin'` et leur `auth.users.id`; chaque personne vérifie TOTP puis ouvre une session AAL2 dans `/admin/compte`. | Tous les comptes recensés, sans exception, AAL2 confirmé = GO; un compte manquant/AAL1 = **NO-GO**. |
-| 3. 00002 | Dans SQL Editor, appliquer intégralement `20260926000002_require_aal2_for_admin_writes.sql` une fois. Compter ses policies avec les noms `Require aal2 for %` et les tables prévues. Tester login/lecture admin et une session AAL2; ne pas tester en écrivant en production. | 26 policies (21 sur 7 tables, 2 sur `contact_requests`, 3 sur `storage.objects`); admin accessible. AAL1 doit être refusé en écriture. Sinon arrêter et utiliser le rollback exact documenté dans 00002 seulement selon décision opérateur. |
-| 4. 00003 | Appliquer `20260926000003_add_photo_variants_and_placements.sql` une fois. Exécuter le bloc RLS/policies correspondant de `postflight-selects.sql`. | Les deux tables existent, RLS activée, 10 policies combinées; aucun enregistrement de contenu créé. Une table/policy absente ou inattendue = **NO-GO**. |
-| 5. 00004 | Appliquer `20260926000004_add_avif_photo_variants.sql` une fois. Lire la colonne `format` et les contraintes de `photo_variants`. | `format` non nullable, défaut `webp`, valeurs AVIF/WebP, unicité incluant format et chemin lié à l'extension. |
-| 6. Capacité | Configurer `PHOTOS_STORAGE_LIMIT_BYTES` comme variable serveur Worker (jamais `VITE_`) et le mode souhaité `PHOTOS_STORAGE_CRITICAL_UPLOAD_MODE=block` pour le garde-fou admin. Relever l'usage global projet par `admin_photo_storage_status()` après 00005, plus les autres buckets. | Pour l'importer qui contourne le contrôle UI via `service_role`, l'opérateur confirme séparément `used_bytes + 152280609 <= limite`. Toute limite absente, usage invalide ou projection supérieure = **NO-GO**. |
-| 7. 00005 | Appliquer `20260926000005_photo_storage_admin_operations.sql` une fois. Exécuter les vérifications postflight; vérifier politiques de liste/upload/update/delete et privilèges des quatre RPC. | RPC appelée en lecture sans rôle ou en AAL1 = refus; admin+AAL2 autorisé. Non-admin ne peut ni lister, upload, supprimer, ni appeler une RPC privilégiée. Anonyme peut faire GET d'une URL publique connue, pas lister les noms. Si ce contrat n'est pas constaté = **NO-GO**. |
-| 8. Test réel limité | Après GO explicite, fournir `SUPABASE_URL` et `SUPABASE_SERVICE_ROLE_KEY` uniquement dans un terminal contrôlé (le script ne lit pas `.env`). Exécuter `node scripts/photos-storage/import-photos.mjs --apply --confirm <project-ref>.supabase.co --limit 4` sans `--publish`. | 4 photos, 24 objets/lignes variantes, 4 placements non publiés, environ 4 274 097 octets. Confirmer Storage count/SHA/MIME et lignes DB. Sinon rollback par le journal `import-*.jsonl` correspondant, après sa simulation. |
-| 9. Lot complet | Seulement après vérification du test limité : `node scripts/photos-storage/import-photos.mjs --apply --confirm <project-ref>.supabase.co`. Garder le même manifeste et préserver le journal privé. | Total attendu 170 photos, 1 020 variantes (510 de chaque format), 190 placements, environ 152 280 609 octets. Rejouer le même import en cas d'arrêt; l'outil compare l'existant et n'écrase pas. Toute divergence de SHA/poids = arrêt. |
-| 10. Publication/lecture | Inspecter le rendu sur les 4 pages. Publier seulement après accord via `node scripts/photos-storage/import-photos.mjs --apply --confirm <project-ref>.supabase.co --publish-existing`. Activer `VITE_GALLERIES_FROM_STORAGE=true` dans une étape de déploiement ultérieure, après validation séparée. | Les placements attendus deviennent publiés; les requêtes publiques ne lisent que les placements publiés. L'URL Storage connue reste publique. Revenir au rendu précédent en désactivant le flag; les objets restent en place. |
-| 11. Rollback de lot | Simuler d'abord : `node scripts/photos-storage/rollback-import.mjs --journal <chemin-journal-import.jsonl>`. Si le plan correspond exactement au lot fautif, agir ensuite avec `--apply --confirm <project-ref>.supabase.co`. | N'efface que les IDs/objets dont le journal réel indique `created: true`; un journal `dry-run` est refusé. Vérifier zéro lignes/objets de ce lot et file outbox vide. |
+| 2. Déployer `apres-noel` | Déployer la version validée de `apres-noel` selon son processus de release; vérifier `/admin/compte` et le parcours de challenge TOTP. Ne pas appliquer de migration photos pendant ce déploiement. | Écran d'enrôlement et parcours MFA accessibles; sinon **NO-GO**. |
+| 3. Activer le MFA de tous les admins | Vérifier chaque compte `user_roles.role='admin'` avec `auth.users.id`; après le déploiement, chaque admin active/vérifie son TOTP puis ouvre une session AAL2 dans `/admin/compte`. | Tous les comptes recensés, sans exception, session `aal2` confirmée = GO. Compte manquant ou AAL1 = **NO-GO**, aucune migration. |
+| 4. 00002 | Dans SQL Editor, appliquer intégralement `20260926000002_require_aal2_for_admin_writes.sql` une fois. Compter ses policies `Require aal2 for %` et tester login/lecture admin; ne pas tester en écrivant en production. | 26 policies (21 sur 7 tables, 2 sur `contact_requests`, 3 sur `storage.objects`); admin accessible, AAL1 refusé en écriture. Sinon arrêter et évaluer le rollback exact de 00002. |
+| 5. 00003 | Appliquer `20260926000003_add_photo_variants_and_placements.sql` une fois. Exécuter le bloc RLS/policies correspondant de `postflight-selects.sql`. | Les deux tables existent, RLS activée, 10 policies combinées; aucune ligne de contenu créée. Sinon **NO-GO**. |
+| 6. 00004 | Appliquer `20260926000004_add_avif_photo_variants.sql` une fois. Lire la colonne `format` et les contraintes. | `format` non nullable, défaut `webp`, valeurs AVIF/WebP, unicité incluant format, extension liée au format. |
+| 7. Capacité | Configurer `PHOTOS_STORAGE_LIMIT_BYTES` comme variable serveur Worker (jamais `VITE_`) et préférer `PHOTOS_STORAGE_CRITICAL_UPLOAD_MODE=block`. Après 00005, relever l'usage global avec `admin_photo_storage_status()`. | L'opérateur confirme séparément `used_bytes + 152280609 <= limite`, puisque l'import `service_role` contourne le contrôle UI. Limite absente/invalide ou projection trop élevée = **NO-GO**. |
+| 8. 00005 | Appliquer `20260926000005_photo_storage_admin_operations.sql` une fois. Vérifier policies de liste/upload/update/delete et privilèges des quatre RPC. | RPC sans admin/AAL2 refusée; admin+AAL2 autorisé. Non-admin ne peut lister, uploader, supprimer ou appeler une RPC privilégiée. Anonyme peut GET une URL connue, pas lister. Sinon **NO-GO**. |
+| 9. Test réel limité | Après GO explicite, fournir `SUPABASE_URL` et `SUPABASE_SERVICE_ROLE_KEY` dans un terminal contrôlé (le script ne lit pas `.env`). Exécuter `node scripts/photos-storage/import-photos.mjs --apply --confirm <project-ref>.supabase.co --limit 4`, sans `--publish`. | 4 photos, 24 variantes, 4 placements non publiés, environ 4 274 097 octets. Vérifier Storage et DB; sinon simuler puis appliquer le rollback du journal correspondant. |
+| 10. Lot complet | Après validation du test limité : `node scripts/photos-storage/import-photos.mjs --apply --confirm <project-ref>.supabase.co`. Garder le manifeste et le journal privé inchangés. | 170 photos, 1 020 variantes, 190 placements, environ 152 280 609 octets. Reprise possible avec même manifeste; divergence de poids/SHA = arrêt. |
+| 11. Publication/lecture | Inspecter les quatre pages. Après accord, publier avec `node scripts/photos-storage/import-photos.mjs --apply --confirm <project-ref>.supabase.co --publish-existing`. Activer `VITE_GALLERIES_FROM_STORAGE=true` dans un déploiement distinct et ultérieur. | Placements publiés et lecture testée. Retour au rendu précédent en désactivant le flag; objets conservés. |
+| 12. Rollback du lot | Simuler : `node scripts/photos-storage/rollback-import.mjs --journal <chemin-journal-import.jsonl>`. Si le plan correspond au lot fautif, appliquer avec `--apply --confirm <project-ref>.supabase.co`. | Supprime uniquement les identifiants/objets journalisés `created: true`; un journal `dry-run` est refusé. Vérifier l'absence des lignes/objets du lot et une outbox vide. |
 
 Les migrations 00003–00005 ne sont pas idempotentes et ne doivent pas être recollées après une
 application réussie. La migration 00002 est la seule de ce groupe dont le remplacement de policies
