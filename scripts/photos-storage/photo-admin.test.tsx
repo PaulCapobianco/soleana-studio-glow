@@ -142,6 +142,7 @@ describe("Administration Photos sans réseau réel", () => {
     await fillUpload();
     await waitFor(() => expect(toast.error).toHaveBeenCalledWith(expect.stringContaining("dépassé")));
     expect(state.uploads).toHaveLength(0);
+    expect(state.inserts).toHaveLength(0);
   });
 
   it("demande confirmation avant de supprimer fichiers et lignes", async () => {

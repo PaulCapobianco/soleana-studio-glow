@@ -28,6 +28,7 @@ const option = (name) => {
 };
 
 const apply = flag("--apply");
+const preflightOnly = flag("--preflight");
 const publish = flag("--publish");
 const publishExisting = flag("--publish-existing");
 const limit = option("--limit") ? Number(option("--limit")) : undefined;
@@ -35,6 +36,9 @@ const only = option("--only")?.split(",").filter(Boolean);
 const BUCKET = "photos";
 if (option("--limit") && (!Number.isSafeInteger(limit) || limit < 1)) {
   throw new Error("--limit doit être un entier positif.");
+}
+if (preflightOnly && (apply || limit || only?.length || publish || publishExisting)) {
+  throw new Error("--preflight se lance seul, sans limite, publication ni écriture.");
 }
 
 const manifest = await readManifest();
@@ -62,6 +66,49 @@ for (const photo of manifest.photos) {
   if (own.length !== expected || own.some((v) => !["avif", "webp"].includes(v.format))) {
     throw new Error(`Variantes incomplètes pour ${photo.source_key} : exécuter verify-variants.mjs.`);
   }
+}
+if (preflightOnly) {
+  const blockers = [];
+  const photoKeys = new Set(manifest.photos.map((photo) => photo.source_key));
+  if (photoKeys.size !== manifest.photos.length) blockers.push("source_key en double dans le manifeste");
+  if (manifest.photos.length !== 170) blockers.push(`170 photos attendues, ${manifest.photos.length} trouvées`);
+  if (variants.length !== 1020) blockers.push(`1 020 variantes attendues, ${variants.length} trouvées`);
+  if (manifest.placements.length !== 190) blockers.push(`190 emplacements attendus, ${manifest.placements.length} trouvés`);
+  for (const photo of manifest.photos) {
+    if (photo.source_key !== `galleries/${photo.category}/${photo.source_sha256?.slice(0, 12)}`) {
+      blockers.push(`${photo.source_key}: clé source non dérivée de l'empreinte attendue`);
+    }
+    if (!photo.alt_text?.trim()) blockers.push(`${photo.source_key}: texte alternatif photo manquant`);
+    const own = variantsBySource.get(photo.source_key) ?? [];
+    for (const width of new Set([400, 800, 1600].map((target) => Math.min(target, photo.width)))) {
+      for (const format of ["avif", "webp"]) {
+        const matches = own.filter((variant) => variant.width === width && variant.format === format);
+        if (matches.length !== 1) blockers.push(`${photo.source_key}: ${matches.length} variante(s) ${width}px ${format}, une attendue`);
+      }
+    }
+  }
+  if (variants.some((variant) => !photoKeys.has(variant.source_key))) blockers.push("variante avec source_key absente du manifeste");
+  const placementKeys = new Set();
+  for (const placement of manifest.placements) {
+    if (placementKeys.has(placement.placement_key)) blockers.push(`placement_key en double: ${placement.placement_key}`);
+    placementKeys.add(placement.placement_key);
+    if (!photoKeys.has(placement.source_key)) blockers.push(`${placement.placement_key}: référence source absente`);
+    const photo = manifest.photos.find((candidate) => candidate.source_key === placement.source_key);
+    if (!placement.alt?.trim() || !placement.alt.startsWith(photo?.alt_text ?? "")) {
+      blockers.push(`${placement.placement_key}: texte alternatif absent ou incohérent`);
+    }
+  }
+  const bytes = variants.reduce((sum, variant) => sum + variant.byte_size, 0);
+  const formats = Object.fromEntries(["avif", "webp"].map((format) => [
+    format,
+    variants.filter((variant) => variant.format === format).length,
+  ]));
+  console.log(blockers.length ? "NOT READY — blocages manifeste/import :" : "READY — manifeste et plan d'import locaux :");
+  for (const blocker of blockers) console.log(`- ${blocker}`);
+  console.log(`Photos: ${manifest.photos.length}; variantes: ${variants.length} (${formats.avif} AVIF, ${formats.webp} WebP); emplacements: ${manifest.placements.length}; poids indexé: ${(bytes / 1e6).toFixed(2)} Mo.`);
+  if (blockers.length) process.exit(1);
+  console.log("Aucun journal n'est créé ; les octets doivent aussi passer verify-variants.mjs.");
+  process.exit(0);
 }
 
 let selected = manifest.photos;

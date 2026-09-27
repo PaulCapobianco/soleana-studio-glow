@@ -11,7 +11,7 @@ pas À propos. Voir aussi `docs/photos-storage-plan.md` (plan général).
 | `docs/photos-storage/preflight-selects.sql` | Requêtes de vérification en lecture seule (bucket, politiques, tables, comptes). |
 | `docs/photos-storage/postflight-selects.sql` | Contrôles de schéma, RLS, variantes, emplacements et objets après migration et import. |
 | `docs/photos-storage/bug-02-activation.md` | État du correctif BUG-02 et ordre d'activation après import. |
-| `supabase/migrations/20260926000003_add_photo_variants_and_placements.sql` | Schéma additif (`photos.source_key`, `photo_variants`, `photo_placements`) avec RLS et politiques aal2. **Non appliquée, inchangée.** |
+| `supabase/migrations/20260926000003_add_photo_variants_and_placements.sql` | Schéma additif (`photos.source_key`, `photo_variants`, `photo_placements`) avec RLS et politiques aal2. **Non appliquée ; ordre, préflight et limites de rejeu dans [migration-preflight.md](migration-preflight.md).** |
 | `supabase/migrations/20260926000004_add_avif_photo_variants.sql` | Ajoute le format AVIF à `photo_variants` et autorise deux formats par largeur. **Non appliquée ; à lancer après 000003.** |
 | `supabase/migrations/20260926000005_photo_storage_admin_operations.sql` | Prépare le suivi de capacité, la file compensatoire de suppression et les policies Storage photo. **Non appliquée ; à lancer après 00002, 00003 et 00004.** |
 | `docs/photos-storage/manifest-phase1.json` | Manifeste v3 : clés opaques et empreintes SHA-256, dimensions et emplacements. Aucun chemin ni nom d'original. |
@@ -19,6 +19,7 @@ pas À propos. Voir aussi `docs/photos-storage-plan.md` (plan général).
 | `scripts/photos-storage/generate-variants.mjs` | Génère AVIF et WebP à 400, 800 et 1600 px au plus, sans agrandissement ni métadonnées, depuis les originaux retenus. Repli sur le WebP actuel si aucun original n'atteint le seuil de ressemblance. |
 | `docs/photos-storage/quality-review.md` | Contrôle visuel représentatif, réglages d'encodage, métriques finales et contrat de stockage sans originaux. |
 | `docs/photos-storage/admin-storage-operations.md` | Réglages navigateur, Safari, capacité, suppression fiable, import futur, contrôles et retour arrière. |
+| `docs/photos-storage/migration-preflight.md` | Audit final 00002–00005, résultats READY/NOT READY et procédure opérateur avec critères GO/NO-GO. |
 | `scripts/photos-storage/measure-gallery-bytes.mjs` | Mesure locale dans Chrome les octets réellement chargés pour la galerie couple 1, avant et après, sur trois largeurs d'écran. |
 | `scripts/photos-storage/verify-variants.mjs` | Vérifie dimensions, poids, empreintes, absence d'EXIF/XMP/ICC, clés de stockage. |
 | `scripts/photos-storage/import-photos.mjs` | Import. **Simulation par défaut.** Mode réel : `--apply --confirm <hôte>`. |

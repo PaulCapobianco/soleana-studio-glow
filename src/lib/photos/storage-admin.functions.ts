@@ -4,6 +4,7 @@ import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import type { Database } from "@/integrations/supabase/types";
 import { calculateStorageCapacity } from "@/lib/photos/storage-capacity";
+import { retryPhotoCleanupJobs } from "@/lib/photos/storage-cleanup";
 
 const PHOTOS_BUCKET = "photos";
 const ORPHAN_VARIANT_PATH = /^galleries\/[a-z0-9][a-z0-9_-]*\/[a-f0-9]{12,32}\/[a-f0-9]{8}-([1-9]|[1-9][0-9]|[1-9][0-9]{2}|1[0-5][0-9]{2}|1600)\.(avif|webp)$/;
@@ -94,31 +95,20 @@ export const retryPhotoStorageCleanup = createServerFn({ method: "POST" })
   .handler(async ({ context }) => {
     const { data: jobs, error } = await context.supabase.rpc("admin_pending_photo_cleanup_jobs");
     if (error) throw new Error("Lecture de la file de nettoyage impossible.");
-    let completed = 0;
-    let pending = 0;
-    for (const job of jobs ?? []) {
-      const paths = job.object_paths.filter((path) => typeof path === "string" && path.length > 0);
-      let failure: string | null = null;
-      for (let offset = 0; offset < paths.length; offset += 100) {
-        const { error: removeError } = await context.supabase.storage.from(PHOTOS_BUCKET).remove(paths.slice(offset, offset + 100));
-        if (removeError) {
-          failure = removeError.message;
-          break;
-        }
-      }
-      const { error: finishError } = await context.supabase.rpc("admin_finish_photo_cleanup", {
-        p_job_id: job.job_id,
-        p_error: failure,
-      });
-      if (finishError) {
-        pending += 1;
-      } else if (failure) {
-        pending += 1;
-      } else {
-        completed += 1;
-      }
-    }
-    return { completed, pending };
+    return retryPhotoCleanupJobs(
+      jobs ?? [],
+      async (paths) => {
+        const { error: removeError } = await context.supabase.storage.from(PHOTOS_BUCKET).remove(paths);
+        return removeError?.message ?? null;
+      },
+      async (jobId, failure) => {
+        const { error: finishError } = await context.supabase.rpc("admin_finish_photo_cleanup", {
+          p_job_id: jobId,
+          p_error: failure,
+        });
+        return !finishError;
+      },
+    );
   });
 
 export type PhotoStorageCapacity = Awaited<ReturnType<typeof getPhotoStorageCapacity>>;

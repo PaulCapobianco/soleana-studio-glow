@@ -1,5 +1,5 @@
 -- À appliquer manuellement après 20260926000003, avant tout import de variantes AVIF.
--- 000003 reste inchangée. Cette migration permet AVIF et WebP à une même largeur.
+-- Cette migration permet AVIF et WebP à une même largeur; ne pas la rejouer après application.
 -- Les politiques RLS existantes portent sur photo_id et ne dépendent ni du chemin ni du format.
 BEGIN;
 

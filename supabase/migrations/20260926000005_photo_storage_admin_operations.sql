@@ -1,8 +1,34 @@
 -- Prépare le contrôle de capacité et la suppression fiable des photos Storage.
--- À exécuter manuellement seulement après 00003 et 00004, avant d'activer l'admin Storage.
+-- À exécuter manuellement seulement après 00002, 00003 et 00004, avant d'activer l'admin Storage.
 -- Ne modifie aucun objet, ne migre aucun contenu et ne change pas le bucket public photos.
 
 BEGIN;
+
+DO $$
+BEGIN
+  IF to_regclass('public.photo_variants') IS NULL
+     OR to_regclass('public.photo_placements') IS NULL
+     OR NOT EXISTS (
+       SELECT 1 FROM information_schema.columns
+       WHERE table_schema = 'public' AND table_name = 'photo_variants' AND column_name = 'format'
+     ) THEN
+    RAISE EXCEPTION 'Migrations 00003 and 00004 must be applied first';
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM storage.buckets WHERE id = 'photos' AND public) THEN
+    RAISE EXCEPTION 'Expected the existing public photos bucket; inspect storage.buckets before proceeding';
+  END IF;
+  IF NOT EXISTS (
+       SELECT 1 FROM pg_policies
+       WHERE schemaname = 'storage' AND tablename = 'objects'
+         AND policyname = 'Require aal2 for photos uploads'
+     ) OR NOT EXISTS (
+       SELECT 1 FROM pg_policies
+       WHERE schemaname = 'public' AND tablename = 'photos'
+         AND policyname = 'Require aal2 for admin inserts'
+     ) THEN
+    RAISE EXCEPTION 'Migration 00002 aal2 policies must be applied first';
+  END IF;
+END $$;
 
 -- Un bucket public sert les URLs de photos sans exposer la liste des chemins par l'API list.
 -- Les opérations list/delete restent soumises à RLS ; la fonction d'agrégat ci-dessous expose
@@ -84,6 +110,12 @@ BEGIN
   END IF;
   IF auth.jwt() ->> 'aal' IS DISTINCT FROM 'aal2' THEN
     RAISE EXCEPTION 'aal2 session required' USING ERRCODE = '42501';
+  END IF;
+  IF EXISTS (
+    SELECT 1 FROM storage.objects o
+    WHERE COALESCE(o.metadata->>'size', '') !~ '^[0-9]+$'
+  ) THEN
+    RAISE EXCEPTION 'Storage object size metadata is missing or invalid; capacity cannot be measured safely';
   END IF;
 
   WITH all_objects AS (
@@ -214,3 +246,25 @@ REVOKE ALL ON FUNCTION public.admin_finish_photo_cleanup(UUID, TEXT) FROM PUBLIC
 GRANT EXECUTE ON FUNCTION public.admin_finish_photo_cleanup(UUID, TEXT) TO authenticated;
 
 COMMIT;
+
+-- ---------------------------------------------------------------------------------------------
+-- RETOUR ARRIÈRE (après rollback des données/imports et seulement si la file outbox est vide) :
+-- BEGIN;
+-- DROP FUNCTION IF EXISTS public.admin_finish_photo_cleanup(UUID, TEXT);
+-- DROP FUNCTION IF EXISTS public.admin_pending_photo_cleanup_jobs();
+-- DROP FUNCTION IF EXISTS public.admin_delete_photo(UUID, TEXT);
+-- DROP FUNCTION IF EXISTS public.admin_photo_storage_status();
+-- DROP TABLE IF EXISTS public.photo_storage_cleanup_jobs;
+-- DROP POLICY IF EXISTS "Require aal2 for photo web variant deletes" ON storage.objects;
+-- DROP POLICY IF EXISTS "Restrict photos object updates to web variants" ON storage.objects;
+-- DROP POLICY IF EXISTS "Restrict photos object uploads to web variants" ON storage.objects;
+-- DROP POLICY IF EXISTS "Admin list photos objects" ON storage.objects;
+-- DROP POLICY IF EXISTS "Admin upload photos" ON storage.objects;
+-- CREATE POLICY "Public read photos bucket" ON storage.objects
+--   FOR SELECT TO anon, authenticated USING (bucket_id = 'photos');
+-- CREATE POLICY "Admin upload photos" ON storage.objects
+--   FOR INSERT TO authenticated
+--   WITH CHECK (bucket_id = 'photos' AND public.has_role(auth.uid(), 'admin'));
+-- COMMIT;
+-- Ne pas retirer ici les policies aal2 de 00002/00003 ; elles appartiennent à ces migrations.
+-- ---------------------------------------------------------------------------------------------

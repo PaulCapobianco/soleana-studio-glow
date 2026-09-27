@@ -7,11 +7,10 @@
 --
 -- Ordre conseillé : 1) requêtes de vérification de docs/photos-storage/README.md ; 2) cette migration ;
 -- 3) import de test sur 3 ou 4 photos ; 4) import complet ; 5) activation côté site.
--- Les politiques restrictives aal2 ci-dessous sont cohérentes avec 20260926000002 : elles n'exigent
--- le second facteur que pour les écritures de l'administration. Si 20260926000002 n'est pas encore
--- appliquée (admins sans second facteur), elles bloqueraient les écritures admin sur les deux
--- nouvelles tables : dans ce cas, retirer le bloc « aal2 » en fin de fichier et l'appliquer plus tard
--- avec 20260926000002. L'import (script hors dépôt, clé service_role) n'est pas soumis à la RLS.
+-- Les politiques restrictives aal2 ci-dessous s'appliquent toujours aux écritures admin de ces deux
+-- tables. Appliquer 20260926000002 après que tous les admins ont vérifié leur MFA/AAL2, avant cette
+-- migration ; ne jamais retirer le bloc aal2 pour contourner un compte non enrôlé. L'import local
+-- utilise le script opérateur avec une clé service_role gardée dans le terminal, jamais dans le site.
 
 BEGIN;
 
@@ -49,9 +48,6 @@ CREATE TABLE public.photo_variants (
   UNIQUE (photo_id, width)
 );
 ALTER TABLE public.photo_variants ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Public read published photo variants" ON public.photo_variants
-  FOR SELECT TO anon, authenticated
-  USING (EXISTS (SELECT 1 FROM public.photos p WHERE p.id = photo_id AND p.published));
 CREATE POLICY "Admin manage photo variants" ON public.photo_variants
   FOR ALL TO authenticated
   USING (public.has_role(auth.uid(), 'admin'))
@@ -102,6 +98,23 @@ CREATE POLICY "Admin manage photo placements" ON public.photo_placements
 GRANT SELECT ON public.photo_placements TO anon;
 GRANT SELECT, INSERT, UPDATE, DELETE ON public.photo_placements TO authenticated;
 GRANT ALL ON public.photo_placements TO service_role;
+
+-- Le public ne découvre les chemins de variantes que si un emplacement visible référence la photo.
+-- Le bucket reste public : toute URL connue sert l'image, mais la table n'énumère pas les variantes
+-- des brouillons ou des photos sans placement publié.
+CREATE POLICY "Public read published photo variants" ON public.photo_variants
+  FOR SELECT TO anon, authenticated
+  USING (
+    EXISTS (SELECT 1 FROM public.photos p WHERE p.id = photo_id AND p.published)
+    AND EXISTS (
+      SELECT 1 FROM public.photo_placements pl
+      WHERE pl.photo_id = photo_variants.photo_id
+        AND pl.published
+        AND (pl.seo_page_id IS NULL OR EXISTS (
+          SELECT 1 FROM public.seo_pages s WHERE s.id = pl.seo_page_id AND s.published
+        ))
+    )
+  );
 
 
 -- Écritures admin : session aal2 exigée (politiques restrictives, cumulées avec has_role).
