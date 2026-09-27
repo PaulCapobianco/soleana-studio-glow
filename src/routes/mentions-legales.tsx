@@ -53,6 +53,12 @@ function LegalNoticePage() {
                 <li>
                   <strong className="text-foreground">Statut :</strong> Micro-entrepreneuse
                 </li>
+                {settings.legalInfo && (
+                  <li>
+                    <strong className="text-foreground">Adresse :</strong>{" "}
+                    <span className="whitespace-pre-line">{settings.legalInfo}</span>
+                  </li>
+                )}
                 <li>
                   <strong className="text-foreground">SIRET :</strong> 83168145700030
                 </li>

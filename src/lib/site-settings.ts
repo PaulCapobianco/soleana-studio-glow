@@ -17,6 +17,8 @@ export type SiteSettings = {
   /** Zone d'intervention découpée pour le JSON-LD. */
   areaServed: string[];
   footerText: string;
+  /** Adresse de l'éditeur pour les mentions légales. Vide = ligne non affichée. */
+  legalInfo: string;
 };
 
 // Valeurs affichées avant l'existence de la table : elles servent de repli si la lecture échoue
@@ -34,6 +36,7 @@ export const SITE_SETTINGS_FALLBACK: SiteSettings = {
   areaServed: ["Marseille", "Aubagne", "Cassis", "La Ciotat", "Provence"],
   footerText:
     "Des images naturelles et lumineuses pour garder une trace des instants qui comptent.",
+  legalInfo: "",
 };
 
 // Adresse par défaut de la migration initiale, jamais mise à jour : ce n'est pas une vraie valeur.
@@ -64,6 +67,7 @@ type SettingsRow = Partial<{
   google_review_url: string | null;
   service_area: string | null;
   footer_text: string | null;
+  legal_info: string | null;
 }>;
 
 /** Fusionne la ligne lue en base avec le repli : toute valeur absente ou vide retombe sur le code. */
@@ -94,6 +98,7 @@ export function resolveSiteSettings(row: SettingsRow | null | undefined): SiteSe
           .filter(Boolean)
       : f.areaServed,
     footerText: text(row.footer_text) ?? f.footerText,
+    legalInfo: text(row.legal_info) ?? f.legalInfo,
   };
 }
 
