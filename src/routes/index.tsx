@@ -5,9 +5,13 @@ import { HeroSlideshow } from "@/components/site/HeroSlideshow";
 import { Reveal } from "@/components/site/Reveal";
 import { GoogleIcon } from "@/components/site/GoogleIcon";
 import hero1 from "@/assets/accueil/hero_1.webp";
+import hero1Avif from "@/assets/accueil/hero_1.avif";
 import hero2 from "@/assets/accueil/hero_2.webp";
+import hero2Avif from "@/assets/accueil/hero_2.avif";
 import hero3 from "@/assets/accueil/hero_3.webp";
+import hero3Avif from "@/assets/accueil/hero_3.avif";
 import hero4 from "@/assets/accueil/hero_4.webp";
+import hero4Avif from "@/assets/accueil/hero_4.avif";
 import logoSoleana from "@/assets/logo-soleana.webp";
 import catGrossesse from "@/assets/portfolio/grossesse.webp";
 import catGrossesseSm from "@/assets/portfolio/grossesse-350.webp";
@@ -94,7 +98,13 @@ export const Route = createFileRoute("/")({
       links: [
         ...seo.links,
         { rel: "preload", as: "image", href: logoSoleana280, fetchPriority: "high" as const },
-        { rel: "preload", as: "image", href: hero1, fetchPriority: "high" as const },
+        {
+          rel: "preload",
+          as: "image",
+          href: hero1Avif,
+          type: "image/avif",
+          fetchPriority: "high" as const,
+        },
       ],
     };
   },
@@ -227,11 +237,24 @@ function Home() {
           images={[
             {
               src: hero1,
+              avifSrc: hero1Avif,
               alt: "Future maman dans un champ de blé doré au coucher du soleil en Provence",
             },
-            { src: hero2, alt: "Couple enlacé sur les falaises de Cassis au coucher du soleil" },
-            { src: hero3, alt: "Famille marchant pieds nus sur une plage de Méditerranée" },
-            { src: hero4, alt: "Portrait lifestyle doux et lumineux en lumière naturelle" },
+            {
+              src: hero2,
+              avifSrc: hero2Avif,
+              alt: "Couple enlacé sur les falaises de Cassis au coucher du soleil",
+            },
+            {
+              src: hero3,
+              avifSrc: hero3Avif,
+              alt: "Famille marchant pieds nus sur une plage de Méditerranée",
+            },
+            {
+              src: hero4,
+              avifSrc: hero4Avif,
+              alt: "Portrait lifestyle doux et lumineux en lumière naturelle",
+            },
           ]}
         />
         <div
