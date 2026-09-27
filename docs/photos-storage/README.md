@@ -72,8 +72,10 @@ publication. Les cases Accueil / Portfolio restent masquées : ces pages ne lise
 colonnes. L'envoi n'a **pas** été exécuté contre la production ; la logique est testée localement.
 Sur une image JPEG avec orientation EXIF, nom d'auteur et profil ICC, le test Chrome local a confirmé
 deux sorties correctement orientées (400 × 600), AVIF et WebP, sans EXIF, ICC, XMP ni IPTC. Un test
-automatisé simule l'envoi, le nettoyage après échec et la suppression confirmée. Un navigateur qui
-ne sait pas décoder la photo ou encoder WebP ne peut pas l'envoyer ; essayer un JPG récent dans ce cas.
+automatisé simule l'envoi, le nettoyage après échec et la suppression confirmée. Si un navigateur
+ne décode pas un HEIC, essayer un JPG ; si l'encodage WebP échoue, changer le format de la source
+ne suffit pas. Voir la [proposition de repli pour Safari iOS](safari-ios.md), à valider sur appareil
+avant d'ajouter une dépendance.
 
 ## Procédure pas à pas : test réel sur 4 photos (à faire par Paul)
 
