@@ -1,27 +1,51 @@
-# Envoi de photos depuis Safari iOS
+# Photos depuis Safari iOS
 
-## État du flux actuel
+## État du traitement
 
-L'admin redimensionne la photo sur un `<canvas>`, produit l'AVIF avec l'encodeur WASM déjà
-présent, puis demande le WebP à `canvas.toBlob(..., "image/webp")`. Le code vérifie le type
-du `Blob` avant tout envoi. Si le navigateur renvoie du PNG en repli, l'opération échoue avec
-un message explicite et aucun fichier n'est envoyé.
+Le panel accepte les originaux JPG/JPEG, HEIC/HEIF fixe et PNG de 25 Mo maximum. Il rejette WebP et
+AVIF en entrée afin d'éviter de réencoder une ancienne variante web comme si c'était un original.
+Le fichier doit également présenter une signature binaire cohérente avec l'un de ces formats ; le
+nom et le type MIME seuls ne suffisent pas.
 
-Ce contrôle est nécessaire : [WebKit remplace un format de sortie non pris en charge par
-`image/png`](https://github.com/WebKit/WebKit/blob/main/Source/WebCore/html/HTMLCanvasElement.cpp).
-Le décodage d'un HEIC/HEIF et l'orientation via `createImageBitmap` doivent aussi être
-vérifiés sur un vrai iPhone ; un test dans Chrome de bureau ne les valide pas pour Safari iOS.
+Le décodeur essaie `createImageBitmap(..., { imageOrientation: "from-image" })`, puis un élément
+`Image` natif avec URL objet. WebKit annonce le décodage HEIC dans Safari 17 / iOS 17 et versions
+ultérieures ; la réussite de `createImageBitmap`, la sélection directe dans Photos/Fichiers et
+l'application de l'orientation EXIF doivent néanmoins être confirmées sur un vrai iPhone.
+Si les deux chemins échouent, le panel explique de convertir l'image en JPG. Il n'envoie aucun
+original avant ou après l'échec.
 
-## Proposition si le test iPhone confirme l'échec WebP
+## Encodage AVIF et WebP
 
-Ajouter `@jsquash/webp` comme encodeur de secours **chargé seulement lorsque** `toBlob` ne
-renvoie pas un vrai WebP. Lui passer le même `ImageData` que celui utilisé pour l'AVIF, puis
-conserver la vérification de signature, de dimensions, de métadonnées et d'empreinte avant
-l'envoi. [jSquash fournit un encodeur WebP pour le
-navigateur](https://github.com/jamsinclair/jSquash#usage-in-the-browser).
+Le panel encode dans deux modules WASM jSquash, chargés à la première préparation d'image et jamais
+pour la galerie publique :
 
-Avant l'ajout : mesurer le poids du module WASM et le temps d'encodage pour une photo de
-25 Mo sur iPhone, vérifier son intégration Vite en build de production, puis tester le flux
-sur Safari iOS avec JPG et HEIC réels. Le repli ne doit charger aucun code supplémentaire
-pour les navigateurs où l'encodage natif fonctionne. Aucune dépendance n'est ajoutée à ce
-stade, faute de test Safari iOS sur appareil.
+- AVIF via `@jsquash/avif`, déjà présent ;
+- WebP via `@jsquash/webp`, ajouté car Safari peut retourner un PNG quand un type de sortie Canvas
+  n'est pas pris en charge.
+
+Le panel n'utilise plus `canvas.toBlob("image/webp")`. Chaque blob est contrôlé à la fois par son
+MIME et sa signature RIFF/WEBP ou ISO-BMFF/AVIF. Un repli PNG, même annoncé avec un MIME trompeur,
+arrête le traitement avant le premier upload. Les modules WASM produisent directement des pixels
+AVIF/WebP sans blocs EXIF, ICC ou XMP.
+
+Le WebP WASM pèse environ 281 ko non compressé et n'est chargé que dans l'écran admin quand une
+photo est préparée. L'AVIF WASM déjà présent pèse environ 3,49 Mo non compressé.
+
+## Limites restantes
+
+- Safari avant iOS 17 n'a pas le décodage HEIC documenté de WebKit : utiliser « Le plus compatible »
+  dans Réglages > Appareil photo > Formats ou convertir en JPG dans Photos/Fichiers.
+- Le décodage natif HEIC dépend du codec présent sur l'appareil et de la manière dont Photos remet
+  le fichier au navigateur. Une photo HEIC avec codec/structure non pris en charge est rejetée avec
+  invitation à convertir en JPG.
+- Les orientations HEIC/EXIF, les images HDR/wide-gamut et le traitement sur une photo réelle de
+  25 Mo doivent être vérifiés sur iPhone. Le canvas standard passe les pixels en sRGB ; aucun
+  étalonnage ou changement de rendu n'est appliqué volontairement, mais les profils Display-P3/HDR
+  peuvent perdre leur étendue sur ce chemin.
+- Aucun test physique d'iPhone n'a été fait dans cette étape. Un build Chrome et les tests Vitest ne
+  valident pas l'accès à Photos, le décodage HEIC natif, la mémoire disponible ni la durée WASM sur
+  iOS. Le fichier original demeure local et seule la sortie encodée peut être transmise.
+
+Références : [WebKit sur les images HEIC dans Safari 17](https://webkit.org/blog/14445/webkit-features-in-safari-17-0/),
+[spécification HTML de repli PNG pour les formats Canvas non supportés](https://html.spec.whatwg.org/multipage/canvas.html#dom-canvas-toblob-dev),
+[jSquash et ses encodeurs WASM AVIF/WebP](https://github.com/jamsinclair/jSquash).
