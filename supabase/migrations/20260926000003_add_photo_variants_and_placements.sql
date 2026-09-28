@@ -5,11 +5,11 @@
 -- Date : 26 septembre 2026.
 -- À APPLIQUER MANUELLEMENT : cette migration est créée dans le dépôt mais n'a PAS été exécutée.
 --
--- Ordre conseillé : 1) requêtes de vérification de docs/photos-storage/README.md ; 2) cette migration ;
--- 3) import de test sur 3 ou 4 photos ; 4) import complet ; 5) activation côté site.
+-- Ordre pré-déploiement : préflight, cette migration, 20260926000004, import de test,
+-- puis import complet en brouillon. L'activation côté site est une étape ultérieure.
 -- Les politiques restrictives aal2 ci-dessous s'appliquent toujours aux écritures admin de ces deux
--- tables. Appliquer 20260926000002 après que tous les admins ont vérifié leur MFA/AAL2, avant cette
--- migration ; ne jamais retirer le bloc aal2 pour contourner un compte non enrôlé. L'import local
+-- tables. Appliquer 20260926000002 seulement après le déploiement et la vérification MFA/AAL2
+-- de tous les admins ; ne jamais retirer le bloc aal2 pour contourner un compte non enrôlé. L'import local
 -- utilise le script opérateur avec une clé service_role gardée dans le terminal, jamais dans le site.
 
 BEGIN;
