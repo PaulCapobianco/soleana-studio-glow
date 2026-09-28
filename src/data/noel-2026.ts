@@ -40,9 +40,10 @@ export function isNoel2026EditionOver(now: Date): boolean {
   return now.getTime() >= new Date(NOEL_2026_EDITION_ENDS_AT).getTime();
 }
 
-// TODO: replace with the real Pelli booking links once Paul provides them.
-export const NOEL_2026_PELLI_URL_DOUCEUR = "https://TODO-lien-pelli-douceur";
-export const NOEL_2026_PELLI_URL_MAGIE = "https://TODO-lien-pelli-magie";
+export const NOEL_2026_PELLI_URL_DOUCEUR =
+  "https://soleana-studio.pelli.io/booking/douceur-de-noel-mini-seance-photo-exterieure";
+export const NOEL_2026_PELLI_URL_MAGIE =
+  "https://soleana-studio.pelli.io/booking/magie-de-noel-mini-seance-photo-exterieure";
 
 export type NoelFormule = {
   id: string;

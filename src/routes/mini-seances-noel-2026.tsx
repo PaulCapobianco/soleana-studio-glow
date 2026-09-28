@@ -221,7 +221,7 @@ function NoelPage() {
                   <a
                     href={formule.pelliUrl}
                     target="_blank"
-                    rel="noopener"
+                    rel="noopener noreferrer"
                     className={styles.button}
                   >
                     {NOEL_2026_PAGE_COPY.formuleCta}
