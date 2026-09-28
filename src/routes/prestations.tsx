@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SiteShell } from "@/components/site/SiteShell";
 import { Reveal } from "@/components/site/Reveal";
 import fondPresta from "@/assets/fond_presta.webp";
+import fondPrestaAvif from "@/assets/fond_presta.avif";
 import { buildPageSeo } from "@/lib/seo";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -39,7 +40,9 @@ function Tarifs() {
       <div className="relative overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: `url(${fondPresta})` }}
+          style={{
+            backgroundImage: `image-set(url(${fondPrestaAvif}) type("image/avif"), url(${fondPresta}) type("image/webp"))`,
+          }}
           aria-hidden="true"
         />
         <div className="absolute inset-0 bg-[#FAF6EF]/66" aria-hidden="true" />
@@ -50,7 +53,7 @@ function Tarifs() {
 
         <section className="relative px-6 pt-40 pb-24 text-center">
           <div className="mx-auto max-w-5xl">
-            <Reveal>
+            <Reveal immediate>
               <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent mb-4">
                 Prestations
               </p>

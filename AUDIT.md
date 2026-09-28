@@ -7,13 +7,29 @@
 
 ---
 
+## Mise à jour — 27 septembre 2026 (soir) — lots sécurité et RGPD de `docs/audit-2026-10.md`
+
+Deux des lots « ouvert partout » du plan d'action de l'audit du 10/2026 (`docs/audit-2026-10.md`,
+branche `audit-2026-10`) ont été traités sur `apres-noel` :
+
+- **SEC-04 (en-têtes HTTP)** — voir la mise à jour dans le constat SEC-04 ci-dessous.
+- **RGPD-02 et RGPD-05 (`mentions-legales.tsx`)** — voir les mises à jour dans ces deux constats
+  ci-dessous. Un point reste à la décision de Paul, non tranché unilatéralement : le retrait de
+  l'adresse e-mail personnelle de la photographe en section 1 (Éditeur du site), au profit de
+  `site_settings.email` — détail dans la mise à jour de RGPD-05.
+- Le commentaire d'en-tête de `20260926000000_close_anonymous_contact_inserts.sql` a été corrigé
+  (il disait encore « non exécutée » alors que la migration est appliquée en production depuis le
+  26/09/2026) — aucun statement SQL modifié.
+
+---
+
 ## Mise à jour — 27 septembre 2026
 
 **Textes RGPD (`mentions-legales.tsx`, `confidentialite.tsx`), branche `apres-noel`, non déployé :**
 
 - Mentions légales : section « Cookies » réécrite (retrait de la formule de consentement invalide, description exacte du chargement des iframes Pelli sur clic) ; section « Crédits » complétée (lien vers le profil LinkedIn du développeur, contenu existant conservé).
 - Politique de confidentialité : sections « Destinataires des données », « Durée de conservation » (durées chiffrées) et « Transferts hors UE » réécrites ; ajout d'une phrase sur le retrait du consentement en fin de « Vos droits » ; nouvelle section « Photos publiées sur le site » (retrait sur simple demande). Renumérotée en conséquence (11 sections).
-- Détail par constat : voir les mises à jour du 27/09/2026 dans RGPD-01 à 05 ci-dessous. En résumé : RGPD-03 et RGPD-04 largement résolus sur `confidentialite.tsx` (reste : la région Supabase à renseigner, et la purge automatique de `contact_requests` toujours à créer) ; RGPD-01 partiellement traité (texte correct, mais ce que Pelli dépose réellement reste à vérifier dans un navigateur) ; RGPD-02 et RGPD-05 inchangés (portent sur `mentions-legales.tsx`, hors périmètre de cette mise à jour).
+- Détail par constat : voir les mises à jour du 27/09/2026 dans RGPD-01 à 05 ci-dessous. En résumé : RGPD-03 résolu sur `confidentialite.tsx` (reste : le contrat de sous-traitance avec Pelli à confirmer) ; RGPD-04 largement résolu sur `confidentialite.tsx` (reste : la purge automatique de `contact_requests` toujours à créer) ; RGPD-01 partiellement traité (texte correct, mais ce que Pelli dépose réellement reste à vérifier dans un navigateur) ; RGPD-02 et RGPD-05 inchangés (portent sur `mentions-legales.tsx`, hors périmètre de cette mise à jour).
 - Rendu vérifié à 390 px et 1280 px sur les deux pages.
 
 **FAQ « Où peut se dérouler la séance ? » — décision close :**
@@ -231,19 +247,23 @@ Le vrai problème est ailleurs : **la protection a disparu, pas la surface d'att
 **Décision et résultat (26/09/2026) :** Pelli reste le canal unique ; le formulaire local est supprimé. Code retiré (commit `8026431`) : schéma Zod, `submitContactRequest`, widget Turnstile et client service-role. Insertion anonyme fermée en base par `20260926000000_close_anonymous_contact_inserts.sql` (politique `Anyone can submit a contact request` supprimée, `INSERT` retiré à `anon` et `authenticated`), **appliquée manuellement en production le 26/09/2026 et vérifiée** : seules les politiques admin (lecture, modification, suppression) restent sur `contact_requests`, qui était vide (0 ligne). **Statut : clos.**
 **Correction d'origine (conservée pour mémoire) :** si Pelli reste le canal unique, révoquer la politique INSERT anonyme (`DROP POLICY "Anyone can submit a contact request"`) — la table ne sert alors plus qu'à l'historique. Si le formulaire natif est réactivé, restreindre l'INSERT au seul `service_role` et faire passer les soumissions par `submitContactRequest`. Dans les deux cas, ajouter une règle Cloudflare Rate Limiting. *(La règle de limitation de débit ne concerne plus cette table ; elle reste utile pour le site en général.)*
 
-#### SEC-04 — Aucun en-tête de sécurité HTTP
+#### SEC-04 — Aucun en-tête de sécurité HTTP — **résolu sur `apres-noel` le 27/09/2026**
 **Axe :** Sécurité · **Effort :** rapide
 **Localisation :** `wrangler.jsonc` (aucune section `headers`) ; aucun fichier `public/_headers` ; `src/server.ts:40-53` ne pose aucun en-tête
 **Description :** absence totale de `Content-Security-Policy`, `X-Frame-Options` / `frame-ancestors`, `Strict-Transport-Security`, `Referrer-Policy`, `X-Content-Type-Options` et `Permissions-Policy`.
 **Impact :** aucune défense en profondeur contre le XSS (le risque direct est faible — React échappe par défaut et le seul `dangerouslySetInnerHTML` est dans `components/ui/chart.tsx:73`, composant jamais importé) ; surtout, **`/admin/*` peut être encadré dans une iframe tierce**, ce qui ouvre la voie au clickjacking sur les actions de suppression du back-office. Pas de `Referrer-Policy` alors que le site pointe vers des domaines tiers.
 **Correction :** créer `public/_headers` (servi tel quel par Cloudflare Static Assets). Prévoir une CSP autorisant explicitement `frame-src https://soleana-studio.pelli.io`, `connect-src` vers le projet Supabase, et `frame-ancestors 'none'`. Démarrer en `Content-Security-Policy-Report-Only` pour valider sans casser les iframes.
+**Mise à jour (27/09/2026) :** `public/_headers` couvre les assets statiques servis directement par Cloudflare (jamais vus par le Worker). Pour tout le reste (pages SSR, fonctions serveur, pages d'erreur), `src/server.ts` — le point de passage unique de chaque réponse sortante — pose désormais les mêmes en-têtes (`X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy` restrictive, `Strict-Transport-Security` sans `preload`) plus une `Content-Security-Policy-Report-Only` (non bloquante) compatible avec l'iframe Pelli, Supabase, les polices auto-hébergées et le JSON-LD inline. Vérifié en local avec `wrangler dev` servant le build de production (sans déploiement) : en-têtes présents sur `/`, `/admin/login`, `/contact`, `/faq`, une page `photographe-*-marseille`, un 404 et un asset statique ; le clic-pour-charger Pelli et l'admin restent fonctionnels.
 
-#### BUG-03 — `/$slug` intercepte toute URL inconnue et affiche « Chargement… » indéfiniment
+#### BUG-03 — `/$slug` intercepte toute URL inconnue et affiche « Chargement… » indéfiniment — **résolu le 25/09/2026**
 **Axe :** Bugs et logique / SEO · **Effort :** moyen
 **Localisation :** `src/routes/$slug.tsx:409-430`
 **Description :** la `queryFn` fait `if (!data) throw notFound()` (l. 419). Comme `throwOnError` n'est pas activé sur TanStack Query, l'erreur est stockée dans l'état de la requête et n'est jamais relancée pendant le rendu — le `notFoundComponent` de la route (l. 396-402) ne se déclenche donc jamais. La garde `if (isLoading || !page)` (l. 424) retombe sur l'état « chargement » : à l'échec, `isLoading` vaut `false` et `page` est `undefined`, l'écran reste bloqué sur « Chargement… ».
 **Impact :** `/$slug` étant une route attrape-tout à un segment, **toute URL inconnue** (`/nimportequoi`, une ancienne URL, une faute de frappe) renvoie un **HTTP 200 avec un écran de chargement perpétuel** au lieu d'un 404. C'est un *soft 404* : Google indexe des pages vides et le budget de crawl est gaspillé. Trois URL sont concernées directement : `sitemap[.]xml.ts:25-27` déclare `/photographe-bapteme-marseille`, `/photographe-mariage-marseille` et `/photographe-anniversaire-marseille`, qui n'ont **aucune ligne correspondante** dans `seo_pages` (la migration n'en insère que 5 : grossesse, famille, couple, portrait, lifestyle).
 **Correction :** distinguer les trois états de la requête (`isLoading` / `isError` / succès) et rendre le `notFoundComponent` sur erreur, ou passer par un `loader` de route qui lève `notFound()` côté serveur pour obtenir un vrai statut 404. Retirer les 3 slugs orphelins du sitemap ou créer les lignes `seo_pages` correspondantes.
+**Mise à jour (27/09/2026) :** le soft 404 lui-même était déjà résolu depuis le 25/09/2026, avant la rédaction de ce constat — voir le détail ci-dessous. Les 3 slugs orphelins (`bapteme`, `mariage`, `anniversaire`) ont par ailleurs été retirés de `sitemap[.]xml.ts` le 27/09/2026 — Google n'indexera plus ces URL sans page correspondante.
+
+**Correction réellement appliquée (commit `e5fd875`, 25/09/2026, complété par `f5998b6` et `f4dd25b`) :** le fetch a été déplacé dans un `loader` de route (`$slug.tsx:290-304`) qui lève `notFound()` côté serveur quand la ligne `seo_pages` est absente ou non publiée — TanStack Router traduit cela en un vrai statut HTTP 404. Le `head` de la route (l. 305-318) ajoute `robots: noindex` aussi bien sur le `notFoundComponent` que sur l'état sans `loaderData`. Une erreur Supabase (au lieu d'une absence de ligne) lève désormais une vraie `Error` → `errorComponent`, HTTP 500, avec un message neutre côté utilisateur (`f4dd25b`) — une panne transitoire ne produit donc plus un faux 404. Revérifié dans le code actuel et par `curl` en local le 27/09/2026 : un slug inexistant renvoie `HTTP 404` avec `<meta name="robots" content="noindex"/>` et le titre « Page introuvable — Soleana Studio ».
 
 #### PERF-01 — JPG de 9,2 Mo servi dans le `srcSet` de la page d'accueil
 **Axe :** Performance · **Effort :** rapide
@@ -278,21 +298,22 @@ Le vrai problème est ailleurs : **la protection a disparu, pas la surface d'att
 **Impact :** **à relativiser** — `npm ls` confirme que toutes ces dépendances sont des outils de développement et de build (`undici`, `ws` et `sharp` viennent tous de `@cloudflare/vite-plugin → miniflare` ; `nanoid` de `vite → postcss`). **Aucune n'est embarquée dans le bundle client ni dans le Worker déployé.** L'exposition réelle se limite au poste de développement et à un éventuel environnement de CI. Plusieurs avis (`esbuild`, `vite`, `launch-editor`) ne concernent que Windows.
 **Correction :** `npm audit fix` couvre l'ensemble des cas (`fixAvailable: true` partout). À exécuter après l'initialisation de Git, pour pouvoir revenir en arrière. Noter que `nitro` est épinglé sur `3.0.260429-beta` — une version bêta en production mérite un suivi.
 
-#### RGPD-02 — Contradiction entre les mentions légales et la réalité des transferts
+#### RGPD-02 — Contradiction entre les mentions légales et la réalité des transferts — **résolu sur `apres-noel` le 27/09/2026**
 **Axe :** RGPD · **Effort :** rapide
 **Localisation :** `src/routes/mentions-legales.tsx` §4
 **Description :** « Ces données ne sont jamais revendues, ni cédées, ni transmises à des tiers, sauf obligation légale. » Or les données transitent par Pelli (formulaire, réservation, espace client), sont stockées chez Supabase et le site est hébergé par Cloudflare. La politique de confidentialité, elle, décrit correctement le recours à des sous-traitants (§4).
 **Impact :** information inexacte au sens de l'article 13 du RGPD, et incohérence entre deux documents du même site. Facilement opposable en cas de réclamation.
 **Correction :** reformuler en « ne sont jamais revendues ni cédées à des fins commerciales » et renvoyer explicitement à la section 4 de la politique de confidentialité pour la liste des sous-traitants.
-**Mise à jour (27/09/2026) :** toujours ouvert — cette mise à jour a porté sur `confidentialite.tsx`, pas sur `mentions-legales.tsx` §4, qui garde sa formulation d'origine.
+**Mise à jour (27/09/2026, première partie) :** toujours ouvert — cette mise à jour a porté sur `confidentialite.tsx`, pas sur `mentions-legales.tsx` §4, qui garde sa formulation d'origine.
+**Mise à jour (27/09/2026, seconde partie) :** `mentions-legales.tsx` §4 nomme désormais Pelli, Supabase et Cloudflare comme sous-traitants et remplace « jamais transmises à des tiers » par « jamais vendues ni cédées à des tiers à des fins commerciales », avec un renvoi vers `confidentialite.tsx` §4 pour le détail — plutôt qu'une seconde liste de sous-traitants qui risquerait de diverger de la première (comme cela s'est déjà produit sur ce même point).
 
-#### RGPD-03 — Sous-traitants non nommés — **résolu sur `confidentialite.tsx` le 27/09/2026, reste une valeur à compléter**
+#### RGPD-03 — Sous-traitants non nommés — **résolu sur `confidentialite.tsx` le 27/09/2026, reste le contrat Pelli à confirmer**
 **Axe :** RGPD · **Effort :** rapide
 **Localisation :** `src/routes/confidentialite.tsx` §4 « Destinataires des données » et §6 « Transferts hors Union européenne »
 **Description d'origine :** la politique évoquait « les prestataires techniques strictement nécessaires » sans jamais nommer **Pelli**, **Supabase** ni **Cloudflare**. La section transferts hors UE restait au conditionnel (« peuvent être situés »).
 **Impact :** l'article 13 autorise la mention de *catégories* de destinataires, mais la CNIL recommande fortement de les nommer, en particulier lorsqu'un sous-traitant collecte directement les données via une iframe — ce qui est ici le cas principal. La personne concernée ne peut pas savoir que ses données de réservation partent chez un tiers.
 **Correction d'origine (conservée pour mémoire) :** nommer Pelli (formulaire de contact, réservation, espace client), Supabase (base de données) et Cloudflare (hébergement). Préciser la région du projet Supabase et, si elle est hors UE, indiquer les garanties (clauses contractuelles types). Signer un contrat de sous-traitance (article 28) avec Pelli s'il n'existe pas déjà.
-**Mise à jour (27/09/2026) :** §4 nomme désormais explicitement Pelli, Supabase et Cloudflare, avec leur rôle respectif. §6 nomme Cloudflare (États-Unis) et cite les garanties RGPD (cadre UE–États-Unis, clauses contractuelles types). **Reste à compléter dans le texte :** la région d'hébergement Supabase, laissée en placeholder `[RÉGION À COMPLÉTER]` — à renseigner (tableau de bord Supabase → Project Settings → General) puis à vérifier si elle est hors UE, auquel cas les garanties mentionnées doivent effectivement être en place. Contrat de sous-traitance avec Pelli toujours à confirmer.
+**Mise à jour (27/09/2026) :** §4 nomme désormais explicitement Pelli, Supabase et Cloudflare, avec leur rôle respectif. §6 nomme Cloudflare (États-Unis) et cite les garanties RGPD (cadre UE–États-Unis, clauses contractuelles types), et nomme désormais la région d'hébergement Supabase (Irlande, UE) — le placeholder `[RÉGION À COMPLÉTER]` a été renseigné. Le projet étant hébergé dans l'UE, aucune garantie de transfert supplémentaire n'est nécessaire pour cette partie de la chaîne. **Reste ouvert :** le contrat de sous-traitance (article 28) avec Pelli toujours à confirmer.
 
 #### RGPD-04 — Durées de conservation non chiffrées et absence de purge — **texte résolu sur `confidentialite.tsx` le 27/09/2026, purge technique toujours absente**
 **Axe :** RGPD · **Effort :** moyen
@@ -302,13 +323,14 @@ Le vrai problème est ailleurs : **la protection a disparu, pas la surface d'att
 **Correction d'origine (conservée pour mémoire) :** fixer des durées explicites (usage courant : 3 ans après le dernier contact pour un prospect, 10 ans pour les pièces comptables d'un client) et les écrire dans la politique. Mettre en place une purge automatique via `pg_cron` sur `contact_requests`. Demander à Pelli ses propres durées de conservation.
 **Mise à jour (27/09/2026) :** `confidentialite.tsx` §5 donne maintenant des durées explicites par catégorie : demandes sans suite (3 ans), données clients (durée de la prestation + 5 ans), factures (10 ans), galeries privées en ligne (12 mois après livraison), photos publiées (jusqu'au retrait de l'accord). **`mentions-legales.tsx` §5 n'a pas été touché** (formulation vague inchangée, hors périmètre de cette mise à jour). **Deux points restent à confirmer, faute de quoi le texte promet plus qu'il n'est fait :** la durée de 12 mois pour les galeries privées est celle que Paul a indiquée comme à reconfirmer auprès de Pelli (qui héberge ces galeries) ; et aucune purge automatique n'existe encore techniquement sur `contact_requests` ni sur les autres tables (`pg_cron` ou tâche équivalente toujours à créer).
 
-#### RGPD-05 — Deux adresses de contact RGPD différentes
+#### RGPD-05 — Deux adresses de contact RGPD différentes — **résolu sur `apres-noel` le 27/09/2026**
 **Axe :** RGPD · **Effort :** rapide
 **Localisation :** `src/routes/confidentialite.tsx` §1, §7, §8, §11 (`site_settings.email`, actuellement `contact@soleanastudio.fr`) ; `src/routes/mentions-legales.tsx` §1, §4, §5 (`anaischartonphotographie@gmail.com`, en dur)
 **Description :** deux adresses distinctes sont indiquées pour l'exercice des droits selon la page consultée.
 **Impact :** confusion pour la personne qui souhaite exercer ses droits ; risque qu'une demande adressée à l'une des deux reste sans réponse dans le délai d'un mois imposé par l'article 12.3.
 **Correction :** retenir une seule adresse — de préférence `contact@soleanastudio.fr`, cohérente avec le domaine — et l'harmoniser sur les deux pages.
-**Mise à jour (27/09/2026) :** toujours ouvert, sans changement (hors périmètre de cette mise à jour). La nouvelle section « Photos publiées sur le site » de `confidentialite.tsx` (§8) utilise elle aussi `site_settings.email`, ce qui ajoute un troisième emplacement à harmoniser le jour où cette adresse sera unifiée.
+**Mise à jour (27/09/2026, première partie) :** toujours ouvert, sans changement (hors périmètre de cette mise à jour). La nouvelle section « Photos publiées sur le site » de `confidentialite.tsx` (§8) utilise elle aussi `site_settings.email`, ce qui ajoute un troisième emplacement à harmoniser le jour où cette adresse sera unifiée.
+**Mise à jour (27/09/2026, seconde partie) :** `mentions-legales.tsx` §1 et §5 utilisent désormais `site_settings.email` (`contact@soleanastudio.fr`), comme `confidentialite.tsx` partout. §5 complète aussi la liste des droits (limitation, portabilité, retrait du consentement, réclamation CNIL, délai d'un mois de réponse), avec un renvoi vers `confidentialite.tsx` §7 pour le détail plutôt qu'une duplication. **Point laissé à la décision de Paul, non tranché ici :** l'adresse personnelle de la photographe a été retirée de `mentions-legales.tsx` §1 (Éditeur du site) au profit de `site_settings.email` — l'obligation d'identification LCEN pour un éditeur personne physique (art. 6-III) porte sur nom/statut/adresse, pas spécifiquement sur une adresse e-mail, donc rien n'a semblé imposer de garder l'adresse personnelle ; à confirmer ou à revenir en arrière si Paul a un avis juridique contraire.
 
 #### ARCH-01 — Code mort important
 **Axe :** Architecture et qualité · **Effort :** moyen
@@ -445,7 +467,7 @@ Le vrai problème est ailleurs : **la protection a disparu, pas la surface d'att
 | 3 | **QUAL-01** | Rendre le type-check bloquant : `"build": "tsc --noEmit && vite build"`. **Sans cela, BUG-01 se reproduira** | moyen |
 | 4 | **SEC-02** | Désactiver l'inscription dans Supabase et retirer le mode `signup` de `login.tsx` | rapide |
 | 5 | **PERF-01** | Générer `grossesse-700.webp` et retirer le JPG de 9,2 Mo du `srcSet` | rapide |
-| 6 | **SEC-04** | Créer `public/_headers` avec au minimum `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy` et HSTS | rapide |
+| 6 | ~~**SEC-04**~~ | ~~Créer `public/_headers` avec au minimum `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy` et HSTS~~ — **fait sur `apres-noel` le 27/09/2026** : `public/_headers` pour les assets, en-têtes équivalents + CSP report-only posés dans `src/server.ts` pour tout le reste | fait |
 
 À l'issue de cette étape, vérifier manuellement : connexion admin puis affichage des demandes, accès aux 4 pages catégorie, et contrôle des privilèges en base (`\dp public.*`, cf. réserve du point 1) — les écritures admin n'ayant jamais pu être testées tant que BUG-01 était présent.
 
@@ -454,9 +476,9 @@ Le vrai problème est ailleurs : **la protection a disparu, pas la surface d'att
 | ID | Action | Effort |
 |---|---|---|
 | **RGPD-01** | Auditer les cookies déposés par les iframes Pelli, puis installer un bandeau de consentement si nécessaire et réécrire la section « Cookies » des deux pages légales | moyen |
-| **RGPD-02/03/05** | Harmoniser les pages légales : nommer Pelli, Supabase et Cloudflare ; corriger « jamais transmises à des tiers » ; unifier l'adresse de contact RGPD | rapide |
+| ~~**RGPD-02/03/05**~~ | ~~Harmoniser les pages légales : nommer Pelli, Supabase et Cloudflare ; corriger « jamais transmises à des tiers » ; unifier l'adresse de contact RGPD~~ — **fait sur `apres-noel` le 27/09/2026** : reste le contrat Pelli (RGPD-03) et le point sur l'adresse personnelle en section Éditeur (RGPD-05), tous deux laissés à la décision de Paul | fait |
 | ~~**SEC-03**~~ | ~~Trancher sur le formulaire de contact et aligner la politique RLS de `contact_requests`~~ — **fait le 26/09/2026** : formulaire local supprimé (commit `8026431`), insertion anonyme fermée (migration `20260926000000` appliquée et vérifiée). Reste, hors table : règle Cloudflare Rate Limiting sur le site | fait |
-| **BUG-03** | Corriger le soft 404 de `/$slug` et retirer du sitemap les 3 slugs sans ligne en base | moyen |
+| ~~**BUG-03**~~ | ~~Corriger le soft 404 de `/$slug` et retirer du sitemap les 3 slugs sans ligne en base~~ — **fait** : soft 404 corrigé le 25/09/2026 (`e5fd875`), sitemap assaini le 27/09/2026 | fait |
 | **DEP-01** | `npm audit fix` (maintenant possible sans risque grâce à Git) | moyen |
 | **CONF-01** | Choisir bun **ou** npm et supprimer le second fichier de verrouillage | rapide |
 | **DOC-01** | Rédiger le `README.md` | rapide |
@@ -472,6 +494,48 @@ Le vrai problème est ailleurs : **la protection a disparu, pas la surface d'att
 | **A11Y-01/02** | Bouton de pause sur le carrousel, `prefers-reduced-motion` ; refonte de la lightbox de `CategoryGallery` sur le modèle Radix | moyen |
 | **SUG-02/03** | Sauvegardes documentées et environnement de préproduction (projet Supabase + Worker séparés) | moyen |
 | **PERF-02/03**, **SUG-01/04/05** | Optimisation continue : pipeline d'images, jointure unique dans les galeries, supervision des erreurs, migrations idempotentes | moyen |
+
+---
+
+## Checklist avant fusion `apres-noel` → `main` (27/09/2026)
+
+État constaté par relecture du code à cette date (pas de nouvelle requête en base) :
+
+**Résolu sur `apres-noel` :**
+- [x] BUG-01 — back-office admin fonctionnel (`loadSupabaseClient` n'est plus référencé nulle part, `supabase-browser.ts` supprimé)
+- [x] QUAL-01 — `build` lance `tsc --noEmit` avant `vite build` (`package.json:10`)
+- [x] SEC-02 — plus de mode `signup` dans `admin/login.tsx`
+- [x] SEC-03 — formulaire de contact local supprimé, insertion anonyme fermée (migration `20260926000000`)
+- [x] PERF-01 — plus de JPG surdimensionné, `grossesse-*.webp` déclinés en plusieurs tailles
+- [x] RGPD-03 — Pelli/Supabase/Cloudflare nommés, région Supabase renseignée (reste le contrat Pelli, hors code)
+- [x] RGPD-04 (texte) — durées de conservation chiffrées ; purge technique non nécessaire tant que `contact_requests` n'est plus alimentée
+- [x] FAQ « vieux quartiers » — décision close, admin fait foi, migration `20260602000000` volontairement non appliquée
+- [x] BUG-03 (soft 404 sur `/$slug`) — corrigé depuis le 25/09/2026 (`e5fd875`, complété par `f5998b6` et `f4dd25b`), sitemap assaini le 27/09/2026 ; revérifié dans le code et par `curl` le 27/09/2026 (voir le détail dans le constat ci-dessus)
+- [x] SEC-04 — `public/_headers` (assets) + en-têtes équivalents et CSP report-only dans `src/server.ts` (tout le reste) ; vérifié en local via `wrangler dev` sur le build de production, sans déploiement
+- [x] RGPD-02 — `mentions-legales.tsx` §4 nomme désormais Pelli/Supabase/Cloudflare et remplace « jamais transmises à des tiers » par une formulation exacte, avec renvoi vers `confidentialite.tsx` §4
+- [x] RGPD-05 — `mentions-legales.tsx` §1 et §5 utilisent désormais `site_settings.email`, comme `confidentialite.tsx` ; §5 complète aussi la liste des droits (limitation, portabilité, retrait du consentement, CNIL, délai d'un mois)
+
+**Encore ouvert, à trancher avant ou après la fusion :**
+- [ ] BUG-02 — `portfolio.tsx` n'a toujours pas de `<Outlet />` sur `apres-noel` : `/portfolio/{couple,famille,grossesse,portrait}` affichent le contenu générique de `/portfolio` (contenu dupliqué SEO). Le correctif existe déjà (commit `0a23b0f`) mais a été délibérément annulé (`d46c2db`) car les galeries seraient publiées vides sans photos en base. Il est repris sur la branche `photos-storage` (`docs/photos-storage-plan.md`, étape 9) et n'y sera réactivé qu'une fois l'import des photos terminé — pas avant. Les 4 slugs restent volontairement hors sitemap tant que ce n'est pas fait.
+- [ ] SEC-02 (volet tableau de bord) — désactivation de l'inscription côté Supabase (*Authentication → Providers → Email*) à confirmer par Paul, non vérifiable depuis le code
+- [ ] RGPD-01 — ce que Pelli dépose réellement (cookies) reste à vérifier dans un navigateur
+- [ ] RGPD-05 (volet éditeur) — l'adresse personnelle a été retirée de la section « Éditeur du site » ; Paul doit confirmer que rien n'imposait légalement de la garder (voir la mise à jour du constat RGPD-05)
+- [ ] Contrat de sous-traitance (article 28) avec Pelli à confirmer
+- [ ] Vérification GRANT en prod (`\dp public.*`) : confirmer que les privilèges par défaut Supabase n'accordent pas plus que ce que prévoit chaque migration, maintenant que BUG-01 est corrigé et que les écritures admin sont testables (voir remarque ligne 126)
+- [ ] `npm run test` (37 tests) n'est branché ni sur `build` ni sur une CI
+- [ ] Migrations en attente d'application par Paul : voir l'état détaillé plus haut (« État des migrations, vérifié en production »)
+
+**Ordre de fusion prévu, après le déploiement de Noël :**
+1. `apres-noel` → `main`
+2. `perf-mobile` → `main`
+3. `photos-storage` → `main`, **en dernier** — ses migrations (`20260926000003` à `...005`) exigent une session `aal2` (double authentification) pour toute écriture admin sur les photos ; s'assurer que tous les comptes admin ont le MFA activé avant cette fusion, sous peine de bloquer leurs propres écritures (`RAISE EXCEPTION ... 'aal2 session required'`)
+
+**Simulation de fusion `perf-mobile` → `apres-noel` (27/09/2026, aucune fusion réelle) :**
+- `git merge-tree --write-tree apres-noel perf-mobile` : arbre fusionné produit sans conflit (code de sortie 0)
+- Confirmé par un deuxième essai, `git merge --no-commit --no-ff perf-mobile` puis `git merge --abort` : fusion automatique réussie, environ 70 fichiers touchés (essentiellement des variantes AVIF ajoutées dans `src/assets/`, plus `HeroSlideshow.tsx`, `PortfolioEditorialSection.tsx`, `Reveal.tsx`, `SiteFooter.tsx`, `SiteNav.tsx`, `$slug.tsx`, `a-propos.tsx`, `contact.tsx`, `index.tsx`, `prestations.tsx`), **aucun marqueur de conflit**. Rien n'a été fusionné ni commité sur `apres-noel` par cette simulation.
+- Cette simulation ne dit rien d'un éventuel conflit avec `photos-storage`, qui touche aussi `$slug.tsx` et les assets `portfolio/` : à revérifier au moment de fusionner `photos-storage` en dernier.
+
+**Rappel :** ce dépôt ne déploie ni ne migre lui-même (voir `CLAUDE.md`) — la fusion vers `main` et la mise en production restent des actions de Paul.
 
 ---
 

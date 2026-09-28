@@ -9,6 +9,7 @@ export type SiteSettingsFormValues = {
   google_review_url: string | null;
   service_area: string;
   footer_text: string;
+  legal_info: string | null;
 };
 
 export type SiteSettingsErrors = Partial<Record<keyof SiteSettingsFormValues, string>>;
@@ -69,6 +70,9 @@ export function validateSiteSettings(values: SiteSettingsFormValues): SiteSettin
   const footer = values.footer_text.trim();
   if (!footer) errors.footer_text = "La phrase du pied de page est obligatoire.";
   else if (footer.length > 300) errors.footer_text = "300 caractères maximum.";
+
+  const legalInfo = values.legal_info?.trim();
+  if (legalInfo && legalInfo.length > 300) errors.legal_info = "300 caractères maximum.";
 
   return errors;
 }

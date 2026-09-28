@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 
 import fondContact from "@/assets/fond_contact.webp";
+import fondContactAvif from "@/assets/fond_contact.avif";
 import { SiteShell } from "@/components/site/SiteShell";
 import { Reveal } from "@/components/site/Reveal";
 import { ConsentEmbed } from "@/components/site/ConsentEmbed";
@@ -30,7 +31,10 @@ function Contact() {
       <div className="relative isolate overflow-hidden">
         <div
           className="absolute inset-0 -z-10 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: `url(${fondContact})`, backgroundPosition: "center 18%" }}
+          style={{
+            backgroundImage: `image-set(url(${fondContactAvif}) type("image/avif"), url(${fondContact}) type("image/webp"))`,
+            backgroundPosition: "center 18%",
+          }}
           aria-hidden="true"
         />
         <div className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(255,250,243,0.44)_0%,rgba(255,250,243,0.58)_32%,rgba(255,250,243,0.72)_68%,rgba(255,250,243,0.84)_100%)]" />
@@ -39,7 +43,7 @@ function Contact() {
           <div className="relative z-10 mx-auto grid max-w-6xl gap-10 lg:grid-cols-[320px_minmax(0,1fr)]">
             <div className="hidden lg:block" aria-hidden="true" />
             <div className="flex flex-col items-center text-center">
-              <Reveal>
+              <Reveal immediate>
                 <p
                   className="mb-4 font-mono text-[10px] uppercase tracking-[0.4em] text-accent"
                   style={{
@@ -54,7 +58,7 @@ function Contact() {
                   Parlons de votre séance
                 </h1>
               </Reveal>
-              <Reveal delay={100}>
+              <Reveal immediate>
                 <p className="mx-auto mt-8 max-w-2xl text-balance text-lg leading-relaxed text-foreground/80">
                   Une question ou une envie ? Vous pouvez me contacter ici. Pour prendre
                   rendez-vous, rendez-vous sur la page dédiée accessible juste après le formulaire.

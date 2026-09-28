@@ -386,7 +386,7 @@ function SeoPage() {
   return (
     <SiteShell>
       <section className="px-5 pb-12 pt-32 text-center sm:px-6 sm:pb-16 sm:pt-36 md:pt-40">
-        <Reveal>
+        <Reveal immediate>
           <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent mb-4">
             Soleana Studio
           </p>
@@ -394,7 +394,7 @@ function SeoPage() {
             {page.h1}
           </h1>
         </Reveal>
-        <Reveal delay={100}>
+        <Reveal immediate>
           <p className="mt-8 mx-auto max-w-2xl text-lg leading-relaxed italic text-muted-foreground">
             « {page.intro} »
           </p>
@@ -403,7 +403,7 @@ function SeoPage() {
 
       <section className="px-5 pb-20 sm:px-6 sm:pb-24">
         <div className="mx-auto max-w-5xl">
-          <Reveal>
+          <Reveal immediate>
             <div className="prose prose-lg mx-auto max-w-3xl whitespace-pre-line break-words leading-relaxed text-foreground">
               {page.content}
             </div>

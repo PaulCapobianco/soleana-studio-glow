@@ -93,6 +93,7 @@ function SettingsForm({
         "tiktok_url",
         "whatsapp_url",
         "google_review_url",
+        "legal_info",
       ] as const) {
         if (patch[key] !== undefined) normalized[key] = patch[key]?.trim() || null;
       }
@@ -119,6 +120,7 @@ function SettingsForm({
     google_review_url: draft.google_review_url,
     service_area: draft.service_area,
     footer_text: draft.footer_text,
+    legal_info: draft.legal_info,
   });
 
   async function saveSettings() {
@@ -205,6 +207,17 @@ function SettingsForm({
           error={errors.footer_text}
           textarea
           onChange={(v) => setField("footer_text", v)}
+        />
+      </div>
+      <div className="sm:col-span-2">
+        <Field
+          label="Adresse (mentions légales)"
+          hint="affichée dans les mentions légales, section « Éditeur du site » ; laissez vide pour ne pas afficher de ligne d'adresse"
+          value={draft.legal_info ?? ""}
+          error={errors.legal_info}
+          placeholder={"12 rue Exemple\n13000 Marseille"}
+          textarea
+          onChange={(v) => setField("legal_info", v || null)}
         />
       </div>
       <div className="sm:col-span-2 flex justify-end">

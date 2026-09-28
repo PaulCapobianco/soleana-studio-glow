@@ -124,8 +124,8 @@ function ConfidentialitePage() {
 
             <LegalSection title="6. Transferts hors Union européenne">
               <p>
-                La base de données du site est hébergée par Supabase dans la région [RÉGION À
-                COMPLÉTER]. Certains prestataires peuvent traiter des données en dehors de
+                La base de données du site est hébergée par Supabase en Irlande, au sein de
+                l&apos;Union européenne. Certains prestataires peuvent traiter des données en dehors de
                 l&apos;Union européenne, notamment Cloudflare, société établie aux États-Unis. Ces
                 transferts sont encadrés par les garanties prévues par le RGPD, telles que le cadre
                 de protection des données UE–États-Unis ou les clauses contractuelles types de la

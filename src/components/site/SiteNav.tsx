@@ -3,8 +3,11 @@ import { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import logoSoleana180 from "@/assets/logo-soleana-180.webp";
+import logoSoleana180Avif from "@/assets/logo-soleana-180.avif";
 import logoSoleana280 from "@/assets/logo-soleana-280.webp";
+import logoSoleana280Avif from "@/assets/logo-soleana-280.avif";
 import logoSoleana from "@/assets/logo-soleana.webp";
+import logoSoleanaAvif from "@/assets/logo-soleana.avif";
 
 const links = [
   { to: "/", label: "Accueil" },
@@ -82,15 +85,22 @@ export function SiteNav({ overlay = false }: { overlay?: boolean }) {
         >
           {!transparent ? (
             <Link to="/" className="flex items-center" aria-label="Soleana Studio — accueil">
-              <img
-                src={logoSoleana280}
-                srcSet={`${logoSoleana180} 180w, ${logoSoleana280} 280w, ${logoSoleana} 404w`}
-                sizes="(min-width: 768px) 160px, 112px"
-                alt="Soleana Studio"
-                width={360}
-                height={180}
-                className="h-14 w-auto object-contain sm:h-16 md:h-[4.5rem]"
-              />
+              <picture>
+                <source
+                  type="image/avif"
+                  srcSet={`${logoSoleana180Avif} 180w, ${logoSoleana280Avif} 280w, ${logoSoleanaAvif} 404w`}
+                  sizes="(min-width: 768px) 160px, 112px"
+                />
+                <img
+                  src={logoSoleana280}
+                  srcSet={`${logoSoleana180} 180w, ${logoSoleana280} 280w, ${logoSoleana} 404w`}
+                  sizes="(min-width: 768px) 160px, 112px"
+                  alt="Soleana Studio"
+                  width={360}
+                  height={180}
+                  className="h-14 w-auto object-contain sm:h-16 md:h-[4.5rem]"
+                />
+              </picture>
             </Link>
           ) : (
             <div

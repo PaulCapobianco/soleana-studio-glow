@@ -21,9 +21,10 @@ const PATHS = [
   "/photographe-couple-marseille",
   "/photographe-portrait-marseille",
   "/photographe-lifestyle-marseille",
-  "/photographe-bapteme-marseille",
-  "/photographe-mariage-marseille",
-  "/photographe-anniversaire-marseille",
+  // /photographe-bapteme-marseille, /photographe-mariage-marseille and
+  // /photographe-anniversaire-marseille are left out: they have no matching
+  // row in seo_pages, so $slug.tsx renders a soft 404 for them (BUG-03).
+  // Add them back once the corresponding seo_pages rows exist.
 ] as const;
 
 export const Route = createFileRoute("/sitemap.xml")({

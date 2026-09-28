@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 
-export function HeroSlideshow({ images }: { images: { src: string; alt: string }[] }) {
+export function HeroSlideshow({
+  images,
+}: {
+  images: { src: string; avifSrc?: string; alt: string }[];
+}) {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
@@ -26,7 +30,7 @@ export function HeroSlideshow({ images }: { images: { src: string; alt: string }
       const timeout = window.setTimeout(() => {
         const nextImage = new Image();
         nextImage.decoding = "async";
-        nextImage.src = images[nextIndex].src;
+        nextImage.src = images[nextIndex].avifSrc ?? images[nextIndex].src;
       }, 2500);
 
       return () => window.clearTimeout(timeout);
@@ -52,18 +56,20 @@ export function HeroSlideshow({ images }: { images: { src: string; alt: string }
   return (
     <div className="absolute inset-0 bg-foreground">
       <div className="absolute inset-0 transition-opacity duration-[1800ms] ease-in-out opacity-100">
-        <img
-          key={images[index]?.src}
-          src={images[index]?.src}
-          alt={images[index]?.alt}
-          width={1600}
-          height={900}
-          className="h-full w-full object-cover animate-slow-zoom"
-          style={{ animationPlayState: paused || reducedMotion ? "paused" : "running" }}
-          loading="eager"
-          fetchPriority="high"
-          decoding="async"
-        />
+        <picture key={images[index]?.src}>
+          {images[index]?.avifSrc && <source type="image/avif" srcSet={images[index].avifSrc} />}
+          <img
+            src={images[index]?.src}
+            alt={images[index]?.alt}
+            width={1600}
+            height={900}
+            className="h-full w-full object-cover animate-slow-zoom"
+            style={{ animationPlayState: paused || reducedMotion ? "paused" : "running" }}
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
+          />
+        </picture>
       </div>
       <div className="absolute inset-0 bg-foreground/30" />
       {images.length > 1 && !reducedMotion && (
