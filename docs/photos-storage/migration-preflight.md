@@ -5,6 +5,12 @@ modification de production n'a été exécutée.** Le préflight local du manife
 `READY`. Le préflight global des migrations et de l'import réel est `NOT READY` tant que les
 contrôles en lecture seule du projet réel n'ont pas été faits.
 
+**Écart constaté le 28 septembre 2026, sans écriture distante :** le bundle public actuellement
+déployé utilise `kvzzzwjddanwedzotaka.supabase.co`, alors que `supabase/config.toml` indique
+`hvfvvbiupyzoounzyqoz`. Le projet de destination des migrations et de l'import doit être
+confirmé par Paul dans le Dashboard avant toute opération ; ne pas déduire la cible du fichier
+de configuration ou du bundle à lui seul. Tant que cet écart n'est pas résolu, **NO-GO**.
+
 ## Résultats et conditions de GO
 
 | Contrôle | Résultat | Condition avant opération réelle |

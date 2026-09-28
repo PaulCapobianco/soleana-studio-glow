@@ -26,8 +26,8 @@ const SECURITY_HEADERS: Record<string, string> = {
     "script-src 'self' 'unsafe-inline'", // inline JSON-LD in __root.tsx
     "style-src 'self' 'unsafe-inline'", // inline `style={{...}}` usage
     "font-src 'self'", // fonts are self-hosted .woff2, no external font host
-    "img-src 'self' data: https://hvfvvbiupyzoounzyqoz.supabase.co",
-    "connect-src 'self' https://hvfvvbiupyzoounzyqoz.supabase.co",
+    "img-src 'self' data: https://hvfvvbiupyzoounzyqoz.supabase.co https://kvzzzwjddanwedzotaka.supabase.co",
+    "connect-src 'self' https://hvfvvbiupyzoounzyqoz.supabase.co https://kvzzzwjddanwedzotaka.supabase.co",
     "frame-src https://soleana-studio.pelli.io",
     "frame-ancestors 'none'",
     "base-uri 'self'",
