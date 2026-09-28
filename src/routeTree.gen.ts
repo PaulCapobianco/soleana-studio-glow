@@ -29,14 +29,16 @@ import { Route as PortfolioPortraitRouteImport } from './routes/portfolio/portra
 import { Route as PortfolioGrossesseRouteImport } from './routes/portfolio/grossesse'
 import { Route as PortfolioFamilleRouteImport } from './routes/portfolio/famille'
 import { Route as PortfolioCoupleRouteImport } from './routes/portfolio/couple'
+import { Route as AdminReinitialiserRouteImport } from './routes/admin/reinitialiser'
 import { Route as AdminLoginRouteImport } from './routes/admin/login'
 import { Route as AdminAuthedRouteImport } from './routes/admin/_authed'
 import { Route as AdminAuthedPrestationsRouteImport } from './routes/admin/_authed/prestations'
 import { Route as AdminAuthedPhotosRouteImport } from './routes/admin/_authed/photos'
+import { Route as AdminAuthedParametresRouteImport } from './routes/admin/_authed/parametres'
 import { Route as AdminAuthedPagesSeoRouteImport } from './routes/admin/_authed/pages-seo'
 import { Route as AdminAuthedFaqRouteImport } from './routes/admin/_authed/faq'
-import { Route as AdminAuthedDemandesRouteImport } from './routes/admin/_authed/demandes'
 import { Route as AdminAuthedDashboardRouteImport } from './routes/admin/_authed/dashboard'
+import { Route as AdminAuthedCompteRouteImport } from './routes/admin/_authed/compte'
 import { Route as AdminAuthedAvisRouteImport } from './routes/admin/_authed/avis'
 
 const TarifsRoute = TarifsRouteImport.update({
@@ -139,6 +141,11 @@ const PortfolioCoupleRoute = PortfolioCoupleRouteImport.update({
   path: '/couple',
   getParentRoute: () => PortfolioRoute,
 } as any)
+const AdminReinitialiserRoute = AdminReinitialiserRouteImport.update({
+  id: '/admin/reinitialiser',
+  path: '/admin/reinitialiser',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminLoginRoute = AdminLoginRouteImport.update({
   id: '/admin/login',
   path: '/admin/login',
@@ -159,6 +166,11 @@ const AdminAuthedPhotosRoute = AdminAuthedPhotosRouteImport.update({
   path: '/photos',
   getParentRoute: () => AdminAuthedRoute,
 } as any)
+const AdminAuthedParametresRoute = AdminAuthedParametresRouteImport.update({
+  id: '/parametres',
+  path: '/parametres',
+  getParentRoute: () => AdminAuthedRoute,
+} as any)
 const AdminAuthedPagesSeoRoute = AdminAuthedPagesSeoRouteImport.update({
   id: '/pages-seo',
   path: '/pages-seo',
@@ -169,14 +181,14 @@ const AdminAuthedFaqRoute = AdminAuthedFaqRouteImport.update({
   path: '/faq',
   getParentRoute: () => AdminAuthedRoute,
 } as any)
-const AdminAuthedDemandesRoute = AdminAuthedDemandesRouteImport.update({
-  id: '/demandes',
-  path: '/demandes',
-  getParentRoute: () => AdminAuthedRoute,
-} as any)
 const AdminAuthedDashboardRoute = AdminAuthedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => AdminAuthedRoute,
+} as any)
+const AdminAuthedCompteRoute = AdminAuthedCompteRouteImport.update({
+  id: '/compte',
+  path: '/compte',
   getParentRoute: () => AdminAuthedRoute,
 } as any)
 const AdminAuthedAvisRoute = AdminAuthedAvisRouteImport.update({
@@ -202,6 +214,7 @@ export interface FileRoutesByFullPath {
   '/tarifs': typeof TarifsRoute
   '/admin': typeof AdminAuthedRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
+  '/admin/reinitialiser': typeof AdminReinitialiserRoute
   '/portfolio/couple': typeof PortfolioCoupleRoute
   '/portfolio/famille': typeof PortfolioFamilleRoute
   '/portfolio/grossesse': typeof PortfolioGrossesseRoute
@@ -209,10 +222,11 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AdminIndexRoute
   '/portfolio/': typeof PortfolioIndexRoute
   '/admin/avis': typeof AdminAuthedAvisRoute
+  '/admin/compte': typeof AdminAuthedCompteRoute
   '/admin/dashboard': typeof AdminAuthedDashboardRoute
-  '/admin/demandes': typeof AdminAuthedDemandesRoute
   '/admin/faq': typeof AdminAuthedFaqRoute
   '/admin/pages-seo': typeof AdminAuthedPagesSeoRoute
+  '/admin/parametres': typeof AdminAuthedParametresRoute
   '/admin/photos': typeof AdminAuthedPhotosRoute
   '/admin/prestations': typeof AdminAuthedPrestationsRoute
 }
@@ -232,16 +246,18 @@ export interface FileRoutesByTo {
   '/tarifs': typeof TarifsRoute
   '/admin': typeof AdminIndexRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/reinitialiser': typeof AdminReinitialiserRoute
   '/portfolio/couple': typeof PortfolioCoupleRoute
   '/portfolio/famille': typeof PortfolioFamilleRoute
   '/portfolio/grossesse': typeof PortfolioGrossesseRoute
   '/portfolio/portrait': typeof PortfolioPortraitRoute
   '/portfolio': typeof PortfolioIndexRoute
   '/admin/avis': typeof AdminAuthedAvisRoute
+  '/admin/compte': typeof AdminAuthedCompteRoute
   '/admin/dashboard': typeof AdminAuthedDashboardRoute
-  '/admin/demandes': typeof AdminAuthedDemandesRoute
   '/admin/faq': typeof AdminAuthedFaqRoute
   '/admin/pages-seo': typeof AdminAuthedPagesSeoRoute
+  '/admin/parametres': typeof AdminAuthedParametresRoute
   '/admin/photos': typeof AdminAuthedPhotosRoute
   '/admin/prestations': typeof AdminAuthedPrestationsRoute
 }
@@ -263,6 +279,7 @@ export interface FileRoutesById {
   '/tarifs': typeof TarifsRoute
   '/admin/_authed': typeof AdminAuthedRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
+  '/admin/reinitialiser': typeof AdminReinitialiserRoute
   '/portfolio/couple': typeof PortfolioCoupleRoute
   '/portfolio/famille': typeof PortfolioFamilleRoute
   '/portfolio/grossesse': typeof PortfolioGrossesseRoute
@@ -270,10 +287,11 @@ export interface FileRoutesById {
   '/admin/': typeof AdminIndexRoute
   '/portfolio/': typeof PortfolioIndexRoute
   '/admin/_authed/avis': typeof AdminAuthedAvisRoute
+  '/admin/_authed/compte': typeof AdminAuthedCompteRoute
   '/admin/_authed/dashboard': typeof AdminAuthedDashboardRoute
-  '/admin/_authed/demandes': typeof AdminAuthedDemandesRoute
   '/admin/_authed/faq': typeof AdminAuthedFaqRoute
   '/admin/_authed/pages-seo': typeof AdminAuthedPagesSeoRoute
+  '/admin/_authed/parametres': typeof AdminAuthedParametresRoute
   '/admin/_authed/photos': typeof AdminAuthedPhotosRoute
   '/admin/_authed/prestations': typeof AdminAuthedPrestationsRoute
 }
@@ -296,6 +314,7 @@ export interface FileRouteTypes {
     | '/tarifs'
     | '/admin'
     | '/admin/login'
+    | '/admin/reinitialiser'
     | '/portfolio/couple'
     | '/portfolio/famille'
     | '/portfolio/grossesse'
@@ -303,10 +322,11 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/portfolio/'
     | '/admin/avis'
+    | '/admin/compte'
     | '/admin/dashboard'
-    | '/admin/demandes'
     | '/admin/faq'
     | '/admin/pages-seo'
+    | '/admin/parametres'
     | '/admin/photos'
     | '/admin/prestations'
   fileRoutesByTo: FileRoutesByTo
@@ -326,16 +346,18 @@ export interface FileRouteTypes {
     | '/tarifs'
     | '/admin'
     | '/admin/login'
+    | '/admin/reinitialiser'
     | '/portfolio/couple'
     | '/portfolio/famille'
     | '/portfolio/grossesse'
     | '/portfolio/portrait'
     | '/portfolio'
     | '/admin/avis'
+    | '/admin/compte'
     | '/admin/dashboard'
-    | '/admin/demandes'
     | '/admin/faq'
     | '/admin/pages-seo'
+    | '/admin/parametres'
     | '/admin/photos'
     | '/admin/prestations'
   id:
@@ -356,6 +378,7 @@ export interface FileRouteTypes {
     | '/tarifs'
     | '/admin/_authed'
     | '/admin/login'
+    | '/admin/reinitialiser'
     | '/portfolio/couple'
     | '/portfolio/famille'
     | '/portfolio/grossesse'
@@ -363,10 +386,11 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/portfolio/'
     | '/admin/_authed/avis'
+    | '/admin/_authed/compte'
     | '/admin/_authed/dashboard'
-    | '/admin/_authed/demandes'
     | '/admin/_authed/faq'
     | '/admin/_authed/pages-seo'
+    | '/admin/_authed/parametres'
     | '/admin/_authed/photos'
     | '/admin/_authed/prestations'
   fileRoutesById: FileRoutesById
@@ -388,6 +412,7 @@ export interface RootRouteChildren {
   TarifsRoute: typeof TarifsRoute
   AdminAuthedRoute: typeof AdminAuthedRouteWithChildren
   AdminLoginRoute: typeof AdminLoginRoute
+  AdminReinitialiserRoute: typeof AdminReinitialiserRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
@@ -533,6 +558,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PortfolioCoupleRouteImport
       parentRoute: typeof PortfolioRoute
     }
+    '/admin/reinitialiser': {
+      id: '/admin/reinitialiser'
+      path: '/admin/reinitialiser'
+      fullPath: '/admin/reinitialiser'
+      preLoaderRoute: typeof AdminReinitialiserRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/login': {
       id: '/admin/login'
       path: '/admin/login'
@@ -561,6 +593,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAuthedPhotosRouteImport
       parentRoute: typeof AdminAuthedRoute
     }
+    '/admin/_authed/parametres': {
+      id: '/admin/_authed/parametres'
+      path: '/parametres'
+      fullPath: '/admin/parametres'
+      preLoaderRoute: typeof AdminAuthedParametresRouteImport
+      parentRoute: typeof AdminAuthedRoute
+    }
     '/admin/_authed/pages-seo': {
       id: '/admin/_authed/pages-seo'
       path: '/pages-seo'
@@ -575,18 +614,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAuthedFaqRouteImport
       parentRoute: typeof AdminAuthedRoute
     }
-    '/admin/_authed/demandes': {
-      id: '/admin/_authed/demandes'
-      path: '/demandes'
-      fullPath: '/admin/demandes'
-      preLoaderRoute: typeof AdminAuthedDemandesRouteImport
-      parentRoute: typeof AdminAuthedRoute
-    }
     '/admin/_authed/dashboard': {
       id: '/admin/_authed/dashboard'
       path: '/dashboard'
       fullPath: '/admin/dashboard'
       preLoaderRoute: typeof AdminAuthedDashboardRouteImport
+      parentRoute: typeof AdminAuthedRoute
+    }
+    '/admin/_authed/compte': {
+      id: '/admin/_authed/compte'
+      path: '/compte'
+      fullPath: '/admin/compte'
+      preLoaderRoute: typeof AdminAuthedCompteRouteImport
       parentRoute: typeof AdminAuthedRoute
     }
     '/admin/_authed/avis': {
@@ -621,20 +660,22 @@ const PortfolioRouteWithChildren = PortfolioRoute._addFileChildren(
 
 interface AdminAuthedRouteChildren {
   AdminAuthedAvisRoute: typeof AdminAuthedAvisRoute
+  AdminAuthedCompteRoute: typeof AdminAuthedCompteRoute
   AdminAuthedDashboardRoute: typeof AdminAuthedDashboardRoute
-  AdminAuthedDemandesRoute: typeof AdminAuthedDemandesRoute
   AdminAuthedFaqRoute: typeof AdminAuthedFaqRoute
   AdminAuthedPagesSeoRoute: typeof AdminAuthedPagesSeoRoute
+  AdminAuthedParametresRoute: typeof AdminAuthedParametresRoute
   AdminAuthedPhotosRoute: typeof AdminAuthedPhotosRoute
   AdminAuthedPrestationsRoute: typeof AdminAuthedPrestationsRoute
 }
 
 const AdminAuthedRouteChildren: AdminAuthedRouteChildren = {
   AdminAuthedAvisRoute: AdminAuthedAvisRoute,
+  AdminAuthedCompteRoute: AdminAuthedCompteRoute,
   AdminAuthedDashboardRoute: AdminAuthedDashboardRoute,
-  AdminAuthedDemandesRoute: AdminAuthedDemandesRoute,
   AdminAuthedFaqRoute: AdminAuthedFaqRoute,
   AdminAuthedPagesSeoRoute: AdminAuthedPagesSeoRoute,
+  AdminAuthedParametresRoute: AdminAuthedParametresRoute,
   AdminAuthedPhotosRoute: AdminAuthedPhotosRoute,
   AdminAuthedPrestationsRoute: AdminAuthedPrestationsRoute,
 }
@@ -660,6 +701,7 @@ const rootRouteChildren: RootRouteChildren = {
   TarifsRoute: TarifsRoute,
   AdminAuthedRoute: AdminAuthedRouteWithChildren,
   AdminLoginRoute: AdminLoginRoute,
+  AdminReinitialiserRoute: AdminReinitialiserRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 export const routeTree = rootRouteImport

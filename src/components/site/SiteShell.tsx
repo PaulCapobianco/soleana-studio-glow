@@ -2,6 +2,7 @@ import { ArrowUp, Phone } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import { SiteNav } from "./SiteNav";
 import { SiteFooter } from "./SiteFooter";
+import { useSiteSettings } from "@/lib/site-settings";
 
 export function SiteShell({
   children,
@@ -10,6 +11,7 @@ export function SiteShell({
   children: ReactNode;
   overlay?: boolean;
 }) {
+  const settings = useSiteSettings();
   const [showBackToTop, setShowBackToTop] = useState(false);
 
   useEffect(() => {
@@ -34,7 +36,7 @@ export function SiteShell({
       <SiteFooter />
       <div className="site-floating-actions fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] right-[calc(1rem+env(safe-area-inset-right))] z-[100] flex flex-col items-end gap-3">
         <a
-          href="tel:+33667536312"
+          href={settings.phoneHref}
           aria-label="Appeler Soleana Studio"
           className="inline-flex size-12 items-center justify-center rounded-full bg-[#C6966F] text-white shadow-[0_18px_40px_-24px_rgba(198,150,111,0.85)] transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C6966F] focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         >

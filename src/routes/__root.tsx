@@ -14,6 +14,7 @@ import logoSoleanaIcon from "@/assets/logo-soleana-icon.png";
 import inter300 from "@/assets/fonts/Inter-300.woff2";
 import playfair600 from "@/assets/fonts/PlayfairDisplay-600.woff2";
 import { absoluteUrl, DEFAULT_SOCIAL_IMAGE } from "@/lib/seo";
+import { loadSiteSettings, SITE_SETTINGS_FALLBACK } from "@/lib/site-settings";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 
@@ -71,7 +72,10 @@ export function ErrorComponent({ error, reset }: { error: Error; reset: () => vo
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  head: ({ matches }) => ({
+  // Coordonnées du studio (table site_settings) : lues une fois toutes les 5 minutes, repli intégré.
+  loader: () => loadSiteSettings(),
+  staleTime: 5 * 60 * 1000,
+  head: ({ matches, loaderData }) => ({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
@@ -128,7 +132,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           url: absoluteUrl("/"),
           description:
             "Photographe lifestyle à Marseille — séances grossesse, famille, couple et portrait.",
-          areaServed: ["Marseille", "Aubagne", "Cassis", "La Ciotat", "Provence"],
+          areaServed: (loaderData ?? SITE_SETTINGS_FALLBACK).areaServed,
           priceRange: "€€",
           address: {
             "@type": "PostalAddress",

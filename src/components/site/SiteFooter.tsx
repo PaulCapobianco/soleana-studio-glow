@@ -2,11 +2,13 @@ import { Link } from "@tanstack/react-router";
 import { Instagram, Mail, MessageCircle } from "lucide-react";
 
 import { TikTokIcon } from "@/components/site/TikTokIcon";
+import { useSiteSettings } from "@/lib/site-settings";
 import logoSoleana180 from "@/assets/logo-soleana-180.webp";
 import logoSoleana280 from "@/assets/logo-soleana-280.webp";
 import logoSoleana from "@/assets/logo-soleana.webp";
 
 export function SiteFooter() {
+  const settings = useSiteSettings();
   return (
     <footer className="bg-[#8A5A44] px-5 py-16 text-white sm:px-6 sm:py-18 lg:px-10 lg:py-20">
       <div className="mx-auto max-w-7xl">
@@ -24,8 +26,7 @@ export function SiteFooter() {
               />
             </Link>
             <p className="max-w-sm italic leading-relaxed text-white/92">
-              « Des images naturelles et lumineuses pour garder une trace des instants qui comptent.
-              »
+              {`« ${settings.footerText} »`}
             </p>
           </div>
 
@@ -35,27 +36,42 @@ export function SiteFooter() {
             </p>
             <ul className="space-y-2 text-sm text-white">
               <li>
-                <Link to="/portfolio" className="inline-flex py-2 text-white hover:text-white/90 transition-colors">
+                <Link
+                  to="/portfolio"
+                  className="inline-flex py-2 text-white hover:text-white/90 transition-colors"
+                >
                   Portfolio
                 </Link>
               </li>
               <li>
-                <Link to="/prestations" className="inline-flex py-2 text-white hover:text-white/90 transition-colors">
+                <Link
+                  to="/prestations"
+                  className="inline-flex py-2 text-white hover:text-white/90 transition-colors"
+                >
                   Prestations
                 </Link>
               </li>
               <li>
-                <Link to="/a-propos" className="inline-flex py-2 text-white hover:text-white/90 transition-colors">
+                <Link
+                  to="/a-propos"
+                  className="inline-flex py-2 text-white hover:text-white/90 transition-colors"
+                >
                   À propos
                 </Link>
               </li>
               <li>
-                <Link to="/faq" className="inline-flex py-2 text-white hover:text-white/90 transition-colors">
+                <Link
+                  to="/faq"
+                  className="inline-flex py-2 text-white hover:text-white/90 transition-colors"
+                >
                   FAQ
                 </Link>
               </li>
               <li>
-                <Link to="/contact" className="inline-flex py-2 text-white hover:text-white/90 transition-colors">
+                <Link
+                  to="/contact"
+                  className="inline-flex py-2 text-white hover:text-white/90 transition-colors"
+                >
                   Contact
                 </Link>
               </li>
@@ -63,9 +79,7 @@ export function SiteFooter() {
           </div>
 
           <div className="space-y-4 text-center sm:text-left xl:col-span-3">
-            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-white">
-              Séances
-            </p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-white">Séances</p>
             <ul className="space-y-2 text-sm text-white">
               <li>
                 <Link
@@ -116,21 +130,22 @@ export function SiteFooter() {
           </div>
 
           <div className="space-y-4 text-center sm:col-span-2 sm:text-left xl:col-span-2">
-            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-white">
-              Contact
-            </p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-white">Contact</p>
             <a
-              href="mailto:contact@soleanastudio.fr"
+              href={`mailto:${settings.email}`}
               className="block break-all py-2 text-sm text-white hover:text-white/90 hover:underline"
             >
-              contact@soleanastudio.fr
+              {settings.email}
             </a>
-            <a href="tel:+33667536312" className="block py-2 text-sm text-white hover:text-white/90 hover:underline">
-              06.67.53.63.12
+            <a
+              href={settings.phoneHref}
+              className="block py-2 text-sm text-white hover:text-white/90 hover:underline"
+            >
+              {settings.phone}
             </a>
             <div className="flex flex-wrap items-center justify-center gap-3 pt-2 sm:justify-start xl:flex-nowrap">
               <a
-                href="https://instagram.com/soleana.studio"
+                href={settings.instagramUrl}
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Instagram"
@@ -139,14 +154,14 @@ export function SiteFooter() {
                 <Instagram className="h-4 w-4" />
               </a>
               <a
-                href="mailto:contact@soleanastudio.fr"
+                href={`mailto:${settings.email}`}
                 aria-label="Email"
                 className="grid aspect-square h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-full border border-white/30 bg-white/90 text-[#8A5A44] shadow-[0_10px_18px_-14px_rgba(0,0,0,0.35)] transition-transform duration-200 hover:scale-105"
               >
                 <Mail className="w-4 h-4" />
               </a>
               <a
-                href="https://www.tiktok.com/@soleana.studio"
+                href={settings.tiktokUrl}
                 target="_blank"
                 rel="noreferrer"
                 aria-label="TikTok"
@@ -154,15 +169,17 @@ export function SiteFooter() {
               >
                 <TikTokIcon className="w-4 h-4" />
               </a>
-              <a
-                href="https://wa.me/33667536312"
-                target="_blank"
-                rel="noreferrer"
-                aria-label="WhatsApp"
-                className="grid aspect-square h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-full border border-white/10 bg-[#25D366] text-white shadow-[0_10px_18px_-14px_rgba(37,211,102,0.55)] transition-transform duration-200 hover:scale-105"
-              >
-                <MessageCircle className="h-4 w-4" />
-              </a>
+              {settings.whatsappUrl && (
+                <a
+                  href={settings.whatsappUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label="WhatsApp"
+                  className="grid aspect-square h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-full border border-white/10 bg-[#25D366] text-white shadow-[0_10px_18px_-14px_rgba(37,211,102,0.55)] transition-transform duration-200 hover:scale-105"
+                >
+                  <MessageCircle className="h-4 w-4" />
+                </a>
+              )}
             </div>
           </div>
         </div>
@@ -172,10 +189,16 @@ export function SiteFooter() {
             © {new Date().getFullYear()} Soleana Studio — Photographe Marseille
           </p>
           <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 md:justify-end">
-            <Link to="/mentions-legales" className="inline-flex py-2 text-white hover:text-white/90 transition-colors">
+            <Link
+              to="/mentions-legales"
+              className="inline-flex py-2 text-white hover:text-white/90 transition-colors"
+            >
               Mentions légales
             </Link>
-            <Link to="/confidentialite" className="inline-flex py-2 text-white hover:text-white/90 transition-colors">
+            <Link
+              to="/confidentialite"
+              className="inline-flex py-2 text-white hover:text-white/90 transition-colors"
+            >
               Politique de confidentialité
             </Link>
           </div>

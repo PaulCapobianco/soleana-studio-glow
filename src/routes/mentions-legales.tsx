@@ -1,8 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 
 import { SiteShell } from "@/components/site/SiteShell";
 import { buildPageSeo } from "@/lib/seo";
+import { useSiteSettings } from "@/lib/site-settings";
 
 export const Route = createFileRoute("/mentions-legales")({
   head: () =>
@@ -19,6 +20,7 @@ export const Route = createFileRoute("/mentions-legales")({
 });
 
 function LegalNoticePage() {
+  const settings = useSiteSettings();
   return (
     <SiteShell>
       <section className="px-6 pb-24 pt-40">
@@ -51,16 +53,19 @@ function LegalNoticePage() {
                 <li>
                   <strong className="text-foreground">Statut :</strong> Micro-entrepreneuse
                 </li>
+                {settings.legalInfo && (
+                  <li>
+                    <strong className="text-foreground">Adresse :</strong>{" "}
+                    <span className="whitespace-pre-line">{settings.legalInfo}</span>
+                  </li>
+                )}
                 <li>
                   <strong className="text-foreground">SIRET :</strong> 83168145700030
                 </li>
                 <li>
                   <strong className="text-foreground">E-mail :</strong>{" "}
-                  <a
-                    href="mailto:anaischartonphotographie@gmail.com"
-                    className="text-foreground story-link"
-                  >
-                    anaischartonphotographie@gmail.com
+                  <a href={`mailto:${settings.email}`} className="text-foreground story-link">
+                    {settings.email}
                   </a>
                 </li>
                 <li>
@@ -108,42 +113,63 @@ function LegalNoticePage() {
                 prestation et assurer le suivi client.
               </p>
               <p className="mt-4">
-                Ces données ne sont jamais revendues, ni cédées, ni transmises à des tiers, sauf
-                obligation légale.
+                Ces données sont traitées par des prestataires techniques nommés (Pelli, Supabase,
+                Cloudflare), en qualité de sous-traitants. Elles ne sont jamais vendues ni cédées à
+                des tiers à des fins commerciales. Le détail de ces sous-traitants et des transferts
+                éventuels de données est précisé dans notre{" "}
+                <Link to="/confidentialite" className="text-foreground story-link">
+                  politique de confidentialité
+                </Link>
+                .
               </p>
             </LegalSection>
 
             <LegalSection title="5. Conservation et droits des utilisateurs">
               <p>
-                Conformément au RGPD et à la loi « Informatique et Libertés », vous disposez des
-                droits suivants : droit d&apos;accès, droit de rectification, droit
-                d&apos;opposition et droit de suppression de vos données.
-              </p>
-              <p className="mt-4">
-                Pour exercer vos droits, vous pouvez écrire à{" "}
-                <a
-                  href="mailto:anaischartonphotographie@gmail.com"
-                  className="text-foreground story-link"
-                >
-                  anaischartonphotographie@gmail.com
-                </a>
+                Les données sont conservées uniquement pendant la durée nécessaire aux échanges et
+                au suivi administratif légal ; le détail des durées de conservation par type de
+                donnée est précisé dans notre{" "}
+                <Link to="/confidentialite" className="text-foreground story-link">
+                  politique de confidentialité
+                </Link>
                 .
               </p>
               <p className="mt-4">
-                Les données sont conservées uniquement pendant la durée nécessaire aux échanges et
-                au suivi administratif légal.
+                Conformément au RGPD et à la loi « Informatique et Libertés », vous disposez
+                d&apos;un droit d&apos;accès, de rectification, d&apos;effacement,
+                d&apos;opposition, de limitation du traitement et de portabilité de vos données,
+                ainsi que du droit de retirer votre consentement à tout moment. Vous pouvez
+                également introduire une réclamation auprès de la CNIL. Le détail de ces droits et
+                la procédure pour les exercer sont décrits dans notre{" "}
+                <Link to="/confidentialite" className="text-foreground story-link">
+                  politique de confidentialité
+                </Link>
+                .
+              </p>
+              <p className="mt-4">
+                Pour exercer vos droits, vous pouvez écrire à{" "}
+                <a href={`mailto:${settings.email}`} className="text-foreground story-link">
+                  {settings.email}
+                </a>
+                . Nous répondons à votre demande dans un délai d&apos;un mois.
               </p>
             </LegalSection>
 
             <LegalSection title="6. Cookies">
               <p>
-                Ce site peut utiliser des cookies nécessaires à son fonctionnement, ainsi que, le
-                cas échéant, des cookies liés à des services tiers intégrés ou à la mesure
-                d&apos;audience.
+                Ce site n&apos;utilise aucun cookie de mesure d&apos;audience ni cookie publicitaire,
+                et ne dépose aucun traceur soumis à votre consentement lors de votre navigation.
               </p>
               <p className="mt-4">
-                En poursuivant votre navigation, vous acceptez l&apos;utilisation éventuelle de ces
-                cookies. Vous pouvez les désactiver à tout moment dans les paramètres de votre
+                Le formulaire de contact, la réservation en ligne et l&apos;espace client sont
+                fournis par le service Pelli : ils ne se chargent qu&apos;après votre clic sur «
+                Afficher le formulaire ». Pelli peut alors déposer ses propres cookies, nécessaires
+                à leur fonctionnement ; pour en savoir plus, consultez sa politique de
+                confidentialité ainsi que notre{" "}
+                <Link to="/confidentialite" className="text-foreground story-link">
+                  politique de confidentialité
+                </Link>
+                . Vous pouvez à tout moment supprimer les cookies depuis les paramètres de votre
                 navigateur.
               </p>
             </LegalSection>
@@ -163,6 +189,18 @@ function LegalNoticePage() {
             <LegalSection title="8. Crédits">
               <p>Site réalisé par Paul Capobianco.</p>
               <p className="mt-4">Photographies : Anaïs Charton, sauf mention spécifique.</p>
+              <p className="mt-4">
+                Conception et développement du site :{" "}
+                <a
+                  href="https://www.linkedin.com/in/paul-capobianco-web"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-foreground story-link"
+                >
+                  Paul Capobianco
+                </a>
+                .
+              </p>
             </LegalSection>
 
             <LegalSection title="9. Conditions générales de vente">
@@ -178,14 +216,14 @@ function LegalNoticePage() {
               <ul className="mt-4 space-y-2">
                 <li>
                   <strong className="text-foreground">E-mail :</strong>{" "}
-                  <a href="mailto:contact@soleanastudio.fr" className="text-foreground story-link">
-                    contact@soleanastudio.fr
+                  <a href={`mailto:${settings.email}`} className="text-foreground story-link">
+                    {settings.email}
                   </a>
                 </li>
                 <li>
                   <strong className="text-foreground">Téléphone :</strong>{" "}
-                  <a href="tel:+33667536312" className="text-foreground story-link">
-                    06.67.53.63.12
+                  <a href={settings.phoneHref} className="text-foreground story-link">
+                    {settings.phone}
                   </a>
                 </li>
               </ul>

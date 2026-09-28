@@ -6,8 +6,8 @@ type SaveResult<T> = { error: unknown; record?: T } | void;
 
 /**
  * Shared "edit one record, save it explicitly" behavior for every admin
- * list page (avis, FAQ, pages SEO, photos, prestations, demandes' status
- * field): holds a local draft, tracks whether it differs from the last
+ * list page (avis, FAQ, pages SEO, photos, prestations):
+ * holds a local draft, tracks whether it differs from the last
  * saved value, and saves only when `save()` is called — never on blur or
  * change. Shows a success/error toast and reports the current dirty state
  * upward so the page can warn before navigating away with unsaved edits.

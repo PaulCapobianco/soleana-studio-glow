@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 
 import { SiteShell } from "@/components/site/SiteShell";
 import { buildPageSeo } from "@/lib/seo";
+import { useSiteSettings } from "@/lib/site-settings";
 
 export const Route = createFileRoute("/confidentialite")({
   head: () =>
@@ -19,6 +20,7 @@ export const Route = createFileRoute("/confidentialite")({
 });
 
 function ConfidentialitePage() {
+  const settings = useSiteSettings();
   return (
     <SiteShell>
       <section className="px-6 pb-24 pt-40">
@@ -45,8 +47,8 @@ function ConfidentialitePage() {
               </p>
               <p className="mt-4">
                 Pour toute question relative à vos données personnelles, vous pouvez écrire à{" "}
-                <a href="mailto:contact@soleanastudio.fr" className="text-foreground story-link">
-                  contact@soleanastudio.fr
+                <a href={`mailto:${settings.email}`} className="text-foreground story-link">
+                  {settings.email}
                 </a>
                 .
               </p>
@@ -83,39 +85,51 @@ function ConfidentialitePage() {
 
             <LegalSection title="4. Destinataires des données">
               <p>
-                Les données sont accessibles uniquement par Soleana Studio et par les prestataires
-                techniques strictement nécessaires au fonctionnement du site et de ses services
-                associés, notamment l&apos;hébergement, les formulaires intégrés et les solutions de
-                réservation ou d&apos;espace client.
-              </p>
-              <p className="mt-4">
-                Ces prestataires interviennent en qualité de sous-traitants ou de services tiers,
-                uniquement pour les besoins techniques de la plateforme.
+                Vos données sont destinées uniquement à Soleana Studio. Elles sont traitées, pour son
+                compte, par les prestataires techniques suivants : Pelli, qui fournit le formulaire
+                de contact, la réservation en ligne et l&apos;espace client ; Supabase, qui héberge la
+                base de données du site ; Cloudflare, qui héberge et sécurise le site. Ces
+                prestataires agissent en qualité de sous-traitants et ne peuvent utiliser vos données
+                qu&apos;aux fins prévues. Vos données ne sont jamais vendues ni cédées à des tiers.
               </p>
             </LegalSection>
 
             <LegalSection title="5. Durée de conservation">
-              <p>
-                Les données sont conservées pendant la durée nécessaire au traitement de votre
-                demande, à la préparation ou à l&apos;exécution de la prestation, puis archivées
-                lorsque cela est nécessaire pour des obligations légales ou pour la gestion des
-                délais de prescription applicables.
-              </p>
+              <ul className="space-y-3">
+                <li>
+                  Demandes de contact et de devis sans suite : 3 ans à compter du dernier échange.
+                </li>
+                <li>
+                  Données des clients (coordonnées, échanges, contrat) : pendant toute la durée de la
+                  prestation, puis 5 ans à compter de sa fin, durée de prescription applicable en cas
+                  de litige.
+                </li>
+                <li>
+                  Factures et pièces comptables : 10 ans, conformément à l&apos;obligation légale de
+                  conservation.
+                </li>
+                <li>
+                  Galeries privées en ligne : accessibles pendant 12 mois après leur livraison, puis
+                  retirées de l&apos;espace en ligne.
+                </li>
+                <li>
+                  Photos publiées sur le site (portfolio, galeries, événements) : jusqu&apos;au
+                  retrait de l&apos;accord de la personne photographiée.
+                </li>
+              </ul>
               <p className="mt-4">
-                Les durées de conservation sont définies en fonction de la finalité du traitement et
-                ne sont pas illimitées.
+                À l&apos;issue de ces durées, les données sont supprimées ou anonymisées.
               </p>
             </LegalSection>
 
             <LegalSection title="6. Transferts hors Union européenne">
               <p>
-                Certains prestataires techniques utilisés par le site peuvent être situés en dehors
-                de l&apos;Union européenne ou y transférer certaines données dans le cadre de leurs
-                services.
-              </p>
-              <p className="mt-4">
-                Lorsque cela est le cas, Soleana Studio veille à ce que des garanties appropriées
-                soient mises en place conformément au RGPD.
+                La base de données du site est hébergée par Supabase en Irlande, au sein de
+                l&apos;Union européenne. Certains prestataires peuvent traiter des données en dehors de
+                l&apos;Union européenne, notamment Cloudflare, société établie aux États-Unis. Ces
+                transferts sont encadrés par les garanties prévues par le RGPD, telles que le cadre
+                de protection des données UE–États-Unis ou les clauses contractuelles types de la
+                Commission européenne.
               </p>
             </LegalSection>
 
@@ -128,8 +142,8 @@ function ConfidentialitePage() {
               </p>
               <p className="mt-4">
                 Vous pouvez exercer ces droits en écrivant à{" "}
-                <a href="mailto:contact@soleanastudio.fr" className="text-foreground story-link">
-                  contact@soleanastudio.fr
+                <a href={`mailto:${settings.email}`} className="text-foreground story-link">
+                  {settings.email}
                 </a>
                 .
               </p>
@@ -137,9 +151,27 @@ function ConfidentialitePage() {
                 Si vous estimez, après nous avoir contactés, que vos droits ne sont pas respectés,
                 vous pouvez introduire une réclamation auprès de la CNIL.
               </p>
+              <p className="mt-4">
+                Vous pouvez également retirer votre consentement à tout moment, sans que cela remette
+                en cause les traitements déjà effectués. Nous répondons à votre demande dans un délai
+                d&apos;un mois.
+              </p>
             </LegalSection>
 
-            <LegalSection title="8. Cookies et traceurs">
+            <LegalSection title="8. Photos publiées sur le site">
+              <p>
+                Les photos présentées sur ce site sont publiées avec l&apos;accord des personnes
+                photographiées et, pour les enfants mineurs, de leurs parents ou représentants
+                légaux. Toute personne figurant sur une photo peut en demander le retrait à tout
+                moment, sans avoir à se justifier, en écrivant à{" "}
+                <a href={`mailto:${settings.email}`} className="text-foreground story-link">
+                  {settings.email}
+                </a>
+                . La photo est alors retirée dans les meilleurs délais.
+              </p>
+            </LegalSection>
+
+            <LegalSection title="9. Cookies et traceurs">
               <p>
                 Le site peut utiliser des cookies strictement nécessaires à son fonctionnement et,
                 selon les services intégrés, des cookies ou traceurs déposés par des tiers, par
@@ -152,7 +184,7 @@ function ConfidentialitePage() {
               </p>
             </LegalSection>
 
-            <LegalSection title="9. Sécurité des données">
+            <LegalSection title="10. Sécurité des données">
               <p>
                 Soleana Studio met en œuvre des mesures techniques et organisationnelles adaptées
                 pour protéger les données personnelles contre la perte, l&apos;accès non autorisé,
@@ -160,7 +192,7 @@ function ConfidentialitePage() {
               </p>
             </LegalSection>
 
-            <LegalSection title="10. Contact">
+            <LegalSection title="11. Contact">
               <p>
                 Pour toute question sur cette politique ou sur l&apos;utilisation de vos données,
                 vous pouvez contacter Soleana Studio :
@@ -168,14 +200,14 @@ function ConfidentialitePage() {
               <ul className="mt-4 space-y-2">
                 <li>
                   <strong className="text-foreground">E-mail :</strong>{" "}
-                  <a href="mailto:contact@soleanastudio.fr" className="text-foreground story-link">
-                    contact@soleanastudio.fr
+                  <a href={`mailto:${settings.email}`} className="text-foreground story-link">
+                    {settings.email}
                   </a>
                 </li>
                 <li>
                   <strong className="text-foreground">Téléphone :</strong>{" "}
-                  <a href="tel:+33667536312" className="text-foreground story-link">
-                    06.67.53.63.12
+                  <a href={settings.phoneHref} className="text-foreground story-link">
+                    {settings.phone}
                   </a>
                 </li>
               </ul>

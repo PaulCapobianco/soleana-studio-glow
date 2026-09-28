@@ -8,6 +8,7 @@ import { ConsentEmbed } from "@/components/site/ConsentEmbed";
 import { TikTokIcon } from "@/components/site/TikTokIcon";
 import { Instagram, Mail, MessageCircle } from "lucide-react";
 import { buildPageSeo } from "@/lib/seo";
+import { useSiteSettings } from "@/lib/site-settings";
 
 export const Route = createFileRoute("/contact")({
   head: () =>
@@ -23,6 +24,7 @@ export const Route = createFileRoute("/contact")({
 });
 
 function Contact() {
+  const settings = useSiteSettings();
   return (
     <SiteShell>
       <div className="relative isolate overflow-hidden">
@@ -66,21 +68,21 @@ function Contact() {
           <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[320px_minmax(0,1fr)] lg:items-start">
             <Reveal className="space-y-6 text-sm">
               <ContactBlock label="Email">
-                <a href="mailto:contact@soleanastudio.fr" className="text-foreground story-link">
-                  contact@soleanastudio.fr
+                <a href={`mailto:${settings.email}`} className="text-foreground story-link">
+                  {settings.email}
                 </a>
               </ContactBlock>
 
               <ContactBlock label="Téléphone">
-                <a href="tel:+33667536312" className="text-foreground story-link">
-                  06.67.53.63.12
+                <a href={settings.phoneHref} className="text-foreground story-link">
+                  {settings.phone}
                 </a>
               </ContactBlock>
 
               <ContactBlock label="Réseaux">
                 <div className="mt-2 flex gap-3">
                   <SocialButton
-                    href="https://instagram.com/soleana.studio"
+                    href={settings.instagramUrl}
                     label="Instagram"
                     className="bg-[radial-gradient(circle_at_30%_107%,#fdf497_0%,#fdf497_5%,#fd5949_45%,#d6249f_60%,#285AEB_90%)]"
                   >
@@ -88,7 +90,7 @@ function Contact() {
                   </SocialButton>
 
                   <SocialButton
-                    href="mailto:contact@soleanastudio.fr"
+                    href={`mailto:${settings.email}`}
                     label="Email"
                     className="border-[#C6966F]/40 bg-[#FFF6ED] text-[#B36F45] shadow-[0_10px_18px_-14px_rgba(179,111,69,0.5)]"
                   >
@@ -96,20 +98,22 @@ function Contact() {
                   </SocialButton>
 
                   <SocialButton
-                    href="https://www.tiktok.com/@soleana.studio"
+                    href={settings.tiktokUrl}
                     label="TikTok"
                     className="bg-black text-white shadow-[0_10px_18px_-14px_rgba(0,0,0,0.5)]"
                   >
                     <TikTokIcon className="h-4 w-4" />
                   </SocialButton>
 
-                  <SocialButton
-                    href="https://wa.me/33667536312"
-                    label="WhatsApp"
-                    className="bg-[#25D366] text-white"
-                  >
-                    <MessageCircle className="h-4 w-4" />
-                  </SocialButton>
+                  {settings.whatsappUrl && (
+                    <SocialButton
+                      href={settings.whatsappUrl}
+                      label="WhatsApp"
+                      className="bg-[#25D366] text-white"
+                    >
+                      <MessageCircle className="h-4 w-4" />
+                    </SocialButton>
+                  )}
                 </div>
               </ContactBlock>
             </Reveal>

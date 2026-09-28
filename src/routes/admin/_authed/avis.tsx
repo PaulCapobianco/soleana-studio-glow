@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 import { SaveButton } from "@/components/site/admin/SaveButton";
+import { FieldHint } from "@/components/site/admin/FieldHint";
 import { confirmDelete } from "@/lib/admin/confirm-delete";
 import { friendlySupabaseError } from "@/lib/admin/friendly-error";
 import { useDirtySet } from "@/lib/admin/use-dirty-set";
@@ -179,7 +180,10 @@ function ReviewCard({
         />
       </label>
       <label className="grid gap-1">
-        <span>Ordre d'affichage</span>
+        <span>
+          Ordre d'affichage
+          <FieldHint>position dans la liste : 1 = en premier</FieldHint>
+        </span>
         <input
           type="number"
           min={0}
@@ -190,7 +194,12 @@ function ReviewCard({
         />
       </label>
       <label className="grid gap-1">
-        <span>Lien Google de l'avis (facultatif)</span>
+        <span>
+          Lien Google de l'avis (facultatif)
+          <FieldHint>
+            adresse de l'avis original sur Google, pour y renvoyer les visiteurs
+          </FieldHint>
+        </span>
         <input
           type="url"
           value={draft.google_review_url ?? ""}
@@ -222,6 +231,7 @@ function ReviewCard({
           onChange={(e) => setField("published", e.target.checked)}
         />
         Publié
+        <FieldHint>visible sur le site</FieldHint>
       </label>
       <div className="sm:col-span-2 flex items-center justify-between">
         <button type="button" onClick={remove} className="text-xs text-destructive hover:underline">
