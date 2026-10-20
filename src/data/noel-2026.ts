@@ -60,7 +60,7 @@ export const NOEL_2026_FORMULES: NoelFormule[] = [
     features: [
       "25 à 30 minutes de séance",
       "Galerie privée en ligne",
-      "5 photos numériques HD à choisir sur votre galerie en ligne",
+      "10 photos numériques HD à choisir sur votre galerie en ligne",
     ],
     pelliUrl: NOEL_2026_PELLI_URL_DOUCEUR,
   },
