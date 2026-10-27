@@ -37,7 +37,7 @@ for (const route of routes) {
   if (route === "/prestations")
     assert(html.includes("Prestation locale de vérification"), "Services must be in server HTML");
   if (route === "/") {
-    assert(html.includes("7 &amp; 11 novembre 2026"));
+    assert(html.includes("28 &amp; 29 novembre 2026"));
     assert(html.indexOf('id="noel-teaser-title"') < html.indexOf("Des instants,"));
   }
   console.log(`PASS 200 SSR ${route}`);

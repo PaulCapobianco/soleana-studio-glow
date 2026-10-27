@@ -22,19 +22,19 @@ export const NOEL_2026_COLORS = {
 export const NOEL_2026_LOCATION = "Plan-d'Aups-Sainte-Baume";
 
 export const NOEL_2026_SESSION_DATES = [
-  { iso: "2026-11-07", label: "Samedi 7 novembre 2026" },
-  { iso: "2026-11-11", label: "Mercredi 11 novembre 2026" },
+  { iso: "2026-11-28", label: "Samedi 28 novembre 2026" },
+  { iso: "2026-11-29", label: "Dimanche 29 novembre 2026" },
 ] as const;
 
 export const NOEL_2026_WEATHER_FALLBACK_DATES = [
-  { iso: "2026-11-14", label: "samedi 14 novembre" },
-  { iso: "2026-11-15", label: "dimanche 15 novembre" },
+  { iso: "2026-12-05", label: "samedi 5 décembre" },
+  { iso: "2026-12-06", label: "dimanche 6 décembre" },
 ] as const;
 
 // Explicit Europe/Paris offset (CET, +01:00 — no DST ambiguity in
-// November) so the loader's server-side comparison never depends on
+// November or December) so the loader's server-side comparison never depends on
 // the server's local timezone or an implicit UTC read.
-export const NOEL_2026_EDITION_ENDS_AT = "2026-11-16T00:00:00+01:00";
+export const NOEL_2026_EDITION_ENDS_AT = "2026-12-07T00:00:00+01:00";
 
 export function isNoel2026EditionOver(now: Date): boolean {
   return now.getTime() >= new Date(NOEL_2026_EDITION_ENDS_AT).getTime();
@@ -99,7 +99,7 @@ export const NOEL_2026_FAQ: NoelFaqItem[] = [
   {
     question: "Et s'il pleut ?",
     answer:
-      "En cas de météo trop capricieuse (pluie, vent fort), les créneaux sont reportés au week-end suivant, à la même heure : le 7 novembre devient le 14, le 11 novembre devient le 15. Merci de vous assurer d'être disponible ce jour-là. En cas d'annulation de votre côté, l'acompte versé ne pourra pas être remboursé.",
+      "En cas de météo trop capricieuse (pluie, vent fort), les créneaux sont reportés aux 5 et 6 décembre, à la même heure : le samedi 28 novembre devient le samedi 5 décembre, le dimanche 29 novembre devient le dimanche 6 décembre. Merci de vous assurer d'être disponible ce jour-là. En cas d'annulation de votre côté, l'acompte versé ne pourra pas être remboursé.",
   },
   {
     question: "Comment s'habiller ?",
@@ -116,7 +116,7 @@ export const NOEL_2026_FAQ: NoelFaqItem[] = [
 export const NOEL_2026_TEXTS = {
   heroTitle: "Mini-séances de Noël 2026",
   heroSubtitle: "Une parenthèse magique pour créer de précieux souvenirs en famille",
-  heroDatesLabel: "Samedi 7 et mercredi 11 novembre",
+  heroDatesLabel: "Samedi 28 et dimanche 29 novembre",
   heroCta: "Réserver ma séance",
   experience: [
     "Le temps d'une mini-séance, on quitte le quotidien pour une parenthèse de Noël en pleine nature, au milieu des sapins. Un décor de fête, une musique d'ambiance, quelques petites douceurs : tout est pensé pour rire, jouer, se retrouver, et repartir avec de vrais souvenirs de cette saison, sincères et lumineux.",
@@ -204,11 +204,11 @@ export const NOEL_2026_GALLERY_PHOTOS: NoelGalleryPhoto[] = [
 export const NOEL_2026_SEO = {
   title: "Mini-séances de Noël 2026 près de Marseille | Soleana Studio",
   description:
-    "Mini-séances photo de Noël en extérieur les 7 et 11 novembre 2026, à Plan-d'Aups-Sainte-Baume. Deux formules, places limitées. Réservez votre créneau.",
+    "Mini-séances photo de Noël en extérieur les 28 et 29 novembre 2026, à Plan-d'Aups-Sainte-Baume. Deux formules, places limitées. Réservez votre créneau.",
   path: "/mini-seances-noel-2026",
   ogTitle: "Mini-séances de Noël 2026 — Soleana Studio",
   ogDescription:
-    "Une parenthèse de Noël en famille, au cœur de la Sainte-Baume. 7 & 11 novembre 2026, places limitées.",
+    "Une parenthèse de Noël en famille, au cœur de la Sainte-Baume. 28 & 29 novembre 2026, places limitées.",
 } as const;
 
 export const NOEL_2026_PAGE_COPY = {
@@ -225,6 +225,8 @@ export const NOEL_2026_PAGE_COPY = {
   formuleCta: "Réserver cette formule",
   datesTitle: "Les dates",
   limitedPlaces: "Deux journées seulement : les places sont limitées.",
+  weatherFallback:
+    "En cas de mauvais temps, les séances sont reportées aux 5 et 6 décembre (samedi 5 et dimanche 6 décembre 2026).",
   faqTitle: "Questions fréquentes",
   galleryTitle: "Photos des mini-séances de Noël",
 } as const;

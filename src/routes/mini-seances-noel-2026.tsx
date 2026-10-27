@@ -201,6 +201,7 @@ function NoelPage() {
                 ))}
               </ul>
               <p>{NOEL_2026_PAGE_COPY.limitedPlaces}</p>
+              <p>{NOEL_2026_PAGE_COPY.weatherFallback}</p>
             </div>
             <Reveal className={styles.formules}>
               {NOEL_2026_FORMULES.map((formule, index) => (

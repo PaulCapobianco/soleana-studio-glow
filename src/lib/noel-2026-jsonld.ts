@@ -8,7 +8,7 @@ import {
 } from "@/data/noel-2026";
 import { absoluteUrl, SITE_URL } from "@/lib/seo";
 
-// One Event per session day (7 and 11 November are not a continuous event). No start
+// One Event per session day (28 and 29 November are not a continuous event). No start
 // time is published, so dates stay date-only. Everything comes from the data file.
 export function buildNoel2026EventJsonLd() {
   const pageUrl = absoluteUrl(NOEL_2026_SEO.path);
