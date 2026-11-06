@@ -7,6 +7,42 @@
 
 ---
 
+## Mise à jour — 6 novembre 2026 — module « Événements » (branche `apres-noel`, non déployé)
+
+La page des mini-séances de Noël et son teaser d'accueil sont pilotés par la base et éditables depuis
+l'admin (« Événements »). Réutilisable pour de futurs événements.
+
+- **Migration `20261106000000_create_events.sql` — créée, EN ATTENTE d'application manuelle par Paul.**
+  Table `events` (RLS : lecture publique des seuls événements `published`, écriture admin ; droits
+  d'écriture retirés à `anon`), triggers (slug figé après la première publication, adresses réservées /
+  déjà prises par `seo_pages`, `updated_at`), bloc aal2 appliqué seulement si `20260926000002` l'est
+  déjà (à ré-exécuter si `000002` est appliquée après), ligne « Mini-séances de Noël 2026 » insérée à
+  l'identique du contenu codé en dur. Sans cette migration, le site retombe sur les données du code
+  (`src/lib/events/legacy-noel.ts`) : déployer avant d'appliquer la migration ne casse rien.
+- **Décisions de simplification** (par rapport à `docs/events-module-spec.md`, qui reste la cible
+  longue) : une seule table (formules et FAQ en colonnes JSON validées par zod, pas de tables filles) ;
+  pas de couleurs configurables ; pas de `photo_placements` (dépend de la branche `photos-storage`) ;
+  un seul « nombre de photos » n'existe pas : c'est une ligne du contenu de chaque formule ; teaser =
+  premier événement publié avec teaser activé et édition non terminée (pas de contrôle de chevauchement) ;
+  « terminé » se déduit des dates (lendemain minuit, heure de Paris, de la dernière date de report) ;
+  statut `archived` = page invisible (404), distinct d'« édition terminée » qui reste affichée.
+- **Images** : seule la couverture est envoyée depuis l'admin (WebP 800/1600 px produit dans le
+  navigateur, bucket `photos`, dossier `events/<id>/`, politiques existantes). Les photos de l'édition
+  Noël 2026 (bandeau, galerie de 74 photos, décor) restent des fichiers du build
+  (`src/components/site/event-assets.ts`) : la migration des photos reste un chantier séparé.
+- **Public** : la page est servie par la route `/$slug` (`seo_pages` d'abord, puis `events`) à la même
+  adresse qu'avant ; l'ancienne route statique est supprimée. HTML SSR de Noël et de l'accueil comparé
+  avant/après : identique (titre, canonical, og:image, JSON-LD, formules, galerie). Chaque requête lit la
+  base : une modification admin est visible sans redéploiement (aucun `Cache-Control` sur le HTML) ; seul
+  le sitemap est mis en cache 1 h.
+- **Tests** : 88 tests verts (dont éditeur admin, page générique, dates, validation). Parcours complet
+  (créer, publier, voir en public, dépublier, supprimer un événement de test) **non exécuté** : il exige
+  la migration appliquée, et le local pointe sur la production.
+- **À nettoyer après application et vérification de la migration** : `src/lib/events/legacy-noel.ts`
+  (repli) et les textes de `src/data/noel-2026.ts` (les images qu'il importe restent utilisées).
+
+---
+
 ## Mise à jour — 27 septembre 2026 (soir) — lots sécurité et RGPD de `docs/audit-2026-10.md`
 
 Deux des lots « ouvert partout » du plan d'action de l'audit du 10/2026 (`docs/audit-2026-10.md`,

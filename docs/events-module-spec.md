@@ -1,6 +1,10 @@
 # Module « Événements » — cahier des charges (Phase 1 : proposition, non construit)
 
-Statut : **spécification uniquement**. Aucun code n'a été écrit, aucune migration créée, aucune
+> **Mise à jour du 06/11/2026** : une première version simplifiée du module a été construite sur
+> `apres-noel` (voir `AUDIT.md`, mise à jour du 6 novembre). Elle ne reprend pas les tables filles, les
+> couleurs ni `photo_placements` ; ce document reste la cible pour la suite.
+
+Statut d'origine : **spécification uniquement**. Aucun code n'a été écrit, aucune migration créée, aucune
 écriture en base pour ce module. Ce document se base sur la page Noël 2026 actuelle et sur la
 fondation `photos-storage` (branche non fusionnée, migration non appliquée).
 
