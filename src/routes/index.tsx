@@ -36,18 +36,22 @@ import type { Database } from "@/integrations/supabase/types";
 import { isGoogleReviewUrl } from "@/lib/google-review-url";
 import { absoluteUrl, buildPageSeo } from "@/lib/seo";
 import { useSiteSettings } from "@/lib/site-settings";
-import { NoelShowcase } from "@/components/site/NoelShowcase";
-import { getNoel2026EditionState } from "@/lib/noel-2026.functions";
+import { EventTeaser } from "@/components/site/EventTeaser";
+import { getHomeTeaser } from "@/lib/events/queries";
 
 export const Route = createFileRoute("/")({
   loader: async () => {
-    const { isEditionOver } = await getNoel2026EditionState();
+    // Un teaser qui ne charge pas ne doit jamais empêcher l'accueil de s'afficher.
+    const teaserPromise = getHomeTeaser().catch((error) => {
+      console.error("[home.teaser] Échec du chargement du teaser:", error);
+      return null;
+    });
     const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
     const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
     if (!supabaseUrl || !supabaseKey) {
       console.error("[home.services] Missing Supabase public env vars.");
-      return { services: [], reviews: [], isNoelTeaserVisible: !isEditionOver };
+      return { services: [], reviews: [], teaser: await teaserPromise };
     }
 
     const headers = {
@@ -75,7 +79,7 @@ export const Route = createFileRoute("/")({
     return {
       services,
       reviews: await reviewsPromise,
-      isNoelTeaserVisible: !isEditionOver,
+      teaser: await teaserPromise,
     };
   },
   head: () => {
@@ -210,7 +214,7 @@ const seoMap: Record<string, string> = {
 function Home() {
   const { googleReviewUrl, serviceArea } = useSiteSettings();
   const [scrolled, setScrolled] = useState(false);
-  const { services, reviews, isNoelTeaserVisible } = Route.useLoaderData();
+  const { services, reviews, teaser } = Route.useLoaderData();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -312,7 +316,7 @@ function Home() {
       </section>
 
       {/* TEASER — MINI-SÉANCES DE NOËL 2026 */}
-      {isNoelTeaserVisible && <NoelShowcase />}
+      {teaser && <EventTeaser teaser={teaser} />}
 
       {/* INTRO */}
       <section className="py-32 px-6 max-w-4xl mx-auto text-center [content-visibility:auto] [contain-intrinsic-size:1px_900px]">

@@ -227,6 +227,9 @@
   gap: 3rem;
   align-items: center;
 }
+.introSolo {
+  max-width: 44rem;
+}
 .introCopy {
   display: grid;
   max-width: 34rem;

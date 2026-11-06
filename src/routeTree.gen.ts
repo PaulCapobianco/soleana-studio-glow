@@ -14,7 +14,6 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ReservationRouteImport } from './routes/reservation'
 import { Route as PrestationsRouteImport } from './routes/prestations'
 import { Route as PortfolioRouteImport } from './routes/portfolio'
-import { Route as MiniSeancesNoel2026RouteImport } from './routes/mini-seances-noel-2026'
 import { Route as MentionsLegalesRouteImport } from './routes/mentions-legales'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as EspaceClientRouteImport } from './routes/espace-client'
@@ -64,11 +63,6 @@ const PrestationsRoute = PrestationsRouteImport.update({
 const PortfolioRoute = PortfolioRouteImport.update({
   id: '/portfolio',
   path: '/portfolio',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MiniSeancesNoel2026Route = MiniSeancesNoel2026RouteImport.update({
-  id: '/mini-seances-noel-2026',
-  path: '/mini-seances-noel-2026',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MentionsLegalesRoute = MentionsLegalesRouteImport.update({
@@ -206,7 +200,6 @@ export interface FileRoutesByFullPath {
   '/espace-client': typeof EspaceClientRoute
   '/faq': typeof FaqRoute
   '/mentions-legales': typeof MentionsLegalesRoute
-  '/mini-seances-noel-2026': typeof MiniSeancesNoel2026Route
   '/portfolio': typeof PortfolioRouteWithChildren
   '/prestations': typeof PrestationsRoute
   '/reservation': typeof ReservationRoute
@@ -239,7 +232,6 @@ export interface FileRoutesByTo {
   '/espace-client': typeof EspaceClientRoute
   '/faq': typeof FaqRoute
   '/mentions-legales': typeof MentionsLegalesRoute
-  '/mini-seances-noel-2026': typeof MiniSeancesNoel2026Route
   '/prestations': typeof PrestationsRoute
   '/reservation': typeof ReservationRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -271,7 +263,6 @@ export interface FileRoutesById {
   '/espace-client': typeof EspaceClientRoute
   '/faq': typeof FaqRoute
   '/mentions-legales': typeof MentionsLegalesRoute
-  '/mini-seances-noel-2026': typeof MiniSeancesNoel2026Route
   '/portfolio': typeof PortfolioRouteWithChildren
   '/prestations': typeof PrestationsRoute
   '/reservation': typeof ReservationRoute
@@ -306,7 +297,6 @@ export interface FileRouteTypes {
     | '/espace-client'
     | '/faq'
     | '/mentions-legales'
-    | '/mini-seances-noel-2026'
     | '/portfolio'
     | '/prestations'
     | '/reservation'
@@ -339,7 +329,6 @@ export interface FileRouteTypes {
     | '/espace-client'
     | '/faq'
     | '/mentions-legales'
-    | '/mini-seances-noel-2026'
     | '/prestations'
     | '/reservation'
     | '/sitemap.xml'
@@ -370,7 +359,6 @@ export interface FileRouteTypes {
     | '/espace-client'
     | '/faq'
     | '/mentions-legales'
-    | '/mini-seances-noel-2026'
     | '/portfolio'
     | '/prestations'
     | '/reservation'
@@ -404,7 +392,6 @@ export interface RootRouteChildren {
   EspaceClientRoute: typeof EspaceClientRoute
   FaqRoute: typeof FaqRoute
   MentionsLegalesRoute: typeof MentionsLegalesRoute
-  MiniSeancesNoel2026Route: typeof MiniSeancesNoel2026Route
   PortfolioRoute: typeof PortfolioRouteWithChildren
   PrestationsRoute: typeof PrestationsRoute
   ReservationRoute: typeof ReservationRoute
@@ -451,13 +438,6 @@ declare module '@tanstack/react-router' {
       path: '/portfolio'
       fullPath: '/portfolio'
       preLoaderRoute: typeof PortfolioRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/mini-seances-noel-2026': {
-      id: '/mini-seances-noel-2026'
-      path: '/mini-seances-noel-2026'
-      fullPath: '/mini-seances-noel-2026'
-      preLoaderRoute: typeof MiniSeancesNoel2026RouteImport
       parentRoute: typeof rootRouteImport
     }
     '/mentions-legales': {
@@ -693,7 +673,6 @@ const rootRouteChildren: RootRouteChildren = {
   EspaceClientRoute: EspaceClientRoute,
   FaqRoute: FaqRoute,
   MentionsLegalesRoute: MentionsLegalesRoute,
-  MiniSeancesNoel2026Route: MiniSeancesNoel2026Route,
   PortfolioRoute: PortfolioRouteWithChildren,
   PrestationsRoute: PrestationsRoute,
   ReservationRoute: ReservationRoute,

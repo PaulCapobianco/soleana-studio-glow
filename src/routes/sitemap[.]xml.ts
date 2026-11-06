@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
+import { listPublishedEventUrls } from "@/lib/events/queries";
+import { LEGACY_NOEL_SLUG } from "@/lib/events/legacy-noel";
 
 const SITE_URL = "https://soleanastudio.fr";
 
@@ -9,7 +11,6 @@ const PATHS = [
   // /portfolio/grossesse, /famille, /couple and /portrait are left out on purpose: they
   // render the generic portfolio until BUG-02 is fixed. Put them back with the fix (0a23b0f).
   "/prestations",
-  "/mini-seances-noel-2026",
   "/reservation",
   "/a-propos",
   "/faq",
@@ -32,16 +33,30 @@ export const Route = createFileRoute("/sitemap.xml")({
     handlers: {
       GET: async () => {
         const lastmod = new Date().toISOString().split("T")[0];
-        const urls = PATHS.map((path) => {
-          const priority = path === "/" ? "1.0" : path.startsWith("/photographe") ? "0.8" : "0.7";
+        // Événements publiés (admin) : lus à chaque génération, mis en cache 1 h ci-dessous.
+        // Si la table ne répond pas encore, on garde l'adresse historique de Noël 2026.
+        const events = (await listPublishedEventUrls()) ?? [
+          { slug: LEGACY_NOEL_SLUG, updatedAt: lastmod },
+        ];
+        const entries = [
+          ...PATHS.map((path) => ({ path, lastmod })),
+          ...events.map((event) => ({
+            path: `/${event.slug}`,
+            lastmod: event.updatedAt.split("T")[0],
+          })),
+        ];
+        const urls = entries
+          .map(({ path, lastmod }) => {
+            const priority = path === "/" ? "1.0" : path.startsWith("/photographe") ? "0.8" : "0.7";
 
-          return `  <url>
+            return `  <url>
     <loc>${SITE_URL}${path}</loc>
     <lastmod>${lastmod}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>${priority}</priority>
   </url>`;
-        }).join("\n");
+          })
+          .join("\n");
 
         const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

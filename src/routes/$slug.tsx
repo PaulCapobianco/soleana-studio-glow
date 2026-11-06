@@ -2,8 +2,13 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { SiteShell } from "@/components/site/SiteShell";
 import { Reveal } from "@/components/site/Reveal";
 import { CategoryGallerySection } from "@/components/site/CategoryGallerySection";
+import { EventPage } from "@/components/site/EventPage";
+import { eventAssets } from "@/components/site/event-assets";
 import { buildPageSeo } from "@/lib/seo";
 import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
+import { getPublishedEvent } from "@/lib/events/queries";
+import { buildEventJsonLd, eventOgImage, eventSeo } from "@/lib/events/presentation";
 
 type GalleryPhoto = {
   id: string;
@@ -299,8 +304,12 @@ export const Route = createFileRoute("/$slug")({
       console.error(`[seo_pages] Échec du chargement de la page "${params.slug}":`, error);
       throw new Error("Erreur de chargement de la page");
     }
-    if (!data) throw notFound();
-    return data;
+    if (data) return { kind: "seo" as const, page: data };
+
+    // Pas une page SEO : peut-être un événement publié (la base empêche les adresses en double).
+    const event = await getPublishedEvent({ data: { slug: params.slug } });
+    if (!event) throw notFound();
+    return { kind: "event" as const, event };
   },
   head: ({ params, loaderData, match }) => {
     if (!loaderData) {
@@ -317,15 +326,36 @@ export const Route = createFileRoute("/$slug")({
       };
     }
 
+    if (loaderData.kind === "event") {
+      const { event, isOver } = loaderData.event;
+      const seo = buildPageSeo(eventSeo(event));
+      const assets = eventAssets(event.slug);
+      const image = eventOgImage(event, assets?.hero.src1600 ?? null);
+      return {
+        ...seo,
+        meta: [...seo.meta, ...(image ? [{ property: "og:image", content: image }] : [])],
+        // Pas de données structurées « Event » une fois l'édition terminée.
+        scripts: isOver
+          ? []
+          : [
+              {
+                type: "application/ld+json",
+                children: JSON.stringify(buildEventJsonLd(event, image)),
+              },
+            ],
+      };
+    }
+
+    const page = loaderData.page;
     return buildPageSeo({
-      title: loaderData.meta_title,
-      description: loaderData.meta_description,
+      title: page.meta_title,
+      description: page.meta_description,
       path: `/${params.slug}`,
-      ogTitle: loaderData.og_title ?? loaderData.meta_title,
-      ogDescription: loaderData.og_description ?? loaderData.meta_description,
+      ogTitle: page.og_title ?? page.meta_title,
+      ogDescription: page.og_description ?? page.meta_description,
     });
   },
-  component: SeoPage,
+  component: SlugPage,
   errorComponent: ({ error }) => {
     console.error(error);
     return (
@@ -356,9 +386,16 @@ export const Route = createFileRoute("/$slug")({
   ),
 });
 
-function SeoPage() {
+function SlugPage() {
+  const loaderData = Route.useLoaderData();
+  if (loaderData.kind === "event") {
+    return <EventPage event={loaderData.event.event} isOver={loaderData.event.isOver} />;
+  }
+  return <SeoPage page={loaderData.page} />;
+}
+
+function SeoPage({ page }: { page: Database["public"]["Tables"]["seo_pages"]["Row"] }) {
   const { slug } = Route.useParams();
-  const page = Route.useLoaderData();
   const gallery = SEO_PAGE_GALLERY[slug];
   const hasMultipleGalleries = (gallery?.sections.length ?? 0) > 1;
 
