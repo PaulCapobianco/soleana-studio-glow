@@ -39,6 +39,8 @@ import { Route as AdminAuthedFaqRouteImport } from './routes/admin/_authed/faq'
 import { Route as AdminAuthedDashboardRouteImport } from './routes/admin/_authed/dashboard'
 import { Route as AdminAuthedCompteRouteImport } from './routes/admin/_authed/compte'
 import { Route as AdminAuthedAvisRouteImport } from './routes/admin/_authed/avis'
+import { Route as AdminAuthedEvenementsIndexRouteImport } from './routes/admin/_authed/evenements/index'
+import { Route as AdminAuthedEvenementsIdRouteImport } from './routes/admin/_authed/evenements/$id'
 
 const TarifsRoute = TarifsRouteImport.update({
   id: '/tarifs',
@@ -190,6 +192,17 @@ const AdminAuthedAvisRoute = AdminAuthedAvisRouteImport.update({
   path: '/avis',
   getParentRoute: () => AdminAuthedRoute,
 } as any)
+const AdminAuthedEvenementsIndexRoute =
+  AdminAuthedEvenementsIndexRouteImport.update({
+    id: '/evenements/',
+    path: '/evenements/',
+    getParentRoute: () => AdminAuthedRoute,
+  } as any)
+const AdminAuthedEvenementsIdRoute = AdminAuthedEvenementsIdRouteImport.update({
+  id: '/evenements/$id',
+  path: '/evenements/$id',
+  getParentRoute: () => AdminAuthedRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -222,6 +235,8 @@ export interface FileRoutesByFullPath {
   '/admin/parametres': typeof AdminAuthedParametresRoute
   '/admin/photos': typeof AdminAuthedPhotosRoute
   '/admin/prestations': typeof AdminAuthedPrestationsRoute
+  '/admin/evenements/$id': typeof AdminAuthedEvenementsIdRoute
+  '/admin/evenements/': typeof AdminAuthedEvenementsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -252,6 +267,8 @@ export interface FileRoutesByTo {
   '/admin/parametres': typeof AdminAuthedParametresRoute
   '/admin/photos': typeof AdminAuthedPhotosRoute
   '/admin/prestations': typeof AdminAuthedPrestationsRoute
+  '/admin/evenements/$id': typeof AdminAuthedEvenementsIdRoute
+  '/admin/evenements': typeof AdminAuthedEvenementsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -285,6 +302,8 @@ export interface FileRoutesById {
   '/admin/_authed/parametres': typeof AdminAuthedParametresRoute
   '/admin/_authed/photos': typeof AdminAuthedPhotosRoute
   '/admin/_authed/prestations': typeof AdminAuthedPrestationsRoute
+  '/admin/_authed/evenements/$id': typeof AdminAuthedEvenementsIdRoute
+  '/admin/_authed/evenements/': typeof AdminAuthedEvenementsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -319,6 +338,8 @@ export interface FileRouteTypes {
     | '/admin/parametres'
     | '/admin/photos'
     | '/admin/prestations'
+    | '/admin/evenements/$id'
+    | '/admin/evenements/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -349,6 +370,8 @@ export interface FileRouteTypes {
     | '/admin/parametres'
     | '/admin/photos'
     | '/admin/prestations'
+    | '/admin/evenements/$id'
+    | '/admin/evenements'
   id:
     | '__root__'
     | '/'
@@ -381,6 +404,8 @@ export interface FileRouteTypes {
     | '/admin/_authed/parametres'
     | '/admin/_authed/photos'
     | '/admin/_authed/prestations'
+    | '/admin/_authed/evenements/$id'
+    | '/admin/_authed/evenements/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -615,6 +640,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAuthedAvisRouteImport
       parentRoute: typeof AdminAuthedRoute
     }
+    '/admin/_authed/evenements/': {
+      id: '/admin/_authed/evenements/'
+      path: '/evenements'
+      fullPath: '/admin/evenements/'
+      preLoaderRoute: typeof AdminAuthedEvenementsIndexRouteImport
+      parentRoute: typeof AdminAuthedRoute
+    }
+    '/admin/_authed/evenements/$id': {
+      id: '/admin/_authed/evenements/$id'
+      path: '/evenements/$id'
+      fullPath: '/admin/evenements/$id'
+      preLoaderRoute: typeof AdminAuthedEvenementsIdRouteImport
+      parentRoute: typeof AdminAuthedRoute
+    }
   }
 }
 
@@ -647,6 +686,8 @@ interface AdminAuthedRouteChildren {
   AdminAuthedParametresRoute: typeof AdminAuthedParametresRoute
   AdminAuthedPhotosRoute: typeof AdminAuthedPhotosRoute
   AdminAuthedPrestationsRoute: typeof AdminAuthedPrestationsRoute
+  AdminAuthedEvenementsIdRoute: typeof AdminAuthedEvenementsIdRoute
+  AdminAuthedEvenementsIndexRoute: typeof AdminAuthedEvenementsIndexRoute
 }
 
 const AdminAuthedRouteChildren: AdminAuthedRouteChildren = {
@@ -658,6 +699,8 @@ const AdminAuthedRouteChildren: AdminAuthedRouteChildren = {
   AdminAuthedParametresRoute: AdminAuthedParametresRoute,
   AdminAuthedPhotosRoute: AdminAuthedPhotosRoute,
   AdminAuthedPrestationsRoute: AdminAuthedPrestationsRoute,
+  AdminAuthedEvenementsIdRoute: AdminAuthedEvenementsIdRoute,
+  AdminAuthedEvenementsIndexRoute: AdminAuthedEvenementsIndexRoute,
 }
 
 const AdminAuthedRouteWithChildren = AdminAuthedRoute._addFileChildren(

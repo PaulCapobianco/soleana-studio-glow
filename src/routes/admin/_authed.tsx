@@ -10,6 +10,7 @@ import {
   LogOut,
   Settings,
   UserRound,
+  CalendarDays,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
@@ -40,6 +41,7 @@ export const Route = createFileRoute("/admin/_authed")({
 const nav = [
   { to: "/admin/dashboard", label: "Tableau de bord", icon: LayoutDashboard },
   { to: "/admin/photos", label: "Photos", icon: Images },
+  { to: "/admin/evenements", label: "Événements", icon: CalendarDays },
   { to: "/admin/prestations", label: "Prestations", icon: ListChecks },
   { to: "/admin/avis", label: "Avis", icon: Star },
   { to: "/admin/faq", label: "FAQ", icon: HelpCircle },
