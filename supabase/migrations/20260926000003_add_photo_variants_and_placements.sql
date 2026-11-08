@@ -2,7 +2,9 @@
 -- des pages SEO couple, famille, grossesse, portrait). Schéma ADDITIF uniquement : colonne
 -- photos.source_key, tables photo_variants et photo_placements, avec RLS, politiques et droits
 -- dans la même transaction. Aucun import, aucun bucket ni aucune politique existante modifiés.
--- Date : 26 septembre 2026.
+-- Date : 26 septembre 2026. Amendée le 9 novembre 2026 (toujours NON appliquée) : contexte « event »
+-- ajouté pour que les galeries des événements (Noël 2026 : 74 photos) passent par le même système ;
+-- exige la table public.events (migration 20261106000000, appliquée).
 -- À APPLIQUER MANUELLEMENT : cette migration est créée dans le dépôt mais n'a PAS été exécutée.
 --
 -- Ordre pré-déploiement : préflight, cette migration, 20260926000004, import de test,
@@ -20,6 +22,10 @@ BEGIN
      OR NOT EXISTS (SELECT 1 FROM pg_class WHERE oid = 'public.seo_pages'::regclass AND relrowsecurity)
      OR NOT EXISTS (SELECT 1 FROM pg_class WHERE oid = 'public.categories'::regclass AND relrowsecurity) THEN
     RAISE EXCEPTION 'Expected RLS on photos, seo_pages and categories';
+  END IF;
+  IF to_regclass('public.events') IS NULL
+     OR NOT EXISTS (SELECT 1 FROM pg_class WHERE oid = 'public.events'::regclass AND relrowsecurity) THEN
+    RAISE EXCEPTION 'Apply 20261106000000_create_events.sql first (public.events with RLS is required)';
   END IF;
   IF to_regclass('public.photo_variants') IS NOT NULL
      OR to_regclass('public.photo_placements') IS NOT NULL
@@ -60,10 +66,13 @@ CREATE TABLE public.photo_placements (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   placement_key TEXT NOT NULL UNIQUE CHECK (placement_key ~ '^[a-z0-9][a-z0-9/_-]{0,199}$'),
   photo_id UUID NOT NULL REFERENCES public.photos(id) ON DELETE RESTRICT,
-  context_type TEXT NOT NULL CHECK (context_type IN ('page', 'seo', 'category')),
+  context_type TEXT NOT NULL CHECK (context_type IN ('page', 'seo', 'category', 'event')),
   page_key TEXT NULL CHECK (page_key ~ '^[a-z0-9][a-z0-9/_-]{0,99}$'),
   seo_page_id UUID NULL REFERENCES public.seo_pages(id) ON DELETE RESTRICT,
   category_id UUID NULL REFERENCES public.categories(id) ON DELETE RESTRICT,
+  -- Galeries d'un événement : une galerie = un `slot` (hero, intro, decor, session-01, …), la
+  -- couverture d'une galerie étant son display_order 0.
+  event_id UUID NULL REFERENCES public.events(id) ON DELETE RESTRICT,
   slot TEXT NOT NULL CHECK (slot ~ '^[a-z0-9][a-z0-9_-]{0,99}$'),
   display_order INTEGER NOT NULL CHECK (display_order >= 0),
   object_position_x_pct NUMERIC(6,3) NOT NULL DEFAULT 50 CHECK (object_position_x_pct BETWEEN 0 AND 100),
@@ -73,14 +82,17 @@ CREATE TABLE public.photo_placements (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   CHECK (
-    (context_type = 'page' AND page_key IS NOT NULL AND seo_page_id IS NULL)
-    OR (context_type = 'seo' AND page_key IS NULL AND seo_page_id IS NOT NULL)
-    OR (context_type = 'category' AND page_key IS NULL AND seo_page_id IS NULL AND category_id IS NOT NULL)
+    (context_type = 'page' AND page_key IS NOT NULL AND seo_page_id IS NULL AND event_id IS NULL)
+    OR (context_type = 'seo' AND page_key IS NULL AND seo_page_id IS NOT NULL AND event_id IS NULL)
+    OR (context_type = 'category' AND page_key IS NULL AND seo_page_id IS NULL AND category_id IS NOT NULL AND event_id IS NULL)
+    OR (context_type = 'event' AND page_key IS NULL AND seo_page_id IS NULL AND category_id IS NULL AND event_id IS NOT NULL)
   )
 );
 CREATE UNIQUE INDEX photo_placements_page_order ON public.photo_placements (page_key, slot, display_order) WHERE context_type = 'page';
 CREATE UNIQUE INDEX photo_placements_seo_order ON public.photo_placements (seo_page_id, slot, display_order) WHERE context_type = 'seo';
 CREATE UNIQUE INDEX photo_placements_category_order ON public.photo_placements (category_id, slot, display_order) WHERE context_type = 'category';
+CREATE UNIQUE INDEX photo_placements_event_order ON public.photo_placements (event_id, slot, display_order) WHERE context_type = 'event';
+CREATE INDEX photo_placements_event_id ON public.photo_placements (event_id) WHERE event_id IS NOT NULL;
 CREATE INDEX photo_placements_photo_id ON public.photo_placements (photo_id);
 CREATE INDEX photo_placements_category_id ON public.photo_placements (category_id) WHERE category_id IS NOT NULL;
 ALTER TABLE public.photo_placements ENABLE ROW LEVEL SECURITY;
@@ -90,6 +102,7 @@ CREATE POLICY "Public read published photo placements" ON public.photo_placement
     published
     AND EXISTS (SELECT 1 FROM public.photos p WHERE p.id = photo_id AND p.published)
     AND (seo_page_id IS NULL OR EXISTS (SELECT 1 FROM public.seo_pages s WHERE s.id = seo_page_id AND s.published))
+    AND (event_id IS NULL OR EXISTS (SELECT 1 FROM public.events e WHERE e.id = event_id AND e.status = 'published'))
   );
 CREATE POLICY "Admin manage photo placements" ON public.photo_placements
   FOR ALL TO authenticated

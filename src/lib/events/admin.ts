@@ -113,6 +113,11 @@ function asAdminError(error: { code?: string; message?: string }): unknown {
       "Cette adresse de page est déjà utilisée par un autre événement.",
     );
   }
+  if (error.code === "23503") {
+    return new AdminValidationError(
+      "Cet événement a encore des photos de galerie rattachées : retirez-les d'abord.",
+    );
+  }
   if (error.code === "P0001" && error.message) return new AdminValidationError(error.message);
   return error;
 }

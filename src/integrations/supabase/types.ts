@@ -10,6 +10,7 @@ export type Database = {
     Tables: {
       categories: {
         Row: {
+          published: boolean;
           created_at: string;
           display_order: number;
           id: string;
@@ -17,6 +18,7 @@ export type Database = {
           slug: string;
         };
         Insert: {
+          published?: boolean;
           created_at?: string;
           display_order?: number;
           id?: string;
@@ -24,6 +26,7 @@ export type Database = {
           slug: string;
         };
         Update: {
+          published?: boolean;
           created_at?: string;
           display_order?: number;
           id?: string;
@@ -229,6 +232,7 @@ export type Database = {
       };
       photo_placements: {
         Row: {
+          event_id: string | null;
           alt_text_override: string | null;
           category_id: string | null;
           context_type: string;
@@ -246,6 +250,7 @@ export type Database = {
           updated_at: string;
         };
         Insert: {
+          event_id?: string | null;
           alt_text_override?: string | null;
           category_id?: string | null;
           context_type: string;
@@ -263,6 +268,7 @@ export type Database = {
           updated_at?: string;
         };
         Update: {
+          event_id?: string | null;
           alt_text_override?: string | null;
           category_id?: string | null;
           context_type?: string;
@@ -280,6 +286,13 @@ export type Database = {
           updated_at?: string;
         };
         Relationships: [
+          {
+            foreignKeyName: "photo_placements_event_id_fkey";
+            columns: ["event_id"];
+            isOneToOne: false;
+            referencedRelation: "events";
+            referencedColumns: ["id"];
+          },
           {
             foreignKeyName: "photo_placements_photo_id_fkey";
             columns: ["photo_id"];
