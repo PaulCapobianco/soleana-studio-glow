@@ -82,6 +82,10 @@ export type Database = {
       };
       events: {
         Row: {
+          accent_color: string | null;
+          icon_bullet: string;
+          icon_main: string;
+          theme: string;
           availability_note: string;
           booking_url: string | null;
           closing_title: string;
@@ -117,6 +121,10 @@ export type Database = {
           updated_at: string;
         };
         Insert: {
+          accent_color?: string | null;
+          icon_bullet?: string;
+          icon_main?: string;
+          theme?: string;
           availability_note?: string;
           booking_url?: string | null;
           closing_title?: string;
@@ -152,6 +160,10 @@ export type Database = {
           updated_at?: string;
         };
         Update: {
+          accent_color?: string | null;
+          icon_bullet?: string;
+          icon_main?: string;
+          theme?: string;
           availability_note?: string;
           booking_url?: string | null;
           closing_title?: string;

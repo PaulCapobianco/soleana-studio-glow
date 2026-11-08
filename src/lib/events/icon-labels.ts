@@ -1,0 +1,48 @@
+import { DEFAULT_BULLET_ICON, DEFAULT_MAIN_ICON, LUCIDE_ICON_IDS } from "./icons";
+
+// Libellés français des icônes (admin uniquement : ne pas importer côté site public).
+const LABELS: Record<(typeof LUCIDE_ICON_IDS)[number], string> = {
+  star: "Étoile",
+  sparkles: "Étincelles",
+  snowflake: "Flocon",
+  "tree-pine": "Sapin",
+  gift: "Cadeau",
+  heart: "Cœur",
+  "hand-heart": "Attention",
+  camera: "Appareil photo",
+  calendar: "Calendrier",
+  "calendar-days": "Dates",
+  "map-pin": "Lieu",
+  clock: "Horloge",
+  sun: "Soleil",
+  moon: "Lune",
+  "cloud-sun": "Éclaircie",
+  umbrella: "Parapluie",
+  "flower-2": "Fleur",
+  leaf: "Feuille",
+  sprout: "Pousse",
+  trees: "Forêt",
+  mountain: "Montagne",
+  baby: "Bébé",
+  users: "Famille",
+  smile: "Sourire",
+  music: "Musique",
+  bell: "Cloche",
+  "candy-cane": "Sucre d'orge",
+  cake: "Gâteau",
+  "party-popper": "Fête",
+  wine: "Verre",
+  coffee: "Boisson chaude",
+  flame: "Flamme",
+  gem: "Diamant",
+  crown: "Couronne",
+  ribbon: "Ruban",
+  bird: "Oiseau",
+  check: "Coche",
+};
+
+export const ICON_LABELS: Record<string, string> = {
+  [DEFAULT_MAIN_ICON]: "Étoile de Noël",
+  [DEFAULT_BULLET_ICON]: "Filets (par défaut)",
+  ...LABELS,
+};
