@@ -4,6 +4,10 @@
 couple, famille, grossesse et portrait (170 photos, 190 emplacements). Pas Noël, pas l'accueil,
 pas À propos. Voir aussi `docs/photos-storage-plan.md` (plan général).
 
+> **9 novembre 2026** : migration `20260926000003` amendée (contexte `event`, exige `public.events`) ;
+> nouvelle migration `20261109000000_photo_categories_management.sql` (à appliquer après `000003`) ; l'admin
+> Photos gère les catégories ; `npm ci` est nécessaire (dépendances `@jsquash/avif` et `@jsquash/webp`).
+
 ## Ce qui existe dans le dépôt
 
 | Élément | Rôle |

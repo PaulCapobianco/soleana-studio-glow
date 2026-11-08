@@ -1,5 +1,14 @@
 # Photos / Storage — préparation du 25 septembre 2026
 
+> **Mise à jour du 9 novembre 2026.** Branche `photos-storage-v2` (issue de `main`, qui contient déjà le
+> module Événements et le correctif CSP). Changements par rapport à la préparation de septembre : contexte
+> `event` dans `photo_placements` ; gestion des catégories (créer, renommer, réordonner, masquer, supprimer)
+> dans l'admin Photos, avec la migration `20261109000000_photo_categories_management.sql` ; chiffres de
+> l'inventaire rafraîchis ; Noël 2026 compté pour 74 photos. Rien n'est appliqué en production : ni
+> migration, ni import, ni activation de `VITE_GALLERIES_FROM_STORAGE`. Le projet Supabase de production est
+> `kvzzzwjddanwedzotaka` (celui de `.env` et du site en ligne) ; `project_id` de `supabase/config.toml`
+> (`hvfvvbiupyzoounzyqoz`) ne répond plus et ne doit pas servir de référence.
+
 **Statut : proposition locale, aucune opération Supabase exécutée.** Les fichiers locaux restent la source publique. BUG-02 reste reporté après la bascule Photos, selon la décision validée. Le sitemap n'est pas modifié.
 
 ## Inventaire reproductible
@@ -10,20 +19,34 @@ Le JSON donne **pour chaque fichier** : chemin, format, octets, dimensions, SHA-
 
 | Groupe | Fichiers physiques | Taille arrondie | Usage / classement |
 | --- | ---: | ---: | --- |
-| Identité | 4 | 79 Kio | Logos/favicon, A : garder locaux |
-| Accueil | 9 | 1 412 Kio | 5 référencés, 4 non référencés ; hero critique + portrait |
-| À propos | 11 | 1 255 Kio | 9 référencés, 2 non référencés |
-| Fonds Contact / Prestations | 2 | 286 Kio | Décoratifs, B ; alt vide / arrière-plan préservés |
-| Portfolio | 24 | 2 528 Kio | 4 photos × 6 variantes, B |
-| Couple | 160 | 14 972 Kio | 80 photos + miniatures, B |
+| Identité (racine des assets) | 11 | 614 Kio | 7 fichiers logos/favicon, A : garder locaux ; 4 fichiers de la racine candidats |
+| Accueil | 14 | 1 707 Kio | hero (WebP + AVIF) et portrait ; 4 non référencés (C) |
+| À propos | 20 | 2 082 Kio | 9 photos en WebP + AVIF ; 2 non référencés (C) |
+| Portfolio | 48 | 3 479 Kio | 4 photos × 6 variantes WebP + AVIF, B |
+| Couple | 160 | 7 774 Kio | 80 photos + miniatures, B |
 | Famille | 94 | 5 874 Kio | 47 photos + miniatures, B |
 | Grossesse | 62 | 3 696 Kio | 31 photos + miniatures, B |
 | Portrait | 24 | 1 417 Kio | 12 photos + miniatures, B |
-| Noël 2026 | 20 | 3 959 Kio | 9 photos / candidats, C : maintien local en attendant choix de gestion |
+| Noël 2026 | 154 | 25 326 Kio | **74 photos** (voir ci-dessous) + bandeaux et décor, C : hors périmètre actuel |
 
-Total : **410 fichiers images, 36 330 599 octets (34,65 Mio)**. Quatre logos restent locaux ; 380 fichiers sont candidats Storage ; 26 sont à confirmer (20 variantes Noël + 6 fichiers non référencés). Aucun fichier non référencé n'est supprimé.
+Total : **587 fichiers image, 53 217 321 octets (50,75 Mio)** (inventaire régénéré le 9 novembre 2026 par
+`node scripts/inventory-images.mjs` ; le format « heif » de l'inventaire désigne les fichiers AVIF).
+581 sont référencés. Classement : 7 locaux (A), 420 candidats Storage (B), 160 à confirmer (C : tout
+Noël + 6 fichiers non référencés). Aucun fichier non référencé n'est supprimé.
 
-Les **190 photos validées** sont retrouvées exactement : 170 photos des galeries + 4 photos portfolio + 16 autres (4 hero accueil, 1 portrait accueil, 9 À propos, 2 fonds). Leurs fichiers de base pèsent 17 144 678 octets, hors variantes. Noël ajoute 9 photos, distinctes de ce périmètre historique ; aucune inclusion automatique dans l'import des 190.
+### Noël 2026 : 74 photos, hors périmètre actuel, prévues pour une étape ultérieure
+
+La page Noël est maintenant pilotée par la base (module « Événements »), mais ses images restent des
+fichiers du site : 74 photos en cinq galeries (famille 13, couple A 11, couple B 19, couple C 12, décor 19),
+plus bandeaux et photos d'introduction. Elles **ne font pas partie des 190 photos de la phase 1** et ne
+sont pas importées avec elles. Pour les migrer plus tard par le même système, `photo_placements` accepte le
+contexte `event` (migration `20260926000003`, amendée avant application) : une galerie = un `slot`
+(`hero`, `intro`, `decor`, `session-01`…), la couverture d'une galerie étant son `display_order` 0.
+Le chargement existe (`loadEventGalleries`, `src/lib/photo-storage.ts`, testé) ; il reste à brancher
+l'affichage de `EventPage` et un cible « Événement » dans l'admin Photos. Les photos de Noël ne seront
+sélectionnées et importées qu'après décision explicite.
+
+Les **190 photos validées** sont retrouvées exactement : 170 photos des galeries + 4 photos portfolio + 16 autres (4 hero accueil, 1 portrait accueil, 9 À propos, 2 fonds). Leurs fichiers de base pèsent 17 144 678 octets, hors variantes. Noël (74 photos, voir plus haut) est distinct de ce périmètre historique ; aucune inclusion automatique dans l'import des 190.
 
 ## Usages à conserver dans le manifeste d'import
 
@@ -89,6 +112,32 @@ Le plan Free inclut actuellement 1 Go de stockage, 5 Go de trafic non caché et 
 8. Basculer les composants en conservant les fichiers locaux et un repli explicite vers le manifeste local pendant validation. Aucun changement visible accepté.
 9. Valider la bascule ; seulement ensuite corriger BUG-02 et afficher toutes les photos publiées par catégorie, carte d'abord. Pas de nouvelle sélection éditoriale.
 10. Suppression éventuelle des anciens assets **dans un chantier séparé**, après recherche de références et validation. Les 18 suppressions historiques restent exclues.
+
+### Ordre exact de mise en production (mis à jour le 9 novembre 2026)
+
+Chaque étape est faite par Paul ; rien n'est exécuté par l'assistant. Les migrations se collent dans
+l'éditeur SQL du projet de production `kvzzzwjddanwedzotaka`.
+
+0. **Prérequis.** Sauvegardes (lignes de `photos`, `categories`, `seo_pages`, `events`, schémas et politiques,
+   liste des objets Storage). Correctif CSP déployé (branche `fix-csp-supabase-host`).
+1. **Double authentification de tous les comptes admin** : chacun enregistre son second facteur dans
+   « Mon compte » puis se reconnecte avec le code à 6 chiffres. Sans cela, les étapes suivantes bloquent
+   ses écritures.
+2. `docs/photos-storage/preflight-selects.sql` (lecture seule) : tout doit être conforme.
+3. `20260926000002_require_aal2_for_admin_writes.sql` (obligatoire : `…000005` refuse de s'appliquer sans elle).
+   Re-exécuter ensuite le bloc `DO $aal2$` de `20261106000000_create_events.sql` pour que `events` suive la règle.
+4. `20260926000003_add_photo_variants_and_placements.sql` (amendée : contexte `event`).
+5. `20260926000004_add_avif_photo_variants.sql`.
+6. `20260926000005_photo_storage_admin_operations.sql` (retire la politique de lecture/listing publique des
+   objets du bucket : les URL publiques des images continuent de fonctionner, le listing anonyme non).
+7. `20261109000000_photo_categories_management.sql` (catégories : masquer, garde-fous, politique de lecture).
+8. Déployer le code, interrupteur `VITE_GALLERIES_FROM_STORAGE` **non défini**. L'admin Photos et les catégories
+   sont alors utilisables ; le site public reste sur les fichiers locaux.
+9. Import : simulation, puis import de test, puis import complet **en brouillon** (voir `README.md`) ;
+   contrôles `postflight-selects.sql`.
+10. Validation visuelle, puis activation : `VITE_GALLERIES_FROM_STORAGE=true` au build, déploiement, contrôles.
+11. BUG-02 (pages catégories du portfolio) seulement ensuite, puis, dans un chantier séparé, les photos de
+    Noël (contexte `event`).
 
 ### Point d'arrêt et rollback
 
