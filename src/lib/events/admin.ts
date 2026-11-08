@@ -165,11 +165,24 @@ export async function createEvent(title: string): Promise<EventRow> {
   return data;
 }
 
+/** Que faire des galeries photos d'un événement à sa duplication. */
+export type GalleryDuplication = "none" | "copy" | "reference";
+
 /**
  * Copie un événement pour une nouvelle édition : textes, formules, FAQ et image de couverture
  * sont repris ; les dates sont vidées (à choisir) et le teaser désactivé. La copie est un brouillon.
+ *
+ * Galeries photos :
+ *  - "none" (défaut) : la copie n'a aucune galerie ;
+ *  - "copy" : mêmes galeries et mêmes photos (nouveaux emplacements, photos non dupliquées dans
+ *    Storage) ; la copie peut ensuite les modifier sans toucher à l'original ;
+ *  - "reference" : la copie n'a pas de galerie à elle mais affiche celles de l'original sous
+ *    « Édition précédente ».
  */
-export async function duplicateEvent(row: EventRow): Promise<EventRow> {
+export async function duplicateEvent(
+  row: EventRow,
+  galleries: GalleryDuplication = "none",
+): Promise<EventRow> {
   const insert: TablesInsert<"events"> = {
     slug: await freeSlug(`${row.slug}-copie`),
     title: `${row.title} (copie)`,
@@ -204,10 +217,54 @@ export async function duplicateEvent(row: EventRow): Promise<EventRow> {
     icon_bullet: row.icon_bullet,
     status: "draft",
     display_order: row.display_order,
+    // Colonnes de 20261110000000 : envoyées seulement quand elles servent, pour que la duplication
+    // simple fonctionne même avant l'application de cette migration.
+    ...(galleries === "copy" ? { galleries: row.galleries } : {}),
+    ...(galleries === "reference" ? { gallery_reference_event_id: row.id } : {}),
   };
   const { data, error } = await supabase.from("events").insert(insert).select("*").single();
   if (error) throw asAdminError(error);
+  if (galleries === "copy") {
+    try {
+      await copyPlacements(row.id, data);
+    } catch (copyError) {
+      // Pas de copie à moitié faite : on retire l'événement créé et ses emplacements.
+      await supabase.from("photo_placements").delete().eq("event_id", data.id);
+      await supabase.from("events").delete().eq("id", data.id);
+      console.error("Copie des galeries impossible", copyError);
+      throw new AdminValidationError(
+        "Les galeries n'ont pas pu être copiées : rien n'a été créé. Réessayez, ou dupliquez sans les galeries.",
+      );
+    }
+  }
   return data;
+}
+
+/** Nouveaux emplacements pour `target`, pointant vers les mêmes photos que ceux de `sourceId`. */
+export async function copyPlacements(sourceId: string, target: Pick<EventRow, "id" | "slug">) {
+  const { data, error } = await supabase
+    .from("photo_placements")
+    .select(
+      "photo_id, slot, display_order, object_position_x_pct, object_position_y_pct, alt_text_override, published",
+    )
+    .eq("event_id", sourceId)
+    .eq("context_type", "event");
+  if (error) throw error;
+  const rows = (data ?? []).map((p) => ({
+    placement_key: `events/${target.slug}/${p.slot}/${crypto.randomUUID().replaceAll("-", "")}`,
+    photo_id: p.photo_id,
+    context_type: "event",
+    event_id: target.id,
+    slot: p.slot,
+    display_order: p.display_order,
+    object_position_x_pct: p.object_position_x_pct,
+    object_position_y_pct: p.object_position_y_pct,
+    alt_text_override: p.alt_text_override,
+    published: p.published,
+  }));
+  if (rows.length === 0) return;
+  const { error: insertError } = await supabase.from("photo_placements").insert(rows);
+  if (insertError) throw insertError;
 }
 
 export async function saveEvent(
@@ -232,14 +289,23 @@ export async function deleteDraftEvent(row: EventRow): Promise<void> {
       "Seul un brouillon jamais publié peut être supprimé. Archivez cet événement à la place.",
     );
   }
+  // Les emplacements de galerie (clé étrangère protégée) partent avant l'événement ; les photos
+  // elles-mêmes restent dans l'admin Photos. Table absente (migration pas appliquée) : rien à retirer.
+  const placements = await supabase.from("photo_placements").delete().eq("event_id", row.id);
+  if (placements.error && placements.error.code !== "PGRST205") throw placements.error;
   const { error } = await supabase.from("events").delete().eq("id", row.id);
-  if (error) throw error;
+  if (error) throw asAdminError(error);
   await removeCoverFiles(row).catch(() => undefined);
 }
 
 // ---- Image de couverture -------------------------------------------------------------------
 
 const BUCKET = "photos";
+
+/** Chemin d'une couverture ; la forme est celle que les politiques Storage de 20260926000005 acceptent. */
+export function coverStoragePath(eventId: string, width: number, stamp: number): string {
+  return `events/${eventId}/cover-${width}-${stamp}.webp`;
+}
 const COVER_WIDTHS = [800, 1600] as const;
 
 function pathFromPublicUrl(url: string | null): string | null {
@@ -293,7 +359,7 @@ export async function uploadCover(row: EventRow, file: File): Promise<EventRow> 
   const urls: string[] = [];
   try {
     for (const [index, image] of resized.entries()) {
-      const path = `events/${row.id}/cover-${COVER_WIDTHS[index]}-${stamp}.webp`;
+      const path = coverStoragePath(row.id, COVER_WIDTHS[index], stamp);
       const { error } = await supabase.storage
         .from(BUCKET)
         .upload(path, image.blob, { contentType: "image/webp", cacheControl: "31536000" });

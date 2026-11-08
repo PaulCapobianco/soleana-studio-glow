@@ -12,6 +12,8 @@ import {
 } from "@/components/site/admin/EventFields";
 import { FieldHint } from "@/components/site/admin/FieldHint";
 import { AppearanceFields } from "@/components/site/admin/AppearanceFields";
+import { DuplicateEventDialog } from "@/components/site/admin/DuplicateEventDialog";
+import { EventGalleriesAdmin } from "@/components/site/admin/EventGalleriesAdmin";
 import { EventPageContent } from "@/components/site/EventPage";
 import { eventAssets } from "@/components/site/event-assets";
 import { buildAppearance } from "@/lib/events/appearance";
@@ -19,6 +21,7 @@ import { buildTeaser } from "@/lib/events/presentation";
 import { friendlySupabaseError } from "@/lib/admin/friendly-error";
 import { useDirtySet } from "@/lib/admin/use-dirty-set";
 import {
+  type GalleryDuplication,
   deleteDraftEvent,
   duplicateEvent,
   formValuesToUpdate,
@@ -54,6 +57,7 @@ export function EventEditor({ initial }: { initial: EventRow }) {
   const [busy, setBusy] = useState<string | null>(null);
   const [showPublishErrors, setShowPublishErrors] = useState(false);
   const [preview, setPreview] = useState<null | "open" | "over">(null);
+  const [duplicating, setDuplicating] = useState(false);
   const topRef = useRef<HTMLDivElement>(null);
 
   const status = row.status as EventStatus;
@@ -156,15 +160,20 @@ export function EventEditor({ initial }: { initial: EventRow }) {
       toast.success(message);
     });
 
-  const duplicate = () =>
+  const askDuplicate = () => {
+    if (
+      isDirty &&
+      !window.confirm("Les modifications non enregistrées ne seront pas copiées. Continuer ?")
+    ) {
+      return;
+    }
+    setDuplicating(true);
+  };
+
+  const duplicate = (galleries: GalleryDuplication) =>
     run("duplicate", async () => {
-      if (
-        isDirty &&
-        !window.confirm("Les modifications non enregistrées ne seront pas copiées. Continuer ?")
-      ) {
-        return;
-      }
-      const copy = await duplicateEvent(row);
+      setDuplicating(false);
+      const copy = await duplicateEvent(row, galleries);
       await qc.invalidateQueries({ queryKey: ["admin-events"] });
       toast.success("Copie créée en brouillon. Choisissez maintenant les nouvelles dates.");
       setDirty(row.id, false);
@@ -282,7 +291,7 @@ export function EventEditor({ initial }: { initial: EventRow }) {
           <button
             type="button"
             disabled={busy !== null}
-            onClick={() => void duplicate()}
+            onClick={askDuplicate}
             className="px-2 py-2 text-primary hover:underline disabled:opacity-40"
           >
             Dupliquer
@@ -701,6 +710,13 @@ export function EventEditor({ initial }: { initial: EventRow }) {
       </Section>
 
       <Section
+        title="Galeries photos"
+        intro="Créez des galeries (par exemple « Famille », « Couples », « Décor »), envoyez-y vos photos et choisissez leur ordre. Vous pouvez aussi afficher les galeries d'une autre édition."
+      >
+        <EventGalleriesAdmin event={row} onEventChange={setRow} />
+      </Section>
+
+      <Section
         title="Page d'accueil"
         intro="Une invitation à découvrir cet événement peut apparaître sur l'accueil. L'accueil n'en montre qu'une : celle de l'événement dont la prochaine date est la plus proche. Elle disparaît toute seule à la fin de l'édition."
       >
@@ -821,6 +837,14 @@ export function EventEditor({ initial }: { initial: EventRow }) {
           onChange={(v) => set("og_description", v)}
         />
       </Section>
+      {duplicating && (
+        <DuplicateEventDialog
+          eventTitle={values.title || row.title}
+          busy={busy === "duplicate"}
+          onCancel={() => setDuplicating(false)}
+          onConfirm={(mode) => void duplicate(mode)}
+        />
+      )}
     </div>
   );
 }

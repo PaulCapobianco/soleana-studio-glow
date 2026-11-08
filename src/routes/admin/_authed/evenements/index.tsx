@@ -4,7 +4,14 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { FieldHint } from "@/components/site/admin/FieldHint";
 import { friendlySupabaseError } from "@/lib/admin/friendly-error";
-import { createEvent, duplicateEvent, listEvents, saveEvent } from "@/lib/events/admin";
+import { DuplicateEventDialog } from "@/components/site/admin/DuplicateEventDialog";
+import {
+  createEvent,
+  duplicateEvent,
+  listEvents,
+  saveEvent,
+  type GalleryDuplication,
+} from "@/lib/events/admin";
 import { formatTeaserDates, isEditionOver } from "@/lib/events/dates";
 import type { EventRow, EventStatus } from "@/lib/events/types";
 
@@ -35,6 +42,7 @@ function EventsAdmin() {
   const [filter, setFilter] = useState<Filter>("all");
   const [newTitle, setNewTitle] = useState("");
   const [busy, setBusy] = useState<string | null>(null);
+  const [duplicateOf, setDuplicateOf] = useState<EventRow | null>(null);
   const { data, isPending, error, refetch } = useQuery({
     queryKey: ["admin-events"],
     queryFn: listEvents,
@@ -63,9 +71,10 @@ function EventsAdmin() {
       await navigate({ to: "/admin/evenements/$id", params: { id: created.id } });
     });
 
-  const duplicate = (row: EventRow) =>
+  const duplicate = (row: EventRow, galleries: GalleryDuplication) =>
     run(`dup-${row.id}`, async () => {
-      const copy = await duplicateEvent(row);
+      setDuplicateOf(null);
+      const copy = await duplicateEvent(row, galleries);
       await qc.invalidateQueries({ queryKey: ["admin-events"] });
       toast.success("Copie créée en brouillon. Choisissez maintenant les nouvelles dates.");
       await navigate({ to: "/admin/evenements/$id", params: { id: copy.id } });
@@ -212,7 +221,7 @@ function EventsAdmin() {
                 <button
                   type="button"
                   disabled={busy !== null}
-                  onClick={() => void duplicate(row)}
+                  onClick={() => setDuplicateOf(row)}
                   className="uppercase tracking-widest text-primary hover:underline disabled:opacity-40"
                 >
                   Dupliquer
@@ -241,6 +250,14 @@ function EventsAdmin() {
           );
         })}
       </ul>
+      {duplicateOf && (
+        <DuplicateEventDialog
+          eventTitle={duplicateOf.title}
+          busy={busy !== null}
+          onCancel={() => setDuplicateOf(null)}
+          onConfirm={(mode) => void duplicate(duplicateOf, mode)}
+        />
+      )}
     </div>
   );
 }
