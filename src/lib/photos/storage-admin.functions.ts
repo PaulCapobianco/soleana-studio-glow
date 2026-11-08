@@ -7,7 +7,8 @@ import { calculateStorageCapacity } from "@/lib/photos/storage-capacity";
 import { retryPhotoCleanupJobs } from "@/lib/photos/storage-cleanup";
 
 const PHOTOS_BUCKET = "photos";
-const ORPHAN_VARIANT_PATH = /^galleries\/[a-z0-9][a-z0-9_-]*\/[a-f0-9]{12,32}\/[a-f0-9]{8}-([1-9]|[1-9][0-9]|[1-9][0-9]{2}|1[0-5][0-9]{2}|1600)\.(avif|webp)$/;
+const ORPHAN_VARIANT_PATH =
+  /^galleries\/[a-z0-9][a-z0-9_-]*\/[a-f0-9]{12,32}\/[a-f0-9]{8}-([1-9]|[1-9][0-9]|[1-9][0-9]{2}|1[0-5][0-9]{2}|1600)\.(avif|webp)$/;
 
 type StorageStatusRpc = {
   used_bytes: number;
@@ -23,21 +24,30 @@ type StorageStatusRpc = {
   pending_cleanup_count: number;
 };
 
-function parsePositiveInteger(value: string | undefined, label: string): { value: number | null; error: string | null } {
-  if (value === undefined || value.trim() === "") return { value: null, error: `${label} n’est pas configurée.` };
+function parsePositiveInteger(
+  value: string | undefined,
+  label: string,
+): { value: number | null; error: string | null } {
+  if (value === undefined || value.trim() === "")
+    return { value: null, error: `${label} n’est pas configurée.` };
   const parsed = Number(value);
-  if (!Number.isSafeInteger(parsed) || parsed <= 0) return { value: null, error: `${label} doit être un entier positif sûr.` };
+  if (!Number.isSafeInteger(parsed) || parsed <= 0)
+    return { value: null, error: `${label} doit être un entier positif sûr.` };
   return { value: parsed, error: null };
 }
 
 function projectStatus(status: Omit<StorageStatusRpc, "orphan_paths">, additionalBytes = 0) {
-  const limit = parsePositiveInteger(process.env.PHOTOS_STORAGE_LIMIT_BYTES, "PHOTOS_STORAGE_LIMIT_BYTES");
+  const limit = parsePositiveInteger(
+    process.env.PHOTOS_STORAGE_LIMIT_BYTES,
+    "PHOTOS_STORAGE_LIMIT_BYTES",
+  );
   const limitBytes = limit.value;
   const modeSetting = process.env.PHOTOS_STORAGE_CRITICAL_UPLOAD_MODE;
   const criticalUploadMode = modeSetting === "block" ? "block" : "warn";
-  const modeError = modeSetting && !["warn", "block"].includes(modeSetting)
-    ? "PHOTOS_STORAGE_CRITICAL_UPLOAD_MODE accepte uniquement warn ou block."
-    : null;
+  const modeError =
+    modeSetting && !["warn", "block"].includes(modeSetting)
+      ? "PHOTOS_STORAGE_CRITICAL_UPLOAD_MODE accepte uniquement warn ou block."
+      : null;
   const configurationError = [limit.error, modeError].filter(Boolean).join(" ") || null;
   return {
     ...calculateStorageCapacity({
@@ -83,8 +93,13 @@ export const cleanupOrphanPhotoVariants = createServerFn({ method: "POST" })
     const paths = status.orphan_paths.filter((path) => ORPHAN_VARIANT_PATH.test(path));
     let removed = 0;
     for (let offset = 0; offset < paths.length; offset += 100) {
-      const { data, error } = await context.supabase.storage.from(PHOTOS_BUCKET).remove(paths.slice(offset, offset + 100));
-      if (error) throw new Error("Le nettoyage des variantes orphelines est incomplet ; relancez-le après vérification.");
+      const { data, error } = await context.supabase.storage
+        .from(PHOTOS_BUCKET)
+        .remove(paths.slice(offset, offset + 100));
+      if (error)
+        throw new Error(
+          "Le nettoyage des variantes orphelines est incomplet ; relancez-le après vérification.",
+        );
       removed += data?.length ?? 0;
     }
     return { removed };
@@ -98,7 +113,9 @@ export const retryPhotoStorageCleanup = createServerFn({ method: "POST" })
     return retryPhotoCleanupJobs(
       jobs ?? [],
       async (paths) => {
-        const { error: removeError } = await context.supabase.storage.from(PHOTOS_BUCKET).remove(paths);
+        const { error: removeError } = await context.supabase.storage
+          .from(PHOTOS_BUCKET)
+          .remove(paths);
         return removeError?.message ?? null;
       },
       async (jobId, failure) => {

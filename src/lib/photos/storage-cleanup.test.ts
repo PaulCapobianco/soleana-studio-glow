@@ -12,7 +12,10 @@ describe("retryPhotoCleanupJobs", () => {
     const result = await retryPhotoCleanupJobs(
       [job],
       async () => "Storage unavailable",
-      async (_id, error) => { savedError = error; return true; },
+      async (_id, error) => {
+        savedError = error;
+        return true;
+      },
     );
     expect(result).toEqual({ completed: 0, pending: 1 });
     expect(savedError).toBe("Storage unavailable");
@@ -35,10 +38,16 @@ describe("retryPhotoCleanupJobs", () => {
       return true;
     };
 
-    expect(await retryPhotoCleanupJobs([job], removeBatch, finishJob)).toEqual({ completed: 0, pending: 1 });
+    expect(await retryPhotoCleanupJobs([job], removeBatch, finishJob)).toEqual({
+      completed: 0,
+      pending: 1,
+    });
     expect(remaining.size).toBe(3);
     expect(savedJobs.has(job.job_id)).toBe(true);
-    expect(await retryPhotoCleanupJobs([job], removeBatch, finishJob)).toEqual({ completed: 1, pending: 0 });
+    expect(await retryPhotoCleanupJobs([job], removeBatch, finishJob)).toEqual({
+      completed: 1,
+      pending: 0,
+    });
     expect(remaining.size).toBe(0);
     expect(savedJobs.size).toBe(0);
   });
@@ -50,8 +59,14 @@ describe("retryPhotoCleanupJobs", () => {
       for (const path of paths) existing.delete(path); // absent paths are successful no-ops
       return null;
     };
-    const finishJob = async () => { finishCount += 1; return true; };
-    expect(await retryPhotoCleanupJobs([job, job], removeBatch, finishJob)).toEqual({ completed: 2, pending: 0 });
+    const finishJob = async () => {
+      finishCount += 1;
+      return true;
+    };
+    expect(await retryPhotoCleanupJobs([job, job], removeBatch, finishJob)).toEqual({
+      completed: 2,
+      pending: 0,
+    });
     expect(existing.size).toBe(0);
     expect(finishCount).toBe(2);
   });

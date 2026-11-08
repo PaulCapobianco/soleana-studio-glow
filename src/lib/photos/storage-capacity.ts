@@ -18,7 +18,8 @@ export function calculateStorageCapacity({
   criticalUploadMode: CriticalUploadMode;
 }) {
   const usagePercent = limitBytes === null ? null : (usedBytes / limitBytes) * 100;
-  const projectedPercent = limitBytes === null ? null : ((usedBytes + additionalBytes) / limitBytes) * 100;
+  const projectedPercent =
+    limitBytes === null ? null : ((usedBytes + additionalBytes) / limitBytes) * 100;
   const wouldExceedLimit = limitBytes !== null && usedBytes + additionalBytes > limitBytes;
 
   return {

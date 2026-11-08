@@ -44,29 +44,33 @@ describe("calculateStorageCapacity", () => {
     expect(result.canUpload).toBe(true);
   });
 
-  it.each([69, 70, 84, 85, 94, 95])("does not block at %i%% in block mode when projected usage fits", (percent) => {
-    const result = calculateStorageCapacity({
-      usedBytes: percent,
-      photoBucketBytes: percent,
-      photoBucketObjectCount: 6,
-      limitBytes: 100,
-      averagePhotoBytes: 10,
-      additionalBytes: 1,
-      criticalUploadMode: "block",
-    });
-    expect(result.canUpload).toBe(true);
-  });
+  it.each([69, 70, 84, 85, 94, 95])(
+    "does not block at %i%% in block mode when projected usage fits",
+    (percent) => {
+      const result = calculateStorageCapacity({
+        usedBytes: percent,
+        photoBucketBytes: percent,
+        photoBucketObjectCount: 6,
+        limitBytes: 100,
+        averagePhotoBytes: 10,
+        additionalBytes: 1,
+        criticalUploadMode: "block",
+      });
+      expect(result.canUpload).toBe(true);
+    },
+  );
 
   it("warns through an over-limit projection but blocks it only in block mode", () => {
-    const makeResult = (criticalUploadMode: "warn" | "block") => calculateStorageCapacity({
-      usedBytes: 1_900,
-      photoBucketBytes: 1_850,
-      photoBucketObjectCount: 12,
-      limitBytes: 2_000,
-      averagePhotoBytes: 10,
-      additionalBytes: 101,
-      criticalUploadMode,
-    });
+    const makeResult = (criticalUploadMode: "warn" | "block") =>
+      calculateStorageCapacity({
+        usedBytes: 1_900,
+        photoBucketBytes: 1_850,
+        photoBucketObjectCount: 12,
+        limitBytes: 2_000,
+        averagePhotoBytes: 10,
+        additionalBytes: 101,
+        criticalUploadMode,
+      });
     expect(makeResult("warn").canUpload).toBe(true);
     expect(makeResult("warn").projectedPercent).toBeGreaterThan(100);
     expect(makeResult("block").canUpload).toBe(false);
