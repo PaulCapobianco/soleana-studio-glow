@@ -43,6 +43,32 @@ l'admin (« Événements »). Réutilisable pour de futurs événements.
 
 ---
 
+## Mise à jour — 8 novembre 2026 — apparence des événements (branche `apres-noel`, non déployé)
+
+- **Migration `20261108000000_add_event_appearance.sql` — créée, EN ATTENTE d'application manuelle par
+  Paul** (la migration `20261106000000` n'est pas modifiée). Ajoute à `events` : `theme`, `accent_color`,
+  `icon_main`, `icon_bullet`, avec CHECK sur les identifiants connus ; valeurs par défaut = apparence
+  actuelle de Noël (la ligne existante ne change pas d'aspect). `ADD COLUMN` à défaut constant : aucune
+  réécriture, aucune donnée touchée. RLS inchangée (politiques par ligne, droits au niveau de la table).
+  **À appliquer avant d'enregistrer un événement depuis l'admin mis à jour** (l'écran envoie ces colonnes).
+  Avant son application, le site public lit sans erreur (valeurs absentes → apparence d'origine).
+- **Thèmes** (`src/lib/events/theme.ts`) : 8 thèmes, trois couleurs chacun (principale, accent, texte
+  d'accent clair), appliquées comme variables CSS en ligne dès le rendu serveur (pas de flash, pas de
+  fichier CSS en plus). Contrastes WCAG AA vérifiés par test pour chaque thème (texte crème/principale,
+  principale/papier, texte d'accent/principale ≥ 4,5 ; accent ≥ 3 sur la principale). Accent personnalisé :
+  refusé s'il est trop sombre ou trop clair, avec nuance lisible proposée ; texte d'accent déduit
+  automatiquement (AA).
+- **Icônes** : 37 icônes lucide + l'étoile de Noël, extraites par `scripts/generate-event-icons.mjs`
+  (données, pas composants). Le serveur n'envoie au navigateur que les deux icônes choisies ; chunk de
+  l'accueil vérifié : 181 Ko, +0,4 Ko. Un test garde les listes SQL et code identiques.
+- **Simplifications** : une icône pour toutes les puces (pas de jsonb par section) ; le thème ne change
+  ni le papier ni la crème du site ; en mode sombre du site le comportement est inchangé.
+- **Vérifié** : rendu SSR par défaut identique à l'avant (2 lignes de style en ligne), captures mobile
+  390 px et desktop 1280 px sur 4 apparences (défaut, hiver, printemps, neutre + accent personnalisé).
+  Le test de bout en bout avec compte admin reste à faire par Paul après application de la migration.
+
+---
+
 ## Mise à jour — 27 septembre 2026 (soir) — lots sécurité et RGPD de `docs/audit-2026-10.md`
 
 Deux des lots « ouvert partout » du plan d'action de l'audit du 10/2026 (`docs/audit-2026-10.md`,
