@@ -702,7 +702,7 @@ export function EventEditor({ initial }: { initial: EventRow }) {
 
       <Section
         title="Page d'accueil"
-        intro="Une invitation à découvrir cet événement peut apparaître sur l'accueil. Elle disparaît toute seule à la fin de l'édition."
+        intro="Une invitation à découvrir cet événement peut apparaître sur l'accueil. L'accueil n'en montre qu'une : celle de l'événement dont la prochaine date est la plus proche. Elle disparaît toute seule à la fin de l'édition."
       >
         <label className="flex items-center gap-2 text-sm">
           <input
@@ -741,7 +741,7 @@ export function EventEditor({ initial }: { initial: EventRow }) {
         )}
         <Field
           label="Ordre d'affichage"
-          hint="1 = en premier ; s'il y a plusieurs événements sur l'accueil, le premier est affiché"
+          hint="l'accueil montre l'événement le plus proche dans le temps ; ce numéro ne sert que si deux événements ont la même prochaine date (1 = en premier)"
           type="number"
           value={String(values.display_order)}
           error={errors.display_order}

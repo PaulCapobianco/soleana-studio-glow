@@ -92,6 +92,28 @@ export function formatFallbackSentence(dates: readonly string[]): string {
   return `En cas de mauvais temps, les séances sont reportées ${article} ${short} (${longWithYear}).`;
 }
 
+/** Jour courant à Paris, « AAAA-MM-JJ » (les dates d'événement sont des jours entiers, heure de Paris). */
+export function parisToday(now: Date): string {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Paris",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(now);
+  const get = (type: string) => parts.find((p) => p.type === type)?.value ?? "";
+  return `${get("year")}-${get("month")}-${get("day")}`;
+}
+
+/** Prochaine date (aujourd'hui compris) parmi les séances et les dates de report ; null s'il n'en reste aucune. */
+export function nextEventDate(
+  eventDates: readonly string[],
+  fallbackDates: readonly string[],
+  now: Date,
+): string | null {
+  const today = parisToday(now);
+  return sortedUnique([...eventDates, ...fallbackDates]).find((d) => d >= today) ?? null;
+}
+
 // ---- Fin d'édition -------------------------------------------------------------------------
 
 function parisOffsetMinutes(at: Date): number {

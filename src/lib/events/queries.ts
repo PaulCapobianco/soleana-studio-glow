@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { isEditionOver } from "./dates";
 import { parseEventRow } from "./parse";
 import { buildTeaser } from "./presentation";
+import { pickTeaserEvent } from "./teaser-selection";
 import { LEGACY_NOEL_SLUG, legacyNoelEvent } from "./legacy-noel";
 import type { EventContent, EventTeaserData, PublicEventPage } from "./types";
 
@@ -63,16 +64,17 @@ function legacyPage(): Promise<PublicEventPage> {
   return pageFor(legacyNoelEvent());
 }
 
-/** Teaser d'accueil : premier événement publié, avec teaser activé et édition non terminée. */
+/**
+ * Teaser d'accueil : l'événement publié (teaser activé, édition non terminée) dont la prochaine date
+ * est la plus proche ; voir pickTeaserEvent. Un seul teaser à la fois.
+ */
 export const getHomeTeaser = createServerFn({ method: "GET" }).handler(
   async (): Promise<EventTeaserData | null> => {
     const { data: rows, error } = await supabase
       .from("events")
       .select("*")
       .eq("status", "published")
-      .eq("show_teaser", true)
-      .order("display_order", { ascending: true })
-      .order("created_at", { ascending: false });
+      .eq("show_teaser", true);
 
     if (error) {
       console.error("[events] Échec du chargement du teaser d'accueil:", error);
@@ -82,14 +84,8 @@ export const getHomeTeaser = createServerFn({ method: "GET" }).handler(
         : buildTeaser(legacy, await appearanceFor(legacy));
     }
 
-    const now = new Date();
-    for (const row of rows ?? []) {
-      const event = parseEventRow(row);
-      if (!isEditionOver(event.event_dates, event.fallback_dates, now)) {
-        return buildTeaser(event, await appearanceFor(event));
-      }
-    }
-    return null;
+    const chosen = pickTeaserEvent((rows ?? []).map(parseEventRow), new Date());
+    return chosen ? buildTeaser(chosen, await appearanceFor(chosen)) : null;
   },
 );
 
