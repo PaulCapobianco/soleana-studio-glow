@@ -11,8 +11,11 @@ import {
   Section,
 } from "@/components/site/admin/EventFields";
 import { FieldHint } from "@/components/site/admin/FieldHint";
+import { AppearanceFields } from "@/components/site/admin/AppearanceFields";
 import { EventPageContent } from "@/components/site/EventPage";
 import { eventAssets } from "@/components/site/event-assets";
+import { buildAppearance } from "@/lib/events/appearance";
+import { buildTeaser } from "@/lib/events/presentation";
 import { friendlySupabaseError } from "@/lib/admin/friendly-error";
 import { useDirtySet } from "@/lib/admin/use-dirty-set";
 import {
@@ -196,6 +199,11 @@ export function EventEditor({ initial }: { initial: EventRow }) {
     });
 
   const previewEvent = useMemo(() => previewContent(row, values), [row, values]);
+  const previewAppearance = useMemo(() => buildAppearance(previewEvent), [previewEvent]);
+  const teaserPreview = useMemo(
+    () => buildTeaser(previewEvent, previewAppearance),
+    [previewEvent, previewAppearance],
+  );
   const assets = eventAssets(row.slug);
   const editionOver = isEditionOver(values.event_dates, values.fallback_dates, new Date());
 
@@ -336,7 +344,11 @@ export function EventEditor({ initial }: { initial: EventRow }) {
             </label>
           </div>
           <div className="max-h-[70vh] overflow-auto border-2 border-dashed border-border bg-background">
-            <EventPageContent event={previewEvent} isOver={preview === "over"} />
+            <EventPageContent
+              event={previewEvent}
+              isOver={preview === "over"}
+              appearance={previewAppearance}
+            />
           </div>
         </div>
       )}
@@ -734,6 +746,22 @@ export function EventEditor({ initial }: { initial: EventRow }) {
           value={String(values.display_order)}
           error={errors.display_order}
           onChange={(v) => set("display_order", Number(v))}
+        />
+      </Section>
+
+      <Section
+        title="Apparence"
+        intro="Choisissez les couleurs et les icônes de la page de l'événement et de son invitation sur l'accueil. Tous les thèmes sont vérifiés pour rester lisibles."
+      >
+        <AppearanceFields
+          values={values}
+          errors={errors}
+          set={set}
+          teaserPreview={teaserPreview}
+          onOpenPagePreview={() => {
+            setPreview("open");
+            topRef.current?.scrollIntoView({ behavior: "smooth" });
+          }}
         />
       </Section>
 

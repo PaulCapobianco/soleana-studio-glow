@@ -1,4 +1,5 @@
 import { absoluteUrl, SITE_URL } from "@/lib/seo";
+import type { EventAppearance } from "./appearance";
 import { formatTeaserDates } from "./dates";
 import type { EventContent, EventTeaserData } from "./types";
 
@@ -76,7 +77,7 @@ export function buildEventJsonLd(event: EventContent, imageUrl: string | null) {
   };
 }
 
-export function buildTeaser(event: EventContent): EventTeaserData {
+export function buildTeaser(event: EventContent, appearance: EventAppearance): EventTeaserData {
   return {
     slug: event.slug,
     editionLabel: event.edition_label.trim() || "Soleana Studio",
@@ -88,5 +89,6 @@ export function buildTeaser(event: EventContent): EventTeaserData {
     imageUrl: event.cover_image_url,
     imageSmallUrl: event.cover_image_small_url,
     imageAlt: event.cover_image_alt,
+    appearance,
   };
 }

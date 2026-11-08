@@ -53,6 +53,10 @@ const draft: EventRow = {
   meta_description: "",
   og_title: "",
   og_description: "",
+  theme: "noel-classique",
+  accent_color: null,
+  icon_main: "etoile-noel",
+  icon_bullet: "defaut",
   status: "draft",
   first_published_at: null,
   display_order: 0,
@@ -192,5 +196,45 @@ describe("EventEditor", () => {
   it("un événement publié prévient que les enregistrements sont immédiats", () => {
     renderEditor({ ...draft, status: "published", first_published_at: "2026-11-01T00:00:00Z" });
     expect(screen.getByText(/chaque enregistrement est visible tout de/)).toBeTruthy();
+  });
+
+  it("Apparence : choisir un thème et une icône est enregistré tel quel", async () => {
+    const user = userEvent.setup();
+    const spy = vi.spyOn(admin, "saveEvent").mockResolvedValue({ ...draft, theme: "hiver" });
+    renderEditor();
+
+    await user.click(screen.getByRole("radio", { name: /Hiver givré/ }));
+    await user.click(
+      within(screen.getByRole("radiogroup", { name: "Icône principale" })).getByRole("radio", {
+        name: "Flocon",
+      }),
+    );
+    await user.click(screen.getByRole("button", { name: "Enregistrer" }));
+
+    await waitFor(() => expect(spy).toHaveBeenCalled());
+    expect(spy.mock.calls[0][1]).toMatchObject({
+      theme: "hiver",
+      icon_main: "snowflake",
+      accent_color: null,
+    });
+  });
+
+  it("Apparence : une couleur d'accent illisible bloque l'enregistrement et propose une nuance", async () => {
+    const user = userEvent.setup();
+    const spy = vi.spyOn(admin, "saveEvent");
+    renderEditor();
+
+    await user.click(screen.getByLabelText(/Personnaliser la couleur d'accent/));
+    const code = screen.getByLabelText("Code de la couleur d'accent");
+    await user.clear(code);
+    await user.type(code, "#3A0A0B");
+    expect(screen.getByText(/trop sombre/)).toBeTruthy();
+    expect(screen.getByRole("button", { name: /Utiliser une nuance lisible/ })).toBeTruthy();
+
+    await user.click(screen.getByRole("button", { name: "Enregistrer" }));
+    expect(spy).not.toHaveBeenCalled();
+
+    await user.click(screen.getByRole("button", { name: /Utiliser une nuance lisible/ }));
+    expect(screen.getByText(/bien lisible/)).toBeTruthy();
   });
 });

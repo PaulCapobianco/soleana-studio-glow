@@ -389,7 +389,13 @@ export const Route = createFileRoute("/$slug")({
 function SlugPage() {
   const loaderData = Route.useLoaderData();
   if (loaderData.kind === "event") {
-    return <EventPage event={loaderData.event.event} isOver={loaderData.event.isOver} />;
+    return (
+      <EventPage
+        event={loaderData.event.event}
+        isOver={loaderData.event.isOver}
+        appearance={loaderData.event.appearance}
+      />
+    );
   }
   return <SeoPage page={loaderData.page} />;
 }

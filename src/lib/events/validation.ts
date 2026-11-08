@@ -1,4 +1,6 @@
 import { isIsoDate } from "./dates";
+import { isBulletIcon, isMainIcon } from "./icons";
+import { checkAccent, isHexColor, isThemeId } from "./theme";
 
 export type EventFormuleForm = {
   name: string;
@@ -35,6 +37,11 @@ export type EventFormValues = {
   meta_description: string;
   og_title: string;
   og_description: string;
+  theme: string;
+  /** Couleur d'accent personnalisée (#RRGGBB) ; vide = celle du thème. */
+  accent_color: string;
+  icon_main: string;
+  icon_bullet: string;
   display_order: number;
 };
 
@@ -136,6 +143,20 @@ export function validateEventDraft(values: EventFormValues): EventErrors {
   if (!Number.isInteger(values.display_order) || values.display_order < 0) {
     errors.display_order = "L'ordre doit être un nombre entier positif ou zéro.";
   }
+
+  if (!isThemeId(values.theme)) errors.theme = "Choisissez un des thèmes proposés.";
+  const accent = values.accent_color.trim();
+  if (accent) {
+    if (!isHexColor(accent)) {
+      errors.accent_color = "Cette couleur n'est pas valide (exemple : #C6966F).";
+    } else if (isThemeId(values.theme)) {
+      const check = checkAccent(values.theme, accent);
+      if (!check.ok) errors.accent_color = `${check.message} Choisissez une autre couleur.`;
+    }
+  }
+  if (!isMainIcon(values.icon_main)) errors.icon_main = "Choisissez une des icônes proposées.";
+  if (!isBulletIcon(values.icon_bullet))
+    errors.icon_bullet = "Choisissez une des icônes proposées.";
 
   return errors;
 }

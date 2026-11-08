@@ -2,30 +2,29 @@ import { lazy, Suspense, type CSSProperties } from "react";
 import { Link } from "@tanstack/react-router";
 import styles from "@/components/site/NoelCampaign.module.css";
 import { Reveal } from "@/components/site/Reveal";
-import { NoelStar } from "@/components/site/NoelStar";
+import { EventIcon } from "@/components/site/EventIcon";
 import { SiteShell } from "@/components/site/SiteShell";
 import { eventAssets } from "@/components/site/event-assets";
-import { NOEL_2026_COLORS } from "@/data/noel-2026";
+import type { EventAppearance } from "@/lib/events/appearance";
 import { formatFallbackSentence, formatHeroDates, formatLongDate } from "@/lib/events/dates";
 import type { EventContent } from "@/lib/events/types";
 
 const NoelGallerySection = lazy(() => import("@/components/site/NoelGallerySection"));
 
-const seasonVars = { "--noel-burgundy": NOEL_2026_COLORS.burgundy } as CSSProperties;
-
-type Props = { event: EventContent; isOver: boolean };
+type Props = { event: EventContent; isOver: boolean; appearance: EventAppearance };
 
 /** Page publique d'un événement, dans la mise en page du site. */
-export function EventPage({ event, isOver }: Props) {
+export function EventPage({ event, isOver, appearance }: Props) {
   return (
     <SiteShell overlay={!isOver}>
-      <EventPageContent event={event} isOver={isOver} />
+      <EventPageContent event={event} isOver={isOver} appearance={appearance} />
     </SiteShell>
   );
 }
 
 /** Contenu seul (sans menu ni pied de page) : réutilisé par l'aperçu de l'administration. */
-export function EventPageContent({ event, isOver }: Props) {
+export function EventPageContent({ event, isOver, appearance }: Props) {
+  const themeVars = appearance.vars as CSSProperties;
   const assets = eventAssets(event.slug);
   const eyebrow = event.edition_label.trim() || "Soleana Studio";
   const paragraphs = event.description
@@ -35,10 +34,10 @@ export function EventPageContent({ event, isOver }: Props) {
 
   if (isOver) {
     return (
-      <div className={styles.campaign} style={seasonVars}>
+      <div className={styles.campaign} style={themeVars}>
         <section className={styles.over}>
           <Reveal>
-            <NoelStar className={styles.star} />
+            <EventIcon node={appearance.iconMain} className={styles.star} />
             <p className={`${styles.eyebrow} ${styles.accentRed}`}>Édition terminée</p>
             <h1 className={`${styles.display} ${styles.overTitle}`}>{event.title}</h1>
             {event.ended_title.trim() && <p className={styles.overLead}>{event.ended_title}</p>}
@@ -65,7 +64,7 @@ export function EventPageContent({ event, isOver }: Props) {
   const bookingUrl = event.booking_url?.trim() || null;
 
   return (
-    <div className={styles.campaign} style={seasonVars}>
+    <div className={styles.campaign} style={themeVars}>
       <section className={styles.landingHero}>
         {heroSrc && (
           <img
@@ -167,7 +166,7 @@ export function EventPageContent({ event, isOver }: Props) {
         <section id="formules" className={`${styles.section} ${styles.night}`}>
           <div className={styles.container}>
             <div className={styles.formulesHead}>
-              <NoelStar className={styles.star} />
+              <EventIcon node={appearance.iconMain} className={styles.star} />
               <p className={`${styles.eyebrow} ${styles.onDark}`}>{eyebrow}</p>
               <h2 className={`${styles.display} ${styles.sectionTitle}`}>
                 {hasFormules ? "Les formules" : "Réserver"}
@@ -209,7 +208,15 @@ export function EventPageContent({ event, isOver }: Props) {
                     </p>
                     <ul>
                       {formule.features.map((feature) => (
-                        <li key={feature}>{feature}</li>
+                        <li
+                          key={feature}
+                          className={appearance.iconBullet ? styles.withIcon : undefined}
+                        >
+                          {appearance.iconBullet && (
+                            <EventIcon node={appearance.iconBullet} className={styles.bulletIcon} />
+                          )}
+                          {appearance.iconBullet ? <span>{feature}</span> : feature}
+                        </li>
                       ))}
                     </ul>
                     {formule.booking_url && (
@@ -262,7 +269,7 @@ export function EventPageContent({ event, isOver }: Props) {
       {(hasFormules || bookingUrl) && event.closing_title.trim() && (
         <section className={`${styles.closing} ${styles.night}`}>
           <Reveal className={styles.closingCopy}>
-            <NoelStar className={styles.star} />
+            <EventIcon node={appearance.iconMain} className={styles.star} />
             <p className={`${styles.eyebrow} ${styles.onDark}`}>{eyebrow}</p>
             <h2 className={`${styles.display} ${styles.sectionTitle}`}>{event.closing_title}</h2>
             {event.subtitle.trim() && <p className={styles.closingPhrase}>{event.subtitle}</p>}

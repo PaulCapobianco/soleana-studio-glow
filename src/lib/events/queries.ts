@@ -5,7 +5,7 @@ import { isEditionOver } from "./dates";
 import { parseEventRow } from "./parse";
 import { buildTeaser } from "./presentation";
 import { LEGACY_NOEL_SLUG, legacyNoelEvent } from "./legacy-noel";
-import type { EventTeaserData, PublicEventPage } from "./types";
+import type { EventContent, EventTeaserData, PublicEventPage } from "./types";
 
 // Les chargeurs de route s'exécutent aussi dans le navigateur lors d'une navigation : l'horloge
 // (« édition terminée ») est donc lue ici, côté serveur, comme le faisait getNoel2026EditionState.
@@ -32,7 +32,7 @@ export const getPublishedEvent = createServerFn({ method: "GET" })
 
     if (error) {
       console.error(`[events] Échec du chargement de "${data.slug}":`, error);
-      if (data.slug === LEGACY_NOEL_SLUG) return legacyPage();
+      if (data.slug === LEGACY_NOEL_SLUG) return await legacyPage();
       // Table pas encore créée : aucun événement, donc une vraie 404 (pas une 500).
       if (isMissingTable(error)) return null;
       throw new Error("Erreur de chargement de la page");
@@ -40,12 +40,27 @@ export const getPublishedEvent = createServerFn({ method: "GET" })
     if (!row) return null;
 
     const event = parseEventRow(row);
-    return { event, isOver: isEditionOver(event.event_dates, event.fallback_dates, new Date()) };
+    return await pageFor(event);
   });
 
-function legacyPage(): PublicEventPage {
-  const event = legacyNoelEvent();
-  return { event, isOver: isEditionOver(event.event_dates, event.fallback_dates, new Date()) };
+// Import dynamique, à l'intérieur des fonctions serveur seulement : les tracés d'icônes et les
+// thèmes restent hors du JavaScript envoyé aux visiteurs (le navigateur ne reçoit que les deux
+// icônes choisies et trois couleurs).
+async function appearanceFor(event: EventContent) {
+  const { buildAppearance } = await import("./appearance");
+  return buildAppearance(event);
+}
+
+async function pageFor(event: EventContent): Promise<PublicEventPage> {
+  return {
+    event,
+    isOver: isEditionOver(event.event_dates, event.fallback_dates, new Date()),
+    appearance: await appearanceFor(event),
+  };
+}
+
+function legacyPage(): Promise<PublicEventPage> {
+  return pageFor(legacyNoelEvent());
 }
 
 /** Teaser d'accueil : premier événement publié, avec teaser activé et édition non terminée. */
@@ -64,13 +79,15 @@ export const getHomeTeaser = createServerFn({ method: "GET" }).handler(
       const legacy = legacyNoelEvent();
       return isEditionOver(legacy.event_dates, legacy.fallback_dates, new Date())
         ? null
-        : buildTeaser(legacy);
+        : buildTeaser(legacy, await appearanceFor(legacy));
     }
 
     const now = new Date();
     for (const row of rows ?? []) {
       const event = parseEventRow(row);
-      if (!isEditionOver(event.event_dates, event.fallback_dates, now)) return buildTeaser(event);
+      if (!isEditionOver(event.event_dates, event.fallback_dates, now)) {
+        return buildTeaser(event, await appearanceFor(event));
+      }
     }
     return null;
   },

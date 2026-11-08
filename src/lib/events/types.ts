@@ -1,4 +1,5 @@
 import type { Tables } from "@/integrations/supabase/types";
+import type { EventAppearance } from "./appearance";
 
 export type EventRow = Tables<"events">;
 
@@ -23,7 +24,11 @@ export type EventContent = Omit<EventRow, "formules" | "faq" | "status"> & {
 };
 
 /** Ce que la page publique reçoit : le contenu + l'état « édition terminée » calculé côté serveur. */
-export type PublicEventPage = { event: EventContent; isOver: boolean };
+export type PublicEventPage = {
+  event: EventContent;
+  isOver: boolean;
+  appearance: EventAppearance;
+};
 
 /** Ce que le teaser d'accueil reçoit. */
 export type EventTeaserData = {
@@ -37,4 +42,5 @@ export type EventTeaserData = {
   imageUrl: string | null;
   imageSmallUrl: string | null;
   imageAlt: string;
+  appearance: EventAppearance;
 };

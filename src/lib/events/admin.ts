@@ -42,6 +42,10 @@ export function rowToFormValues(row: EventRow): EventFormValues {
     meta_description: event.meta_description,
     og_title: event.og_title,
     og_description: event.og_description,
+    theme: event.theme,
+    accent_color: event.accent_color ?? "",
+    icon_main: event.icon_main,
+    icon_bullet: event.icon_bullet,
     display_order: event.display_order,
   };
 }
@@ -80,6 +84,10 @@ export function formValuesToUpdate(values: EventFormValues): TablesUpdate<"event
     meta_description: values.meta_description.trim(),
     og_title: values.og_title.trim(),
     og_description: values.og_description.trim(),
+    theme: values.theme,
+    accent_color: values.accent_color.trim() ? values.accent_color.trim().toUpperCase() : null,
+    icon_main: values.icon_main,
+    icon_bullet: values.icon_bullet,
     display_order: values.display_order,
   };
 }
@@ -185,6 +193,10 @@ export async function duplicateEvent(row: EventRow): Promise<EventRow> {
     meta_description: row.meta_description,
     og_title: row.og_title,
     og_description: row.og_description,
+    theme: row.theme,
+    accent_color: row.accent_color,
+    icon_main: row.icon_main,
+    icon_bullet: row.icon_bullet,
     status: "draft",
     display_order: row.display_order,
   };

@@ -1,4 +1,6 @@
 import { z } from "zod";
+import { DEFAULT_BULLET_ICON, DEFAULT_MAIN_ICON, isBulletIcon, isMainIcon } from "./icons";
+import { DEFAULT_THEME_ID, isHexColor, isThemeId } from "./theme";
 import type { EventContent, EventFaqItem, EventFormule, EventRow, EventStatus } from "./types";
 
 const formuleSchema = z.object({
@@ -39,5 +41,12 @@ export function parseEventRow(row: EventRow): EventContent {
     ? (row.status as EventStatus)
     : "draft";
 
-  return { ...row, status, formules, faq };
+  // Valeurs inconnues ou absentes (ligne lue avant l'application de la migration d'apparence) :
+  // on retombe sur l'apparence d'origine plutôt que de faire échouer la page.
+  const theme = isThemeId(String(row.theme)) ? row.theme : DEFAULT_THEME_ID;
+  const accent_color = row.accent_color && isHexColor(row.accent_color) ? row.accent_color : null;
+  const icon_main = isMainIcon(String(row.icon_main)) ? row.icon_main : DEFAULT_MAIN_ICON;
+  const icon_bullet = isBulletIcon(String(row.icon_bullet)) ? row.icon_bullet : DEFAULT_BULLET_ICON;
+
+  return { ...row, status, formules, faq, theme, accent_color, icon_main, icon_bullet };
 }

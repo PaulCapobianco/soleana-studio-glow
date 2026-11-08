@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { buildAppearance } from "./appearance";
 import { legacyNoelEvent } from "./legacy-noel";
 import { parseEventRow } from "./parse";
 import { buildEventJsonLd, buildTeaser, eventSeo } from "./presentation";
@@ -21,7 +22,7 @@ describe("contenu de repli de Noël 2026", () => {
   });
 
   it("teaser : mêmes textes qu'avant", () => {
-    expect(buildTeaser(event)).toMatchObject({
+    expect(buildTeaser(event, buildAppearance(event))).toMatchObject({
       title: "Mini-séances de Noël 2026",
       datesLabel: "28 & 29 novembre 2026",
       location: "Plan-d'Aups-Sainte-Baume",

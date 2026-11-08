@@ -41,6 +41,10 @@ const valid: EventFormValues = {
   meta_description: "",
   og_title: "",
   og_description: "",
+  theme: "noel-classique",
+  accent_color: "",
+  icon_main: "etoile-noel",
+  icon_bullet: "defaut",
   display_order: 0,
 };
 
@@ -143,5 +147,41 @@ describe("validateEventForPublish", () => {
   });
   it("exige un texte de teaser si le teaser est activé", () => {
     expect(validateEventForPublish({ ...valid, show_teaser: true }).teaser_text).toBeTruthy();
+  });
+});
+
+describe("apparence", () => {
+  it("accepte le thème par défaut, un autre thème, une icône connue", () => {
+    expect(
+      validateEventDraft({
+        ...valid,
+        theme: "hiver",
+        icon_main: "snowflake",
+        icon_bullet: "check",
+      }),
+    ).toEqual({});
+  });
+  it("refuse un thème ou une icône inconnus", () => {
+    const errors = validateEventDraft({
+      ...valid,
+      theme: "rose-bonbon",
+      icon_main: "skull",
+      icon_bullet: "x",
+    });
+    expect(errors.theme).toBeTruthy();
+    expect(errors.icon_main).toBeTruthy();
+    expect(errors.icon_bullet).toBeTruthy();
+  });
+  it("accepte une couleur d'accent lisible", () => {
+    expect(validateEventDraft({ ...valid, accent_color: "#C9A24B" })).toEqual({});
+  });
+  it("bloque une couleur d'accent illisible ou mal écrite", () => {
+    expect(validateEventDraft({ ...valid, accent_color: "#000000" }).accent_color).toMatch(
+      /sombre/,
+    );
+    expect(validateEventDraft({ ...valid, accent_color: "#FFFFFF" }).accent_color).toMatch(
+      /claire/,
+    );
+    expect(validateEventDraft({ ...valid, accent_color: "rouge" }).accent_color).toBeTruthy();
   });
 });

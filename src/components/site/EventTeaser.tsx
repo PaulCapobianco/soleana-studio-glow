@@ -1,10 +1,9 @@
 import type { CSSProperties } from "react";
 import { Link } from "@tanstack/react-router";
-import { NOEL_2026_COLORS } from "@/data/noel-2026";
 import type { EventTeaserData } from "@/lib/events/types";
 import { eventAssets } from "./event-assets";
 import { Reveal } from "./Reveal";
-import { NoelStar } from "./NoelStar";
+import { EventIcon } from "./EventIcon";
 import styles from "./NoelCampaign.module.css";
 
 /** Invitation de l'accueil vers la page d'un événement (remplace NoelShowcase). */
@@ -28,7 +27,7 @@ export function EventTeaser({ teaser }: { teaser: EventTeaserData }) {
     <section
       aria-labelledby="event-teaser-title"
       className={`${styles.campaign} ${styles.teaser}`}
-      style={{ "--noel-burgundy": NOEL_2026_COLORS.burgundy } as CSSProperties}
+      style={teaser.appearance.vars as CSSProperties}
     >
       <div className={styles.teaserGrid}>
         {image && (
@@ -47,7 +46,7 @@ export function EventTeaser({ teaser }: { teaser: EventTeaserData }) {
           </Reveal>
         )}
         <Reveal className={styles.teaserCard} delay={150}>
-          <NoelStar className={styles.star} />
+          <EventIcon node={teaser.appearance.iconMain} className={styles.star} />
           <p className={`${styles.eyebrow} ${styles.accentRed}`}>{teaser.editionLabel}</p>
           <h2 id="event-teaser-title" className={`${styles.display} ${styles.teaserTitle}`}>
             {teaser.title}
