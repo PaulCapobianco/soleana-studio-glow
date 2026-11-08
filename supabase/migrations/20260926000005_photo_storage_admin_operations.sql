@@ -2,6 +2,11 @@
 -- Autorise les variantes web cibles 400 / 800 / 1200 / 1600 px et les sources natives plus petites.
 -- À exécuter manuellement seulement après 00002, 00003 et 00004, avant d'activer l'admin Storage.
 -- Ne modifie aucun objet, ne migre aucun contenu et ne change pas le bucket public photos.
+--
+-- Amendée le 9 novembre 2026 (toujours NON appliquée) : les politiques d'envoi/modification du bucket
+-- acceptent aussi les images de couverture des événements, `events/<uuid>/cover-<800|1600>-<horodatage>.webp`
+-- (envoyées depuis la fiche d'un événement). Sans cela, ces envois seraient refusés après cette migration.
+-- Le calcul des orphelins ne regarde que `galleries/…` : les couvertures n'y sont jamais comptées.
 
 BEGIN;
 
@@ -48,7 +53,8 @@ CREATE POLICY "Admin upload photos" ON storage.objects
     bucket_id = 'photos'
     AND (
       public.has_role(auth.uid(), 'admin')
-      AND name ~ '^galleries/[a-z0-9][a-z0-9_-]*/[a-f0-9]{12,32}/[a-f0-9]{8}-(400|800|1200|1600|[1-9][0-9]{0,2}|1[0-5][0-9]{2})\.(avif|webp)$'
+      AND (name ~ '^galleries/[a-z0-9][a-z0-9_-]*/[a-f0-9]{12,32}/[a-f0-9]{8}-(400|800|1200|1600|[1-9][0-9]{0,2}|1[0-5][0-9]{2})\.(avif|webp)$'
+        OR name ~ '^events/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/cover-(800|1600)-[0-9]{10,16}\.webp$')
       AND metadata->>'mimetype' = CASE WHEN name ~ '\.avif$' THEN 'image/avif' ELSE 'image/webp' END
     )
   );
@@ -59,7 +65,8 @@ CREATE POLICY "Restrict photos object uploads to web variants" ON storage.object
   WITH CHECK (
     bucket_id <> 'photos'
     OR (
-      name ~ '^galleries/[a-z0-9][a-z0-9_-]*/[a-f0-9]{12,32}/[a-f0-9]{8}-(400|800|1200|1600|[1-9][0-9]{0,2}|1[0-5][0-9]{2})\.(avif|webp)$'
+      (name ~ '^galleries/[a-z0-9][a-z0-9_-]*/[a-f0-9]{12,32}/[a-f0-9]{8}-(400|800|1200|1600|[1-9][0-9]{0,2}|1[0-5][0-9]{2})\.(avif|webp)$'
+        OR name ~ '^events/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/cover-(800|1600)-[0-9]{10,16}\.webp$')
       AND metadata->>'mimetype' = CASE WHEN name ~ '\.avif$' THEN 'image/avif' ELSE 'image/webp' END
     )
   );
@@ -70,14 +77,16 @@ CREATE POLICY "Restrict photos object updates to web variants" ON storage.object
   USING (
     bucket_id <> 'photos'
     OR (
-      name ~ '^galleries/[a-z0-9][a-z0-9_-]*/[a-f0-9]{12,32}/[a-f0-9]{8}-(400|800|1200|1600|[1-9][0-9]{0,2}|1[0-5][0-9]{2})\.(avif|webp)$'
+      (name ~ '^galleries/[a-z0-9][a-z0-9_-]*/[a-f0-9]{12,32}/[a-f0-9]{8}-(400|800|1200|1600|[1-9][0-9]{0,2}|1[0-5][0-9]{2})\.(avif|webp)$'
+        OR name ~ '^events/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/cover-(800|1600)-[0-9]{10,16}\.webp$')
       AND metadata->>'mimetype' = CASE WHEN name ~ '\.avif$' THEN 'image/avif' ELSE 'image/webp' END
     )
   )
   WITH CHECK (
     bucket_id <> 'photos'
     OR (
-      name ~ '^galleries/[a-z0-9][a-z0-9_-]*/[a-f0-9]{12,32}/[a-f0-9]{8}-(400|800|1200|1600|[1-9][0-9]{0,2}|1[0-5][0-9]{2})\.(avif|webp)$'
+      (name ~ '^galleries/[a-z0-9][a-z0-9_-]*/[a-f0-9]{12,32}/[a-f0-9]{8}-(400|800|1200|1600|[1-9][0-9]{0,2}|1[0-5][0-9]{2})\.(avif|webp)$'
+        OR name ~ '^events/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/cover-(800|1600)-[0-9]{10,16}\.webp$')
       AND metadata->>'mimetype' = CASE WHEN name ~ '\.avif$' THEN 'image/avif' ELSE 'image/webp' END
     )
   );

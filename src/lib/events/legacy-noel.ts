@@ -55,6 +55,8 @@ export function legacyNoelEvent(): EventContent {
     meta_description: NOEL_2026_SEO.description,
     og_title: NOEL_2026_SEO.ogTitle,
     og_description: NOEL_2026_SEO.ogDescription,
+    galleries: [],
+    gallery_reference_event_id: null,
     theme: "noel-classique",
     accent_color: null,
     icon_main: "etoile-noel",

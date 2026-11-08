@@ -52,11 +52,18 @@ async function appearanceFor(event: EventContent) {
   return buildAppearance(event);
 }
 
+// Même interrupteur que photo-storage.ts, relu ici pour ne pas importer ce module côté navigateur.
+const GALLERIES_FROM_STORAGE = import.meta.env.VITE_GALLERIES_FROM_STORAGE === "true";
+
 async function pageFor(event: EventContent): Promise<PublicEventPage> {
   return {
     event,
     isOver: isEditionOver(event.event_dates, event.fallback_dates, new Date()),
     appearance: await appearanceFor(event),
+    // Désactivé : aucune requête supplémentaire, rien de plus dans la page.
+    galleryGroups: GALLERIES_FROM_STORAGE
+      ? await (await import("./gallery-loader")).loadGalleryGroups(event)
+      : [],
   };
 }
 

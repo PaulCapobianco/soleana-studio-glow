@@ -53,6 +53,8 @@ const draft: EventRow = {
   meta_description: "",
   og_title: "",
   og_description: "",
+  galleries: [],
+  gallery_reference_event_id: null,
   theme: "noel-classique",
   accent_color: null,
   icon_main: "etoile-noel",

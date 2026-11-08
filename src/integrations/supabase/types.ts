@@ -85,6 +85,8 @@ export type Database = {
       };
       events: {
         Row: {
+          galleries: Json;
+          gallery_reference_event_id: string | null;
           accent_color: string | null;
           icon_bullet: string;
           icon_main: string;
@@ -124,6 +126,8 @@ export type Database = {
           updated_at: string;
         };
         Insert: {
+          galleries?: Json;
+          gallery_reference_event_id?: string | null;
           accent_color?: string | null;
           icon_bullet?: string;
           icon_main?: string;
@@ -163,6 +167,8 @@ export type Database = {
           updated_at?: string;
         };
         Update: {
+          galleries?: Json;
+          gallery_reference_event_id?: string | null;
           accent_color?: string | null;
           icon_bullet?: string;
           icon_main?: string;

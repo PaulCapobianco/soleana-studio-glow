@@ -1,5 +1,6 @@
 import type { Tables } from "@/integrations/supabase/types";
 import type { EventAppearance } from "./appearance";
+import type { EventGalleryDef, EventGalleryGroup } from "./galleries";
 
 export type EventRow = Tables<"events">;
 
@@ -17,8 +18,9 @@ export type EventFormule = {
 export type EventFaqItem = { question: string; answer: string };
 
 /** Une ligne `events` dont les colonnes JSON ont été validées. */
-export type EventContent = Omit<EventRow, "formules" | "faq" | "status"> & {
+export type EventContent = Omit<EventRow, "formules" | "faq" | "status" | "galleries"> & {
   status: EventStatus;
+  galleries: EventGalleryDef[];
   formules: EventFormule[];
   faq: EventFaqItem[];
 };
@@ -28,6 +30,8 @@ export type PublicEventPage = {
   event: EventContent;
   isOver: boolean;
   appearance: EventAppearance;
+  /** Galeries lues en base : toujours vide tant que VITE_GALLERIES_FROM_STORAGE n'est pas activé. */
+  galleryGroups: EventGalleryGroup[];
 };
 
 /** Ce que le teaser d'accueil reçoit. */

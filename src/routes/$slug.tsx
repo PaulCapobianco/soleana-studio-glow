@@ -405,6 +405,7 @@ function SlugPage() {
         event={loaderData.event.event}
         isOver={loaderData.event.isOver}
         appearance={loaderData.event.appearance}
+        galleryGroups={loaderData.event.galleryGroups}
       />
     );
   }

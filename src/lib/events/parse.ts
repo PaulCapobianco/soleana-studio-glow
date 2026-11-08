@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { parseGalleryDefs } from "./galleries";
 import { DEFAULT_BULLET_ICON, DEFAULT_MAIN_ICON, isBulletIcon, isMainIcon } from "./icons";
 import { DEFAULT_THEME_ID, isHexColor, isThemeId } from "./theme";
 import type { EventContent, EventFaqItem, EventFormule, EventRow, EventStatus } from "./types";
@@ -48,5 +49,21 @@ export function parseEventRow(row: EventRow): EventContent {
   const icon_main = isMainIcon(String(row.icon_main)) ? row.icon_main : DEFAULT_MAIN_ICON;
   const icon_bullet = isBulletIcon(String(row.icon_bullet)) ? row.icon_bullet : DEFAULT_BULLET_ICON;
 
-  return { ...row, status, formules, faq, theme, accent_color, icon_main, icon_bullet };
+  // Colonnes ajoutées par 20261110000000 : absentes tant qu'elle n'est pas appliquée.
+  const galleries = parseGalleryDefs((row as { galleries?: unknown }).galleries);
+  const gallery_reference_event_id =
+    (row as { gallery_reference_event_id?: string | null }).gallery_reference_event_id ?? null;
+
+  return {
+    ...row,
+    status,
+    formules,
+    faq,
+    theme,
+    accent_color,
+    icon_main,
+    icon_bullet,
+    galleries,
+    gallery_reference_event_id,
+  };
 }

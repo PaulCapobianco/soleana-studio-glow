@@ -2,28 +2,41 @@ import { lazy, Suspense, type CSSProperties } from "react";
 import { Link } from "@tanstack/react-router";
 import styles from "@/components/site/NoelCampaign.module.css";
 import { Reveal } from "@/components/site/Reveal";
+import { EventGallerySection } from "@/components/site/EventGallerySection";
 import { EventIcon } from "@/components/site/EventIcon";
 import { SiteShell } from "@/components/site/SiteShell";
 import { eventAssets } from "@/components/site/event-assets";
 import type { EventAppearance } from "@/lib/events/appearance";
+import type { EventGalleryGroup } from "@/lib/events/galleries";
 import { formatFallbackSentence, formatHeroDates, formatLongDate } from "@/lib/events/dates";
 import type { EventContent } from "@/lib/events/types";
 
 const NoelGallerySection = lazy(() => import("@/components/site/NoelGallerySection"));
 
-type Props = { event: EventContent; isOver: boolean; appearance: EventAppearance };
+type Props = {
+  event: EventContent;
+  isOver: boolean;
+  appearance: EventAppearance;
+  /** Galeries lues en base (vide tant que VITE_GALLERIES_FROM_STORAGE est désactivé). */
+  galleryGroups?: EventGalleryGroup[];
+};
 
 /** Page publique d'un événement, dans la mise en page du site. */
-export function EventPage({ event, isOver, appearance }: Props) {
+export function EventPage({ event, isOver, appearance, galleryGroups }: Props) {
   return (
     <SiteShell overlay={!isOver}>
-      <EventPageContent event={event} isOver={isOver} appearance={appearance} />
+      <EventPageContent
+        event={event}
+        isOver={isOver}
+        appearance={appearance}
+        galleryGroups={galleryGroups}
+      />
     </SiteShell>
   );
 }
 
 /** Contenu seul (sans menu ni pied de page) : réutilisé par l'aperçu de l'administration. */
-export function EventPageContent({ event, isOver, appearance }: Props) {
+export function EventPageContent({ event, isOver, appearance, galleryGroups = [] }: Props) {
   const themeVars = appearance.vars as CSSProperties;
   const assets = eventAssets(event.slug);
   const eyebrow = event.edition_label.trim() || "Soleana Studio";
@@ -156,10 +169,14 @@ export function EventPageContent({ event, isOver, appearance }: Props) {
         </section>
       )}
 
-      {assets?.hasGallery && (
-        <Suspense fallback={null}>
-          <NoelGallerySection title={assets.galleryTitle} caption={assets.galleryCaption} />
-        </Suspense>
+      {galleryGroups.length > 0 ? (
+        <EventGallerySection groups={galleryGroups} />
+      ) : (
+        assets?.hasGallery && (
+          <Suspense fallback={null}>
+            <NoelGallerySection title={assets.galleryTitle} caption={assets.galleryCaption} />
+          </Suspense>
+        )
       )}
 
       {(hasFormules || bookingUrl || sortedDates.length > 0) && (

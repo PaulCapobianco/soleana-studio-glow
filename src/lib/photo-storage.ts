@@ -37,6 +37,9 @@ export type StorageGalleryPhoto = {
   title: null;
   display_order: number;
   object_position: string;
+  /** Dimensions de la plus grande variante (évite tout décalage de mise en page). */
+  width: number;
+  height: number;
 };
 
 type PlacementRow = {
@@ -89,6 +92,8 @@ export function buildStorageGalleries(rows: PlacementRow[]): Record<string, Stor
       title: null,
       display_order: row.display_order,
       object_position: `${Number(row.object_position_x_pct)}% ${Number(row.object_position_y_pct)}%`,
+      width: largest.width,
+      height: largest.height,
     });
   }
   return bySlot;

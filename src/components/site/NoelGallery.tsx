@@ -2,11 +2,37 @@ import styles from "@/components/site/NoelCampaign.module.css";
 import { useEffect, useRef, useState } from "react";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { NOEL_2026_PAGE_COPY } from "@/data/noel-2026";
-import type { NoelSession } from "@/data/noel-2026-sessions";
+
+/** Photo d'une vignette : les photos de Noël (fichiers du site) comme celles de Storage s'y conforment. */
+export type GalleryTilePhoto = {
+  id: string;
+  src: string;
+  srcLarge: string;
+  width: number;
+  height: number;
+  alt: string;
+  /** Photos de Storage : srcset WebP et AVIF (sinon 700w/1600w construits depuis src/srcLarge). */
+  webpSrcSet?: string;
+  avifSrcSet?: string;
+};
+
+export type GallerySession = {
+  id: string;
+  /** Titre de la galerie, affiché sur la vignette (absent pour les séries de Noël). */
+  title?: string;
+  cover: GalleryTilePhoto;
+  photos: GalleryTilePhoto[];
+};
 
 // Une tuile par séance (couverture + nombre de photos) ; un clic ouvre la lightbox sur les
 // photos de cette séance seulement.
-export function NoelGallery({ sessions }: { sessions: NoelSession[] }) {
+export function NoelGallery({
+  sessions,
+  dialogTitle = NOEL_2026_PAGE_COPY.galleryTitle,
+}: {
+  sessions: GallerySession[];
+  dialogTitle?: string;
+}) {
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const [open, setOpen] = useState<{ session: number; index: number } | null>(null);
   const photos = open ? sessions[open.session].photos : [];
@@ -68,20 +94,46 @@ export function NoelGallery({ sessions }: { sessions: NoelSession[] }) {
               setOpen({ session: sessionIndex, index: 0 });
             }}
             className={styles.galleryPhoto}
-            aria-label={`Ouvrir la série de ${session.photos.length} photos : ${session.cover.alt}`}
+            aria-label={
+              session.title
+                ? `Ouvrir la galerie « ${session.title} » (${session.photos.length} photos)`
+                : `Ouvrir la série de ${session.photos.length} photos : ${session.cover.alt}`
+            }
           >
-            <img
-              src={session.cover.src}
-              srcSet={`${session.cover.src} 700w, ${session.cover.srcLarge} 1600w`}
-              sizes="(min-width: 1440px) 700px, (min-width: 768px) 55vw, 100vw"
-              width={session.cover.width}
-              height={session.cover.height}
-              alt={session.cover.alt}
-              loading="lazy"
-              decoding="async"
-              className={styles.galleryImage}
-            />
+            {session.cover.avifSrcSet ? (
+              <picture>
+                <source
+                  type="image/avif"
+                  srcSet={session.cover.avifSrcSet}
+                  sizes="(min-width: 1440px) 700px, (min-width: 768px) 55vw, 100vw"
+                />
+                <img
+                  src={session.cover.src}
+                  srcSet={session.cover.webpSrcSet}
+                  sizes="(min-width: 1440px) 700px, (min-width: 768px) 55vw, 100vw"
+                  width={session.cover.width}
+                  height={session.cover.height}
+                  alt={session.cover.alt}
+                  loading="lazy"
+                  decoding="async"
+                  className={styles.galleryImage}
+                />
+              </picture>
+            ) : (
+              <img
+                src={session.cover.src}
+                srcSet={`${session.cover.src} 700w, ${session.cover.srcLarge} 1600w`}
+                sizes="(min-width: 1440px) 700px, (min-width: 768px) 55vw, 100vw"
+                width={session.cover.width}
+                height={session.cover.height}
+                alt={session.cover.alt}
+                loading="lazy"
+                decoding="async"
+                className={styles.galleryImage}
+              />
+            )}
             <span className={styles.photoCount} aria-hidden="true">
+              {session.title ? `${session.title} · ` : ""}
               {session.photos.length} photos
             </span>
           </button>
@@ -96,7 +148,7 @@ export function NoelGallery({ sessions }: { sessions: NoelSession[] }) {
           }}
           className="!left-0 !top-0 !h-[100svh] !w-[100svw] !max-w-none !translate-x-0 !translate-y-0 !rounded-none !border-0 !bg-black/95 !p-0 !shadow-none !overflow-hidden"
         >
-          <DialogTitle className="sr-only">{NOEL_2026_PAGE_COPY.galleryTitle}</DialogTitle>
+          <DialogTitle className="sr-only">{dialogTitle}</DialogTitle>
           <DialogDescription className="sr-only">{current?.alt}</DialogDescription>
           {current && (
             <div className="flex h-[100svh] w-full flex-col text-white">
