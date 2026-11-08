@@ -2,14 +2,23 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Camera, Heart, Instagram, Sparkles } from "lucide-react";
 
 import aboutPortrait from "@/assets/a_propos/portrait_2.webp";
+import aboutPortraitAvif from "@/assets/a_propos/portrait_2.avif";
 import fiancaille1 from "@/assets/a_propos/fiancaille_1.webp";
+import fiancaille1Avif from "@/assets/a_propos/fiancaille_1.avif";
 import couple1 from "@/assets/a_propos/couple_1.webp";
+import couple1Avif from "@/assets/a_propos/couple_1.avif";
 import couple2 from "@/assets/a_propos/couple_2.webp";
+import couple2Avif from "@/assets/a_propos/couple_2.avif";
 import famille1 from "@/assets/a_propos/famille_1.webp";
+import famille1Avif from "@/assets/a_propos/famille_1.avif";
 import landscape2 from "@/assets/a_propos/paysage_2.webp";
+import landscape2Avif from "@/assets/a_propos/paysage_2.avif";
 import maternite1 from "@/assets/a_propos/maternite_1.webp";
+import maternite1Avif from "@/assets/a_propos/maternite_1.avif";
 import couple3 from "@/assets/a_propos/couple_3.webp";
+import couple3Avif from "@/assets/a_propos/couple_3.avif";
 import heroBanner from "@/assets/a_propos/portrait_3.webp";
+import heroBannerAvif from "@/assets/a_propos/portrait_3.avif";
 import instagramMark from "@/assets/logo-soleana-icon.png";
 import { Reveal } from "@/components/site/Reveal";
 import { SiteShell } from "@/components/site/SiteShell";
@@ -36,6 +45,7 @@ const photographyNotes = [
 
 type CollageItem = {
   src: string;
+  srcAvif: string;
   alt: string;
   className: string;
   aspectClassName: string;
@@ -50,6 +60,7 @@ type CollageItem = {
 const collageItems: CollageItem[] = [
   {
     src: landscape2,
+    srcAvif: landscape2Avif,
     alt: "Séance lifestyle lumineuse en extérieur",
     className: "md:col-start-1 md:col-span-4 md:row-start-1 md:row-span-6",
     aspectClassName: "aspect-[4/5] md:aspect-auto",
@@ -57,18 +68,21 @@ const collageItems: CollageItem[] = [
   },
   {
     src: fiancaille1,
+    srcAvif: fiancaille1Avif,
     alt: "Portrait naturel en lumière douce",
     className: "md:col-start-5 md:col-span-4 md:row-start-1 md:row-span-4",
     aspectClassName: "aspect-[3/4] md:aspect-auto",
   },
   {
     src: couple1,
+    srcAvif: couple1Avif,
     alt: "Détails d'une séance photo en Provence",
     className: "md:z-20 md:col-start-9 md:col-span-4 md:row-start-1 md:row-span-4",
     aspectClassName: "aspect-[3/4] md:aspect-auto",
   },
   {
     src: famille1,
+    srcAvif: famille1Avif,
     alt: "Portrait éditorial d'une séance photo lifestyle",
     className: "md:z-10 md:col-start-5 md:col-span-8 md:row-start-5 md:row-span-3",
     aspectClassName: "aspect-[16/9] md:aspect-auto",
@@ -76,12 +90,14 @@ const collageItems: CollageItem[] = [
   },
   {
     src: couple2,
+    srcAvif: couple2Avif,
     alt: "Instant de complicité lors d'une séance photo",
     className: "md:col-start-1 md:col-span-4 md:row-start-7 md:row-span-3",
     aspectClassName: "aspect-square md:aspect-auto",
   },
   {
     src: maternite1,
+    srcAvif: maternite1Avif,
     alt: "Ambiance douce et naturelle d'un shooting à Marseille",
     className: "md:col-start-5 md:col-span-8 md:row-start-8 md:row-span-2",
     aspectClassName: "aspect-[3/2] md:aspect-auto",
@@ -91,16 +107,19 @@ const collageItems: CollageItem[] = [
 const instagramCards = [
   {
     cover: fiancaille1,
+    coverAvif: fiancaille1Avif,
     alt: "Séance photo naturelle en bord de mer sur Instagram",
     permalink: "https://www.instagram.com/p/DVwHKFkCI3a/?utm_source=ig_embed&utm_campaign=loading",
   },
   {
     cover: couple3,
+    coverAvif: couple3Avif,
     alt: "Instant de complicité capturé lors d'une séance photo Instagram",
     permalink: "https://www.instagram.com/p/DO89SHMCFoh/?utm_source=ig_embed&utm_campaign=loading",
   },
   {
     cover: maternite1,
+    coverAvif: maternite1Avif,
     alt: "Séance photo douce et lumineuse partagée sur Instagram",
     permalink:
       "https://www.instagram.com/reel/DWwiKP-o7O0/?utm_source=ig_embed&utm_campaign=loading",
@@ -135,15 +154,18 @@ function About() {
           <Reveal>
             <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-stretch">
               <article className="relative min-h-[420px] overflow-hidden rounded-[36px] border border-border bg-surface shadow-[0_30px_90px_-58px_rgba(62,47,40,0.45)] sm:min-h-[540px]">
-                <img
-                  src={heroBanner}
-                  alt="Atmosphère douce et lumineuse de Soleana Studio"
-                  width={1600}
-                  height={1200}
-                  className="absolute inset-0 h-full w-full object-cover object-top"
-                  loading="eager"
-                  decoding="async"
-                />
+                <picture>
+                  <source type="image/avif" srcSet={heroBannerAvif} />
+                  <img
+                    src={heroBanner}
+                    alt="Atmosphère douce et lumineuse de Soleana Studio"
+                    width={1600}
+                    height={1200}
+                    className="absolute inset-0 h-full w-full object-cover object-top"
+                    loading="eager"
+                    decoding="async"
+                  />
+                </picture>
                 <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/20 to-transparent" />
                 <div className="absolute inset-x-0 bottom-0 z-10 p-6 sm:p-10 lg:p-12">
                   <h1 className="mt-3 max-w-3xl font-display text-5xl italic leading-[0.95] text-white [text-shadow:0_3px_18px_rgba(0,0,0,0.7)] sm:text-6xl lg:text-7xl">
@@ -203,15 +225,18 @@ function About() {
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-stretch lg:gap-14">
           <Reveal className="lg:sticky lg:top-28 h-full self-stretch">
             <figure className="flex h-full flex-col overflow-hidden rounded-[28px] border border-border bg-surface shadow-[0_28px_80px_-56px_rgba(62,47,40,0.45)]">
-              <img
-                src={aboutPortrait}
-                alt="Soleana, photographe lifestyle à Marseille"
-                width={1200}
-                height={1500}
-                className="min-h-0 flex-1 w-full object-cover object-top"
-                loading="lazy"
-                decoding="async"
-              />
+              <picture>
+                <source type="image/avif" srcSet={aboutPortraitAvif} />
+                <img
+                  src={aboutPortrait}
+                  alt="Soleana, photographe lifestyle à Marseille"
+                  width={1200}
+                  height={1500}
+                  className="min-h-0 flex-1 w-full object-cover object-top"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </picture>
             </figure>
           </Reveal>
 
@@ -289,19 +314,22 @@ function About() {
                   key={item.src}
                   className={`group isolate relative min-h-[140px] overflow-hidden rounded-[22px] border border-border bg-muted shadow-[0_18px_52px_-42px_rgba(62,47,40,0.32)] ${item.className} ${item.aspectClassName}`}
                 >
-                  <img
-                    src={item.src}
-                    alt={item.alt}
-                    width={1200}
-                    height={1200}
-                    className={`relative z-0 block h-full w-full object-cover object-center ${
-                      item.disableHoverZoom
-                        ? ""
-                        : "transition-transform duration-700 ease-out md:group-hover:scale-[1.04]"
-                    } ${item.imageClassName ?? ""}`}
-                    loading="lazy"
-                    decoding="async"
-                  />
+                  <picture>
+                    <source type="image/avif" srcSet={item.srcAvif} />
+                    <img
+                      src={item.src}
+                      alt={item.alt}
+                      width={1200}
+                      height={1200}
+                      className={`relative z-0 block h-full w-full object-cover object-center ${
+                        item.disableHoverZoom
+                          ? ""
+                          : "transition-transform duration-700 ease-out md:group-hover:scale-[1.04]"
+                      } ${item.imageClassName ?? ""}`}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </picture>
                   {!item.noOverlay ? (
                     <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-t from-foreground/15 via-transparent to-transparent opacity-0 transition-opacity duration-500 md:group-hover:opacity-100" />
                   ) : null}
@@ -355,15 +383,18 @@ function About() {
             <div className="flex h-full">
               <figure className="group relative h-full min-h-[780px] w-full overflow-hidden rounded-[30px] border border-border bg-muted shadow-[0_26px_70px_-46px_rgba(62,47,40,0.35)]">
                 <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-t from-black/8 via-transparent to-transparent opacity-0 transition-opacity duration-500 md:group-hover:opacity-100" />
-                <img
-                  src={couple3}
-                  alt="Instant de séance photo rempli d'émotion"
-                  width={1200}
-                  height={1200}
-                  className="block h-full w-full object-cover object-center transition-transform duration-700 ease-out md:group-hover:scale-[1.04]"
-                  loading="lazy"
-                  decoding="async"
-                />
+                <picture>
+                  <source type="image/avif" srcSet={couple3Avif} />
+                  <img
+                    src={couple3}
+                    alt="Instant de séance photo rempli d'émotion"
+                    width={1200}
+                    height={1200}
+                    className="block h-full w-full object-cover object-center transition-transform duration-700 ease-out md:group-hover:scale-[1.04]"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </picture>
               </figure>
             </div>
           </Reveal>
@@ -427,13 +458,16 @@ function About() {
                       className="group relative block flex-1 overflow-hidden bg-[#FAF6EF]"
                       aria-label={`Ouvrir la publication Instagram de Soleana Studio`}
                     >
-                      <img
-                        src={post.cover}
-                        alt={post.alt}
-                        className="h-full w-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-[1.03]"
-                        loading="lazy"
-                        decoding="async"
-                      />
+                      <picture>
+                        <source type="image/avif" srcSet={post.coverAvif} />
+                        <img
+                          src={post.cover}
+                          alt={post.alt}
+                          className="h-full w-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      </picture>
                       <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/18 via-transparent to-transparent" />
                     </a>
 
