@@ -113,31 +113,77 @@ Le plan Free inclut actuellement 1 Go de stockage, 5 Go de trafic non caché et 
 9. Valider la bascule ; seulement ensuite corriger BUG-02 et afficher toutes les photos publiées par catégorie, carte d'abord. Pas de nouvelle sélection éditoriale.
 10. Suppression éventuelle des anciens assets **dans un chantier séparé**, après recherche de références et validation. Les 18 suppressions historiques restent exclues.
 
-### Ordre exact de mise en production (mis à jour le 9 novembre 2026)
+### Ordre exact de mise en production (mis à jour le 10 novembre 2026)
 
 Chaque étape est faite par Paul ; rien n'est exécuté par l'assistant. Les migrations se collent dans
-l'éditeur SQL du projet de production `kvzzzwjddanwedzotaka`.
+l'éditeur SQL du projet de production `kvzzzwjddanwedzotaka`. **Après chaque migration, lancer le contrôle
+indiqué et ne passer à la suivante que si le résultat est celui attendu** ; sinon s'arrêter et le signaler.
 
-0. **Prérequis.** Sauvegardes (lignes de `photos`, `categories`, `seo_pages`, `events`, schémas et politiques,
-   liste des objets Storage). Correctif CSP déployé (branche `fix-csp-supabase-host`).
-1. **Double authentification de tous les comptes admin** : chacun enregistre son second facteur dans
-   « Mon compte » puis se reconnecte avec le code à 6 chiffres. Sans cela, les étapes suivantes bloquent
-   ses écritures.
-2. `docs/photos-storage/preflight-selects.sql` (lecture seule) : tout doit être conforme.
-3. `20260926000002_require_aal2_for_admin_writes.sql` (obligatoire : `…000005` refuse de s'appliquer sans elle).
-   Re-exécuter ensuite le bloc `DO $aal2$` de `20261106000000_create_events.sql` pour que `events` suive la règle.
-4. `20260926000003_add_photo_variants_and_placements.sql` (amendée : contexte `event`).
-5. `20260926000004_add_avif_photo_variants.sql`.
-6. `20260926000005_photo_storage_admin_operations.sql` (retire la politique de lecture/listing publique des
-   objets du bucket : les URL publiques des images continuent de fonctionner, le listing anonyme non).
-7. `20261109000000_photo_categories_management.sql` (catégories : masquer, garde-fous, politique de lecture).
-8. Déployer le code, interrupteur `VITE_GALLERIES_FROM_STORAGE` **non défini**. L'admin Photos et les catégories
-   sont alors utilisables ; le site public reste sur les fichiers locaux.
-9. Import : simulation, puis import de test, puis import complet **en brouillon** (voir `README.md`) ;
-   contrôles `postflight-selects.sql`.
-10. Validation visuelle, puis activation : `VITE_GALLERIES_FROM_STORAGE=true` au build, déploiement, contrôles.
-11. BUG-02 (pages catégories du portfolio) seulement ensuite, puis, dans un chantier séparé, les photos de
-    Noël (contexte `event`).
+> ### ⚠ Avertissement : double authentification obligatoire AVANT l'étape 5
+> Dès que `20260926000002` est appliquée (étape 5) puis le bloc `DO $aal2$` d'`events` relancé (étape 6), **toute
+> écriture sur `events`** (créer, modifier, publier, archiver, dupliquer, envoyer une couverture), comme sur
+> les photos, les catégories, les prestations, la FAQ, les avis, les pages SEO et les paramètres, **exige une
+> session avec double authentification**. Une personne qui n'a pas enregistré son second facteur ne pourra plus
+> rien écrire (elle verra « Vous n'avez pas les droits nécessaires »). **La photographe doit donc avoir
+> enregistré son second facteur (« Mon compte ») et s'être reconnectée avec le code à 6 chiffres avant
+> l'étape 5.** Même vérification pour tout autre compte admin. Retour arrière documenté en bas de
+> `20260926000002_require_aal2_for_admin_writes.sql`.
+
+**Étape 1 — Correctif CSP déployé** (hôte `kvzzz…` autorisé) : fait le 10 novembre 2026.
+
+**Étape 2 — Sauvegardes** : lignes de `photos`, `categories`, `seo_pages`, `events`, schémas et politiques, liste des objets Storage.
+
+**Étape 3 — Double authentification de tous les comptes admin** (voir l'avertissement).
+- Contrôle : chaque compte se déconnecte, se reconnecte, saisit le code, et ouvre « Mon compte » sans erreur.
+
+**Étape 4 — Préflight** : `docs/photos-storage/preflight-selects.sql` (lecture seule) — tout conforme.
+
+**Étape 5 — `20260926000002_require_aal2_for_admin_writes.sql`** (obligatoire : `…000005` refuse de s'appliquer sans elle).
+- Contrôle : `SELECT count(*) FROM pg_policies WHERE policyname LIKE 'Require aal2 for %';` → **26**.
+- Test avec le compte de la photographe (connectée avec son code) : enregistrer une modification d'un
+  événement de test en brouillon réussit.
+
+**Étape 6 — Relancer le bloc `DO $aal2$` de `20261106000000_create_events.sql`** (`events` suit la règle).
+- Contrôle : même requête → **29** ; `SELECT count(*) FROM pg_policies WHERE tablename = 'events';` → **5**.
+
+**Étape 7 — `20260926000003_add_photo_variants_and_placements.sql`** (amendée : contexte `event`).
+- Contrôles : `SELECT tablename, count(*) FROM pg_policies WHERE tablename IN ('photo_variants','photo_placements') GROUP BY 1;`
+  → **5 et 5** ; `SELECT column_name FROM information_schema.columns WHERE table_name = 'photo_placements' AND column_name = 'event_id';`
+  → **1 ligne** ; `SELECT column_name FROM information_schema.columns WHERE table_name = 'photos' AND column_name = 'source_key';` → **1 ligne**.
+
+**Étape 8 — `20260926000004_add_avif_photo_variants.sql`.**
+- Contrôle : `SELECT column_name FROM information_schema.columns WHERE table_name = 'photo_variants' AND column_name = 'format';` → **1 ligne**.
+
+**Étape 9 — `20260926000005_photo_storage_admin_operations.sql`** (amendée : accepte aussi les couvertures `events/…`).
+Retire la lecture/listing public des objets du bucket : les URL des images continuent de fonctionner, pas le listing anonyme.
+- Contrôles : `SELECT count(*) FROM pg_policies WHERE schemaname = 'storage' AND tablename = 'objects' AND policyname IN ('Admin list photos objects','Admin upload photos','Restrict photos object uploads to web variants','Restrict photos object updates to web variants','Require aal2 for photo web variant deletes');`
+  → **5** ; `… policyname = 'Public read photos bucket'` → **0** ;
+  `SELECT to_regclass('public.photo_storage_cleanup_jobs'), to_regproc('public.admin_delete_photo');` → **deux valeurs non nulles**.
+
+**Étape 10 — `20261109000000_photo_categories_management.sql`.**
+- Contrôles : ceux du bas du fichier (5 catégories `published = true`, 2 politiques sur `categories` plus 3 aal2, trigger `categories_enforce_rules`).
+
+**Étape 11 — `20261110000000_event_galleries.sql`.**
+- Contrôles : ceux du bas du fichier (`galleries = []` et référence `NULL` partout, 2 contraintes, politiques d'`events` inchangées : 5).
+
+**Étape 12 — Déployer le code**, `VITE_GALLERIES_FROM_STORAGE` **non défini**. Contrôles publics : accueil, Noël, pages
+galeries, sitemap, 404, en-têtes (HTML identique à avant). L'admin Photos, les catégories et les galeries d'événements sont
+alors utilisables ; le site public reste sur les fichiers locaux. Avec le compte admin : créer un événement de test, une galerie,
+envoyer une photo, la réordonner, la masquer, dupliquer l'événement avec chaque option, puis tout supprimer.
+
+**Étape 13 — Import** : simulation, import de test, import complet **en brouillon** (voir `README.md`), puis
+`postflight-selects.sql`. Contrôle : nombre de photos, de variantes (8 par photo) et d'emplacements = manifeste.
+
+**Étape 14 — Validation visuelle, puis activation** : `VITE_GALLERIES_FROM_STORAGE=true` au build, déploiement. Contrôles : galeries
+des pages SEO et des événements identiques à avant (ordre, textes alternatifs, cadrage), aucune erreur dans les journaux.
+
+**Étape 15 — BUG-02** (pages catégories du portfolio) seulement ensuite ; les photos de Noël (74, contexte `event`) dans un chantier séparé.
+
+> Supprimer une photo depuis l'administration des photos la retire de **toutes** les galeries qui l'utilisent, y compris
+> celles d'un événement dupliqué avec « Reprendre les galeries » (les photos sont partagées, pas copiées).
+
+> Supprimer une photo depuis l'administration des photos la retire de **toutes** les galeries qui l'utilisent, y compris
+> celles d'un événement dupliqué avec « Reprendre les galeries » (les photos sont partagées, pas copiées).
 
 ### Point d'arrêt et rollback
 

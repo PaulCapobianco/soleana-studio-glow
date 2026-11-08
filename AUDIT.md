@@ -43,6 +43,22 @@ l'admin (« Événements »). Réutilisable pour de futurs événements.
 
 ---
 
+## Mise à jour — 10 novembre 2026 — galeries d'événements (branche `photos-storage-v2`, non déployée)
+
+- **Correctif CSP déployé** (branche `fix-csp-supabase-host`, version `dd816d17…`) : le site utilise le projet Supabase
+  `kvzzzwjddanwedzotaka` (celui du build) ; `project_id` de `supabase/config.toml` (`hvfvvbiupyzoounzyqoz`) ne se
+  résout plus. L'ancien hôte reste dans la CSP pour l'instant. Cette branche n'est pas encore fusionnée dans `main`.
+- **Photos, galeries d'événements** (derrière `VITE_GALLERIES_FROM_STORAGE`, désactivé) : galeries par événement dans la
+  fiche admin (créer, renommer, réordonner, supprimer ; envoyer, ordonner, masquer, retirer des photos), affichage dans
+  `EventPage`, duplication avec choix (sans / reprendre / « Édition précédente » par référence). HTML identique à `main`
+  interrupteur désactivé, et aussi activé tant que les tables photos n'existent pas (repli sur les fichiers locaux).
+- **Migrations, toutes NON appliquées** : `…000003` amendée (contexte `event`), `…000005` amendée (accepte les couvertures
+  `events/…` : sans cela les envois de couverture seraient refusés après elle), `20261109000000` (catégories),
+  `20261110000000` (galeries d'événements). Ordre, contrôles après chaque migration et avertissement sur la double
+  authentification : `docs/photos-storage-plan.md`.
+
+---
+
 ## Mise à jour — 8 novembre 2026 — apparence des événements (branche `apres-noel`, non déployé)
 
 - **Migration `20261108000000_add_event_appearance.sql` — créée, EN ATTENTE d'application manuelle par
