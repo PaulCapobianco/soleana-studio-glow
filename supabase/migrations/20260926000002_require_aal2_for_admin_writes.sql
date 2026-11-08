@@ -79,12 +79,20 @@ CREATE POLICY "Require aal2 for photos deletes" ON storage.objects
 -- ---------------------------------------------------------------------------------------------
 -- RETOUR ARRIÈRE (à exécuter seulement pour débloquer les écritures ; garde le reste intact) :
 -- DO $undo$
--- DECLARE p RECORD;
+-- DECLARE tbl TEXT;
 -- BEGIN
---   FOR p IN SELECT schemaname, tablename, policyname FROM pg_policies
---            WHERE policyname LIKE 'Require aal2 for %' LOOP
---     EXECUTE format('DROP POLICY %I ON %I.%I', p.policyname, p.schemaname, p.tablename);
+--   FOREACH tbl IN ARRAY ARRAY[
+--     'categories', 'photos', 'services', 'reviews', 'faq', 'seo_pages', 'site_settings'
+--   ] LOOP
+--     EXECUTE format('DROP POLICY IF EXISTS "Require aal2 for admin inserts" ON public.%I', tbl);
+--     EXECUTE format('DROP POLICY IF EXISTS "Require aal2 for admin updates" ON public.%I', tbl);
+--     EXECUTE format('DROP POLICY IF EXISTS "Require aal2 for admin deletes" ON public.%I', tbl);
 --   END LOOP;
+--   DROP POLICY IF EXISTS "Require aal2 for admin updates" ON public.contact_requests;
+--   DROP POLICY IF EXISTS "Require aal2 for admin deletes" ON public.contact_requests;
+--   DROP POLICY IF EXISTS "Require aal2 for photos uploads" ON storage.objects;
+--   DROP POLICY IF EXISTS "Require aal2 for photos updates" ON storage.objects;
+--   DROP POLICY IF EXISTS "Require aal2 for photos deletes" ON storage.objects;
 -- END
 -- $undo$;
 -- ---------------------------------------------------------------------------------------------

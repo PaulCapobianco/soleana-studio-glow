@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 import { getPublishedEvent } from "@/lib/events/queries";
 import { buildEventJsonLd, eventOgImage, eventSeo } from "@/lib/events/presentation";
+import { loadStorageGalleries, STORAGE_GALLERIES_ENABLED } from "@/lib/photo-storage";
 
 type GalleryPhoto = {
   id: string;
@@ -304,7 +305,17 @@ export const Route = createFileRoute("/$slug")({
       console.error(`[seo_pages] Échec du chargement de la page "${params.slug}":`, error);
       throw new Error("Erreur de chargement de la page");
     }
-    if (data) return { kind: "seo" as const, page: data };
+    if (data) {
+      // Galeries lues depuis Supabase Storage : inactif tant que STORAGE_GALLERIES_ENABLED est faux
+      // (le site garde alors les fichiers locaux, sans requête supplémentaire ni donnée en plus).
+      if (STORAGE_GALLERIES_ENABLED && SEO_PAGE_GALLERY[params.slug]?.sections.length) {
+        return {
+          kind: "seo" as const,
+          page: { ...data, storageGalleries: await loadStorageGalleries(data.id) },
+        };
+      }
+      return { kind: "seo" as const, page: data };
+    }
 
     // Pas une page SEO : peut-être un événement publié (la base empêche les adresses en double).
     const event = await getPublishedEvent({ data: { slug: params.slug } });
@@ -400,15 +411,28 @@ function SlugPage() {
   return <SeoPage page={loaderData.page} />;
 }
 
-function SeoPage({ page }: { page: Database["public"]["Tables"]["seo_pages"]["Row"] }) {
+type SeoPageData = Database["public"]["Tables"]["seo_pages"]["Row"] & {
+  storageGalleries?: Awaited<ReturnType<typeof loadStorageGalleries>>;
+};
+
+function SeoPage({ page }: { page: SeoPageData }) {
   const { slug } = Route.useParams();
   const gallery = SEO_PAGE_GALLERY[slug];
   const hasMultipleGalleries = (gallery?.sections.length ?? 0) > 1;
 
-  const gallerySections = gallery?.sections.map((section, index) => ({
-    ...section,
-    description: hasMultipleGalleries && index > 0 ? undefined : section.description,
-  }));
+  const storageGalleries = "storageGalleries" in page ? page.storageGalleries : null;
+
+  const gallerySections = gallery?.sections.map((section, index) => {
+    // L'activation est faite uniquement après l'import complet. Ensuite, l'admin peut ajouter,
+    // retirer ou dépublier des photos : la longueur de la galerie doit pouvoir changer.
+    // Une erreur de lecture renvoie null et conserve les fichiers locaux.
+    const stored = storageGalleries?.[`gallery-${index + 1}`] ?? [];
+    return {
+      ...section,
+      photos: storageGalleries ? stored : section.photos,
+      description: hasMultipleGalleries && index > 0 ? undefined : section.description,
+    };
+  });
   const primaryGallerySection = gallerySections?.[0];
 
   return (
@@ -475,7 +499,7 @@ function SeoPage({ page }: { page: Database["public"]["Tables"]["seo_pages"]["Ro
               </div>
             </div>
           ) : (
-            gallery?.sections.map((section, index) => (
+            gallerySections?.map((section, index) => (
               <Reveal key={`${slug}-${index}`} delay={120 + index * 60}>
                 <CategoryGallerySection
                   categorySlugs={section.categorySlugs}

@@ -227,6 +227,112 @@ export type Database = {
         };
         Relationships: [];
       };
+      photo_placements: {
+        Row: {
+          alt_text_override: string | null;
+          category_id: string | null;
+          context_type: string;
+          created_at: string;
+          display_order: number;
+          id: string;
+          object_position_x_pct: number;
+          object_position_y_pct: number;
+          page_key: string | null;
+          photo_id: string;
+          placement_key: string;
+          published: boolean;
+          seo_page_id: string | null;
+          slot: string;
+          updated_at: string;
+        };
+        Insert: {
+          alt_text_override?: string | null;
+          category_id?: string | null;
+          context_type: string;
+          created_at?: string;
+          display_order: number;
+          id?: string;
+          object_position_x_pct?: number;
+          object_position_y_pct?: number;
+          page_key?: string | null;
+          photo_id: string;
+          placement_key: string;
+          published?: boolean;
+          seo_page_id?: string | null;
+          slot: string;
+          updated_at?: string;
+        };
+        Update: {
+          alt_text_override?: string | null;
+          category_id?: string | null;
+          context_type?: string;
+          created_at?: string;
+          display_order?: number;
+          id?: string;
+          object_position_x_pct?: number;
+          object_position_y_pct?: number;
+          page_key?: string | null;
+          photo_id?: string;
+          placement_key?: string;
+          published?: boolean;
+          seo_page_id?: string | null;
+          slot?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "photo_placements_photo_id_fkey";
+            columns: ["photo_id"];
+            isOneToOne: false;
+            referencedRelation: "photos";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      photo_variants: {
+        Row: {
+          byte_size: number;
+          created_at: string;
+          format: string;
+          height: number;
+          id: string;
+          photo_id: string;
+          sha256: string;
+          storage_path: string;
+          width: number;
+        };
+        Insert: {
+          byte_size: number;
+          created_at?: string;
+          format: string;
+          height: number;
+          id?: string;
+          photo_id: string;
+          sha256: string;
+          storage_path: string;
+          width: number;
+        };
+        Update: {
+          byte_size?: number;
+          created_at?: string;
+          format?: string;
+          height?: number;
+          id?: string;
+          photo_id?: string;
+          sha256?: string;
+          storage_path?: string;
+          width?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "photo_variants_photo_id_fkey";
+            columns: ["photo_id"];
+            isOneToOne: false;
+            referencedRelation: "photos";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       photos: {
         Row: {
           alt_text: string;
@@ -239,6 +345,7 @@ export type Database = {
           on_home: boolean;
           on_portfolio: boolean;
           published: boolean;
+          source_key: string | null;
           title: string | null;
           updated_at: string;
         };
@@ -253,6 +360,7 @@ export type Database = {
           on_home?: boolean;
           on_portfolio?: boolean;
           published?: boolean;
+          source_key?: string | null;
           title?: string | null;
           updated_at?: string;
         };
@@ -267,6 +375,7 @@ export type Database = {
           on_home?: boolean;
           on_portfolio?: boolean;
           published?: boolean;
+          source_key?: string | null;
           title?: string | null;
           updated_at?: string;
         };
@@ -495,6 +604,22 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      admin_photo_storage_status: {
+        Args: Record<PropertyKey, never>;
+        Returns: Json;
+      };
+      admin_delete_photo: {
+        Args: { p_legacy_path?: string | null; p_photo_id: string };
+        Returns: Json;
+      };
+      admin_pending_photo_cleanup_jobs: {
+        Args: Record<PropertyKey, never>;
+        Returns: { job_id: string; object_paths: string[] }[];
+      };
+      admin_finish_photo_cleanup: {
+        Args: { p_error?: string | null; p_job_id: string };
+        Returns: undefined;
+      };
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"];
