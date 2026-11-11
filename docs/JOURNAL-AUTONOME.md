@@ -391,3 +391,17 @@ Cause du blocage des placements : après avoir publié les photos, le script con
 VITE_GALLERIES_FROM_STORAGE=true npm run deploy:cf
 ```
 Retour arrière : `npm run deploy:cf` sans la variable, ou `wrangler rollback` vers 05e26e6a. Penser à appliquer la migration `20261110000000_event_galleries.sql` avant d'utiliser les galeries d'événement.
+
+## Audit de code et de sécurité (11 novembre 2026)
+Rapport complet : `docs/AUDIT-SECURITE-2026-11.md` (constats classés, preuves, état, correctifs proposés). SQL de contrôle en lecture seule : `docs/sql/audit-security-checks.sql` ; SQL proposé, **non appliqué** : `docs/sql/proposed-hardening-2026-11.sql`. Aucun déploiement, aucune migration, aucune écriture Supabase, aucun secret lu.
+
+**Corrigé et commité (non déployé : la production tourne encore sur la version d'avant)** :
+- `502a1f9` `@tanstack/react-start` 1.168.60 : XSS réfléchie critique dans les réponses de fonctions serveur (GHSA-qx66-fv34-fjm8) et `seroval` ; `npm audit` production : 15 vulnérabilités dont 6 critiques → 8 dont 0 critique. `b0bc89b` Vite 7.3.8.
+- `71e3ef5` admin Photos : lecture paginée des variantes (PostgREST renvoyait 1 000 des 1 360 lignes).
+- `ad28a3b` CSP bloquante sur le site public, ancien hôte Supabase retiré, simple rapport sur `/admin` (0 violation sur 15 pages, vérifié par Chrome piloté en temps réel).
+- `61955de` JSON-LD échappé (`</script>` venant de la base).
+- `407bbbc` cache `immutable` d'un an sur `/assets/*` (637 fichiers hachés).
+- `01f5277` fonction serveur d'exemple supprimée ; `736f532` `routeTree.gen.ts` régénéré (ordre seulement).
+- 283 tests, typecheck et build verts à chaque commit. Lighthouse mobile inchangé : 86 / 90 / 85 / 100.
+
+**À décider ou appliquer par Paul** : fermer les inscriptions Supabase Auth (ouvertes aujourd'hui), lancer le SQL de contrôle, limites du bucket `photos`, retrait de `has_role` à `anon`, puis déployer (`VITE_GALLERIES_FROM_STORAGE=true npm run deploy:cf`) et tester l'envoi de photo de l'admin avant de rendre la CSP de `/admin` bloquante. `src/lib/events/legacy-noel.ts` est toujours utilisé (queries, sitemap, event-assets) : à ne pas supprimer. `dist/` est actuellement construit avec le flag.
