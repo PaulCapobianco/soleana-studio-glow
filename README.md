@@ -92,6 +92,14 @@ VITE_GALLERIES_FROM_STORAGE=true npm run deploy:cf
 - Après un déploiement : comparer la page d'accueil et une page galerie, vérifier la console (aucune violation CSP), tester l'admin (envoi d'une photo de test).
 - Les migrations ne sont **jamais** appliquées par un déploiement : voir `supabase/migrations/` et `docs/photos-storage/`.
 
+## Contrôle de production (lecture seule)
+
+```bash
+node scripts/smoke-test.mjs https://soleanastudio.fr
+```
+
+35 contrôles (GET/HEAD seulement, 4 requêtes en parallèle au plus) : pages publiques en 200 et 404 d'une URL inexistante, sitemap (19 URLs dont les 4 `/portfolio/<catégorie>`), `robots.txt`, en-têtes (CSP bloquante, HSTS, nosniff, Referrer-Policy, cache `immutable` d'un an sur `/assets`), galeries (`<picture>` AVIF puis WebP, 4 largeurs, dimensions, pas de « Galerie en cours de remplissage », pas de fichier local), images des 4 pages SEO en `image/avif` ou `image/webp`, lien Pelli de la page Noël autorisé par la CSP, `/admin` redirigé vers la connexion sans donnée d'admin. Affiche un tableau OK / KO et sort avec le code 1 si un contrôle échoue. À lancer après chaque déploiement ; il ne remplace pas les tests dans un navigateur (admin connecté, Pelli).
+
 ## Tests
 
-`npm test` (≈ 330 tests : helpers, validation, composants d'administration, en-têtes, relais d'images, lecture des galeries). Les tests des scripts photos ont leur configuration (`scripts/photos-storage/vitest.config.ts`).
+`npm test` (≈ 345 tests : helpers, validation, composants d'administration, en-têtes, relais d'images, lecture des galeries). Les tests des scripts photos ont leur configuration (`scripts/photos-storage/vitest.config.ts`).
