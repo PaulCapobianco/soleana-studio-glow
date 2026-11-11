@@ -94,6 +94,7 @@ describe("handleImageRequest", () => {
     expect(res.headers.get("cache-control")).toBe("public, max-age=31536000, immutable");
     expect(res.headers.get("content-type")).toBe("image/avif");
     expect(res.headers.get("x-content-type-options")).toBe("nosniff");
+    expect(res.headers.get("x-image-cache")).toBe("MISS");
     expect((await res.arrayBuffer()).byteLength).toBe(1000);
     expect(d.fetchUpstream).toHaveBeenCalledWith(
       `https://project.supabase.co/storage/v1/object/public/photos/${GOOD}`,
@@ -123,6 +124,7 @@ describe("handleImageRequest", () => {
     await Promise.all(d.waited);
     const again = await handleImageRequest(req(`/img/${GOOD}?utm=1`), d);
     expect(again.status).toBe(200);
+    expect(again.headers.get("x-image-cache")).toBe("HIT");
     expect(d.fetchUpstream).toHaveBeenCalledTimes(1);
   });
 

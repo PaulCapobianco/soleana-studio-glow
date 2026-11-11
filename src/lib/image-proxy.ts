@@ -66,7 +66,11 @@ export async function handleImageRequest(
   // Clé de cache = chemin seul (les paramètres de requête ne créent pas d'entrées).
   const cacheKey = new Request(`${url.origin}${url.pathname}`, { method: "GET" });
   const hit = await deps.cache?.match(cacheKey);
-  if (hit) return forMethod(request.method, hit);
+  if (hit) {
+    const cached = new Response(hit.body, hit);
+    cached.headers.set("X-Image-Cache", "HIT");
+    return forMethod(request.method, cached);
+  }
 
   let upstream: Response;
   try {
@@ -104,5 +108,7 @@ export async function handleImageRequest(
   }
   const response = new Response(upstream.body, { status: 200, headers });
   if (deps.cache) deps.waitUntil(deps.cache.put(cacheKey, response.clone()));
-  return forMethod(request.method, response);
+  const served = new Response(response.body, response);
+  served.headers.set("X-Image-Cache", "MISS"); // diagnostic : HIT dès la 2e requête au même endroit
+  return forMethod(request.method, served);
 }
