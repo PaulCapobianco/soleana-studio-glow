@@ -9,6 +9,7 @@
 | Photos dans Supabase Storage : plan, migrations, import, vérifications, Safari | `photos-storage-plan.md`, `photos-storage/` |
 | Images et cache Cloudflare (relais `/img/*`, alternatives, risques) | `images-cloudflare-cache.md` |
 | Module Événements (spécification) | `events-module-spec.md` |
+| Autonomie de la photographe : audit du parcours, guide, import des photos de Noël | `EVENEMENTS-AUTONOMIE.md` |
 | Compte admin et double authentification | `account-and-mfa-setup.md` |
 | SQL : contrôles en lecture seule, propositions non appliquées | `sql/` |
 | Inventaire des images | `image-inventory.json` |
