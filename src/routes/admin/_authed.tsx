@@ -1,3 +1,4 @@
+import { AdminStyles } from "@/components/admin/AdminStyles";
 import { createFileRoute, Link, Outlet, redirect, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import {
@@ -67,7 +68,8 @@ function AdminLayout() {
   }
 
   return (
-    <div className="min-h-screen flex bg-background">
+    <div className="admin-root min-h-screen flex bg-background">
+      <AdminStyles />
       <aside className="w-64 border-r border-border bg-surface p-6 flex flex-col">
         <Link to="/" className="font-display text-xl italic text-primary mb-10">
           Soleana Studio

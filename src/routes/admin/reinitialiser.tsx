@@ -1,3 +1,4 @@
+import { AdminStyles } from "@/components/admin/AdminStyles";
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -140,7 +141,8 @@ function ResetPassword() {
   }
 
   return (
-    <div className="min-h-screen grid place-items-center bg-background px-6">
+    <div className="admin-root min-h-screen grid place-items-center bg-background px-6">
+      <AdminStyles />
       <div className="w-full max-w-md bg-surface border border-border p-10 space-y-6">
         <div className="text-center">
           <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-accent mb-2">
