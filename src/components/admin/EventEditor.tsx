@@ -5,15 +5,14 @@ import { toast } from "sonner";
 import {
   CharCounter,
   DateListField,
-  ErrorText,
   Field,
   LinesField,
   Section,
-} from "@/components/site/admin/EventFields";
-import { FieldHint } from "@/components/site/admin/FieldHint";
-import { AppearanceFields } from "@/components/site/admin/AppearanceFields";
-import { DuplicateEventDialog } from "@/components/site/admin/DuplicateEventDialog";
-import { EventGalleriesAdmin } from "@/components/site/admin/EventGalleriesAdmin";
+} from "@/components/admin/EventFields";
+import { FieldHint } from "@/components/admin/FieldHint";
+import { AppearanceFields } from "@/components/admin/AppearanceFields";
+import { DuplicateEventDialog } from "@/components/admin/DuplicateEventDialog";
+import { EventGalleriesAdmin } from "@/components/admin/EventGalleriesAdmin";
 import { EventPageContent } from "@/components/site/EventPage";
 import { eventAssets } from "@/components/site/event-assets";
 import { buildAppearance } from "@/lib/events/appearance";
@@ -33,6 +32,8 @@ import {
 } from "@/lib/events/admin";
 import { formatHeroDates, isEditionOver } from "@/lib/events/dates";
 import type { EventRow, EventStatus } from "@/lib/events/types";
+import { EventEditorHeader } from "@/components/admin/EventEditorHeader";
+import { EventFaqSection, EventFormulesSection } from "@/components/admin/EventListSections";
 import {
   slugify,
   validateEventDraft,
@@ -40,12 +41,6 @@ import {
   type EventErrors,
   type EventFormValues,
 } from "@/lib/events/validation";
-
-const STATUS_LABEL: Record<EventStatus, string> = {
-  draft: "Brouillon",
-  published: "Publié",
-  archived: "Archivé",
-};
 
 export function EventEditor({ initial }: { initial: EventRow }) {
   const qc = useQueryClient();
@@ -218,124 +213,24 @@ export function EventEditor({ initial }: { initial: EventRow }) {
 
   return (
     <div className="space-y-6" ref={topRef}>
-      <header className="space-y-3">
-        <div className="flex flex-wrap items-center gap-3">
-          <h1 className="font-display text-4xl italic text-primary">
-            {values.title || "Sans titre"}
-          </h1>
-          <span className="border border-border px-2 py-0.5 text-[10px] uppercase tracking-widest">
-            {STATUS_LABEL[status]}
-          </span>
-          {status === "published" && editionOver && (
-            <span className="border border-border px-2 py-0.5 text-[10px] uppercase tracking-widest text-muted-foreground">
-              Édition terminée
-            </span>
-          )}
-        </div>
-        {status === "published" && (
-          <p className="border border-primary/30 bg-primary/5 p-3 text-sm">
-            Cet événement est <strong>publié</strong> : chaque enregistrement est visible tout de
-            suite sur le site.{" "}
-            <a href={`/${row.slug}`} target="_blank" rel="noopener" className="underline">
-              Voir la page
-            </a>
-          </p>
-        )}
-        {status === "archived" && (
-          <p className="border border-border bg-background p-3 text-sm">
-            Cet événement est <strong>archivé</strong> : il n&apos;est plus visible sur le site.
-          </p>
-        )}
-        <div className="flex flex-wrap items-center gap-3 text-xs uppercase tracking-widest">
-          <button
-            type="button"
-            disabled={!isDirty || busy !== null}
-            onClick={() => void save()}
-            className="bg-primary px-5 py-2 text-primary-foreground hover:bg-foreground disabled:cursor-not-allowed disabled:opacity-40"
-          >
-            {busy === "save" ? "Enregistrement…" : "Enregistrer"}
-          </button>
-          {status !== "published" && (
-            <button
-              type="button"
-              disabled={busy !== null}
-              onClick={() => void publish()}
-              className="border border-primary px-5 py-2 text-primary hover:bg-primary hover:text-primary-foreground disabled:opacity-40"
-            >
-              {busy === "publish" ? "Publication…" : "Publier"}
-            </button>
-          )}
-          {status === "published" && (
-            <button
-              type="button"
-              disabled={busy !== null}
-              onClick={() =>
-                void changeStatus(
-                  "draft",
-                  "Dépublier cet événement ? Sa page ne sera plus visible sur le site (ni sur l'accueil) jusqu'à une nouvelle publication.",
-                  "Événement dépublié : il n'est plus visible sur le site.",
-                )
-              }
-              className="border border-border px-5 py-2 hover:bg-background disabled:opacity-40"
-            >
-              Dépublier
-            </button>
-          )}
-          <button
-            type="button"
-            onClick={() => setPreview(preview ? null : "open")}
-            className="border border-border px-5 py-2 hover:bg-background"
-          >
-            {preview ? "Fermer l'aperçu" : "Aperçu"}
-          </button>
-          <button
-            type="button"
-            disabled={busy !== null}
-            onClick={askDuplicate}
-            className="px-2 py-2 text-primary hover:underline disabled:opacity-40"
-          >
-            Dupliquer
-          </button>
-          {status === "archived" ? (
-            <button
-              type="button"
-              disabled={busy !== null}
-              onClick={() => void changeStatus("draft", null, "Remis en brouillon.")}
-              className="px-2 py-2 text-muted-foreground hover:underline disabled:opacity-40"
-            >
-              Remettre en brouillon
-            </button>
-          ) : (
-            <button
-              type="button"
-              disabled={busy !== null}
-              onClick={() =>
-                void changeStatus(
-                  "archived",
-                  status === "published"
-                    ? "Archiver cet événement ? Sa page ne sera plus visible sur le site. Vous pourrez le remettre en brouillon plus tard."
-                    : "Archiver cet événement ?",
-                  "Événement archivé.",
-                )
-              }
-              className="px-2 py-2 text-muted-foreground hover:underline disabled:opacity-40"
-            >
-              Archiver
-            </button>
-          )}
-          {status === "draft" && !row.first_published_at && (
-            <button
-              type="button"
-              disabled={busy !== null}
-              onClick={() => void remove()}
-              className="px-2 py-2 text-destructive hover:underline disabled:opacity-40"
-            >
-              Supprimer ce brouillon
-            </button>
-          )}
-        </div>
-        {isDirty && <p className="text-xs text-orange-700">Modifications non enregistrées.</p>}
-      </header>
+      <EventEditorHeader
+        title={values.title}
+        slug={row.slug}
+        status={status}
+        firstPublishedAt={row.first_published_at}
+        editionOver={editionOver}
+        isDirty={isDirty}
+        busy={busy}
+        previewOpen={Boolean(preview)}
+        onSave={() => void save()}
+        onPublish={() => void publish()}
+        onChangeStatus={(next, confirmMessage, successMessage) =>
+          void changeStatus(next, confirmMessage, successMessage)
+        }
+        onTogglePreview={() => setPreview(preview ? null : "open")}
+        onDuplicate={askDuplicate}
+        onRemove={() => void remove()}
+      />
 
       {preview && (
         <div className="space-y-2">
@@ -474,181 +369,9 @@ export function EventEditor({ initial }: { initial: EventRow }) {
         />
       </Section>
 
-      <Section
-        title="Formules et réservation"
-        intro="Chaque formule a son prix, son contenu et son propre lien de réservation (à copier depuis Pelli)."
-      >
-        {values.formules.map((formule, index) => {
-          const patch = (p: Partial<typeof formule>) =>
-            set(
-              "formules",
-              values.formules.map((f, i) => (i === index ? { ...f, ...p } : f)),
-            );
-          const move = (delta: number) => {
-            const next = [...values.formules];
-            const target = index + delta;
-            if (target < 0 || target >= next.length) return;
-            [next[index], next[target]] = [next[target], next[index]];
-            set("formules", next);
-          };
-          return (
-            <div key={index} className="space-y-3 border border-border bg-background p-4">
-              <div className="grid gap-3 sm:grid-cols-[1fr_8rem]">
-                <Field
-                  label={`Formule ${index + 1} — nom`}
-                  value={formule.name}
-                  error={errors[`formules.${index}.name`]}
-                  onChange={(v) => patch({ name: v })}
-                />
-                <Field
-                  label="Prix (€)"
-                  type="number"
-                  value={formule.price_eur === null ? "" : String(formule.price_eur)}
-                  error={errors[`formules.${index}.price_eur`]}
-                  onChange={(v) => patch({ price_eur: v === "" ? null : Number(v) })}
-                />
-              </div>
-              <LinesField
-                label="Contenu de la formule"
-                hint="une ligne = une puce ; indiquez ici le nombre de photos incluses"
-                value={formule.features}
-                placeholder={"25 à 30 minutes de séance\n10 photos numériques HD"}
-                onChange={(v) => patch({ features: v })}
-              />
-              <Field
-                label="Lien de réservation"
-                type="url"
-                value={formule.booking_url}
-                error={errors[`formules.${index}.booking_url`]}
-                placeholder="https://soleana-studio.pelli.io/booking/…"
-                onChange={(v) => patch({ booking_url: v })}
-              />
-              <div className="flex flex-wrap items-center justify-between gap-3 text-xs">
-                <label className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={formule.featured}
-                    onChange={(e) => patch({ featured: e.target.checked })}
-                  />
-                  Mettre en avant
-                  <FieldHint>affiche « La plus complète »</FieldHint>
-                </label>
-                <div className="flex items-center gap-4">
-                  <button type="button" onClick={() => move(-1)} disabled={index === 0}>
-                    ↑ Monter
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => move(1)}
-                    disabled={index === values.formules.length - 1}
-                  >
-                    ↓ Descendre
-                  </button>
-                  <button
-                    type="button"
-                    className="text-destructive hover:underline"
-                    onClick={() =>
-                      set(
-                        "formules",
-                        values.formules.filter((_, i) => i !== index),
-                      )
-                    }
-                  >
-                    Supprimer cette formule
-                  </button>
-                </div>
-              </div>
-            </div>
-          );
-        })}
-        <button
-          type="button"
-          onClick={() =>
-            set("formules", [
-              ...values.formules,
-              { name: "", price_eur: null, features: [], booking_url: "", featured: false },
-            ])
-          }
-          className="text-xs uppercase tracking-widest text-primary hover:underline"
-        >
-          + Ajouter une formule
-        </button>
-        {values.formules.length === 0 && (
-          <Field
-            label="Lien de réservation unique"
-            hint="à utiliser s'il n'y a pas de formules"
-            type="url"
-            value={values.booking_url}
-            error={errors.booking_url}
-            placeholder="https://soleana-studio.pelli.io/booking/…"
-            onChange={(v) => set("booking_url", v)}
-          />
-        )}
-      </Section>
+      <EventFormulesSection values={values} errors={errors} set={set} />
 
-      <Section title="Questions fréquentes">
-        {values.faq.map((item, index) => {
-          const patch = (p: Partial<typeof item>) =>
-            set(
-              "faq",
-              values.faq.map((q, i) => (i === index ? { ...q, ...p } : q)),
-            );
-          const move = (delta: number) => {
-            const next = [...values.faq];
-            const target = index + delta;
-            if (target < 0 || target >= next.length) return;
-            [next[index], next[target]] = [next[target], next[index]];
-            set("faq", next);
-          };
-          return (
-            <div key={index} className="space-y-2 border border-border bg-background p-4">
-              <Field
-                label="Question"
-                value={item.question}
-                onChange={(v) => patch({ question: v })}
-              />
-              <Field
-                label="Réponse"
-                textarea
-                value={item.answer}
-                onChange={(v) => patch({ answer: v })}
-              />
-              <ErrorText>{errors[`faq.${index}`]}</ErrorText>
-              <div className="flex items-center justify-end gap-4 text-xs">
-                <button type="button" onClick={() => move(-1)} disabled={index === 0}>
-                  ↑ Monter
-                </button>
-                <button
-                  type="button"
-                  onClick={() => move(1)}
-                  disabled={index === values.faq.length - 1}
-                >
-                  ↓ Descendre
-                </button>
-                <button
-                  type="button"
-                  className="text-destructive hover:underline"
-                  onClick={() =>
-                    set(
-                      "faq",
-                      values.faq.filter((_, i) => i !== index),
-                    )
-                  }
-                >
-                  Supprimer cette question
-                </button>
-              </div>
-            </div>
-          );
-        })}
-        <button
-          type="button"
-          onClick={() => set("faq", [...values.faq, { question: "", answer: "" }])}
-          className="text-xs uppercase tracking-widest text-primary hover:underline"
-        >
-          + Ajouter une question
-        </button>
-      </Section>
+      <EventFaqSection values={values} errors={errors} set={set} />
 
       <Section
         title="Image de couverture"

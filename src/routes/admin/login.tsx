@@ -2,7 +2,7 @@ import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useEffect, useId, useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { PasswordVisibilityToggle } from "@/components/site/admin/PasswordVisibilityToggle";
+import { PasswordVisibilityToggle } from "@/components/admin/PasswordVisibilityToggle";
 import { friendlyAuthError } from "@/lib/admin/auth-errors";
 import {
   getMfaState,

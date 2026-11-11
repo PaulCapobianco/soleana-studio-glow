@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 
 vi.mock("@/integrations/supabase/client", () => ({ supabase: {} }));
 
-import { publicImageUrl } from "./photo-storage";
+import { publicImageUrl } from "@/lib/photos/public-url";
 
 describe("publicImageUrl", () => {
   it("produit exactement l'URL que donne supabase-js, sans charger le client", () => {

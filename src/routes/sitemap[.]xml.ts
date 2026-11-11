@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 import { listPublishedEventUrls } from "@/lib/events/queries";
-import { STORAGE_GALLERIES_ENABLED } from "@/lib/photo-storage";
+import { STORAGE_GALLERIES_ENABLED } from "@/lib/photos/flags";
 import { LEGACY_NOEL_SLUG } from "@/lib/events/legacy-noel";
 
 const SITE_URL = "https://soleanastudio.fr";

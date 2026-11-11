@@ -2,8 +2,8 @@ import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { HiddenUsernameField } from "@/components/site/admin/HiddenUsernameField";
-import { PasswordVisibilityToggle } from "@/components/site/admin/PasswordVisibilityToggle";
+import { HiddenUsernameField } from "@/components/admin/HiddenUsernameField";
+import { PasswordVisibilityToggle } from "@/components/admin/PasswordVisibilityToggle";
 import { friendlyAuthError, isInsufficientAal } from "@/lib/admin/auth-errors";
 import {
   getMfaState,

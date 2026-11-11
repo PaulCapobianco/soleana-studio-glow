@@ -4,7 +4,15 @@
 import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import sharp from "sharp";
-import { GALLERIES, MANIFEST_PATH, ROOT, VARIANTS_DIR, listGalleryFiles, readManifest, sha256 } from "./lib.mjs";
+import {
+  GALLERIES,
+  MANIFEST_PATH,
+  ROOT,
+  VARIANTS_DIR,
+  listGalleryFiles,
+  readManifest,
+  sha256,
+} from "./lib.mjs";
 
 const ORIGINALS_DIR = path.resolve(ROOT, "../soleana-originaux/galeries");
 const MATCHES_PATH = path.join(VARIANTS_DIR, "original-matches.json");
@@ -18,7 +26,12 @@ if (path.relative(ROOT, ORIGINALS_DIR).split(path.sep)[0] !== "..") {
 }
 
 async function signature(file) {
-  const pixels = await sharp(file).rotate().resize(SIZE, SIZE, { fit: "fill" }).grayscale().raw().toBuffer();
+  const pixels = await sharp(file)
+    .rotate()
+    .resize(SIZE, SIZE, { fit: "fill" })
+    .grayscale()
+    .raw()
+    .toBuffer();
   const values = Float64Array.from(pixels);
   const mean = values.reduce((sum, value) => sum + value, 0) / values.length;
   let squared = 0;
@@ -38,24 +51,31 @@ function correlation(left, right) {
 
 function orientedDimensions(metadata) {
   const swapped = [5, 6, 7, 8].includes(metadata.orientation);
-  return { width: swapped ? metadata.height : metadata.width, height: swapped ? metadata.width : metadata.height };
+  return {
+    width: swapped ? metadata.height : metadata.width,
+    height: swapped ? metadata.width : metadata.height,
+  };
 }
 
 const manifest = await readManifest();
-if (manifest.version !== 3 || manifest.photos.length !== 170) throw new Error("Manifeste phase 1 inattendu.");
+if (manifest.version !== 3 || manifest.photos.length !== 170)
+  throw new Error("Manifeste phase 1 inattendu.");
 
 // Retrouver les sources WebP par leur contenu, sans inscrire leurs noms dans le manifeste.
 const webpsByHash = new Map();
-for (const gallery of GALLERIES) for (const file of await listGalleryFiles(gallery)) {
-  const fullPath = path.join(ROOT, file.rel);
-  const hash = sha256(await readFile(fullPath));
-  if (!webpsByHash.has(hash)) webpsByHash.set(hash, fullPath);
-}
+for (const gallery of GALLERIES)
+  for (const file of await listGalleryFiles(gallery)) {
+    const fullPath = path.join(ROOT, file.rel);
+    const hash = sha256(await readFile(fullPath));
+    if (!webpsByHash.has(hash)) webpsByHash.set(hash, fullPath);
+  }
 
 const originalPaths = [];
 for (const folder of await readdir(ORIGINALS_DIR, { withFileTypes: true })) {
   if (!folder.isDirectory()) continue; // logos à la racine exclus
-  for (const entry of await readdir(path.join(ORIGINALS_DIR, folder.name), { withFileTypes: true })) {
+  for (const entry of await readdir(path.join(ORIGINALS_DIR, folder.name), {
+    withFileTypes: true,
+  })) {
     if (entry.isFile() && /\.(jpe?g|png|webp)$/i.test(entry.name)) {
       originalPaths.push(path.join(ORIGINALS_DIR, folder.name, entry.name));
     }
@@ -72,7 +92,12 @@ for (const fullPath of originalPaths) {
 }
 const originals = [];
 for (const [hash, fullPath] of originalsByHash) {
-  originals.push({ hash, fullPath, signature: await signature(fullPath), metadata: await sharp(fullPath).metadata() });
+  originals.push({
+    hash,
+    fullPath,
+    signature: await signature(fullPath),
+    metadata: await sharp(fullPath).metadata(),
+  });
 }
 
 const matches = [];
@@ -80,7 +105,8 @@ for (const photo of manifest.photos) {
   const webpPath = webpsByHash.get(photo.source_sha256);
   if (!webpPath) throw new Error(`Source WebP du manifeste introuvable : ${photo.source_key}`);
   const sourceSignature = await signature(webpPath);
-  const ranked = originals.map((item) => ({ item, score: correlation(sourceSignature, item.signature) }))
+  const ranked = originals
+    .map((item) => ({ item, score: correlation(sourceSignature, item.signature) }))
     .sort((a, b) => b.score - a.score);
   const best = ranked[0];
   const second = ranked[1];
@@ -130,7 +156,13 @@ await mkdir(VARIANTS_DIR, { recursive: true });
 await writeFile(MATCHES_PATH, `${JSON.stringify({ version: 1, matches }, null, 2)}\n`);
 await writeFile(REPORT_PATH, `${csvRows.map((row) => row.map(csvCell).join(",")).join("\n")}\n`);
 await writeFile(MANIFEST_PATH, `${JSON.stringify(manifest, null, 2)}\n`);
-console.log(`${matches.length} photos comparées à ${originalPaths.length} fichiers (${originals.length} originaux distincts).`);
-console.log(`${usedOriginals.length} originaux retenus, ${matches.filter((match) => match.status === "no_original").length} repli WebP, ${matches.filter((match) => match.status === "review").length} correspondance(s) à vérifier.`);
-console.log(`Score minimal retenu : ${(Math.min(...usedOriginals.map((match) => match.score)) * 100).toFixed(3)} %`);
+console.log(
+  `${matches.length} photos comparées à ${originalPaths.length} fichiers (${originals.length} originaux distincts).`,
+);
+console.log(
+  `${usedOriginals.length} originaux retenus, ${matches.filter((match) => match.status === "no_original").length} repli WebP, ${matches.filter((match) => match.status === "review").length} correspondance(s) à vérifier.`,
+);
+console.log(
+  `Score minimal retenu : ${(Math.min(...usedOriginals.map((match) => match.score)) * 100).toFixed(3)} %`,
+);
 console.log(`Tableau privé hors dépôt : ${REPORT_PATH}`);

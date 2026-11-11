@@ -43,7 +43,8 @@ export default defineConfig({
             if (id.includes("sonner")) return "vendor-sonner";
             if (id.includes("date-fns")) return "vendor-datefns";
             if (id.includes("embla-carousel")) return "vendor-carousel";
-            if (id.includes("react-hook-form") || id.includes("@hookform/resolvers")) return "vendor-forms";
+            if (id.includes("react-hook-form") || id.includes("@hookform/resolvers"))
+              return "vendor-forms";
             if (id.includes("zod")) return "vendor-zod";
             if (id.includes("recharts")) return "vendor-recharts";
 

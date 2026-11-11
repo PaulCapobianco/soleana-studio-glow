@@ -9,7 +9,8 @@ import { getSupabase } from "@/lib/supabase-lazy";
 import type { Database } from "@/integrations/supabase/types";
 import { getPublishedEvent } from "@/lib/events/queries";
 import { buildEventJsonLd, eventOgImage, eventSeo } from "@/lib/events/presentation";
-import { loadStorageGalleries, STORAGE_GALLERIES_ENABLED } from "@/lib/photo-storage";
+import { loadStorageGalleries } from "@/lib/photos/gallery-loaders";
+import { STORAGE_GALLERIES_ENABLED } from "@/lib/photos/flags";
 
 type GalleryPhoto = {
   id: string;

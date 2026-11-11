@@ -6,7 +6,13 @@ import { mkdir, readFile, readdir, rename, rm, writeFile } from "node:fs/promise
 import path from "node:path";
 import sharp from "sharp";
 import { MANIFEST_PATH, ROOT, VARIANTS_DIR, readManifest, sha256, variantPath } from "./lib.mjs";
-import { FORMATS, GENERATION_VERSION, TARGET_WIDTHS, expectedWidthsFor, getQualityProfile } from "./quality-profiles.mjs";
+import {
+  FORMATS,
+  GENERATION_VERSION,
+  TARGET_WIDTHS,
+  expectedWidthsFor,
+  getQualityProfile,
+} from "./quality-profiles.mjs";
 
 const profileIndex = process.argv.indexOf("--profile");
 const profileName = profileIndex >= 0 ? process.argv[profileIndex + 1] : undefined;
@@ -29,19 +35,29 @@ if (path.relative(ROOT, VARIANTS_DIR).split(path.sep)[0] !== "..") {
 }
 
 const manifest = await readManifest();
-const mapping = JSON.parse(await readFile(path.join(VARIANTS_DIR, "original-matches.json"), "utf8"));
-if (manifest.version !== 3 || mapping.version !== 1 || mapping.matches.length !== manifest.photos.length) {
+const mapping = JSON.parse(
+  await readFile(path.join(VARIANTS_DIR, "original-matches.json"), "utf8"),
+);
+if (
+  manifest.version !== 3 ||
+  mapping.version !== 1 ||
+  mapping.matches.length !== manifest.photos.length
+) {
   throw new Error("Correspondances des originaux absentes : exécuter match-originals.mjs.");
 }
 const matchesByKey = new Map(mapping.matches.map((match) => [match.source_key, match]));
 const filesDir = path.join(VARIANTS_DIR, "files");
 const indexPath = path.join(VARIANTS_DIR, "variants-index.json");
 const progressPath = path.join(VARIANTS_DIR, "variants-index.progress.json");
-const inputHash = sha256(Buffer.from(JSON.stringify({
-  manifest: sha256(await readFile(MANIFEST_PATH)),
-  matches: sha256(await readFile(path.join(VARIANTS_DIR, "original-matches.json"))),
-  encoder: ENCODER_SETTINGS,
-})));
+const inputHash = sha256(
+  Buffer.from(
+    JSON.stringify({
+      manifest: sha256(await readFile(MANIFEST_PATH)),
+      matches: sha256(await readFile(path.join(VARIANTS_DIR, "original-matches.json"))),
+      encoder: ENCODER_SETTINGS,
+    }),
+  ),
+);
 const perPhoto = new Array(manifest.photos.length);
 let nextPhoto = 0;
 let completed = 0;
@@ -58,7 +74,7 @@ async function readIndex(file) {
   }
 }
 
-const previous = await readIndex(progressPath) ?? await readIndex(indexPath);
+const previous = (await readIndex(progressPath)) ?? (await readIndex(indexPath));
 const previousByKey = new Map();
 for (const variant of previous?.variants ?? []) {
   const key = `${variant.source_key}/${variant.width}/${variant.format}`;
@@ -67,21 +83,44 @@ for (const variant of previous?.variants ?? []) {
 }
 
 async function reusable(variant, photo, match, width, format) {
-  if (!variant || variant.source_sha256 !== match.selected_sha256 ||
-      variant.source_key !== photo.source_key || variant.width !== width || variant.format !== format ||
-      Math.abs(variant.height - Math.round(photo.height * width / photo.width)) > 1 ||
-      variant.file !== `files/${variant.storage_path}` ||
-      variant.storage_path !== variantPath(photo.source_key, variant.sha256?.slice(0, 8), width, format)) return false;
+  if (
+    !variant ||
+    variant.source_sha256 !== match.selected_sha256 ||
+    variant.source_key !== photo.source_key ||
+    variant.width !== width ||
+    variant.format !== format ||
+    Math.abs(variant.height - Math.round((photo.height * width) / photo.width)) > 1 ||
+    variant.file !== `files/${variant.storage_path}` ||
+    variant.storage_path !==
+      variantPath(photo.source_key, variant.sha256?.slice(0, 8), width, format)
+  )
+    return false;
   try {
     const bytes = await readFile(path.join(VARIANTS_DIR, variant.file));
     if (bytes.length !== variant.byte_size || sha256(bytes) !== variant.sha256) return false;
     const meta = await sharp(bytes).metadata();
-    if (meta.format !== (format === "avif" ? "heif" : "webp") || meta.width !== width ||
-        meta.height !== variant.height || meta.exif || meta.icc || meta.xmp || meta.iptc || meta.orientation) return false;
-    if (format === "avif" && (bytes.toString("latin1", 4, 8) !== "ftyp" ||
-        !["avif", "avis"].includes(bytes.toString("latin1", 8, 12)))) return false;
-    if (format === "webp" && (bytes.toString("latin1", 0, 4) !== "RIFF" ||
-        bytes.toString("latin1", 8, 12) !== "WEBP")) return false;
+    if (
+      meta.format !== (format === "avif" ? "heif" : "webp") ||
+      meta.width !== width ||
+      meta.height !== variant.height ||
+      meta.exif ||
+      meta.icc ||
+      meta.xmp ||
+      meta.iptc ||
+      meta.orientation
+    )
+      return false;
+    if (
+      format === "avif" &&
+      (bytes.toString("latin1", 4, 8) !== "ftyp" ||
+        !["avif", "avis"].includes(bytes.toString("latin1", 8, 12)))
+    )
+      return false;
+    if (
+      format === "webp" &&
+      (bytes.toString("latin1", 0, 4) !== "RIFF" || bytes.toString("latin1", 8, 12) !== "WEBP")
+    )
+      return false;
     return true;
   } catch (error) {
     if (error.code === "ENOENT" || error instanceof Error) return false;
@@ -93,7 +132,10 @@ async function saveProgress() {
   progressWrite = progressWrite.then(async () => {
     const variants = perPhoto.flatMap((items) => items ?? []);
     const temporary = `${progressPath}.tmp`;
-    await writeFile(temporary, `${JSON.stringify({ version: GENERATION_VERSION, input_hash: inputHash, target_widths: TARGET_WIDTHS, encoder_settings: ENCODER_SETTINGS, variants }, null, 2)}\n`);
+    await writeFile(
+      temporary,
+      `${JSON.stringify({ version: GENERATION_VERSION, input_hash: inputHash, target_widths: TARGET_WIDTHS, encoder_settings: ENCODER_SETTINGS, variants }, null, 2)}\n`,
+    );
     await rename(temporary, progressPath);
   });
   await progressWrite;
@@ -101,15 +143,20 @@ async function saveProgress() {
 
 async function generatePhoto(photo, photoIndex) {
   const match = matchesByKey.get(photo.source_key);
-  if (!match || match.source_sha256 !== photo.source_sha256 ||
-      match.selected_sha256 !== (photo.original_sha256 ?? photo.source_sha256)) {
+  if (
+    !match ||
+    match.source_sha256 !== photo.source_sha256 ||
+    match.selected_sha256 !== (photo.original_sha256 ?? photo.source_sha256)
+  ) {
     throw new Error(`Correspondance obsolète : ${photo.source_key}`);
   }
   const source = path.resolve(path.dirname(ROOT), match.selected_file);
-  const expectedRoot = photo.source_kind === "original"
-    ? path.resolve(ROOT, "../soleana-originaux/galeries")
-    : path.join(ROOT, "src/assets");
-  if (!source.startsWith(`${expectedRoot}${path.sep}`)) throw new Error("Source hors du dossier autorisé.");
+  const expectedRoot =
+    photo.source_kind === "original"
+      ? path.resolve(ROOT, "../soleana-originaux/galeries")
+      : path.join(ROOT, "src/assets");
+  if (!source.startsWith(`${expectedRoot}${path.sep}`))
+    throw new Error("Source hors du dossier autorisé.");
   const bytes = await readFile(source);
   if (sha256(bytes) !== match.selected_sha256) {
     throw new Error(`Source modifiée depuis la comparaison : ${photo.source_key}`);
@@ -127,9 +174,10 @@ async function generatePhoto(photo, photoIndex) {
       }
       // .rotate() applique l'orientation éventuelle ; sharp retire les métadonnées par défaut.
       const pipeline = sharp(bytes).rotate().resize({ width, withoutEnlargement: true });
-      const { data, info } = await (format === "avif"
-        ? pipeline.avif(ENCODER_SETTINGS.avif)
-        : pipeline.webp(ENCODER_SETTINGS.webp)
+      const { data, info } = await (
+        format === "avif"
+          ? pipeline.avif(ENCODER_SETTINGS.avif)
+          : pipeline.webp(ENCODER_SETTINGS.webp)
       ).toBuffer({ resolveWithObject: true });
       const hash = sha256(data);
       const storagePath = variantPath(photo.source_key, hash.slice(0, 8), info.width, format);
@@ -173,7 +221,7 @@ for (const [photoIndex, photo] of manifest.photos.entries()) {
     throw new Error(`Variantes incomplètes : ${photo.source_key}`);
   }
   for (const variant of perPhoto[photoIndex]) {
-    if (!await reusable(variant, photo, match, variant.width, variant.format)) {
+    if (!(await reusable(variant, photo, match, variant.width, variant.format))) {
       throw new Error(`Variante invalide après génération : ${variant.storage_path}`);
     }
   }

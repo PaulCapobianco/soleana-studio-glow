@@ -12,7 +12,9 @@ import { VARIANTS_DIR, ROOT, readManifest } from "./lib.mjs";
 const seo = "photographe-couple-marseille";
 const slot = "gallery-1";
 const manifest = await readManifest();
-const matches = JSON.parse(await readFile(path.join(VARIANTS_DIR, "original-matches.json"), "utf8"));
+const matches = JSON.parse(
+  await readFile(path.join(VARIANTS_DIR, "original-matches.json"), "utf8"),
+);
 const index = JSON.parse(await readFile(path.join(VARIANTS_DIR, "variants-index.json"), "utf8"));
 const byMatch = new Map(matches.matches.map((item) => [item.source_key, item]));
 const byVariants = new Map();
@@ -20,16 +22,21 @@ for (const variant of index.variants) {
   if (!byVariants.has(variant.source_key)) byVariants.set(variant.source_key, []);
   byVariants.get(variant.source_key).push(variant);
 }
-const placements = manifest.placements.filter((item) => item.seo_slug === seo && item.slot === slot)
+const placements = manifest.placements
+  .filter((item) => item.seo_slug === seo && item.slot === slot)
   .sort((a, b) => a.display_order - b.display_order);
-if (placements.length !== 10 || index.version !== 3) throw new Error("Galerie ou variantes inattendues.");
+if (placements.length !== 10 || index.version !== 3)
+  throw new Error("Galerie ou variantes inattendues.");
 
 const images = new Map();
 for (const [n, placement] of placements.entries()) {
   const match = byMatch.get(placement.source_key);
   images.set(`/image/legacy/${n}.webp`, path.join(ROOT, match.source_webp));
   for (const variant of byVariants.get(placement.source_key) ?? []) {
-    images.set(`/image/variant/${n}-${variant.width}.${variant.format}`, path.join(VARIANTS_DIR, variant.file));
+    images.set(
+      `/image/variant/${n}-${variant.width}.${variant.format}`,
+      path.join(VARIANTS_DIR, variant.file),
+    );
   }
 }
 
@@ -38,10 +45,15 @@ function picture(n, placement, after) {
   const legacy = `/image/legacy/${n}.webp`;
   const klass = n === 0 ? "featured" : "tile";
   const variants = byVariants.get(placement.source_key) ?? [];
-  const srcset = (format) => variants.filter((item) => item.format === format)
-    .sort((a, b) => a.width - b.width)
-    .map((item) => `/image/variant/${n}-${item.width}.${format} ${item.width}w`).join(", ");
-  const webp = variants.filter((item) => item.format === "webp").sort((a, b) => b.width - a.width)[0];
+  const srcset = (format) =>
+    variants
+      .filter((item) => item.format === format)
+      .sort((a, b) => a.width - b.width)
+      .map((item) => `/image/variant/${n}-${item.width}.${format} ${item.width}w`)
+      .join(", ");
+  const webp = variants
+    .filter((item) => item.format === "webp")
+    .sort((a, b) => b.width - a.width)[0];
   const image = after
     ? `<img loading="lazy" src="/image/variant/${n}-${webp.width}.webp" srcset="${srcset("webp")}" sizes="${size}" alt="photo ${n}">`
     : `<img loading="lazy" src="${legacy}" alt="photo ${n}">`;
@@ -55,7 +67,10 @@ function page(after) {
     @media(min-width:640px){.tiles{grid-template-columns:repeat(2,1fr)}}
     @media(min-width:1024px){.tiles{grid-template-columns:repeat(3,1fr)}}
     .tile{height:400px} picture,img{display:block;width:100%;height:100%;object-fit:cover}
-  </style></head><body><main class="gallery">${picture(0, placements[0], after)}<div class="tiles">${placements.slice(1).map((item, index) => picture(index + 1, item, after)).join("")}</div></main></body></html>`;
+  </style></head><body><main class="gallery">${picture(0, placements[0], after)}<div class="tiles">${placements
+    .slice(1)
+    .map((item, index) => picture(index + 1, item, after))
+    .join("")}</div></main></body></html>`;
 }
 
 const server = createServer(async (request, response) => {
@@ -67,7 +82,11 @@ const server = createServer(async (request, response) => {
       return;
     }
     const file = images.get(pathname);
-    if (!file) { response.writeHead(404); response.end(); return; }
+    if (!file) {
+      response.writeHead(404);
+      response.end();
+      return;
+    }
     const bytes = await readFile(file);
     response.writeHead(200, {
       "content-type": file.endsWith(".avif") ? "image/avif" : "image/webp",
@@ -76,52 +95,87 @@ const server = createServer(async (request, response) => {
     });
     response.end(bytes);
   } catch (error) {
-    response.writeHead(500); response.end(String(error));
+    response.writeHead(500);
+    response.end(String(error));
   }
 });
 server.listen(0, "127.0.0.1");
 await once(server, "listening");
 const origin = `http://127.0.0.1:${server.address().port}`;
 const profile = await mkdtemp(path.join(os.tmpdir(), "soleana-gallery-measure-"));
-const chrome = spawn("google-chrome", [
-  "--headless=new", "--no-sandbox", "--disable-gpu", "--disable-dev-shm-usage",
-  "--remote-debugging-port=0", "--remote-allow-origins=*", `--user-data-dir=${profile}`, "about:blank",
-], { stdio: "ignore" });
+const chrome = spawn(
+  "google-chrome",
+  [
+    "--headless=new",
+    "--no-sandbox",
+    "--disable-gpu",
+    "--disable-dev-shm-usage",
+    "--remote-debugging-port=0",
+    "--remote-allow-origins=*",
+    `--user-data-dir=${profile}`,
+    "about:blank",
+  ],
+  { stdio: "ignore" },
+);
 
 try {
   let port;
   for (let attempt = 0; attempt < 100; attempt++) {
-    try { port = Number((await readFile(path.join(profile, "DevToolsActivePort"), "utf8")).split("\n")[0]); break; }
-    catch { await new Promise((resolve) => setTimeout(resolve, 100)); }
+    try {
+      port = Number(
+        (await readFile(path.join(profile, "DevToolsActivePort"), "utf8")).split("\n")[0],
+      );
+      break;
+    } catch {
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    }
   }
   if (!port) throw new Error("Chrome DevTools indisponible.");
   const tabs = await (await fetch(`http://127.0.0.1:${port}/json/list`)).json();
   const socket = new WebSocket(tabs.find((tab) => tab.type === "page").webSocketDebuggerUrl);
-  await new Promise((resolve, reject) => { socket.onopen = resolve; socket.onerror = reject; });
+  await new Promise((resolve, reject) => {
+    socket.onopen = resolve;
+    socket.onerror = reject;
+  });
   let id = 0;
   const pending = new Map();
   let loadPage;
   socket.onmessage = ({ data }) => {
     const message = JSON.parse(data);
-    if (message.method === "Page.loadEventFired" && loadPage) { loadPage(); loadPage = undefined; }
+    if (message.method === "Page.loadEventFired" && loadPage) {
+      loadPage();
+      loadPage = undefined;
+    }
     if (!message.id || !pending.has(message.id)) return;
     const { resolve, reject } = pending.get(message.id);
     pending.delete(message.id);
     message.error ? reject(new Error(message.error.message)) : resolve(message.result);
   };
-  const command = (method, params = {}) => new Promise((resolve, reject) => {
-    const next = ++id;
-    pending.set(next, { resolve, reject });
-    socket.send(JSON.stringify({ id: next, method, params }));
-  });
+  const command = (method, params = {}) =>
+    new Promise((resolve, reject) => {
+      const next = ++id;
+      pending.set(next, { resolve, reject });
+      socket.send(JSON.stringify({ id: next, method, params }));
+    });
   await command("Page.enable");
   await command("Runtime.enable");
   await command("Network.enable");
   await command("Network.setCacheDisabled", { cacheDisabled: true });
-  for (const { width, dpr } of [{ width: 360, dpr: 3 }, { width: 768, dpr: 2 }, { width: 1280, dpr: 1 }]) {
-    await command("Emulation.setDeviceMetricsOverride", { width, height: 800, deviceScaleFactor: dpr, mobile: width < 768 });
+  for (const { width, dpr } of [
+    { width: 360, dpr: 3 },
+    { width: 768, dpr: 2 },
+    { width: 1280, dpr: 1 },
+  ]) {
+    await command("Emulation.setDeviceMetricsOverride", {
+      width,
+      height: 800,
+      deviceScaleFactor: dpr,
+      mobile: width < 768,
+    });
     for (const after of [false, true]) {
-      const loaded = new Promise((resolve) => { loadPage = resolve; });
+      const loaded = new Promise((resolve) => {
+        loadPage = resolve;
+      });
       await command("Page.navigate", { url: `${origin}/${after ? "after" : "before"}` });
       await loaded;
       const result = await command("Runtime.evaluate", {
@@ -136,13 +190,24 @@ try {
         returnByValue: true,
       });
       const resources = result.result.value;
-      if (resources.length !== placements.length ||
-          resources.some((item) => item.bytes <= 0 || !item.url.endsWith(after ? ".avif" : ".webp"))) {
-        throw new Error(`Mesure incomplète ou mauvais format à ${width} px (${after ? "après" : "avant"}).`);
+      if (
+        resources.length !== placements.length ||
+        resources.some((item) => item.bytes <= 0 || !item.url.endsWith(after ? ".avif" : ".webp"))
+      ) {
+        throw new Error(
+          `Mesure incomplète ou mauvais format à ${width} px (${after ? "après" : "avant"}).`,
+        );
       }
-      console.log(JSON.stringify({ gallery: `${seo}/${slot}`, width, dpr,
-        mode: after ? "avif" : "legacy_webp", requests: resources.length,
-        bytes: resources.reduce((sum, item) => sum + item.bytes, 0) }));
+      console.log(
+        JSON.stringify({
+          gallery: `${seo}/${slot}`,
+          width,
+          dpr,
+          mode: after ? "avif" : "legacy_webp",
+          requests: resources.length,
+          bytes: resources.reduce((sum, item) => sum + item.bytes, 0),
+        }),
+      );
     }
   }
   socket.close();

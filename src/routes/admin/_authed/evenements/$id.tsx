@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { EventEditor } from "@/components/site/admin/EventEditor";
+import { EventEditor } from "@/components/admin/EventEditor";
 import { friendlySupabaseError } from "@/lib/admin/friendly-error";
 import { getEvent } from "@/lib/events/admin";
 

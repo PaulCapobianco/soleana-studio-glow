@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { FieldHint } from "@/components/site/admin/FieldHint";
+import { FieldHint } from "@/components/admin/FieldHint";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 import { friendlySupabaseError } from "@/lib/admin/friendly-error";

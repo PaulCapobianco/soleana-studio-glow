@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SiteShell } from "@/components/site/SiteShell";
 import { PortfolioEditorialSection } from "@/components/site/PortfolioEditorialSection";
 import { buildPageSeo } from "@/lib/seo";
-import { STORAGE_GALLERIES_ENABLED } from "@/lib/photo-storage";
+import { STORAGE_GALLERIES_ENABLED } from "@/lib/photos/flags";
 
 // Page /portfolio proprement dite quand BUG-02 est actif (interrupteur Storage allumé) ; sinon la
 // route de mise en page /portfolio la rend et celle-ci ne rend rien.

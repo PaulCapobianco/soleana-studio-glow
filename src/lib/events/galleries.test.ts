@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 
 vi.mock("@/integrations/supabase/client", () => ({ supabase: {} }));
-import type { StorageGalleryPhoto } from "@/lib/photo-storage";
+import type { StorageGalleryPhoto } from "@/lib/photos/gallery-loaders";
 import {
   buildGalleryGroups,
   newGallerySlot,

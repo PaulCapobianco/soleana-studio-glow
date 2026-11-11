@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { FieldHint } from "@/components/site/admin/FieldHint";
+import { FieldHint } from "@/components/admin/FieldHint";
 import { adminErrorMessage, toastAdminError } from "@/lib/admin/write-error";
 import {
   addGalleryDef,

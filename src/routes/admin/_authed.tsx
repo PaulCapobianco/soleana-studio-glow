@@ -12,7 +12,6 @@ import {
   UserRound,
   CalendarDays,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { getSupabase } from "@/lib/supabase-lazy";
 
 export const Route = createFileRoute("/admin/_authed")({

@@ -1,7 +1,8 @@
 import { supabase } from "@/integrations/supabase/client";
 import type { TablesUpdate } from "@/integrations/supabase/types";
 import { AdminValidationError } from "@/lib/admin/friendly-error";
-import { publicImageUrl } from "@/lib/photo-storage";
+import { publicImageUrl } from "@/lib/photos/public-url";
+import { variantsOfFormat } from "@/lib/photos/variants";
 import { newGallerySlot, validateGalleryTitle, type EventGalleryDef } from "./galleries";
 import type { EventRow } from "./types";
 
@@ -110,9 +111,7 @@ export async function listEventPlacements(eventId: string): Promise<AdminGallery
     .order("display_order");
   if (error) throw error;
   return ((data ?? []) as unknown as PlacementRow[]).map((row) => {
-    const webp = (row.photo?.photo_variants ?? [])
-      .filter((v) => v.format === "webp")
-      .sort((a, b) => a.width - b.width);
+    const webp = variantsOfFormat(row.photo?.photo_variants, "webp");
     return {
       placementId: row.id,
       photoId: row.photo?.id ?? "",

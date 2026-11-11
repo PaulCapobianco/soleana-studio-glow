@@ -1,8 +1,8 @@
 import { useId, useState } from "react";
 import { EventIcon } from "@/components/site/EventIcon";
 import { EventTeaser } from "@/components/site/EventTeaser";
-import { ErrorText } from "@/components/site/admin/EventFields";
-import { FieldHint } from "@/components/site/admin/FieldHint";
+import { ErrorText } from "@/components/admin/EventFields";
+import { FieldHint } from "@/components/admin/FieldHint";
 import { ICON_NODES } from "@/lib/events/icon-data";
 import { ICON_LABELS } from "@/lib/events/icon-labels";
 import {

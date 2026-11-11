@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { verifyCurrentPassword } from "@/lib/admin/verify-password";
-import { PasswordSection } from "@/components/site/admin/AccountAdmin";
+import { PasswordSection } from "@/components/admin/AccountAdmin";
 
 vi.mock("sonner", () => ({
   toast: { error: vi.fn(), success: vi.fn(), message: vi.fn() },

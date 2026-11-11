@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { StorageGalleryPhoto } from "@/lib/photo-storage";
+import type { StorageGalleryPhoto } from "@/lib/photos/gallery-loaders";
 
 // Galeries photo d'un événement. Une galerie = un `slot` (clé des emplacements photo_placements,
 // context_type = 'event') + un titre ; l'ordre de la liste est l'ordre d'affichage. La couverture
