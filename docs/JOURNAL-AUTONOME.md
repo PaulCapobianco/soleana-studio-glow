@@ -405,3 +405,79 @@ Rapport complet : `docs/AUDIT-SECURITE-2026-11.md` (constats classés, preuves, 
 - 283 tests, typecheck et build verts à chaque commit. Lighthouse mobile inchangé : 86 / 90 / 85 / 100.
 
 **À décider ou appliquer par Paul** : fermer les inscriptions Supabase Auth (ouvertes aujourd'hui), lancer le SQL de contrôle, limites du bucket `photos`, retrait de `has_role` à `anon`, puis déployer (`VITE_GALLERIES_FROM_STORAGE=true npm run deploy:cf`) et tester l'envoi de photo de l'admin avant de rendre la CSP de `/admin` bloquante. `src/lib/events/legacy-noel.ts` est toujours utilisé (queries, sitemap, event-assets) : à ne pas supprimer. `dist/` est actuellement construit avec le flag.
+
+## Vitesse : Supabase différé, relais d'images, images d'en-tête (11 novembre 2026)
+Aucun déploiement, aucune migration, aucune écriture Supabase, aucun secret lu, aucun réglage hors dépôt. Mesures locales (`wrangler dev --local`, build avec `VITE_GALLERIES_FROM_STORAGE=true` comme la production, Chrome headless). 307 tests, typecheck et build verts à chaque commit.
+
+### Lot 1 : Supabase hors du JavaScript des pages publiques — GARDÉ
+**Cause trouvée** (pas celle qu'on supposait) : le client Supabase n'était pas seulement importé par des pages publiques. Trois fichiers de routes d'administration (`_authed.tsx`, `compte.tsx`, `photos.tsx`) exportaient autre chose que `Route` (`cn`, `PasswordSection`, `PhotosAdmin`) : TanStack ne découpe alors pas ces routes, qui entraient dans le JavaScript commun avec tout l'admin et supabase-js. Preuve : graphe de modules du build (chemin `routeTree.gen.ts` ← route admin ← `client.ts` ← supabase-js) et chunks `a-propos`, `contact`… qui chargeaient `vendor-supabase` en import de bord.
+
+**Changements** (2 commits) :
+- `773eed6` : `src/lib/supabase-lazy.ts` (`getSupabase()` = import dynamique) utilisé par `site-settings`, `events/queries`, `gallery-loader`, `$slug`, `faq`, `prestations`, `CategoryGallery`, `CategoryGallerySection`, `photo-storage` ; `publicImageUrl` ne dépend plus du client (test : résultat identique à `supabase-js`, 4 chemins dont un avec espace et accent).
+- `4929196` : le corps des pages Photos et Mon compte passe dans `src/components/site/admin/PhotosAdmin.tsx` et `AccountAdmin.tsx` ; les fichiers de routes ne contiennent plus que `Route` ; `beforeLoad` de `_authed.tsx` charge le client à la demande. L'admin garde le client complet (chargé avec ses pages).
+
+**JavaScript chargé par page** (somme des fichiers préchargés ou en `<script>`, compressés gzip) :
+
+| Page | Avant | Après | Écart |
+|---|---:|---:|---:|
+| Accueil | 269,3 Ko | 188,5 Ko | −80,8 Ko (−30 %) |
+| /portfolio | 263,9 Ko | 183,1 Ko | −80,8 Ko |
+| /portfolio/couple | 267,3 Ko | 186,5 Ko | −80,8 Ko |
+| Pages SEO galeries, Noël | 279,9 Ko | 199,1 Ko | −80,8 Ko |
+| À propos | 265,8 Ko | 185,0 Ko | −80,8 Ko |
+| Contact / FAQ / Prestations | 263,5 / 269,9 / 263,2 Ko | 182,7 / 189,1 / 182,4 Ko | −80,8 Ko |
+
+(supabase-js 53 Ko + code d'administration ≈ 28 Ko). « Unused JavaScript » de Lighthouse sur l'accueil : ≈ 140 Kio avant, 80 Kio après.
+
+**Lighthouse mobile** :
+
+| Page | Avant | Après | LCP avant → après |
+|---|---:|---:|---|
+| Accueil | 86 | **89** | 4,3 → 3,9 s |
+| /portfolio | 90 | **93** | 3,7 → 3,2 s |
+| /portfolio/couple | 85 | **89** | 4,4 → 3,8 s |
+| Page SEO couple | 100 | 100 | 1,1 s |
+
+**Comportement identique, vérifié** : HTML des 16 URLs identique ligne à ligne (hors lignes de préchargement : une de moins par page ; codes HTTP et tailles aux 118 octets près) ; dans Chrome piloté en temps réel : `/portfolio/famille` 47 photos Supabase, `/portfolio/couple` 80, `grossesse` 31, `portrait` 12 (chargées à la demande, puisque ces pages lisent dans le navigateur), pages SEO 3/2/1 photos au rendu serveur, navigation côté client vers une page SEO, `/portfolio`, `/faq` (le chunk est alors chargé à la demande), `/admin/login` ; **0 message de console, 0 violation CSP** sur 14 pages.
+
+Piste testée puis abandonnée : déclarer `client.ts` « sans effet de bord » dans la config Rollup (inutile : la vraie cause était l'export des routes), et retirer la règle de chunk `vendor-supabase` (supabase-js retombait dans le fichier d'entrée : +52 Ko pour tout le monde).
+
+### Lot 2 : relais d'images par le Worker — IMPLÉMENTÉ, DÉSACTIVÉ PAR DÉFAUT
+- Code : `src/lib/image-proxy.ts` (+ branchement dans `src/server.ts`, `publicImageUrl`), 23 tests, commits `feat(images): optional same-origin image relay…` et `X-Image-Cache HIT/MISS`. Variable de build `VITE_IMAGE_PROXY=true` ; absente, `/img/…` répond 404 et le site est **identique** (16 URLs : HTML et en-têtes identiques, empreintes et horodatages neutralisés).
+- Sécurité : GET/HEAD, chemins strictement ceux des politiques Storage, rejet de `..`, `%`, `\`, `//`, SVG/HTML/autre bucket ; aucune redirection suivie, aucun en-tête du visiteur transmis (seul `Accept`), types `image/avif|webp` et taille < 3 Mo imposés ; vérifié aussi en réel (`/img/../package.json`, `%2e%2e`, `.svg` : 404 ; POST : 405 ; HEAD : 200).
+- Mesures : relais 192 ms (1re requête) puis 3–4 ms ; Supabase direct 63–76 ms ; **Lighthouse : aucun gain mesurable** (89/89, 93/93, 88/89, 100/100). Ce que le relais pourrait apporter (même origine, pas de 429, `immutable`) ne se voit pas en local : à mesurer en production sur mobile.
+- Fait important : le bucket est **déjà** derrière un CDN Cloudflare (Supabase) avec `cache-control: public, max-age=31536000` et `cf-cache-status: HIT`.
+- Risques (détail dans `docs/images-cloudflare-cache.md`) : une requête Worker par image, y compris en cache (offre gratuite 100 000/jour) ; retrait RGPD d'une photo (copies d'un an dans le cache et les navigateurs, purge par URL à faire dans Cloudflare) ; cache par centre de données.
+- **Recommandation : ne pas l'activer pour l'instant.** Gain non démontré, coût et risque réels. À reconsidérer seulement si Paul mesure un gain en réel, ou préférer l'alternative sans Worker décrite dans le document (sous-domaine + règles Cloudflare, non testée).
+
+### Lot 3 : en-têtes des pages catégories — PROPOSITION, rien appliqué
+- Fichiers concernés : `src/components/site/CategoryHero.tsx` (`<img>` unique, `width=1600 height=900`, sans `srcset`) ; images `src/assets/couple/couple_3/fiancailles-1.webp`, `famille/famille_1/04042026-vv7a3177.webp`, `grossesse/grossesse_1/20220418-img7441.webp`, `portrait/portrait_1/20251025-img5650.webp` ; routes `src/routes/portfolio/{couple,famille,grossesse,portrait}.tsx` (qui passent `imageSrc`).
+- Constat : les 4 sources font **934 × 1 400 px** (portrait), 43 à 94 Ko en WebP ; aucune variante plus petite ni AVIF. Rien au-delà de 934 px n'a de sens (le hero actuel agrandit déjà l'image sur grand écran).
+- Tailles estimées (même profil q55 / WebP q80 que les galeries ; mesurées avec sharp sur les 4 fichiers, rien écrit) :
+
+| Image | Actuel (WebP 934 px) | 480 px | 828 px | 
+|---|---:|---:|---:|
+| couple | 84 Ko | WebP 37 / AVIF 25 Ko | WebP 69 / AVIF 45 Ko |
+| famille | 59 Ko | 22 / 15 Ko | 44 / 28 Ko |
+| grossesse | 94 Ko | 34 / 27 Ko | 72 / 53 Ko |
+| portrait | 43 Ko | 20 / 12 Ko | 36 / 20 Ko |
+
+- Impact estimé sur mobile (écran 412 px, densité 2 à 2,6) : on servirait la variante 828 px en AVIF : −23 à −40 Ko par page (−45 % environ), soit environ 0,15 à 0,25 s de LCP simulé, donc +1 à +2 points de Lighthouse sur `/portfolio/<catégorie>` (89 aujourd'hui). Non mesuré, estimation.
+- Comment : (1) petit script `scripts/photos-storage/` calqué sur `generate-variants.mjs` (profil `q55`, sharp), sortie `src/assets/<catégorie>/hero-480.avif|webp`, `hero-828.avif|webp` + la 934 px existante en repli ; (2) `CategoryHero` devient `<picture>` AVIF puis WebP avec `srcset` 480 / 828 / 934 et `sizes="100vw"` (rendu inchangé : mêmes dimensions, `object-cover`) ; (3) mesurer, puis un commit. Coût : 4 × 4 nouveaux fichiers (≈ 400 Ko dans le dépôt). À valider visuellement par la photographe (q55 déjà validé pour les galeries).
+
+### À configurer ou tester à la main
+1. Rien à configurer côté Cloudflare ou Supabase pour le Lot 1 (code seul).
+2. Après déploiement du Lot 1 : ouvrir le site sur mobile réel ; `/portfolio/famille` (les 47 photos doivent apparaître comme avant) ; naviguer de l'accueil vers une page SEO, puis vers `/portfolio` (rien ne doit clignoter ni manquer) ; **se connecter à `/admin`**, ouvrir Photos et Mon compte (ils sont maintenant des composants chargés à la demande : une page blanche à l'ouverture serait le signe d'un problème), envoyer une photo de test, lire la console.
+3. PageSpeed Insights mobile sur l'accueil, `/portfolio/couple` et une page SEO galerie (références avant déploiement : 86, 85, 100 mesurées en local ; en local après : 89, 89, 100).
+4. Relais d'images : ne rien faire tant que la décision n'est pas prise (voir `docs/images-cloudflare-cache.md`).
+
+### Commande exacte de déploiement
+```
+VITE_GALLERIES_FROM_STORAGE=true npm run deploy:cf
+```
+(sans `VITE_IMAGE_PROXY` : relais éteint). Retour arrière : `wrangler rollback` vers la version précédente, ou redéployer le commit `ee319e2`. Les corrections de l'audit de sécurité (commits 407bbbc à 736f532) partent dans le même déploiement : voir `docs/AUDIT-SECURITE-2026-11.md`.
+
+### Trois prochaines actions pour Paul
+1. **Déployer** avec la commande ci-dessus, puis dérouler le test manuel 2 (galeries, navigation, admin Photos et Mon compte, envoi d'une photo de test).
+2. **Fermer les inscriptions Supabase Auth** et lancer `docs/sql/audit-security-checks.sql` (constat E-1 de l'audit), puis, si la photo de test passe sous la CSP, basculer `/admin` en CSP bloquante.
+3. **Décider** : appliquer ou non le Lot 3 (variantes d'en-tête, validation visuelle par la photographe) ; ne pas activer le relais d'images sans mesure sur mobile réel.
