@@ -50,12 +50,15 @@ export function PhotosAdmin() {
   const { data: photos, isError: photosUnavailable } = useQuery({
     queryKey: ["admin-photos"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("photos")
-        .select("*, category:categories(name, slug)")
-        .order("display_order");
-      queryError(error);
-      return (data ?? []) as PhotoWithCategory[];
+      // Lecture par pages : PostgREST tronque à 1 000 lignes sans erreur.
+      return (await fetchAllRows((from, to) =>
+        supabase
+          .from("photos")
+          .select("*, category:categories(name, slug)")
+          .order("display_order")
+          .order("id")
+          .range(from, to),
+      )) as PhotoWithCategory[];
     },
   });
 
@@ -83,14 +86,16 @@ export function PhotosAdmin() {
   const { data: placements, isError: placementsUnavailable } = useQuery({
     queryKey: ["admin-photo-placements"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("photo_placements")
-        .select(
-          "id, photo_id, seo_page_id, slot, display_order, object_position_x_pct, object_position_y_pct, published",
-        )
-        .eq("context_type", "seo");
-      queryError(error);
-      return (data ?? []) as Placement[];
+      return (await fetchAllRows((from, to) =>
+        supabase
+          .from("photo_placements")
+          .select(
+            "id, photo_id, seo_page_id, slot, display_order, object_position_x_pct, object_position_y_pct, published",
+          )
+          .eq("context_type", "seo")
+          .order("id")
+          .range(from, to),
+      )) as Placement[];
     },
     retry: false,
   });
@@ -127,12 +132,14 @@ export function PhotosAdmin() {
   const { data: eventPlacements } = useQuery({
     queryKey: ["admin-photo-event-placements"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("photo_placements")
-        .select("photo_id, event_id, slot, display_order")
-        .eq("context_type", "event");
-      queryError(error);
-      return (data ?? []) as unknown as (EventPlacementLite & { photo_id: string })[];
+      return (await fetchAllRows((from, to) =>
+        supabase
+          .from("photo_placements")
+          .select("photo_id, event_id, slot, display_order")
+          .eq("context_type", "event")
+          .order("id")
+          .range(from, to),
+      )) as unknown as (EventPlacementLite & { photo_id: string })[];
     },
     retry: false,
   });

@@ -62,11 +62,14 @@ vi.mock("@/integrations/supabase/client", () => ({
                   ? [{ id: "placement-1", photo_id: "photo-existing", seo_page_id: "seo-1", slot: "gallery-1", display_order: 0, object_position_x_pct: 50, object_position_y_pct: 50, published: false }]
                   : [];
         const result = { data: rows, error: null };
-        const query = {
-          order: () => Object.assign(Promise.resolve(result), { range: async () => result }),
-          eq: async () => result,
-          then: (resolve: (value: typeof result) => unknown) => Promise.resolve(result).then(resolve),
-        };
+        // Requête simulée : chaque méthode renvoie une promesse déjà résolue qui reste chaînable.
+        const chain = (): Promise<typeof result> & Record<string, unknown> =>
+          Object.assign(Promise.resolve(result), {
+            order: () => chain(),
+            eq: () => chain(),
+            range: async () => result,
+          });
+        const query = chain();
         return query;
       },
       insert: (payload: unknown) => {
@@ -148,7 +151,14 @@ describe("Administration Photos sans réseau réel", () => {
   it("demande confirmation avant de supprimer fichiers et lignes", async () => {
     state.existingPhoto = true;
     renderAdmin();
-    const button = await screen.findByRole("button", { name: "Supprimer" });
+    // Le bouton « Supprimer » de la carte photo (et non celui d'une catégorie, chargée à son rythme).
+    const button = await waitFor(() => {
+      const found = screen
+        .getAllByRole("button", { name: "Supprimer" })
+        .find((b) => b.parentElement?.parentElement?.textContent?.startsWith("Texte alternatif"));
+      expect(found).toBeTruthy();
+      return found as HTMLElement;
+    });
     await waitFor(() => expect((button as HTMLButtonElement).disabled).toBe(false));
     vi.mocked(confirmDelete).mockReturnValueOnce(false);
     await userEvent.setup().click(button);
