@@ -157,8 +157,9 @@ function LegalNoticePage() {
 
             <LegalSection title="6. Cookies">
               <p>
-                Ce site n&apos;utilise aucun cookie de mesure d&apos;audience ni cookie publicitaire,
-                et ne dépose aucun traceur soumis à votre consentement lors de votre navigation.
+                Ce site n&apos;utilise aucun cookie de mesure d&apos;audience ni cookie
+                publicitaire, et ne dépose aucun traceur soumis à votre consentement lors de votre
+                navigation.
               </p>
               <p className="mt-4">
                 Le formulaire de contact, la réservation en ligne et l&apos;espace client sont

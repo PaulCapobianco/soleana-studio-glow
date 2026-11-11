@@ -348,8 +348,16 @@ export function CategoryGallerySection({
                 <div className="flex w-full min-w-0 flex-1 items-center justify-center">
                   {currentPhoto.avif_srcset && currentPhoto.webp_srcset ? (
                     <picture>
-                      <source type="image/avif" srcSet={currentPhoto.avif_srcset} sizes="(min-width: 1280px) 1280px, 96vw" />
-                      <source type="image/webp" srcSet={currentPhoto.webp_srcset} sizes="(min-width: 1280px) 1280px, 96vw" />
+                      <source
+                        type="image/avif"
+                        srcSet={currentPhoto.avif_srcset}
+                        sizes="(min-width: 1280px) 1280px, 96vw"
+                      />
+                      <source
+                        type="image/webp"
+                        srcSet={currentPhoto.webp_srcset}
+                        sizes="(min-width: 1280px) 1280px, 96vw"
+                      />
                       <img
                         src={currentPhoto.image_url}
                         srcSet={currentPhoto.webp_srcset}
