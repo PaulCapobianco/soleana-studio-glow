@@ -417,13 +417,12 @@ export function PhotosAdmin() {
       >
         <h2 className="font-display text-2xl italic text-primary">Ajouter une photo</h2>
         <p className="text-sm text-muted-foreground">
-          Choisissez un original JPG/JPEG, HEIC/HEIF ou PNG. Les huit variantes web sont créées sur
-          cet appareil ; le fichier source n'est jamais envoyé.
+          Choisissez une photo (JPG, HEIC ou PNG). Elle est préparée pour le site sur cet appareil ;
+          votre fichier d'origine n'est jamais envoyé.
         </p>
         {!storageReady && (
           <p role="status" className="text-sm text-muted-foreground">
-            L'ajout sera disponible après l'application des migrations Photos et le chargement des
-            galeries.
+            L'ajout de photos n'est pas encore disponible : demandez à Paul de l'activer.
           </p>
         )}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -442,9 +441,11 @@ export function PhotosAdmin() {
             />
           </label>
           <label className="space-y-1 text-sm">
-            Texte alternatif obligatoire
+            Description de la photo (obligatoire)
             <FieldHint>
-              Décrivez ce que montre l'image, sans nommer la cliente si elle ne le souhaite pas.
+              Une phrase simple qui décrit l'image, par exemple « Une famille rit dans un champ de
+              lavande ». Elle aide Google et les personnes malvoyantes. Ne nommez pas la cliente si
+              elle ne le souhaite pas.
             </FieldHint>
             <input
               value={altText}
@@ -608,7 +609,7 @@ export function PhotosAdmin() {
             checked={published}
             onChange={(event) => setPublished(event.target.checked)}
           />
-          Publier cet emplacement
+          Afficher cette photo sur le site
           <FieldHint>visible dans la galerie après activation de Storage</FieldHint>
         </label>
         <button

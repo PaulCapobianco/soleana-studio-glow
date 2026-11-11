@@ -108,7 +108,7 @@ export function PlacementEditor({
           />
         </label>
         <label className="text-xs">
-          Cadrage X (%)
+          Cadrage horizontal (%)
           <input
             type="number"
             min="0"
@@ -119,7 +119,7 @@ export function PlacementEditor({
           />
         </label>
         <label className="text-xs">
-          Cadrage Y (%)
+          Cadrage vertical (%)
           <input
             type="number"
             min="0"

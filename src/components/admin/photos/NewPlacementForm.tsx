@@ -134,7 +134,7 @@ export function NewPlacementForm({
             />
           </label>
           <label className="text-xs">
-            Cadrage X (%)
+            Cadrage horizontal (%)
             <input
               type="number"
               min="0"
@@ -145,7 +145,7 @@ export function NewPlacementForm({
             />
           </label>
           <label className="text-xs">
-            Cadrage Y (%)
+            Cadrage vertical (%)
             <input
               type="number"
               min="0"
@@ -162,7 +162,7 @@ export function NewPlacementForm({
             checked={published}
             onChange={(event) => setPublished(event.target.checked)}
           />
-          Publier cet emplacement
+          Afficher cette photo sur le site
         </label>
         <button
           type="submit"

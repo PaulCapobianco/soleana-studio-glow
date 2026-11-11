@@ -183,7 +183,7 @@ async function fillUpload() {
   const input = screen.getByLabelText(/Photo depuis l'appareil/) as HTMLInputElement;
   await user.upload(input, new File(["fake image"], "portrait.jpg", { type: "image/jpeg" }));
   await user.type(
-    screen.getByLabelText(/Texte alternatif obligatoire/),
+    screen.getByLabelText(/Description de la photo \(obligatoire\)/),
     "Portrait en lumière naturelle",
   );
   await user.selectOptions(screen.getByLabelText(/Page galerie/), "seo-1");
