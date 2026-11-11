@@ -234,3 +234,55 @@ Les 1 360 chemins viennent de `variants-index.json` (hors dépôt). Pour chacun 
 1. Vérifier le projet Supabase (`.env` : `kvzzzwjddanwedzotaka` vs `config.toml` : `hvfvvbiupyzoounzyqoz`) et lancer `postflight-selects.sql` (politiques UPDATE/DELETE, bucket).
 2. Publier les 170 photos (`--publish-existing`, essai sur 4 puis tout), puis préversion (`npm run build` avec le flag + `wrangler versions upload`) et dérouler la checklist ci-dessus.
 3. Appliquer la migration `20261110000000_event_galleries.sql` si ce n'est pas fait, tester une galerie d'événement de bout en bout, et décider d'un interrupteur séparé pour les galeries d'événement.
+
+## Déploiement sans flag, préversion et mesures (11 novembre 2026, autonomie)
+Cadre : déploiement de production demandé explicitement par Paul pour cette séance (exception à la règle « ne jamais déployer » de CLAUDE.md), **sans** `VITE_GALLERIES_FROM_STORAGE`. Aucune migration, aucun import, aucune écriture Supabase, aucun secret lu ni écrit.
+
+### 1. Déploiement de production sans flag : fait, site identique
+- Typecheck, build, 257 tests verts ; branche poussée (`origin/photos-storage-v2`) ; `npm run deploy:cf` (flag absent de l'environnement vérifié) → version **05e26e6a-4285-4d69-af36-12032f452461**, 100 % du trafic (toujours le cas à la fin de la séance).
+- Comparaison avant/après (capture de `soleanastudio.fr` avant le déploiement, puis après) sur 16 URLs : accueil, portfolio, prestations, à propos, FAQ, contact, 4 pages galeries SEO, lifestyle, Noël (`/mini-seances-noel-2026`), `/portfolio/couple`, une 404, `sitemap.xml`, `robots.txt`. Codes HTTP identiques (200, 404 pour l'inexistante), `sitemap.xml` et `robots.txt` octet pour octet, en-têtes identiques (hors date/identifiants). Le HTML est identique une fois les noms de fichiers hachés neutralisés ; seule différence : une nouvelle précharge de chunk `vendor-zod` (+98 octets par page), conséquence du découpage du build. Aucun écart de contenu.
+
+### 2. Publication des 170 photos : NON FAITE
+`SUPABASE_URL` et `SUPABASE_SERVICE_ROLE_KEY` sont absentes de l'environnement de la séance (testé sans rien afficher) ; je ne les ai cherchées nulle part. **Les photos et placements sont toujours en brouillon.** Commandes à lancer par Paul, dans l'ordre (voir « Préparation de la bascule », section 1) :
+```
+export SUPABASE_URL=https://kvzzzwjddanwedzotaka.supabase.co
+read -rsp 'Clé service_role : ' SUPABASE_SERVICE_ROLE_KEY; echo; export SUPABASE_SERVICE_ROLE_KEY
+node scripts/photos-storage/import-photos.mjs --publish-existing --profile q55                       # simulation
+node scripts/photos-storage/import-photos.mjs --publish-existing --profile q55 --limit 4 --apply --confirm kvzzzwjddanwedzotaka.supabase.co
+node scripts/photos-storage/import-photos.mjs --publish-existing --profile q55 --apply --confirm kvzzzwjddanwedzotaka.supabase.co
+```
+Retour arrière si besoin : `scripts/photos-storage/rollback-import.mjs` sur le journal produit.
+
+### 3. Préversion avec le flag
+- `VITE_GALLERIES_FROM_STORAGE=true npm run build` puis `npx wrangler versions upload` → version **af1a6b4d-58b0-4d55-9c70-aad083b45951** (« preview galeries Storage », `has_preview: true`). `versions deploy` jamais utilisé ; la production est restée à 100 % sur 05e26e6a (vérifié avec `wrangler deployments status`).
+- **URL de préversion : non obtenue.** `versions upload` n'affiche pas d'URL et je n'ai pas le sous-domaine `workers.dev` du compte (le récupérer par l'API aurait demandé d'extraire un jeton : non fait). Forme attendue : `https://af1a6b4d-soleana-studio.<sous-domaine>.workers.dev` (Cloudflare → Workers → soleana-studio → Versions ; ou onglet de la version 54). L'en-tête `Cloudflare-Workers-Version-Overrides` ne marche pas : la version n'est pas dans le déploiement actif.
+- **Checklist de comparaison : non déroulée** sur la préversion (URL absente et photos encore en brouillon, donc aucune galerie remplie). Sur le même build servi en local (`wrangler dev --local`, base de production en lecture seule), l'état « brouillon + flag » est confirmé : galeries SEO et `/portfolio/couple` en « Galerie en cours de remplissage… ». Comptage contre le manifeste (170 photos, 190 emplacements ; 11+20, 47+20, 10+17+53, 12) : à faire après publication.
+- **Lighthouse mobile** (build avec flag, `wrangler dev` local, Chrome headless, mêmes réglages que la séance précédente) :
+
+| Page | Perf | A11y | BP | SEO | LCP | Avant |
+|---|---:|---:|---:|---:|---:|---:|
+| Accueil | 86 | 100 | 100 | 100 | 4,3 s | 86 |
+| /portfolio | 90 | 96 | 100 | 100 | 3,7 s | 90 |
+| /portfolio/couple | 85 | 100 | 100 | 100 | 4,4 s | 85 |
+| /photographe-couple-marseille | 100 | 96 | 100 | 100 | 0,9 s | n/m |
+
+Aucune régression ; aucun correctif de performance appliqué (rien à corriger sans changer le rendu). **Le 100 de la page SEO couple est trompeur** : la galerie est vide (brouillon) ; elle doit être remesurée une fois les photos publiées (images AVIF/WebP, LCP probablement une photo). Accessibilité 96 sur cette page : à examiner à ce moment-là.
+- `dist/` reconstruit **sans** le flag (propre).
+
+### 4. Nettoyages
+- `supabase/config.toml` : `project_id` = `kvzzzwjddanwedzotaka` (commit 531800f). Restent mentionnant l'ancien projet : `AUDIT.md`, des docs, et la CSP de `src/server.ts` (autorise les deux hôtes) ; non modifiés, la CSP pourra être resserrée plus tard.
+- `src/data/admin-guide.ts` : non commité, laissé tel quel.
+
+### À tester à la main
+1. **Publier** les 170 photos (commandes ci-dessus), puis lancer `postflight-selects.sql` (170 photos et 190 placements publiés, `category_id` NULL).
+2. Obtenir l'URL de préversion (version af1a6b4d ou en rééditer une après publication) et la comparer au site actuel : 4 pages SEO (décompte par galerie : grossesse 11+20, famille 47+20, couple 10+17+53, portrait 12), ordre (1re, 5e, dernière), textes alternatifs, cadrage, `/portfolio/<catégorie>` (47 photos distinctes pour Famille), sitemap (+4 URLs).
+3. Rendu visuel mobile et ordinateur, lightbox (ouverture, flèches, Échap, focus), absence de décalage ; **Safari/iPhone** : AVIF/WebP, lightbox, envoi de photo depuis l'admin ; réseau : AVIF servi sur Chrome.
+4. Lighthouse mobile réel de la préversion avec photos publiées (surtout les pages galeries, accessibilité 96).
+5. Admin : session **sans** double authentification (message dédié), puis avec aal2 : créer/supprimer un élément de test, envoi d'une photo (page du site et destination « Événement »), galerie d'événement de bout en bout (nécessite la migration `20261110`).
+6. Console navigateur : aucune erreur `[photo_placements]`.
+
+### Commande exacte de la bascule finale (après validation visuelle)
+```
+VITE_GALLERIES_FROM_STORAGE=true npm run deploy:cf
+```
+(`deploy:cf` = build puis `wrangler deploy` ; npm transmet la variable à Vite.) Retour arrière : `npm run deploy:cf` sans la variable (ou `wrangler rollback` vers 05e26e6a). Ne la lancer qu'après publication des photos : avec des brouillons, les galeries sont vides.
