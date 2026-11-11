@@ -63,7 +63,7 @@ vi.mock("@/integrations/supabase/client", () => ({
                   : [];
         const result = { data: rows, error: null };
         const query = {
-          order: async () => result,
+          order: () => Object.assign(Promise.resolve(result), { range: async () => result }),
           eq: async () => result,
           then: (resolve: (value: typeof result) => unknown) => Promise.resolve(result).then(resolve),
         };

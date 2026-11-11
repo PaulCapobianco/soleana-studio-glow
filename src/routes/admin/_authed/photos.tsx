@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useState } from "react";
+import { fetchAllRows } from "@/lib/supabase-pagination";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 import { generateBrowserPhotoVariants, validatePhotoSource } from "@/lib/photo-storage";
@@ -161,11 +162,14 @@ export function PhotosAdmin() {
   const { data: variants, isError: variantsUnavailable } = useQuery({
     queryKey: ["admin-photo-variants"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("photo_variants")
-        .select("id, photo_id, storage_path, format, width" as never);
-      queryError(error);
-      return (data ?? []) as unknown as PhotoVariant[];
+      // 8 variantes par photo : au-delà de 1 000 lignes, PostgREST tronque sans erreur.
+      return (await fetchAllRows((from, to) =>
+        supabase
+          .from("photo_variants")
+          .select("id, photo_id, storage_path, format, width" as never)
+          .order("id")
+          .range(from, to),
+      )) as unknown as PhotoVariant[];
     },
     retry: false,
   });
