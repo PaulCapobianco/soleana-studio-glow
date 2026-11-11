@@ -14,6 +14,7 @@ export default defineConfig({
       "src/**/*.test.tsx",
       "scripts/photos-storage/**/*.test.ts",
       "scripts/photos-storage/**/*.test.tsx",
+      "scripts/*.test.mjs",
     ],
   },
   resolve: {
