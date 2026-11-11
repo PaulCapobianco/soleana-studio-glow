@@ -492,3 +492,46 @@ Branche créée depuis `photos-storage-v2`, **non fusionnée, non déployée**. 
 **Abandonné** : retrait de zod, fusion des deux chaînes d'envoi de photo, découpage des grandes pages publiques, suppression du kit shadcn inutilisé (raisons dans le plan).
 
 **À tester à la main (admin)** : Photos (envoyer une photo de test, régler le cadrage, supprimer), Mon compte (mot de passe, double authentification), fiche d'un événement de test (en-tête et boutons, formules, FAQ, galeries, cadrage), `/admin` après connexion, puis le site public (galeries, `/portfolio/famille`).
+
+## Déploiements en production (11 novembre 2026, autorisés par Paul pour la séance)
+Aucun retour arrière nécessaire. Aucune migration, aucune écriture Supabase, aucun secret lu, `VITE_IMAGE_PROXY` jamais activé, `main` non touchée, fichiers protégés non touchés. Déploiements : `VITE_GALLERIES_FROM_STORAGE=true npm run deploy:cf`.
+
+### Versions de production (pour le retour arrière)
+| Moment | Version | Contenu |
+|---|---|---|
+| Avant (relevée avec `wrangler deployments status`) | **975b9677-5f88-480e-9795-dc6dcbbb1484** (créée à 20:28 UTC) | déjà conforme au script de contrôle : CSP bloquante, cache `immutable`, 35/35 OK (donc plus récente que « l'ancienne version » annoncée ; origine non investiguée) |
+| Après l'étape 1 | **77ac5d9b-0710-4560-bbec-076193f26bbf** | `photos-storage-v2` b64caaa + script de contrôle (3256842) |
+| Après l'étape 2 | **32b44504-0437-4e7c-8725-91a72b161cd9** (active, 100 %) | fusion `--no-ff` de `refactor-structure` (eb57390) |
+
+Retour arrière : `npx wrangler rollback` vers 77ac5d9b (état de l'étape 1) ou 975b9677 (avant la séance).
+
+### Contrôle de production : `node scripts/smoke-test.mjs https://soleanastudio.fr`
+Écrit sur `refactor-structure` (240ceaa), copié sur `photos-storage-v2` (3256842) ; 35 contrôles en lecture seule, 14 tests unitaires de la logique d'analyse. Une première version a donné 1 KO sur la production d'avant (`/admin` redirige en deux temps : `/admin` → `/admin/dashboard` → `/admin/login`) : c'était le script, corrigé pour suivre la chaîne de redirections.
+| Moment | Résultat |
+|---|---|
+| Production avant la séance (975b9677) | 35/35 OK |
+| Étape 1 (77ac5d9b), 1 passage après le déploiement | **35/35 OK** |
+| Étape 2 (32b44504), 1 passage après le déploiement | **35/35 OK** |
+Détail : 16 pages publiques en 200 + 404 d'une URL inexistante ; sitemap 19 URLs dont les 4 `/portfolio/<catégorie>` ; `robots.txt` ; CSP bloquante, HSTS, nosniff, Referrer-Policy sur 4 pages ; cache `public, max-age=31536000, immutable` sur `/assets` ; galeries des 4 pages SEO (`<picture>` AVIF puis WebP, 4 largeurs, dimensions, aucun message de galerie vide, aucune image locale) ; 64 URLs d'images en 200 `image/avif` ou `image/webp` ; lien Pelli de la page Noël (`soleana-studio.pelli.io`) présent et autorisé par `frame-src` ; `/admin` → connexion, aucune donnée d'admin dans le HTML. Le nouveau code est bien servi (la page d'accueil ne précharge plus `vendor-supabase`).
+
+### Contrôle dans un navigateur réel (Chrome headless, production, après l'étape 2)
+13 pages (accueil, portfolio, 4 `/portfolio/<catégorie>`, SEO couple, Noël, contact, À propos, FAQ, prestations, `/admin/login`) : **0 message de console, 0 violation CSP** ; `/portfolio/famille` 47 photos, `couple` 80, `grossesse` 31, `portrait` 12, aucun message de galerie vide ; une seule requête Supabase par page catégorie, aucune sur les autres pages publiques.
+
+### Lighthouse mobile en production (`npx lighthouse` sur l'URL réelle, après l'étape 2)
+| Page | Perf | A11y | BP | SEO | LCP | Références |
+|---|---:|---:|---:|---:|---:|---:|
+| Accueil | **97** | 100 | 100 | 100 | 2,6 s | 89 |
+| /portfolio | **97** | 96 | 100 | 100 | 2,6 s | 93 |
+| /portfolio/couple | **94** | 100 | 100 | 100 | 3,1 s | 89 |
+| Page SEO couple | 100 | 96 | 100 | 100 | 1,1 s | 100 |
+Aucune baisse ; hausse de 4 à 8 points (réseau réel, HTTP/2 et compression de Cloudflare, cache). Mesures depuis cette machine, simulation mobile standard de Lighthouse.
+
+### Ce que je n'ai pas pu vérifier : à tester à la main par Paul
+1. **Pelli sur la page Noël** : le lien/iframe est présent et son domaine est autorisé par la CSP, mais le chargement réel du formulaire après le clic « Afficher le formulaire » n'a pas été testé (ni cookies Pelli, ni réservation).
+2. **Admin Photos** (connecté, avec double authentification) : ouvrir la page, envoyer une photo de test dans une galerie (réencodage AVIF/WebP sous la CSP `/admin` en simple rapport : la console ne doit afficher aucune ligne « Content Security Policy »), régler le cadrage, supprimer la photo de test.
+3. **Admin Mon compte** : changement de mot de passe, double authentification ; le message « double authentification » quand la session est en aal1.
+4. **Fiche événement de test** (créer puis supprimer) : en-tête et boutons (enregistrer, publier, archiver, dupliquer), formules, FAQ, galeries, cadrage ; la migration `20261110` doit être appliquée pour les galeries.
+5. **Safari / iPhone** : galeries (AVIF/WebP), lightbox, navigation vers une page catégorie (le client Supabase se charge à la demande), envoi d'une photo depuis l'admin.
+6. Si l'admin envoie une photo de test sans aucune ligne CSP dans la console, passer `/admin` en CSP bloquante (`src/lib/security-headers.ts`) ; puis fermer les inscriptions Supabase Auth (audit E-1) et lancer `docs/sql/audit-security-checks.sql`.
+
+**État final** : la production sert la version 32b44504 (`photos-storage-v2` fusionnée avec `refactor-structure`, flag des galeries actif, relais d'images éteint), au vert sur les 35 contrôles de production et sans message de console sur 13 pages, l'admin connecté et Pelli restant à tester à la main.
