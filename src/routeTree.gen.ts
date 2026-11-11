@@ -9,92 +9,42 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as TarifsRouteImport } from './routes/tarifs'
-import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as ReservationRouteImport } from './routes/reservation'
-import { Route as PrestationsRouteImport } from './routes/prestations'
-import { Route as PortfolioRouteImport } from './routes/portfolio'
-import { Route as MentionsLegalesRouteImport } from './routes/mentions-legales'
-import { Route as FaqRouteImport } from './routes/faq'
-import { Route as EspaceClientRouteImport } from './routes/espace-client'
-import { Route as ContactRouteImport } from './routes/contact'
-import { Route as ConfidentialiteRouteImport } from './routes/confidentialite'
-import { Route as AProposRouteImport } from './routes/a-propos'
-import { Route as SlugRouteImport } from './routes/$slug'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as PortfolioIndexRouteImport } from './routes/portfolio/index'
+import { Route as SlugRouteImport } from './routes/$slug'
+import { Route as AProposRouteImport } from './routes/a-propos'
+import { Route as ConfidentialiteRouteImport } from './routes/confidentialite'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as EspaceClientRouteImport } from './routes/espace-client'
+import { Route as FaqRouteImport } from './routes/faq'
+import { Route as MentionsLegalesRouteImport } from './routes/mentions-legales'
+import { Route as PortfolioRouteImport } from './routes/portfolio'
+import { Route as PrestationsRouteImport } from './routes/prestations'
+import { Route as ReservationRouteImport } from './routes/reservation'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as TarifsRouteImport } from './routes/tarifs'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
-import { Route as PortfolioPortraitRouteImport } from './routes/portfolio/portrait'
-import { Route as PortfolioGrossesseRouteImport } from './routes/portfolio/grossesse'
-import { Route as PortfolioFamilleRouteImport } from './routes/portfolio/famille'
-import { Route as PortfolioCoupleRouteImport } from './routes/portfolio/couple'
-import { Route as AdminReinitialiserRouteImport } from './routes/admin/reinitialiser'
-import { Route as AdminLoginRouteImport } from './routes/admin/login'
 import { Route as AdminAuthedRouteImport } from './routes/admin/_authed'
-import { Route as AdminAuthedPrestationsRouteImport } from './routes/admin/_authed/prestations'
-import { Route as AdminAuthedPhotosRouteImport } from './routes/admin/_authed/photos'
-import { Route as AdminAuthedParametresRouteImport } from './routes/admin/_authed/parametres'
-import { Route as AdminAuthedPagesSeoRouteImport } from './routes/admin/_authed/pages-seo'
-import { Route as AdminAuthedFaqRouteImport } from './routes/admin/_authed/faq'
-import { Route as AdminAuthedDashboardRouteImport } from './routes/admin/_authed/dashboard'
-import { Route as AdminAuthedCompteRouteImport } from './routes/admin/_authed/compte'
+import { Route as AdminLoginRouteImport } from './routes/admin/login'
+import { Route as AdminReinitialiserRouteImport } from './routes/admin/reinitialiser'
+import { Route as PortfolioIndexRouteImport } from './routes/portfolio/index'
+import { Route as PortfolioCoupleRouteImport } from './routes/portfolio/couple'
+import { Route as PortfolioFamilleRouteImport } from './routes/portfolio/famille'
+import { Route as PortfolioGrossesseRouteImport } from './routes/portfolio/grossesse'
+import { Route as PortfolioPortraitRouteImport } from './routes/portfolio/portrait'
 import { Route as AdminAuthedAvisRouteImport } from './routes/admin/_authed/avis'
+import { Route as AdminAuthedCompteRouteImport } from './routes/admin/_authed/compte'
+import { Route as AdminAuthedDashboardRouteImport } from './routes/admin/_authed/dashboard'
+import { Route as AdminAuthedFaqRouteImport } from './routes/admin/_authed/faq'
+import { Route as AdminAuthedPagesSeoRouteImport } from './routes/admin/_authed/pages-seo'
+import { Route as AdminAuthedParametresRouteImport } from './routes/admin/_authed/parametres'
+import { Route as AdminAuthedPhotosRouteImport } from './routes/admin/_authed/photos'
+import { Route as AdminAuthedPrestationsRouteImport } from './routes/admin/_authed/prestations'
 import { Route as AdminAuthedEvenementsIndexRouteImport } from './routes/admin/_authed/evenements/index'
 import { Route as AdminAuthedEvenementsIdRouteImport } from './routes/admin/_authed/evenements/$id'
 
-const TarifsRoute = TarifsRouteImport.update({
-  id: '/tarifs',
-  path: '/tarifs',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
-  id: '/sitemap.xml',
-  path: '/sitemap.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ReservationRoute = ReservationRouteImport.update({
-  id: '/reservation',
-  path: '/reservation',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PrestationsRoute = PrestationsRouteImport.update({
-  id: '/prestations',
-  path: '/prestations',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PortfolioRoute = PortfolioRouteImport.update({
-  id: '/portfolio',
-  path: '/portfolio',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MentionsLegalesRoute = MentionsLegalesRouteImport.update({
-  id: '/mentions-legales',
-  path: '/mentions-legales',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FaqRoute = FaqRouteImport.update({
-  id: '/faq',
-  path: '/faq',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EspaceClientRoute = EspaceClientRouteImport.update({
-  id: '/espace-client',
-  path: '/espace-client',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ContactRoute = ContactRouteImport.update({
-  id: '/contact',
-  path: '/contact',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ConfidentialiteRoute = ConfidentialiteRouteImport.update({
-  id: '/confidentialite',
-  path: '/confidentialite',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AProposRoute = AProposRouteImport.update({
-  id: '/a-propos',
-  path: '/a-propos',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SlugRoute = SlugRouteImport.update({
@@ -102,49 +52,64 @@ const SlugRoute = SlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const AProposRoute = AProposRouteImport.update({
+  id: '/a-propos',
+  path: '/a-propos',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PortfolioIndexRoute = PortfolioIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => PortfolioRoute,
+const ConfidentialiteRoute = ConfidentialiteRouteImport.update({
+  id: '/confidentialite',
+  path: '/confidentialite',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EspaceClientRoute = EspaceClientRouteImport.update({
+  id: '/espace-client',
+  path: '/espace-client',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MentionsLegalesRoute = MentionsLegalesRouteImport.update({
+  id: '/mentions-legales',
+  path: '/mentions-legales',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PortfolioRoute = PortfolioRouteImport.update({
+  id: '/portfolio',
+  path: '/portfolio',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrestationsRoute = PrestationsRouteImport.update({
+  id: '/prestations',
+  path: '/prestations',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReservationRoute = ReservationRouteImport.update({
+  id: '/reservation',
+  path: '/reservation',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TarifsRoute = TarifsRouteImport.update({
+  id: '/tarifs',
+  path: '/tarifs',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/admin/',
   path: '/admin/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PortfolioPortraitRoute = PortfolioPortraitRouteImport.update({
-  id: '/portrait',
-  path: '/portrait',
-  getParentRoute: () => PortfolioRoute,
-} as any)
-const PortfolioGrossesseRoute = PortfolioGrossesseRouteImport.update({
-  id: '/grossesse',
-  path: '/grossesse',
-  getParentRoute: () => PortfolioRoute,
-} as any)
-const PortfolioFamilleRoute = PortfolioFamilleRouteImport.update({
-  id: '/famille',
-  path: '/famille',
-  getParentRoute: () => PortfolioRoute,
-} as any)
-const PortfolioCoupleRoute = PortfolioCoupleRouteImport.update({
-  id: '/couple',
-  path: '/couple',
-  getParentRoute: () => PortfolioRoute,
-} as any)
-const AdminReinitialiserRoute = AdminReinitialiserRouteImport.update({
-  id: '/admin/reinitialiser',
-  path: '/admin/reinitialiser',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminLoginRoute = AdminLoginRouteImport.update({
-  id: '/admin/login',
-  path: '/admin/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminAuthedRoute = AdminAuthedRouteImport.update({
@@ -152,34 +117,44 @@ const AdminAuthedRoute = AdminAuthedRouteImport.update({
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminAuthedPrestationsRoute = AdminAuthedPrestationsRouteImport.update({
-  id: '/prestations',
-  path: '/prestations',
-  getParentRoute: () => AdminAuthedRoute,
+const AdminLoginRoute = AdminLoginRouteImport.update({
+  id: '/admin/login',
+  path: '/admin/login',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AdminAuthedPhotosRoute = AdminAuthedPhotosRouteImport.update({
-  id: '/photos',
-  path: '/photos',
-  getParentRoute: () => AdminAuthedRoute,
+const AdminReinitialiserRoute = AdminReinitialiserRouteImport.update({
+  id: '/admin/reinitialiser',
+  path: '/admin/reinitialiser',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AdminAuthedParametresRoute = AdminAuthedParametresRouteImport.update({
-  id: '/parametres',
-  path: '/parametres',
-  getParentRoute: () => AdminAuthedRoute,
+const PortfolioIndexRoute = PortfolioIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => PortfolioRoute,
 } as any)
-const AdminAuthedPagesSeoRoute = AdminAuthedPagesSeoRouteImport.update({
-  id: '/pages-seo',
-  path: '/pages-seo',
-  getParentRoute: () => AdminAuthedRoute,
+const PortfolioCoupleRoute = PortfolioCoupleRouteImport.update({
+  id: '/couple',
+  path: '/couple',
+  getParentRoute: () => PortfolioRoute,
 } as any)
-const AdminAuthedFaqRoute = AdminAuthedFaqRouteImport.update({
-  id: '/faq',
-  path: '/faq',
-  getParentRoute: () => AdminAuthedRoute,
+const PortfolioFamilleRoute = PortfolioFamilleRouteImport.update({
+  id: '/famille',
+  path: '/famille',
+  getParentRoute: () => PortfolioRoute,
 } as any)
-const AdminAuthedDashboardRoute = AdminAuthedDashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
+const PortfolioGrossesseRoute = PortfolioGrossesseRouteImport.update({
+  id: '/grossesse',
+  path: '/grossesse',
+  getParentRoute: () => PortfolioRoute,
+} as any)
+const PortfolioPortraitRoute = PortfolioPortraitRouteImport.update({
+  id: '/portrait',
+  path: '/portrait',
+  getParentRoute: () => PortfolioRoute,
+} as any)
+const AdminAuthedAvisRoute = AdminAuthedAvisRouteImport.update({
+  id: '/avis',
+  path: '/avis',
   getParentRoute: () => AdminAuthedRoute,
 } as any)
 const AdminAuthedCompteRoute = AdminAuthedCompteRouteImport.update({
@@ -187,9 +162,34 @@ const AdminAuthedCompteRoute = AdminAuthedCompteRouteImport.update({
   path: '/compte',
   getParentRoute: () => AdminAuthedRoute,
 } as any)
-const AdminAuthedAvisRoute = AdminAuthedAvisRouteImport.update({
-  id: '/avis',
-  path: '/avis',
+const AdminAuthedDashboardRoute = AdminAuthedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AdminAuthedRoute,
+} as any)
+const AdminAuthedFaqRoute = AdminAuthedFaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => AdminAuthedRoute,
+} as any)
+const AdminAuthedPagesSeoRoute = AdminAuthedPagesSeoRouteImport.update({
+  id: '/pages-seo',
+  path: '/pages-seo',
+  getParentRoute: () => AdminAuthedRoute,
+} as any)
+const AdminAuthedParametresRoute = AdminAuthedParametresRouteImport.update({
+  id: '/parametres',
+  path: '/parametres',
+  getParentRoute: () => AdminAuthedRoute,
+} as any)
+const AdminAuthedPhotosRoute = AdminAuthedPhotosRouteImport.update({
+  id: '/photos',
+  path: '/photos',
+  getParentRoute: () => AdminAuthedRoute,
+} as any)
+const AdminAuthedPrestationsRoute = AdminAuthedPrestationsRouteImport.update({
+  id: '/prestations',
+  path: '/prestations',
   getParentRoute: () => AdminAuthedRoute,
 } as any)
 const AdminAuthedEvenementsIndexRoute =
@@ -430,81 +430,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/tarifs': {
-      id: '/tarifs'
-      path: '/tarifs'
-      fullPath: '/tarifs'
-      preLoaderRoute: typeof TarifsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sitemap.xml': {
-      id: '/sitemap.xml'
-      path: '/sitemap.xml'
-      fullPath: '/sitemap.xml'
-      preLoaderRoute: typeof SitemapDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/reservation': {
-      id: '/reservation'
-      path: '/reservation'
-      fullPath: '/reservation'
-      preLoaderRoute: typeof ReservationRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/prestations': {
-      id: '/prestations'
-      path: '/prestations'
-      fullPath: '/prestations'
-      preLoaderRoute: typeof PrestationsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/portfolio': {
-      id: '/portfolio'
-      path: '/portfolio'
-      fullPath: '/portfolio'
-      preLoaderRoute: typeof PortfolioRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/mentions-legales': {
-      id: '/mentions-legales'
-      path: '/mentions-legales'
-      fullPath: '/mentions-legales'
-      preLoaderRoute: typeof MentionsLegalesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/faq': {
-      id: '/faq'
-      path: '/faq'
-      fullPath: '/faq'
-      preLoaderRoute: typeof FaqRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/espace-client': {
-      id: '/espace-client'
-      path: '/espace-client'
-      fullPath: '/espace-client'
-      preLoaderRoute: typeof EspaceClientRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/contact': {
-      id: '/contact'
-      path: '/contact'
-      fullPath: '/contact'
-      preLoaderRoute: typeof ContactRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/confidentialite': {
-      id: '/confidentialite'
-      path: '/confidentialite'
-      fullPath: '/confidentialite'
-      preLoaderRoute: typeof ConfidentialiteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/a-propos': {
-      id: '/a-propos'
-      path: '/a-propos'
-      fullPath: '/a-propos'
-      preLoaderRoute: typeof AProposRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/$slug': {
@@ -514,67 +444,88 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SlugRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/a-propos': {
+      id: '/a-propos'
+      path: '/a-propos'
+      fullPath: '/a-propos'
+      preLoaderRoute: typeof AProposRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/portfolio/': {
-      id: '/portfolio/'
-      path: '/'
-      fullPath: '/portfolio/'
-      preLoaderRoute: typeof PortfolioIndexRouteImport
-      parentRoute: typeof PortfolioRoute
+    '/confidentialite': {
+      id: '/confidentialite'
+      path: '/confidentialite'
+      fullPath: '/confidentialite'
+      preLoaderRoute: typeof ConfidentialiteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/espace-client': {
+      id: '/espace-client'
+      path: '/espace-client'
+      fullPath: '/espace-client'
+      preLoaderRoute: typeof EspaceClientRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mentions-legales': {
+      id: '/mentions-legales'
+      path: '/mentions-legales'
+      fullPath: '/mentions-legales'
+      preLoaderRoute: typeof MentionsLegalesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portfolio': {
+      id: '/portfolio'
+      path: '/portfolio'
+      fullPath: '/portfolio'
+      preLoaderRoute: typeof PortfolioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/prestations': {
+      id: '/prestations'
+      path: '/prestations'
+      fullPath: '/prestations'
+      preLoaderRoute: typeof PrestationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reservation': {
+      id: '/reservation'
+      path: '/reservation'
+      fullPath: '/reservation'
+      preLoaderRoute: typeof ReservationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tarifs': {
+      id: '/tarifs'
+      path: '/tarifs'
+      fullPath: '/tarifs'
+      preLoaderRoute: typeof TarifsRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/admin/': {
       id: '/admin/'
       path: '/admin'
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/portfolio/portrait': {
-      id: '/portfolio/portrait'
-      path: '/portrait'
-      fullPath: '/portfolio/portrait'
-      preLoaderRoute: typeof PortfolioPortraitRouteImport
-      parentRoute: typeof PortfolioRoute
-    }
-    '/portfolio/grossesse': {
-      id: '/portfolio/grossesse'
-      path: '/grossesse'
-      fullPath: '/portfolio/grossesse'
-      preLoaderRoute: typeof PortfolioGrossesseRouteImport
-      parentRoute: typeof PortfolioRoute
-    }
-    '/portfolio/famille': {
-      id: '/portfolio/famille'
-      path: '/famille'
-      fullPath: '/portfolio/famille'
-      preLoaderRoute: typeof PortfolioFamilleRouteImport
-      parentRoute: typeof PortfolioRoute
-    }
-    '/portfolio/couple': {
-      id: '/portfolio/couple'
-      path: '/couple'
-      fullPath: '/portfolio/couple'
-      preLoaderRoute: typeof PortfolioCoupleRouteImport
-      parentRoute: typeof PortfolioRoute
-    }
-    '/admin/reinitialiser': {
-      id: '/admin/reinitialiser'
-      path: '/admin/reinitialiser'
-      fullPath: '/admin/reinitialiser'
-      preLoaderRoute: typeof AdminReinitialiserRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin/login': {
-      id: '/admin/login'
-      path: '/admin/login'
-      fullPath: '/admin/login'
-      preLoaderRoute: typeof AdminLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/_authed': {
@@ -584,46 +535,60 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAuthedRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/_authed/prestations': {
-      id: '/admin/_authed/prestations'
-      path: '/prestations'
-      fullPath: '/admin/prestations'
-      preLoaderRoute: typeof AdminAuthedPrestationsRouteImport
-      parentRoute: typeof AdminAuthedRoute
+    '/admin/login': {
+      id: '/admin/login'
+      path: '/admin/login'
+      fullPath: '/admin/login'
+      preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/admin/_authed/photos': {
-      id: '/admin/_authed/photos'
-      path: '/photos'
-      fullPath: '/admin/photos'
-      preLoaderRoute: typeof AdminAuthedPhotosRouteImport
-      parentRoute: typeof AdminAuthedRoute
+    '/admin/reinitialiser': {
+      id: '/admin/reinitialiser'
+      path: '/admin/reinitialiser'
+      fullPath: '/admin/reinitialiser'
+      preLoaderRoute: typeof AdminReinitialiserRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/admin/_authed/parametres': {
-      id: '/admin/_authed/parametres'
-      path: '/parametres'
-      fullPath: '/admin/parametres'
-      preLoaderRoute: typeof AdminAuthedParametresRouteImport
-      parentRoute: typeof AdminAuthedRoute
+    '/portfolio/': {
+      id: '/portfolio/'
+      path: '/'
+      fullPath: '/portfolio/'
+      preLoaderRoute: typeof PortfolioIndexRouteImport
+      parentRoute: typeof PortfolioRoute
     }
-    '/admin/_authed/pages-seo': {
-      id: '/admin/_authed/pages-seo'
-      path: '/pages-seo'
-      fullPath: '/admin/pages-seo'
-      preLoaderRoute: typeof AdminAuthedPagesSeoRouteImport
-      parentRoute: typeof AdminAuthedRoute
+    '/portfolio/couple': {
+      id: '/portfolio/couple'
+      path: '/couple'
+      fullPath: '/portfolio/couple'
+      preLoaderRoute: typeof PortfolioCoupleRouteImport
+      parentRoute: typeof PortfolioRoute
     }
-    '/admin/_authed/faq': {
-      id: '/admin/_authed/faq'
-      path: '/faq'
-      fullPath: '/admin/faq'
-      preLoaderRoute: typeof AdminAuthedFaqRouteImport
-      parentRoute: typeof AdminAuthedRoute
+    '/portfolio/famille': {
+      id: '/portfolio/famille'
+      path: '/famille'
+      fullPath: '/portfolio/famille'
+      preLoaderRoute: typeof PortfolioFamilleRouteImport
+      parentRoute: typeof PortfolioRoute
     }
-    '/admin/_authed/dashboard': {
-      id: '/admin/_authed/dashboard'
-      path: '/dashboard'
-      fullPath: '/admin/dashboard'
-      preLoaderRoute: typeof AdminAuthedDashboardRouteImport
+    '/portfolio/grossesse': {
+      id: '/portfolio/grossesse'
+      path: '/grossesse'
+      fullPath: '/portfolio/grossesse'
+      preLoaderRoute: typeof PortfolioGrossesseRouteImport
+      parentRoute: typeof PortfolioRoute
+    }
+    '/portfolio/portrait': {
+      id: '/portfolio/portrait'
+      path: '/portrait'
+      fullPath: '/portfolio/portrait'
+      preLoaderRoute: typeof PortfolioPortraitRouteImport
+      parentRoute: typeof PortfolioRoute
+    }
+    '/admin/_authed/avis': {
+      id: '/admin/_authed/avis'
+      path: '/avis'
+      fullPath: '/admin/avis'
+      preLoaderRoute: typeof AdminAuthedAvisRouteImport
       parentRoute: typeof AdminAuthedRoute
     }
     '/admin/_authed/compte': {
@@ -633,11 +598,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAuthedCompteRouteImport
       parentRoute: typeof AdminAuthedRoute
     }
-    '/admin/_authed/avis': {
-      id: '/admin/_authed/avis'
-      path: '/avis'
-      fullPath: '/admin/avis'
-      preLoaderRoute: typeof AdminAuthedAvisRouteImport
+    '/admin/_authed/dashboard': {
+      id: '/admin/_authed/dashboard'
+      path: '/dashboard'
+      fullPath: '/admin/dashboard'
+      preLoaderRoute: typeof AdminAuthedDashboardRouteImport
+      parentRoute: typeof AdminAuthedRoute
+    }
+    '/admin/_authed/faq': {
+      id: '/admin/_authed/faq'
+      path: '/faq'
+      fullPath: '/admin/faq'
+      preLoaderRoute: typeof AdminAuthedFaqRouteImport
+      parentRoute: typeof AdminAuthedRoute
+    }
+    '/admin/_authed/pages-seo': {
+      id: '/admin/_authed/pages-seo'
+      path: '/pages-seo'
+      fullPath: '/admin/pages-seo'
+      preLoaderRoute: typeof AdminAuthedPagesSeoRouteImport
+      parentRoute: typeof AdminAuthedRoute
+    }
+    '/admin/_authed/parametres': {
+      id: '/admin/_authed/parametres'
+      path: '/parametres'
+      fullPath: '/admin/parametres'
+      preLoaderRoute: typeof AdminAuthedParametresRouteImport
+      parentRoute: typeof AdminAuthedRoute
+    }
+    '/admin/_authed/photos': {
+      id: '/admin/_authed/photos'
+      path: '/photos'
+      fullPath: '/admin/photos'
+      preLoaderRoute: typeof AdminAuthedPhotosRouteImport
+      parentRoute: typeof AdminAuthedRoute
+    }
+    '/admin/_authed/prestations': {
+      id: '/admin/_authed/prestations'
+      path: '/prestations'
+      fullPath: '/admin/prestations'
+      preLoaderRoute: typeof AdminAuthedPrestationsRouteImport
       parentRoute: typeof AdminAuthedRoute
     }
     '/admin/_authed/evenements/': {
