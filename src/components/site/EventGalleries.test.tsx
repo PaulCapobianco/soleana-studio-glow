@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { cleanup, render, screen, waitFor, within } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -81,6 +81,8 @@ describe("EventGalleriesAdmin", () => {
     published: true,
     alt: `alt ${id}`,
     thumbUrl: null,
+    posX: 50,
+    posY: 50,
   });
 
   function setup(
@@ -94,7 +96,6 @@ describe("EventGalleriesAdmin", () => {
       { id: "o1", title: "Noël 2026", status: "published" },
       { id: "o2", title: "Brouillon", status: "draft" },
     ]);
-    vi.spyOn(galleryAdmin, "eventCategoryId").mockResolvedValue("cat-evt");
     const onChange = vi.fn();
     render(
       <QueryClientProvider
@@ -152,7 +153,7 @@ describe("EventGalleriesAdmin", () => {
       { slot: "galerie-3", title: "Décor" },
     ]);
   });
-  it("envoie plusieurs photos dans la bonne galerie, à la suite, avec la catégorie « evenement »", async () => {
+  it("envoie plusieurs photos dans la bonne galerie, à la suite, sans catégorie", async () => {
     const user = userEvent.setup();
     const up = vi
       .spyOn(upload, "uploadEventPhoto")
@@ -165,14 +166,23 @@ describe("EventGalleriesAdmin", () => {
     ];
     await user.upload(screen.getByLabelText("Ajouter des photos à la galerie Famille"), files);
     await waitFor(() => expect(up).toHaveBeenCalledTimes(2));
-    expect(
-      up.mock.calls.map((c) => [c[0].slot, c[0].displayOrder, c[0].categoryId, c[0].eventSlug]),
-    ).toEqual([
-      ["galerie-1", 2, "cat-evt", "noel-2027"],
-      ["galerie-1", 3, "cat-evt", "noel-2027"],
+    expect(up.mock.calls.map((c) => [c[0].slot, c[0].displayOrder, c[0].eventSlug])).toEqual([
+      ["galerie-1", 2, "noel-2027"],
+      ["galerie-1", 3, "noel-2027"],
     ]);
     expect(up.mock.calls[0][0].alt).toBe("Famille — Noël 2027");
     await waitFor(() => expect(toast.success).toHaveBeenCalledWith("2 photos ajoutées."));
+  });
+  it("règle le cadrage d'une photo existante et l'enregistre", async () => {
+    const user = userEvent.setup();
+    const save = vi.spyOn(galleryAdmin, "setPlacementFraming").mockResolvedValue();
+    setup(withGalleries);
+    await screen.findByDisplayValue("Famille");
+    expect(screen.queryByText("Enregistrer le cadrage")).toBeNull();
+    const slider = (await screen.findAllByLabelText("Cadrage horizontal"))[0];
+    fireEvent.change(slider, { target: { value: "20" } });
+    await user.click(screen.getByText("Enregistrer le cadrage"));
+    await waitFor(() => expect(save).toHaveBeenCalledWith("1", 20, 50));
   });
   it("une photo qui échoue est signalée sans bloquer les autres", async () => {
     const user = userEvent.setup();

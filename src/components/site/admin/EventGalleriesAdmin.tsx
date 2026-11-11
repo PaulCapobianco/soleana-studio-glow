@@ -5,7 +5,6 @@ import { FieldHint } from "@/components/site/admin/FieldHint";
 import { adminErrorMessage, toastAdminError } from "@/lib/admin/write-error";
 import {
   addGalleryDef,
-  eventCategoryId,
   galleryTablesAvailable,
   listEventPlacements,
   listOtherEvents,
@@ -17,6 +16,7 @@ import {
   saveGalleryDefs,
   saveGalleryReference,
   setPlacementAlt,
+  setPlacementFraming,
   setPlacementPublished,
   type AdminGalleryPhoto,
 } from "@/lib/events/gallery-admin";
@@ -85,7 +85,6 @@ export function EventGalleriesAdmin({
 
   const upload = (def: EventGalleryDef, files: File[]) =>
     run(`upload-${def.slot}`, async () => {
-      const categoryId = await eventCategoryId();
       let order = nextPlacementOrder(
         bySlot(def.slot).map((p) => ({ id: p.placementId, display_order: p.displayOrder })),
       );
@@ -101,7 +100,6 @@ export function EventGalleriesAdmin({
             eventSlug: event.slug,
             slot: def.slot,
             displayOrder: order,
-            categoryId,
           });
           order += 1;
           done += 1;
@@ -188,6 +186,13 @@ export function EventGalleriesAdmin({
                 void run("alt", async () => {
                   await setPlacementAlt(id, alt);
                   toast.success("Description enregistrée.");
+                  await refresh();
+                })
+              }
+              onPhotoFraming={(id, x, y) =>
+                void run("framing", async () => {
+                  await setPlacementFraming(id, x, y);
+                  toast.success("Cadrage enregistré.");
                   await refresh();
                 })
               }
@@ -288,6 +293,7 @@ function GalleryCard({
   onPhotoMove,
   onPhotoPublished,
   onPhotoAlt,
+  onPhotoFraming,
   onPhotoRemove,
 }: {
   def: EventGalleryDef;
@@ -304,6 +310,7 @@ function GalleryCard({
   onPhotoMove: (id: string, delta: -1 | 1) => void;
   onPhotoPublished: (id: string, published: boolean) => void;
   onPhotoAlt: (id: string, alt: string) => void;
+  onPhotoFraming: (id: string, x: number, y: number) => void;
   onPhotoRemove: (id: string) => void;
 }) {
   const [title, setTitle] = useState(def.title);
@@ -363,7 +370,7 @@ function GalleryCard({
       <ul className="grid gap-3 sm:grid-cols-2">
         {photos.map((photo, index) => (
           <PhotoRow
-            key={`${photo.placementId}-${photo.alt}-${photo.published}`}
+            key={`${photo.placementId}-${photo.alt}-${photo.published}-${photo.posX}-${photo.posY}`}
             photo={photo}
             isFirst={index === 0}
             isLast={index === photos.length - 1}
@@ -371,6 +378,7 @@ function GalleryCard({
             onMove={(delta) => onPhotoMove(photo.placementId, delta)}
             onPublished={(p) => onPhotoPublished(photo.placementId, p)}
             onAlt={(alt) => onPhotoAlt(photo.placementId, alt)}
+            onFraming={(x, y) => onPhotoFraming(photo.placementId, x, y)}
             onRemove={() => onPhotoRemove(photo.placementId)}
           />
         ))}
@@ -410,6 +418,7 @@ function PhotoRow({
   onMove,
   onPublished,
   onAlt,
+  onFraming,
   onRemove,
 }: {
   photo: AdminGalleryPhoto;
@@ -419,9 +428,13 @@ function PhotoRow({
   onMove: (delta: -1 | 1) => void;
   onPublished: (published: boolean) => void;
   onAlt: (alt: string) => void;
+  onFraming: (x: number, y: number) => void;
   onRemove: () => void;
 }) {
   const [alt, setAlt] = useState(photo.alt);
+  const [x, setX] = useState(photo.posX);
+  const [y, setY] = useState(photo.posY);
+  const framingChanged = x !== photo.posX || y !== photo.posY;
   return (
     <li className="flex gap-3 border border-border bg-surface p-2">
       {photo.thumbUrl ? (
@@ -431,6 +444,7 @@ function PhotoRow({
           width={96}
           height={96}
           className="h-24 w-24 flex-none object-cover"
+          style={{ objectPosition: `${x}% ${y}%` }}
         />
       ) : (
         <span className="flex h-24 w-24 flex-none items-center justify-center bg-background text-[10px] text-muted-foreground">
@@ -482,6 +496,40 @@ function PhotoRow({
             Retirer
           </button>
           {!photo.published && <span className="text-muted-foreground">masquée</span>}
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <label className="flex items-center gap-1">
+            Horizontal
+            <input
+              type="range"
+              min={0}
+              max={100}
+              value={x}
+              aria-label="Cadrage horizontal"
+              onChange={(e) => setX(Number(e.target.value))}
+            />
+          </label>
+          <label className="flex items-center gap-1">
+            Vertical
+            <input
+              type="range"
+              min={0}
+              max={100}
+              value={y}
+              aria-label="Cadrage vertical"
+              onChange={(e) => setY(Number(e.target.value))}
+            />
+          </label>
+          {framingChanged && (
+            <button
+              type="button"
+              disabled={busy}
+              onClick={() => onFraming(x, y)}
+              className="hover:underline disabled:opacity-40"
+            >
+              Enregistrer le cadrage
+            </button>
+          )}
         </div>
       </div>
     </li>

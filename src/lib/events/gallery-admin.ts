@@ -59,6 +59,16 @@ export function moveGalleryDef(
   return next;
 }
 
+/** Cadrage valide : entier de 0 à 100 (la base refuse le reste ; on le dit en français avant). */
+export function normalizeFraming(x: number, y: number): { x: number; y: number } {
+  for (const v of [x, y]) {
+    if (!Number.isFinite(v) || v < 0 || v > 100) {
+      throw new AdminValidationError("Le cadrage doit être compris entre 0 et 100 %.");
+    }
+  }
+  return { x: Math.round(x), y: Math.round(y) };
+}
+
 // ---- Accès base (admin) -------------------------------------------------------------------
 
 export type AdminGalleryPhoto = {
@@ -69,6 +79,8 @@ export type AdminGalleryPhoto = {
   published: boolean;
   alt: string;
   thumbUrl: string | null;
+  posX: number;
+  posY: number;
 };
 
 type PlacementRow = {
@@ -77,6 +89,8 @@ type PlacementRow = {
   display_order: number;
   published: boolean;
   alt_text_override: string | null;
+  object_position_x_pct: number | string | null;
+  object_position_y_pct: number | string | null;
   photo: {
     id: string;
     alt_text: string;
@@ -89,7 +103,7 @@ export async function listEventPlacements(eventId: string): Promise<AdminGallery
   const { data, error } = await supabase
     .from("photo_placements")
     .select(
-      "id, slot, display_order, published, alt_text_override, photo:photos!inner(id, alt_text, photo_variants(width, storage_path, format))",
+      "id, slot, display_order, published, alt_text_override, object_position_x_pct, object_position_y_pct, photo:photos!inner(id, alt_text, photo_variants(width, storage_path, format))",
     )
     .eq("event_id", eventId)
     .eq("context_type", "event")
@@ -107,18 +121,10 @@ export async function listEventPlacements(eventId: string): Promise<AdminGallery
       published: row.published,
       alt: row.alt_text_override ?? row.photo?.alt_text ?? "",
       thumbUrl: webp[0] ? publicImageUrl(webp[0].storage_path) : null,
+      posX: Number(row.object_position_x_pct ?? 50),
+      posY: Number(row.object_position_y_pct ?? 50),
     };
   });
-}
-
-/** L'identifiant de la catégorie « evenement » (rangement des photos d'événements), ou null. */
-export async function eventCategoryId(): Promise<string | null> {
-  const { data } = await supabase
-    .from("categories")
-    .select("id")
-    .eq("slug", "evenement")
-    .maybeSingle();
-  return data?.id ?? null;
 }
 
 export async function saveGalleryDefs(eventId: string, defs: EventGalleryDef[]): Promise<EventRow> {
@@ -183,6 +189,15 @@ export async function setPlacementAlt(id: string, alt: string): Promise<void> {
   const { error } = await supabase
     .from("photo_placements")
     .update({ alt_text_override: alt.trim() || null })
+    .eq("id", id);
+  if (error) throw error;
+}
+
+export async function setPlacementFraming(id: string, x: number, y: number): Promise<void> {
+  const framing = normalizeFraming(x, y);
+  const { error } = await supabase
+    .from("photo_placements")
+    .update({ object_position_x_pct: framing.x, object_position_y_pct: framing.y })
     .eq("id", id);
   if (error) throw error;
 }
