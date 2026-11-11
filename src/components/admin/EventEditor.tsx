@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
   CharCounter,
@@ -33,6 +33,15 @@ import {
 import { formatHeroDates, isEditionOver } from "@/lib/events/dates";
 import type { EventRow, EventStatus } from "@/lib/events/types";
 import { EventEditorHeader } from "@/components/admin/EventEditorHeader";
+import { PublishChecklist } from "@/components/admin/PublishChecklist";
+import { galleryTablesAvailable, listEventPlacements } from "@/lib/events/gallery-admin";
+import { parseGalleryDefs } from "@/lib/events/galleries";
+import {
+  datesChangeConfirmation,
+  deleteDraftConfirmation,
+  galleryStatsFrom,
+  publishWarnings,
+} from "@/lib/events/publish-checks";
 import { EventFaqSection, EventFormulesSection } from "@/components/admin/EventListSections";
 import {
   slugify,
@@ -110,6 +119,10 @@ export function EventEditor({ initial }: { initial: EventRow }) {
         toast.error(firstError(errors));
         return;
       }
+      if (status === "published") {
+        const question = datesChangeConfirmation(baseline, values);
+        if (question && !window.confirm(question)) return;
+      }
       applySaved(await saveEvent(row.id, formValuesToUpdate(values)));
       toast.success(
         status === "published"
@@ -126,10 +139,14 @@ export function EventEditor({ initial }: { initial: EventRow }) {
         toast.error(`Impossible de publier : ${firstError(found)}`);
         return;
       }
+      const toCheck = warnings.length
+        ? `\n\nÀ vérifier (vous pouvez publier quand même) :\n${warnings.map((w) => `• ${w}`).join("\n")}`
+        : "";
       if (
         !window.confirm(
           "Publier cet événement ? Sa page sera visible par tout le monde dès maintenant" +
-            (values.show_teaser ? ", et il apparaîtra sur la page d'accueil." : "."),
+            (values.show_teaser ? ", et il apparaîtra sur la page d'accueil." : ".") +
+            toCheck,
         )
       ) {
         return;
@@ -177,7 +194,7 @@ export function EventEditor({ initial }: { initial: EventRow }) {
 
   const remove = () =>
     run("delete", async () => {
-      if (!window.confirm("Supprimer ce brouillon ? Cette action est définitive.")) return;
+      if (!window.confirm(deleteDraftConfirmation(galleryPhotos.data?.length ?? 0))) return;
       await deleteDraftEvent(row);
       setDirty(row.id, false);
       await qc.invalidateQueries({ queryKey: ["admin-events"] });
@@ -209,6 +226,23 @@ export function EventEditor({ initial }: { initial: EventRow }) {
     [previewEvent, previewAppearance],
   );
   const assets = eventAssets(row.slug);
+  const galleryTables = useQuery({
+    queryKey: ["admin-gallery-tables"],
+    queryFn: galleryTablesAvailable,
+  });
+  const galleryPhotos = useQuery({
+    queryKey: ["admin-event-placements", row.id],
+    queryFn: () => listEventPlacements(row.id),
+    enabled: galleryTables.data === true,
+  });
+  const warnings = publishWarnings(values, {
+    hasCover: Boolean(row.cover_image_url) || Boolean(assets),
+    galleryStats:
+      galleryTables.data && galleryPhotos.data
+        ? galleryStatsFrom(parseGalleryDefs(row.galleries), galleryPhotos.data)
+        : null,
+    now: new Date(),
+  });
   const editionOver = isEditionOver(values.event_dates, values.fallback_dates, new Date());
 
   return (
@@ -231,6 +265,9 @@ export function EventEditor({ initial }: { initial: EventRow }) {
         onDuplicate={askDuplicate}
         onRemove={() => void remove()}
       />
+      {status !== "archived" && (
+        <PublishChecklist warnings={warnings} published={status === "published"} />
+      )}
 
       {preview && (
         <div className="space-y-2">
@@ -313,6 +350,30 @@ export function EventEditor({ initial }: { initial: EventRow }) {
         title="Dates"
         intro="La page passe automatiquement en « édition terminée » le lendemain de la dernière date (dates de report comprises)."
       >
+        <details className="border border-border bg-background p-3 text-xs text-muted-foreground">
+          <summary className="cursor-pointer font-medium text-foreground">
+            Comment changer les dates ? Comment gérer le mauvais temps ?
+          </summary>
+          <div className="mt-2 space-y-2">
+            <p>
+              <strong>Changer les dates :</strong> cliquez sur « Retirer » à côté des anciennes
+              dates, ajoutez les nouvelles, puis « Enregistrer ». Si l&apos;événement est déjà
+              publié, l&apos;accueil, la page et Google affichent les nouvelles dates tout de suite
+              (une confirmation vous est demandée).
+            </p>
+            <p>
+              <strong>Exemple :</strong> les mini-séances de Noël 2026 ont été décalées du 7 et du
+              11 novembre au 28 et 29 novembre : retirez le 7 et le 11, ajoutez le 28 et le 29,
+              enregistrez.
+            </p>
+            <p>
+              <strong>Mauvais temps :</strong> les dates de report apparaissent sur la page sous la
+              forme « En cas de mauvais temps, les séances sont reportées aux… ». Elles doivent
+              venir après la première date de séance, et l&apos;édition ne se termine qu&apos;après
+              la dernière date de report.
+            </p>
+          </div>
+        </details>
         <DateListField
           label="Dates des séances"
           dates={values.event_dates}

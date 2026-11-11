@@ -127,14 +127,14 @@ export function EventGalleriesAdmin({
       )}
       {!ready && (
         <p className="border border-border bg-background p-3 text-xs">
-          Les galeries photos nécessitent une mise à jour de la base de données (migration « photos
-          »). Elles seront disponibles ensuite.
+          Les galeries photos ne sont pas encore disponibles. Demandez à Paul de les activer ; elles
+          apparaîtront ensuite ici.
         </p>
       )}
       {ready && !hasGalleryColumns && (
         <p className="border border-border bg-background p-3 text-xs">
-          Une mise à jour de la base de données est nécessaire (migration « galeries
-          d&apos;événements ») avant de créer des galeries.
+          Les galeries d&apos;événement ne sont pas encore activées. Demandez à Paul de les activer
+          avant d&apos;en créer.
         </p>
       )}
 

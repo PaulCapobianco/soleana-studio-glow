@@ -117,12 +117,12 @@ describe("EventGalleriesAdmin", () => {
 
   it("tables de photos absentes : explication claire, aucune action", async () => {
     setup(withGalleries, false);
-    expect(await screen.findByText(/migration « photos »/)).toBeTruthy();
+    expect(await screen.findByText(/Les galeries photos ne sont pas encore disponibles/)).toBeTruthy();
     expect(screen.queryByText("Nouvelle galerie")).toBeNull();
   });
   it("colonnes de galeries absentes : explication claire", async () => {
     setup({ ...base, galleries: undefined } as unknown as EventRow, true);
-    expect(await screen.findByText(/migration « galeries d'événements »/)).toBeTruthy();
+    expect(await screen.findByText(/galeries d'événement ne sont pas encore activées/)).toBeTruthy();
   });
   it("indique que l'affichage public n'est pas encore activé", async () => {
     setup(withGalleries);

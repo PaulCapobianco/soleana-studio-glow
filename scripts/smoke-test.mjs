@@ -156,6 +156,52 @@ export function endsAtLogin(chain, finalBody) {
   return /Soleana Studio Admin/.test(finalBody) && !/Tableau de bord/.test(finalBody);
 }
 
+/** Blocs JSON-LD (<script type="application/ld+json">) d'une page, décodés ; les blocs invalides sont ignorés. */
+export function extractJsonLd(html) {
+  const blocks = [];
+  for (const m of String(html).matchAll(
+    /<script[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g,
+  )) {
+    try {
+      blocks.push(JSON.parse(m[1]));
+    } catch {
+      /* bloc invalide : signalé par l'absence d'Event */
+    }
+  }
+  return blocks;
+}
+
+/** Problèmes des données structurées Event d'une page d'événement (liste vide = valide). */
+export function validateEventJsonLd(blocks) {
+  const nodes = blocks.flatMap((b) => (Array.isArray(b["@graph"]) ? b["@graph"] : [b]));
+  const events = nodes.filter((n) => n["@type"] === "Event");
+  if (events.length === 0) return ["aucune donnée structurée Event"];
+  const problems = [];
+  events.forEach((e, i) => {
+    const at = `Event ${i + 1}`;
+    if (!e.name) problems.push(`${at} : nom absent`);
+    if (!/^\d{4}-\d{2}-\d{2}/.test(e.startDate ?? "")) problems.push(`${at} : startDate invalide`);
+    if (e.endDate && e.endDate < e.startDate) problems.push(`${at} : fin avant le début`);
+    if (!e.location?.name) problems.push(`${at} : lieu absent`);
+    if (
+      !/^https:\/\/schema\.org\/Event(Scheduled|Postponed|Rescheduled|Cancelled)$/.test(
+        e.eventStatus ?? "",
+      )
+    )
+      problems.push(`${at} : eventStatus invalide`);
+    if (!/^https:\/\//.test(e.url ?? "")) problems.push(`${at} : url absente`);
+    for (const offer of e.offers ?? []) {
+      if (!(Number(offer.price) >= 0) || offer.priceCurrency !== "EUR")
+        problems.push(`${at} : offre sans prix en EUR`);
+    }
+  });
+  return problems;
+}
+
+export const hasNoindex = (html) => /<meta[^>]*name="robots"[^>]*content="[^"]*noindex/i.test(html);
+export const canonicalOf = (html) =>
+  /<link[^>]*rel="canonical"[^>]*href="([^"]+)"/i.exec(html)?.[1] ?? null;
+
 export function adminLeaks(html) {
   return [
     "service_role",
@@ -301,6 +347,38 @@ export async function runSmokeTest(base) {
     "frame-src",
   );
 
+  // 6 bis. Événements : sitemap, données structurées, SEO, brouillons non indexables
+  add(
+    "événements",
+    "événement publié dans le sitemap",
+    smPaths.includes("/mini-seances-noel-2026"),
+    "/mini-seances-noel-2026",
+  );
+  const jsonLd = validateEventJsonLd(extractJsonLd(noel?.html ?? ""));
+  add(
+    "événements",
+    "JSON-LD Event valide (page Noël)",
+    jsonLd.length === 0,
+    jsonLd.join(" ; ") || "Event par jour de séance, lieu, offres",
+  );
+  const canonical = canonicalOf(noel?.html ?? "");
+  add(
+    "événements",
+    "canonical et titre (page Noël)",
+    canonical === `${origin}/mini-seances-noel-2026` ||
+      canonical === "https://soleanastudio.fr/mini-seances-noel-2026",
+    canonical ?? "canonical absent",
+  );
+  add("événements", "page Noël indexable", !hasNoindex(noel?.html ?? ""), "pas de noindex");
+  const draft = await get(`${origin}/evenement-brouillon-smoke-test`);
+  const draftHtml = draft.status === 404 ? await draft.text() : (await draft.arrayBuffer(), "");
+  add(
+    "événements",
+    "événement inconnu/brouillon : 404 non indexable",
+    draft.status === 404 && hasNoindex(draftHtml),
+    `HTTP ${draft.status}${hasNoindex(draftHtml) ? ", noindex" : ", sans noindex"}`,
+  );
+
   // 7. Admin
   const login = await get(`${origin}/admin/login`);
   const loginHtml = login.status === 200 ? await login.text() : "";
@@ -327,7 +405,34 @@ export async function runSmokeTest(base) {
     guarded,
     chain.map((h) => `${h.status} ${h.path}`).join(" → "),
   );
-  const leaks = adminLeaks(loginHtml + adminBody);
+  // L'aide intégrée reste derrière la connexion : ni lien ni contenu côté public.
+  const aide = [];
+  let aideUrl = `${origin}/admin/aide`;
+  let aideBody = "";
+  for (let hop = 0; hop < 5; hop += 1) {
+    const res = await get(aideUrl);
+    const location = res.headers.get("location") ?? "";
+    aide.push({ status: res.status, path: new URL(aideUrl).pathname, location });
+    if (![301, 302, 303, 307, 308].includes(res.status) || !location) {
+      aideBody = res.status === 200 ? await res.text() : (await res.arrayBuffer(), "");
+      break;
+    }
+    await res.arrayBuffer();
+    aideUrl = new URL(location, aideUrl).toString();
+  }
+  add(
+    "admin",
+    "/admin/aide protégée (redirige vers la connexion)",
+    endsAtLogin(aide, aideBody) && !/Un message d'erreur, un oubli/.test(aideBody),
+    aide.map((h) => `${h.status} ${h.path}`).join(" → "),
+  );
+  add(
+    "admin",
+    "aucun lien Aide ni guide dans la page de connexion",
+    !/\/admin\/aide|Activer la double authentification/.test(loginHtml),
+    "connexion sans menu ni guide",
+  );
+  const leaks = adminLeaks(loginHtml + adminBody + aideBody);
   add(
     "admin",
     "aucune donnée d'admin dans le HTML",

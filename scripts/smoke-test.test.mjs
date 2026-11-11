@@ -3,7 +3,11 @@ import {
   adminLeaks,
   analyzeGalleryHtml,
   checkPublicHeaders,
+  canonicalOf,
   endsAtLogin,
+  extractJsonLd,
+  hasNoindex,
+  validateEventJsonLd,
   cspAllowsHost,
   findPelli,
   isImmutableYear,
@@ -152,5 +156,80 @@ describe("sitemap, Pelli, admin", () => {
     ]);
     expect(t).toMatch(/^OK {2}pages/);
     expect(t).toMatch(/\nKO {2}pages/);
+  });
+});
+
+describe("données structurées et SEO des événements", () => {
+  const event = (over = {}) => ({
+    "@type": "Event",
+    name: "Mini-séances de Noël 2026",
+    startDate: "2026-11-28",
+    endDate: "2026-11-28",
+    eventStatus: "https://schema.org/EventScheduled",
+    location: { "@type": "Place", name: "Plan-d'Aups-Sainte-Baume" },
+    url: "https://soleanastudio.fr/mini-seances-noel-2026",
+    offers: [{ "@type": "Offer", price: 110, priceCurrency: "EUR" }],
+    ...over,
+  });
+  const page = (blocks) =>
+    blocks.map((b) => `<script type="application/ld+json">${JSON.stringify(b)}</script>`).join("");
+
+  it("extractJsonLd lit les blocs valides et ignore les invalides", () => {
+    const html = `${page([{ "@type": "ProfessionalService" }])}<script type="application/ld+json">{pas du json</script>`;
+    expect(extractJsonLd(html)).toEqual([{ "@type": "ProfessionalService" }]);
+  });
+  it("accepte un @graph d'événements conformes, en plus de l'organisation", () => {
+    const blocks = extractJsonLd(
+      page([
+        { "@type": "ProfessionalService" },
+        { "@graph": [event(), event({ startDate: "2026-11-29", endDate: "2026-11-29" })] },
+      ]),
+    );
+    expect(validateEventJsonLd(blocks)).toEqual([]);
+  });
+  it("signale l'absence d'Event, un nom, une date, un lieu, un statut ou une offre invalides", () => {
+    expect(validateEventJsonLd([{ "@type": "ProfessionalService" }])).toEqual([
+      "aucune donnée structurée Event",
+    ]);
+    const bad = validateEventJsonLd([
+      {
+        "@graph": [
+          event({
+            name: "",
+            startDate: "demain",
+            location: undefined,
+            eventStatus: "x",
+            offers: [{ price: "?", priceCurrency: "USD" }],
+          }),
+        ],
+      },
+    ]).join("|");
+    for (const part of [
+      "nom absent",
+      "startDate invalide",
+      "lieu absent",
+      "eventStatus invalide",
+      "offre sans prix",
+    ])
+      expect(bad).toContain(part);
+    expect(validateEventJsonLd([{ "@graph": [event({ endDate: "2026-11-01" })] }]).join()).toMatch(
+      /fin avant le début/,
+    );
+  });
+  it("accepte les statuts reporté et annulé de schema.org", () => {
+    for (const status of ["EventPostponed", "EventRescheduled", "EventCancelled"])
+      expect(validateEventJsonLd([event({ eventStatus: `https://schema.org/${status}` })])).toEqual(
+        [],
+      );
+  });
+  it("hasNoindex et canonicalOf", () => {
+    expect(hasNoindex('<meta name="robots" content="noindex"/>')).toBe(true);
+    expect(hasNoindex('<meta name="robots" content="noindex,nofollow"/>')).toBe(true);
+    expect(hasNoindex('<meta name="description" content="noindex"/>')).toBe(false);
+    expect(hasNoindex("<html></html>")).toBe(false);
+    expect(canonicalOf('<link rel="canonical" href="https://soleanastudio.fr/x"/>')).toBe(
+      "https://soleanastudio.fr/x",
+    );
+    expect(canonicalOf("<html></html>")).toBeNull();
   });
 });

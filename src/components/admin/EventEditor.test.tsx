@@ -165,6 +165,79 @@ describe("EventEditor", () => {
     expect(screen.queryByRole("button", { name: "Supprimer ce brouillon" })).toBeNull();
   });
 
+  it("signale l'absence de couverture et la rappelle dans la confirmation, sans empêcher de publier", async () => {
+    const user = userEvent.setup();
+    const confirm = vi.spyOn(window, "confirm").mockReturnValue(true);
+    const spy = vi.spyOn(admin, "saveEvent").mockResolvedValue({ ...draft, status: "published" });
+    renderEditor();
+
+    const panel = screen.getByRole("complementary", { name: "Points à vérifier" });
+    expect(within(panel).getByText(/Aucune image de couverture/)).toBeTruthy();
+    expect(within(panel).getByText(/vous pouvez publier quand même/)).toBeTruthy();
+
+    await user.click(screen.getByRole("button", { name: "Publier" }));
+    expect(String(confirm.mock.calls[0][0])).toMatch(/À vérifier[\s\S]*Aucune image de couverture/);
+    await waitFor(() => expect(spy).toHaveBeenCalled());
+  });
+
+  it("pas de point à vérifier quand la couverture est là et le lieu renseigné", () => {
+    renderEditor({
+      ...draft,
+      cover_image_url:
+        "https://x.supabase.co/storage/v1/object/public/photos/events/a/cover-1600-1.webp",
+    });
+    expect(screen.queryByRole("complementary", { name: "Points à vérifier" })).toBeNull();
+  });
+
+  it("changer les dates d'un événement publié demande confirmation, annoncée avec la nouvelle date", async () => {
+    const user = userEvent.setup();
+    const confirm = vi.spyOn(window, "confirm").mockReturnValue(false);
+    const spy = vi.spyOn(admin, "saveEvent").mockResolvedValue(draft);
+    renderEditor({
+      ...draft,
+      status: "published",
+      first_published_at: "2026-11-01T00:00:00Z",
+      cover_image_url:
+        "https://x.supabase.co/storage/v1/object/public/photos/events/a/cover-1600-1.webp",
+    });
+    const date = screen.getByLabelText(/Dates des séances/) as HTMLInputElement;
+    await user.clear(date);
+    await user.type(date, "2027-04-17");
+    await user.click(screen.getByRole("button", { name: "Enregistrer" }));
+    expect(confirm).toHaveBeenCalled();
+    expect(String(confirm.mock.calls[0][0])).toMatch(/déjà publié[\s\S]*Samedi 17 avril/);
+    expect(spy).not.toHaveBeenCalled(); // refusé : rien n'est enregistré
+
+    confirm.mockReturnValue(true);
+    await user.click(screen.getByRole("button", { name: "Enregistrer" }));
+    await waitFor(() => expect(spy).toHaveBeenCalled());
+  });
+
+  it("changer seulement le titre d'un événement publié n'ajoute aucune confirmation", async () => {
+    const user = userEvent.setup();
+    const confirm = vi.spyOn(window, "confirm").mockReturnValue(true);
+    const spy = vi.spyOn(admin, "saveEvent").mockResolvedValue(draft);
+    renderEditor({ ...draft, status: "published", first_published_at: "2026-11-01T00:00:00Z" });
+    const title = screen.getByLabelText("Titre", { selector: "input" });
+    await user.type(title, " bis");
+    await user.click(screen.getByRole("button", { name: "Enregistrer" }));
+    await waitFor(() => expect(spy).toHaveBeenCalled());
+    expect(confirm).not.toHaveBeenCalled();
+  });
+
+  it("la suppression d'un brouillon demande confirmation et supprime ensuite", async () => {
+    const user = userEvent.setup();
+    const confirm = vi.spyOn(window, "confirm").mockReturnValue(false);
+    const spy = vi.spyOn(admin, "deleteDraftEvent").mockResolvedValue();
+    renderEditor();
+    await user.click(screen.getByRole("button", { name: "Supprimer ce brouillon" }));
+    expect(String(confirm.mock.calls[0][0])).toMatch(/Supprimer ce brouillon/);
+    expect(spy).not.toHaveBeenCalled();
+    confirm.mockReturnValue(true);
+    await user.click(screen.getByRole("button", { name: "Supprimer ce brouillon" }));
+    await waitFor(() => expect(spy).toHaveBeenCalled());
+  });
+
   it("ne publie pas si la personne annule la confirmation", async () => {
     const user = userEvent.setup();
     vi.spyOn(window, "confirm").mockReturnValue(false);

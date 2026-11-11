@@ -36,6 +36,37 @@ describe("contenu de repli de Noël 2026", () => {
     expect(ld["@graph"][0].offers?.map((o) => o.price)).toEqual([110, 250]);
     expect(ld["@graph"][0].image).toEqual(["https://soleanastudio.fr/img/hero.webp"]);
   });
+
+  it("données structurées : chaque offre pointe vers son lien de réservation, sinon la page", () => {
+    const withLinks = {
+      ...event,
+      formules: [
+        {
+          name: "A",
+          price_eur: 10,
+          features: [],
+          booking_url: "https://soleana-studio.pelli.io/booking/a",
+          featured: false,
+        },
+        { name: "B", price_eur: 20, features: [], booking_url: "  ", featured: false },
+      ],
+    };
+    const offers = buildEventJsonLd(withLinks, null)["@graph"][0].offers ?? [];
+    expect(offers[0]).toMatchObject({
+      url: "https://soleana-studio.pelli.io/booking/a",
+      availability: "https://schema.org/InStock",
+    });
+    expect(offers[1].url).toBe(`https://soleanastudio.fr/${event.slug}`);
+  });
+
+  it("données structurées : sans lieu ni image ni formule, ces champs sont absents (pas de valeur vide)", () => {
+    const bare = { ...event, location: " ", formules: [] };
+    const first = buildEventJsonLd(bare, null)["@graph"][0] as Record<string, unknown>;
+    expect(first.location).toBeUndefined();
+    expect(first.image).toBeUndefined();
+    expect(first.offers).toBeUndefined();
+    expect(first.name).toBe(event.title);
+  });
 });
 
 describe("parseEventRow", () => {

@@ -41,7 +41,10 @@ for (const group of GROUPS) {
         source_sha256: hash,
         width: meta.width,
         height: meta.height,
-        alt_text: `${group.title} — mini-séances de Noël 2026`,
+        alt_text:
+          group.slot === "galerie-5"
+            ? `Décor des mini-séances de Noël 2026 en extérieur, photo ${index + 1}`
+            : `Mini-séances de Noël 2026 : ${group.title.toLowerCase()}, photo ${index + 1}`,
       };
       bySha.set(hash, photo);
       photos.push(photo);
@@ -72,7 +75,21 @@ const report = {
   ignored_hero_files: names.filter((n) => n.startsWith("noel-hero")).length,
   planned_variants: photos.length * 8,
 };
-await writeFile(OUT, JSON.stringify({ report, photos, placements }, null, 2) + "\n");
+await writeFile(
+  OUT,
+  JSON.stringify(
+    {
+      version: 1,
+      event_slug: EVENT_SLUG,
+      galleries: GROUPS.map((g) => ({ slot: g.slot, title: g.title })),
+      report,
+      photos,
+      placements,
+    },
+    null,
+    2,
+  ) + "\n",
+);
 console.log("Simulation — rien n'est importé, publié ni modifié.");
 console.log(JSON.stringify(report, null, 2));
 if (covered !== placements.length) throw new Error("Incohérence manifeste");

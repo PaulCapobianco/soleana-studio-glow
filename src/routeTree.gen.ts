@@ -31,6 +31,7 @@ import { Route as PortfolioCoupleRouteImport } from './routes/portfolio/couple'
 import { Route as PortfolioFamilleRouteImport } from './routes/portfolio/famille'
 import { Route as PortfolioGrossesseRouteImport } from './routes/portfolio/grossesse'
 import { Route as PortfolioPortraitRouteImport } from './routes/portfolio/portrait'
+import { Route as AdminAuthedAideRouteImport } from './routes/admin/_authed/aide'
 import { Route as AdminAuthedAvisRouteImport } from './routes/admin/_authed/avis'
 import { Route as AdminAuthedCompteRouteImport } from './routes/admin/_authed/compte'
 import { Route as AdminAuthedDashboardRouteImport } from './routes/admin/_authed/dashboard'
@@ -152,6 +153,11 @@ const PortfolioPortraitRoute = PortfolioPortraitRouteImport.update({
   path: '/portrait',
   getParentRoute: () => PortfolioRoute,
 } as any)
+const AdminAuthedAideRoute = AdminAuthedAideRouteImport.update({
+  id: '/aide',
+  path: '/aide',
+  getParentRoute: () => AdminAuthedRoute,
+} as any)
 const AdminAuthedAvisRoute = AdminAuthedAvisRouteImport.update({
   id: '/avis',
   path: '/avis',
@@ -227,6 +233,7 @@ export interface FileRoutesByFullPath {
   '/portfolio/portrait': typeof PortfolioPortraitRoute
   '/admin/': typeof AdminIndexRoute
   '/portfolio/': typeof PortfolioIndexRoute
+  '/admin/aide': typeof AdminAuthedAideRoute
   '/admin/avis': typeof AdminAuthedAvisRoute
   '/admin/compte': typeof AdminAuthedCompteRoute
   '/admin/dashboard': typeof AdminAuthedDashboardRoute
@@ -259,6 +266,7 @@ export interface FileRoutesByTo {
   '/portfolio/grossesse': typeof PortfolioGrossesseRoute
   '/portfolio/portrait': typeof PortfolioPortraitRoute
   '/portfolio': typeof PortfolioIndexRoute
+  '/admin/aide': typeof AdminAuthedAideRoute
   '/admin/avis': typeof AdminAuthedAvisRoute
   '/admin/compte': typeof AdminAuthedCompteRoute
   '/admin/dashboard': typeof AdminAuthedDashboardRoute
@@ -294,6 +302,7 @@ export interface FileRoutesById {
   '/portfolio/portrait': typeof PortfolioPortraitRoute
   '/admin/': typeof AdminIndexRoute
   '/portfolio/': typeof PortfolioIndexRoute
+  '/admin/_authed/aide': typeof AdminAuthedAideRoute
   '/admin/_authed/avis': typeof AdminAuthedAvisRoute
   '/admin/_authed/compte': typeof AdminAuthedCompteRoute
   '/admin/_authed/dashboard': typeof AdminAuthedDashboardRoute
@@ -330,6 +339,7 @@ export interface FileRouteTypes {
     | '/portfolio/portrait'
     | '/admin/'
     | '/portfolio/'
+    | '/admin/aide'
     | '/admin/avis'
     | '/admin/compte'
     | '/admin/dashboard'
@@ -362,6 +372,7 @@ export interface FileRouteTypes {
     | '/portfolio/grossesse'
     | '/portfolio/portrait'
     | '/portfolio'
+    | '/admin/aide'
     | '/admin/avis'
     | '/admin/compte'
     | '/admin/dashboard'
@@ -396,6 +407,7 @@ export interface FileRouteTypes {
     | '/portfolio/portrait'
     | '/admin/'
     | '/portfolio/'
+    | '/admin/_authed/aide'
     | '/admin/_authed/avis'
     | '/admin/_authed/compte'
     | '/admin/_authed/dashboard'
@@ -584,6 +596,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PortfolioPortraitRouteImport
       parentRoute: typeof PortfolioRoute
     }
+    '/admin/_authed/aide': {
+      id: '/admin/_authed/aide'
+      path: '/aide'
+      fullPath: '/admin/aide'
+      preLoaderRoute: typeof AdminAuthedAideRouteImport
+      parentRoute: typeof AdminAuthedRoute
+    }
     '/admin/_authed/avis': {
       id: '/admin/_authed/avis'
       path: '/avis'
@@ -678,6 +697,7 @@ const PortfolioRouteWithChildren = PortfolioRoute._addFileChildren(
 )
 
 interface AdminAuthedRouteChildren {
+  AdminAuthedAideRoute: typeof AdminAuthedAideRoute
   AdminAuthedAvisRoute: typeof AdminAuthedAvisRoute
   AdminAuthedCompteRoute: typeof AdminAuthedCompteRoute
   AdminAuthedDashboardRoute: typeof AdminAuthedDashboardRoute
@@ -691,6 +711,7 @@ interface AdminAuthedRouteChildren {
 }
 
 const AdminAuthedRouteChildren: AdminAuthedRouteChildren = {
+  AdminAuthedAideRoute: AdminAuthedAideRoute,
   AdminAuthedAvisRoute: AdminAuthedAvisRoute,
   AdminAuthedCompteRoute: AdminAuthedCompteRoute,
   AdminAuthedDashboardRoute: AdminAuthedDashboardRoute,
