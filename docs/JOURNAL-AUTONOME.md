@@ -481,3 +481,14 @@ VITE_GALLERIES_FROM_STORAGE=true npm run deploy:cf
 1. **Déployer** avec la commande ci-dessus, puis dérouler le test manuel 2 (galeries, navigation, admin Photos et Mon compte, envoi d'une photo de test).
 2. **Fermer les inscriptions Supabase Auth** et lancer `docs/sql/audit-security-checks.sql` (constat E-1 de l'audit), puis, si la photo de test passe sous la CSP, basculer `/admin` en CSP bloquante.
 3. **Décider** : appliquer ou non le Lot 3 (variantes d'en-tête, validation visuelle par la photographe) ; ne pas activer le relais d'images sans mesure sur mobile réel.
+
+## Refactorisation (branche `refactor-structure`, 11 novembre 2026)
+Branche créée depuis `photos-storage-v2`, **non fusionnée, non déployée**. Aucune migration, aucune écriture Supabase, aucun secret lu, fichiers protégés intacts (`legacy-noel.ts`, `admin-guide.ts`, scripts d'import/rollback, pages baptême/mariage/anniversaire, migrations). Détail, mesures et abandons : `docs/REFACTOR-PLAN.md`.
+
+**Fait** : code mort supprimé (2 fichiers, 5 exports/imports) ; module unique des variantes de photos (4 copies remplacées, 12 tests) ; `components/site/admin` devient `components/admin` ; `photo-storage.ts` éclaté en 5 modules sous `lib/photos/` ; `PhotosAdmin` (1 454 → 655 lignes) et `EventEditor` (850 → 573) découpés ; `/portfolio/<catégorie>` passe de 4 requêtes Supabase à 1 ; listes de l'admin Photos paginées (plafond silencieux de 1 000 lignes) ; Prettier sur les scripts non protégés (commit séparé) ; `README.md` créé, `docs/README.md`, règle des fichiers de route.
+
+**Vérifié** : typecheck 0 erreur, 330 + 7 tests, build vert ; **16 URLs identiques** (HTML et en-têtes, empreintes neutralisées) ; galeries 11+20, 47+20 (47 distinctes), 10+17+53, 12 ; console et CSP : 0 message sur 14 pages ; JavaScript par page −1,9 Ko ; Lighthouse 89 / 93 / 89 / 100 comme avant.
+
+**Abandonné** : retrait de zod, fusion des deux chaînes d'envoi de photo, découpage des grandes pages publiques, suppression du kit shadcn inutilisé (raisons dans le plan).
+
+**À tester à la main (admin)** : Photos (envoyer une photo de test, régler le cadrage, supprimer), Mon compte (mot de passe, double authentification), fiche d'un événement de test (en-tête et boutons, formules, FAQ, galeries, cadrage), `/admin` après connexion, puis le site public (galeries, `/portfolio/famille`).
