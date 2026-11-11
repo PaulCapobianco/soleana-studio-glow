@@ -5,6 +5,7 @@ import { X } from "lucide-react";
 import { getSupabase } from "@/lib/supabase-lazy";
 import { loadCategoryPhotos } from "@/lib/photos/gallery-loaders";
 import { STORAGE_GALLERIES_ENABLED } from "@/lib/photos/flags";
+import { needsLegacyPhotos } from "@/lib/photos/gallery-source";
 
 interface CategoryGalleryProps {
   categorySlug: string;
@@ -25,6 +26,19 @@ export function CategoryGallery({ categorySlug }: CategoryGalleryProps) {
     };
   }, [lightbox]);
 
+  // Photos Storage (galeries des pages SEO) quand l'interrupteur est actif ; sinon table photos.
+  const { data: storagePhotos, isPending: storagePending } = useQuery({
+    queryKey: ["category-storage-photos", categorySlug],
+    queryFn: () => loadCategoryPhotos(categorySlug),
+    enabled: STORAGE_GALLERIES_ENABLED,
+  });
+  // Repli sur l'ancienne table : requêtes lancées seulement si elles servent (pas pendant que
+  // Storage charge, pas quand Storage a des photos).
+  const legacyNeeded = needsLegacyPhotos(STORAGE_GALLERIES_ENABLED, {
+    pending: storagePending,
+    photos: storagePhotos,
+  });
+
   const { data: category } = useQuery({
     queryKey: ["category", categorySlug],
     queryFn: async () => {
@@ -37,13 +51,7 @@ export function CategoryGallery({ categorySlug }: CategoryGalleryProps) {
         .maybeSingle();
       return data;
     },
-  });
-
-  // Photos Storage (galeries des pages SEO) quand l'interrupteur est actif ; sinon table photos.
-  const { data: storagePhotos } = useQuery({
-    queryKey: ["category-storage-photos", categorySlug],
-    queryFn: () => loadCategoryPhotos(categorySlug),
-    enabled: STORAGE_GALLERIES_ENABLED,
+    enabled: legacyNeeded,
   });
 
   const { data: legacyPhotos = [] } = useQuery({
@@ -60,7 +68,7 @@ export function CategoryGallery({ categorySlug }: CategoryGalleryProps) {
         .order("display_order");
       return data || [];
     },
-    enabled: !!category?.id && !(STORAGE_GALLERIES_ENABLED && storagePhotos?.length),
+    enabled: legacyNeeded && !!category?.id,
   });
   const photos: {
     id: string;
