@@ -174,3 +174,63 @@ Code lu : `src/routes/$slug.tsx` (loader, `SeoPage`), `src/lib/photo-storage.ts`
 - Images servies par l'URL publique du bucket Supabase, ou par `VITE_IMAGE_BASE_URL` si définie (non définie : à décider avant la bascule).
 - `/portfolio/<catégorie>` : toutes les photos de la page SEO correspondante, galeries concaténées dans l'ordre des slots, doublons retirés (donc 11+20, 47+20 sans les 20 doublons de Famille → 47 photos distinctes, etc.).
 - Retour arrière : retirer la variable et reconstruire/déployer (les fichiers locaux sont toujours dans le dépôt) ; ou dépublier avec le journal de `rollback-import.mjs`, mais cela laisserait des galeries vides tant que l'interrupteur est actif.
+
+## Vérifications après import et galeries d'événements (11 novembre 2026)
+Aucune écriture Supabase, aucun déploiement, aucune publication, aucun import, aucune migration. Les contrôles réseau ont été faits en lecture seule avec la clé publique (chargée par `node --env-file=.env` dans un script hors dépôt ; je n'ai pas lu ni affiché le contenu de `.env`).
+
+### Partie 1 : résultats
+**1. Variantes accessibles : 1 360 sur 1 360 conformes, 0 échec.**
+Les 1 360 chemins viennent de `variants-index.json` (hors dépôt). Pour chacun : requête HEAD puis GET `Range: bytes=0-0` (1 octet, pas de téléchargement) sur `/storage/v1/object/public/photos/<chemin>`.
+- Statut 200 (HEAD) et 206 (GET partiel) partout ; content-type exact (680 `image/avif`, 680 `image/webp`) ; taille identique à l'index (HEAD `content-length` et `content-range`).
+- `cache-control` : **`public, max-age=31536000`** sur les 1 360 (un an). Piège : la réponse **HEAD** de Supabase annonce `private, no-cache` ; c'est le comportement de HEAD, pas des objets. Seul le GET reflète ce que verra un navigateur (confirmé : `cf-cache-status: HIT`). Ne pas conclure d'un HEAD seul.
+- Limitation de débit : à 16 requêtes en parallèle, Supabase répond **429** (256 sur 1 360 au premier essai). Le contrôle final a été fait à 4 en parallèle avec reprise ; il a duré 8 minutes. À connaître si un test de charge est un jour fait sur ce bucket.
+- Hôte interrogé : `kvzzzwjddanwedzotaka.supabase.co` (celui de `VITE_SUPABASE_URL` dans `.env`). **Écart à vérifier** : `supabase/config.toml` indique un autre `project_id` (`hvfvvbiupyzoounzyqoz`). Les 1 360 objets existent bien sur l'hôte du `.env`, qui est donc celui où l'import a été fait ; vérifier que c'est le projet de production voulu et que `config.toml` est simplement périmé.
+
+**2. Sécurité en accès anonyme (clé publique) : conforme.**
+- Lecture : `photos` (toutes, brouillons ou non), `photo_placements` et `photo_variants` renvoient **0 ligne** (aucun brouillon lisible, rien de publié). Les tables du suivi de capacité (`photo_storage_usage`, `storage_deletion_outbox`) sont introuvables (404) côté anonyme.
+- Écriture : un INSERT anonyme est refusé (HTTP 401, code Postgres `42501`, « violates row-level security policy ») sur `photos`, `categories`, `photo_variants`, `photo_placements`, `seo_pages` ; sur `events`, refus par absence de droit (`42501`, pas de GRANT INSERT à `anon`). Méthode sûre : chaque INSERT mettait NULL dans une colonne obligatoire, donc même une politique trop permissive n'aurait rien écrit (erreur 23502 attendue seulement en cas de faille ; elle n'est jamais apparue).
+- **Non testés par l'API, par prudence** (aucun test sans risque d'écriture) : UPDATE et DELETE anonymes, et l'envoi anonyme dans le bucket. Une réponse à 0 ligne est identique que la politique refuse ou non, et un envoi de test aurait écrit un fichier. À vérifier par `postflight-selects.sql` (bloc des politiques) ; les migrations n'accordent l'écriture qu'à `has_role(admin)`.
+- Bucket : le listing public est **refusé** (`POST /object/list/photos` renvoie `[]`, y compris sous `galleries/`) alors que les URLs directes répondent 200 ; une URL de dossier renvoie 404.
+
+**3. Préversion avec `VITE_GALLERIES_FROM_STORAGE=true` : compile.** Build vert ; le worker a été lancé en local (`wrangler dev --local`, aucun déploiement) et les pages rendues en HTML : `/photographe-couple-marseille` (200, 3 galeries `gallery-…-1..3`, 0 `<img>` de galerie, texte « Galerie en cours de remplissage… »), `/portfolio/couple` (200, même message), `/portfolio` (200, 6 images, inchangé), `/sitemap.xml` (liste les 4 `/portfolio/<catégorie>`). **Cela confirme l'analyse du 11 novembre : tant que les photos sont en brouillon, le flag donne des galeries vides.** `dist/` a été reconstruit sans le flag (propre).
+
+**Comment fixer le flag pour la production** (non appliqué) : `npm run deploy:cf` = `npm run build && wrangler deploy` ; npm transmet l'environnement du shell à Vite, qui lit les `VITE_*` du processus avant les fichiers `.env`. Aucun changement de code n'est donc nécessaire pour un déploiement ponctuel : `VITE_GALLERIES_FROM_STORAGE=true npm run deploy:cf`. Un `.env.production` marcherait aussi mais `.env.*` est ignoré par git : réglage invisible et non reproductible. Changement minimal proposé, dans `package.json` :
+```
+"preview:cf": "VITE_GALLERIES_FROM_STORAGE=true npm run build && wrangler versions upload",
+"deploy:cf:storage": "VITE_GALLERIES_FROM_STORAGE=true npm run deploy:cf"
+```
+`deploy:cf` reste sans flag (retour arrière = relancer ce script). Une fois les galeries validées, on peut faire basculer `deploy:cf` lui-même (commit relu, historique clair).
+
+**4. Impossible à vérifier sans navigateur ni publication : à tester à la main**
+- Rendu réel avec photos **publiées** : tout le chemin « galerie remplie » (décompte par galerie, ordre, `<picture>` AVIF/WebP, `srcset`, cadrage, texte alternatif) : les lectures anonymes renvoient 0 ligne tant que rien n'est publié.
+- Lightbox, clavier, focus, mise en page mobile/ordinateur, absence de décalage (CLS), Lighthouse.
+- Format réellement servi par navigateur (AVIF vs WebP) ; Safari/iPhone.
+- Préversion Cloudflare : URL de préversion active ? (réglage du tableau de bord).
+- Admin : envoi, réordonnancement, suppression, double authentification ; test d'écriture avec session aal2 (créer puis supprimer un élément de test).
+- UPDATE/DELETE anonymes et envoi anonyme dans le bucket (voir plus haut) via `postflight-selects.sql`.
+- Sitemap et indexation réelle côté Google après bascule.
+
+### Partie 2 : galeries de photos par événement
+**État des lieux** (déjà là avant cette session) : contexte `event` de `photo_placements` (migration 000003 amendée) ; colonnes `events.galleries` et `gallery_reference_event_id` (migration 20261110, **à appliquer** si ce n'est pas fait) ; admin Événements : `EventGalleriesAdmin` dans la fiche (créer, renommer, réordonner et supprimer une galerie vide, envoyer des photos, ordre, publication, texte alternatif, retrait, « Édition précédente ») ; `uploadEventPhoto` (réencodage AVIF/WebP dans le navigateur, nettoyage en cas d'échec) ; lecture `loadEventGalleries` + `loadGalleryGroups` ; affichage `EventGallerySection` dans `EventPage` (galeries de l'événement puis « Édition précédente » si l'événement référencé est publié). Expiration d'affichage : non touchée.
+
+**Ce qui manquait et a été fait** (2 commits, tests inclus) :
+- `0af236f` : `src/lib/photos/upload-target.ts` (+ tests, 6) : choix des galeries d'un événement, validation et calcul de l'ordre, libellé « Événement · Galerie ».
+- `bb46af2` : admin **Photos** : nouvelle destination « Événement » dans « Ajouter une photo » (événement, galerie de l'événement, ordre, cadrage, publication), qui réutilise `uploadEventPhoto` ; les cartes de la bibliothèque indiquent « Galerie d'événement : Événement · Galerie ». Les erreurs d'écriture passent par `toastAdminError` (`write-error.ts`) ; les erreurs de saisie gardent leur message. La destination reste masquée tant que la colonne `galleries` n'existe pas (migration 20261110 non appliquée).
+- Aucune migration nouvelle. Les 74 photos de Noël ne sont ni importées ni ajoutées au manifeste.
+
+**Reste à décider / à savoir**
+- **Les galeries d'événement ne s'affichent qu'avec `VITE_GALLERIES_FROM_STORAGE=true`** (même interrupteur que les galeries SEO, `src/lib/events/queries.ts`). Tant qu'il est éteint, la photographe peut les préparer mais rien n'apparaît sur la page. Si elle doit publier avant la bascule des galeries SEO, il faut un interrupteur séparé (petit changement, décision à valider).
+- Le cadrage n'est pas réglable pour les photos d'une galerie d'événement dans la fiche (valeur 50/50 ; réglable à l'envoi depuis l'admin Photos, pas ensuite).
+- Photos uploadées via l'admin : `photos.published=true` et `category_id` = catégorie « Événement » : comme pour les galeries SEO, ce chemin peut les exposer à l'affichage hérité par catégorie ; à garder en tête (non modifié).
+
+### Points à tester à la main (Partie 2)
+1. Fiche événement de test (créer, puis supprimer) : créer une galerie « Édition précédente », envoyer 2 photos, vérifier ordre, texte alternatif, publier.
+2. Admin Photos : destination « Événement » → les mêmes photos apparaissent ; la carte affiche « Galerie d'événement » ; l'ordre déjà pris est refusé.
+3. Avec une session sans double authentification : le message « double authentification » du helper s'affiche (à la place de « droits nécessaires »).
+4. Page publique de l'événement en préversion avec le flag : galeries sous la fiche, puis « Édition précédente » depuis l'événement référencé (publié seulement).
+5. Mobile : sélecteurs de la destination « Événement » et envoi depuis un iPhone.
+
+### Trois prochaines actions pour Paul
+1. Vérifier le projet Supabase (`.env` : `kvzzzwjddanwedzotaka` vs `config.toml` : `hvfvvbiupyzoounzyqoz`) et lancer `postflight-selects.sql` (politiques UPDATE/DELETE, bucket).
+2. Publier les 170 photos (`--publish-existing`, essai sur 4 puis tout), puis préversion (`npm run build` avec le flag + `wrangler versions upload`) et dérouler la checklist ci-dessus.
+3. Appliquer la migration `20261110000000_event_galleries.sql` si ce n'est pas fait, tester une galerie d'événement de bout en bout, et décider d'un interrupteur séparé pour les galeries d'événement.
