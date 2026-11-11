@@ -98,6 +98,9 @@ export function SiteNav({ overlay = false }: { overlay?: boolean }) {
                   alt="Soleana Studio"
                   width={360}
                   height={180}
+                  loading="eager"
+                  fetchPriority="high"
+                  decoding="async"
                   className="h-14 w-auto object-contain sm:h-16 md:h-[4.5rem]"
                 />
               </picture>

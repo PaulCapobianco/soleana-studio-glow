@@ -129,6 +129,9 @@ export const Route = createFileRoute("/")({
           rel: "preload",
           as: "image",
           href: logoSoleana280Avif,
+          // Même srcset/sizes que le logo affiché : le navigateur précharge la variante réellement utilisée.
+          imageSrcSet: `${logoSoleana180Avif} 180w, ${logoSoleana280Avif} 280w, ${logoSoleanaAvif} 404w`,
+          imageSizes: "(max-width: 1279px) 280px, 350px",
           type: "image/avif",
           fetchPriority: "high" as const,
         },
