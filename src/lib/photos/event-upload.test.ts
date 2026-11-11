@@ -92,7 +92,6 @@ const input = {
   eventSlug: "noel-2027",
   slot: "galerie-1",
   displayOrder: 3,
-  categoryId: "cat-evenement",
 };
 
 describe("uploadEventPhoto", () => {
@@ -105,7 +104,9 @@ describe("uploadEventPhoto", () => {
       .payload as Record<string, unknown>;
     expect(photoInsert).toMatchObject({
       alt_text: "Famille — Noël",
-      category_id: "cat-evenement",
+      category_id: null,
+      on_home: false,
+      on_portfolio: false,
       published: true,
     });
     expect(photoInsert.source_key).toMatch(/^galleries\/evenement\/[a-f0-9]{32}$/);

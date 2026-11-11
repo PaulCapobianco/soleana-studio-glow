@@ -252,7 +252,6 @@ export function PhotosAdmin() {
         slot,
         orderInput: order,
       });
-      const category = cats?.find((item) => item.slug === "evenement");
       const result = await uploadEventPhoto({
         file,
         alt,
@@ -260,7 +259,6 @@ export function PhotosAdmin() {
         eventSlug: plan.eventSlug,
         slot: plan.slot,
         displayOrder: plan.displayOrder,
-        categoryId: category?.id ?? null,
         published,
       });
       if (result.warning) toast.warning(result.warning);

@@ -40,8 +40,6 @@ export type EventPhotoUpload = {
   eventSlug: string;
   slot: string;
   displayOrder: number;
-  /** Catégorie « evenement » (photos.category_id), si elle existe. */
-  categoryId: string | null;
   published?: boolean;
 };
 
@@ -113,7 +111,10 @@ export async function uploadEventPhoto(
       .insert({
         image_url: imageUrl,
         alt_text: alt,
-        category_id: input.categoryId,
+        // Jamais de catégorie : les affichages hérités (CategoryGallery, CategoryGallerySection) lisent
+        // `photos` par `category_id` + `published`. Sans catégorie, la photo n'apparaît que par son
+        // emplacement `event` (galerie de l'événement, visible selon le statut de l'événement).
+        category_id: null,
         published: true,
         on_home: false,
         on_portfolio: false,
