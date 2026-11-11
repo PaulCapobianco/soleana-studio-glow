@@ -12,6 +12,16 @@ import { confirmDelete } from "@/lib/admin/confirm-delete";
 import { toastAdminError } from "@/lib/admin/write-error";
 import { useDirtySet } from "@/lib/admin/use-dirty-set";
 import { useEditableRecord } from "@/lib/admin/use-editable-record";
+import { AdminValidationError } from "@/lib/admin/friendly-error";
+import { uploadEventPhoto } from "@/lib/photos/event-upload";
+import {
+  describeEventUsage,
+  eventGalleryChoices,
+  planEventUpload,
+  type EventPlacementLite,
+  type EventTargetOption,
+  type UploadTargetKind,
+} from "@/lib/photos/upload-target";
 import {
   cleanupOrphanPhotoVariants,
   getPhotoStorageCapacity,
@@ -90,6 +100,8 @@ export function PhotosAdmin() {
   const setDirty = useDirtySet();
   const [file, setFile] = useState<File | null>(null);
   const [altText, setAltText] = useState("");
+  const [target, setTarget] = useState<UploadTargetKind>("seo");
+  const [eventId, setEventId] = useState("");
   const [seoPageId, setSeoPageId] = useState("");
   const [slot, setSlot] = useState("gallery-1");
   const [order, setOrder] = useState("");
@@ -158,6 +170,34 @@ export function PhotosAdmin() {
     retry: false,
   });
 
+  // Galeries d'événement (colonne `galleries`, migration 20261110) et leurs photos. Absentes tant que
+  // la migration n'est pas appliquée : la cible « Événement » reste alors masquée.
+  const { data: eventOptions } = useQuery({
+    queryKey: ["admin-photo-events"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("events")
+        .select("id, slug, title, galleries" as never)
+        .order("created_at", { ascending: false });
+      queryError(error);
+      return (data ?? []) as unknown as EventTargetOption[];
+    },
+    retry: false,
+  });
+  const { data: eventPlacements } = useQuery({
+    queryKey: ["admin-photo-event-placements"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("photo_placements")
+        .select("photo_id, event_id, slot, display_order")
+        .eq("context_type", "event");
+      queryError(error);
+      return (data ?? []) as unknown as (EventPlacementLite & { photo_id: string })[];
+    },
+    retry: false,
+  });
+  const eventTargetAvailable = Boolean(eventOptions && eventPlacements);
+
   const {
     data: storageCapacity,
     isError: storageCapacityUnavailable,
@@ -185,17 +225,67 @@ export function PhotosAdmin() {
   );
   const selectedPage = seoPages?.find((page) => page.id === seoPageId);
   const availableSlots = selectedPage ? GALLERY_SLOTS[selectedPage.slug] : ["gallery-1"];
+  const eventGalleries = eventGalleryChoices(eventOptions ?? [], eventId);
   const nextOrder =
     Math.max(
       -1,
-      ...(placements ?? [])
-        .filter((placement) => placement.seo_page_id === seoPageId && placement.slot === slot)
-        .map((placement) => placement.display_order),
+      ...(target === "event"
+        ? (eventPlacements ?? []).filter(
+            (placement) => placement.event_id === eventId && placement.slot === slot,
+          )
+        : (placements ?? []).filter(
+            (placement) => placement.seo_page_id === seoPageId && placement.slot === slot,
+          )
+      ).map((placement) => placement.display_order),
     ) + 1;
+
+  async function handleEventUpload(form: HTMLFormElement) {
+    if (uploading || !storageReady || !file) return;
+    const alt = altText.trim();
+    if (!alt) return toast.error("Décrivez la photo dans le texte alternatif.");
+    setUploading(true);
+    try {
+      const plan = planEventUpload({
+        events: eventOptions ?? [],
+        placements: eventPlacements ?? [],
+        eventId,
+        slot,
+        orderInput: order,
+      });
+      const category = cats?.find((item) => item.slug === "evenement");
+      const result = await uploadEventPhoto({
+        file,
+        alt,
+        eventId: plan.eventId,
+        eventSlug: plan.eventSlug,
+        slot: plan.slot,
+        displayOrder: plan.displayOrder,
+        categoryId: category?.id ?? null,
+        published,
+      });
+      if (result.warning) toast.warning(result.warning);
+      toast.success(`Photo ajoutée à « ${plan.galleryTitle} » (${plan.eventTitle}).`);
+      setFile(null);
+      setAltText("");
+      setOrder("");
+      form.reset();
+      qc.invalidateQueries({ queryKey: ["admin-photos"] });
+      qc.invalidateQueries({ queryKey: ["admin-photo-variants"] });
+      qc.invalidateQueries({ queryKey: ["admin-photo-event-placements"] });
+      qc.invalidateQueries({ queryKey: ["admin-event-placements", plan.eventId] });
+      qc.invalidateQueries({ queryKey: ["admin-photo-storage-capacity"] });
+    } catch (error) {
+      if (error instanceof AdminValidationError) toast.error(error.message);
+      else void toastAdminError(error);
+    } finally {
+      setUploading(false);
+    }
+  }
 
   async function handleUpload(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
+    if (target === "event") return handleEventUpload(form);
     if (uploading || !storageReady || !file || !selectedPage) return;
     const alt = altText.trim();
     const categorySlug = galleryCategory(selectedPage.slug);
@@ -419,46 +509,116 @@ export function PhotosAdmin() {
               className="min-h-11 w-full border border-border bg-background px-3 py-2"
             />
           </label>
-          <label className="space-y-1 text-sm">
-            Page galerie
-            <FieldHint>page SEO sur laquelle la photo apparaîtra</FieldHint>
-            <select
-              value={seoPageId}
-              onChange={(event) => {
-                setSeoPageId(event.target.value);
-                setSlot("gallery-1");
-                setOrder("");
-              }}
-              required
-              className="min-h-11 w-full border border-border bg-background px-3 py-2"
-            >
-              <option value="">Choisir une page</option>
-              {(seoPages ?? []).map((page) => (
-                <option key={page.id} value={page.id}>
-                  {page.h1}
-                  {page.published ? "" : " (non publiée)"}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="space-y-1 text-sm">
-            Galerie dans la page
-            <FieldHint>certaines pages ont plusieurs galeries</FieldHint>
-            <select
-              value={slot}
-              onChange={(event) => {
-                setSlot(event.target.value);
-                setOrder("");
-              }}
-              className="min-h-11 w-full border border-border bg-background px-3 py-2"
-            >
-              {availableSlots.map((value) => (
-                <option key={value} value={value}>
-                  Galerie {value.split("-")[1]}
-                </option>
-              ))}
-            </select>
-          </label>
+          {eventTargetAvailable && (
+            <label className="space-y-1 text-sm">
+              Destination
+              <FieldHint>une page du site, ou la galerie d'un événement</FieldHint>
+              <select
+                value={target}
+                onChange={(event) => {
+                  setTarget(event.target.value as UploadTargetKind);
+                  setSlot(event.target.value === "event" ? "" : "gallery-1");
+                  setOrder("");
+                }}
+                className="min-h-11 w-full border border-border bg-background px-3 py-2"
+              >
+                <option value="seo">Page du site</option>
+                <option value="event">Événement</option>
+              </select>
+            </label>
+          )}
+          {target === "event" ? (
+            <>
+              <label className="space-y-1 text-sm">
+                Événement
+                <FieldHint>l'événement dont la page affichera la photo</FieldHint>
+                <select
+                  value={eventId}
+                  onChange={(event) => {
+                    setEventId(event.target.value);
+                    setSlot("");
+                    setOrder("");
+                  }}
+                  required
+                  className="min-h-11 w-full border border-border bg-background px-3 py-2"
+                >
+                  <option value="">Choisir un événement</option>
+                  {(eventOptions ?? []).map((item) => (
+                    <option key={item.id} value={item.id}>
+                      {item.title}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="space-y-1 text-sm">
+                Galerie de l'événement
+                <FieldHint>
+                  {eventId && eventGalleries.length === 0
+                    ? "cet événement n'a pas encore de galerie : créez-la dans la fiche de l'événement"
+                    : "les galeries se créent et se renomment dans la fiche de l'événement"}
+                </FieldHint>
+                <select
+                  value={slot}
+                  onChange={(event) => {
+                    setSlot(event.target.value);
+                    setOrder("");
+                  }}
+                  required
+                  className="min-h-11 w-full border border-border bg-background px-3 py-2"
+                >
+                  <option value="">Choisir une galerie</option>
+                  {eventGalleries.map((gallery) => (
+                    <option key={gallery.slot} value={gallery.slot}>
+                      {gallery.title}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </>
+          ) : (
+            <>
+              <label className="space-y-1 text-sm">
+                Page galerie
+                <FieldHint>page SEO sur laquelle la photo apparaîtra</FieldHint>
+                <select
+                  value={seoPageId}
+                  onChange={(event) => {
+                    setSeoPageId(event.target.value);
+                    setSlot("gallery-1");
+                    setOrder("");
+                  }}
+                  required
+                  className="min-h-11 w-full border border-border bg-background px-3 py-2"
+                >
+                  <option value="">Choisir une page</option>
+                  {(seoPages ?? []).map((page) => (
+                    <option key={page.id} value={page.id}>
+                      {page.h1}
+                      {page.published ? "" : " (non publiée)"}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="space-y-1 text-sm">
+                Galerie dans la page
+                <FieldHint>certaines pages ont plusieurs galeries</FieldHint>
+                <select
+                  value={slot}
+                  onChange={(event) => {
+                    setSlot(event.target.value);
+                    setOrder("");
+                  }}
+                  className="min-h-11 w-full border border-border bg-background px-3 py-2"
+                >
+                  {availableSlots.map((value) => (
+                    <option key={value} value={value}>
+                      Galerie {value.split("-")[1]}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </>
+          )}
           <label className="space-y-1 text-sm">
             Ordre d'affichage
             <FieldHint>numéro libre dans cette galerie ; prochain numéro : {nextOrder}</FieldHint>
@@ -525,6 +685,10 @@ export function PhotosAdmin() {
             placements={(placements ?? []).filter((placement) => placement.photo_id === p.id)}
             variants={(variants ?? []).filter((variant) => variant.photo_id === p.id)}
             storageReady={storageReady}
+            eventUsage={describeEventUsage(
+              eventOptions ?? [],
+              (eventPlacements ?? []).filter((placement) => placement.photo_id === p.id),
+            )}
             allPlacements={placements ?? []}
             onPlacementDirtyChange={(id, dirty) => setDirty(`placement:${id}`, dirty)}
             onDirtyChange={(dirty) => setDirty(p.id, dirty)}
@@ -552,6 +716,7 @@ function PhotoCard({
   placements,
   variants,
   storageReady,
+  eventUsage,
   allPlacements,
   onPlacementDirtyChange,
   onDirtyChange,
@@ -562,6 +727,8 @@ function PhotoCard({
   placements: Placement[];
   variants: PhotoVariant[];
   storageReady: boolean;
+  /** Galeries d'événement où la photo est utilisée (« Événement · Galerie »). */
+  eventUsage: string[];
   allPlacements: Placement[];
   onPlacementDirtyChange: (id: string, dirty: boolean) => void;
   onDirtyChange: (isDirty: boolean) => void;
@@ -730,6 +897,12 @@ function PhotoCard({
             className="min-h-11"
           />
         </div>
+        {eventUsage.length > 0 && (
+          <p className="text-xs text-muted-foreground">
+            Galerie d'événement : {eventUsage.join(" ; ")}. Son ordre, sa publication et son retrait
+            se gèrent dans la fiche de l'événement.
+          </p>
+        )}
         {placements.map((placement) => (
           <PlacementEditor
             key={placement.id}
