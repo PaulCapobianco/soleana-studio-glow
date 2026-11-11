@@ -1,0 +1,1373 @@
+{
+  "report": {
+    "event_slug": "mini-seances-noel-2026",
+    "galleries": [
+      {
+        "slot": "galerie-1",
+        "title": "Séance 1",
+        "count": 13
+      },
+      {
+        "slot": "galerie-2",
+        "title": "Séance 2",
+        "count": 11
+      },
+      {
+        "slot": "galerie-3",
+        "title": "Séance 3",
+        "count": 19
+      },
+      {
+        "slot": "galerie-4",
+        "title": "Séance 4",
+        "count": 12
+      },
+      {
+        "slot": "galerie-5",
+        "title": "Décor",
+        "count": 19
+      }
+    ],
+    "photos": 74,
+    "placements": 74,
+    "files_in_folder": 154,
+    "ignored_hero_files": 6,
+    "planned_variants": 592
+  },
+  "photos": [
+    {
+      "source_key": "galleries/evenement/47f088a2e913",
+      "source_file": "src/assets/noel-2026/noel-s01-01-1600.webp",
+      "source_sha256": "47f088a2e913b068bcd374d7979ef1297b0315f4ffb0032d3f6ac904123d4312",
+      "width": 1600,
+      "height": 1067,
+      "alt_text": "Séance 1 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/f6929438c467",
+      "source_file": "src/assets/noel-2026/noel-s01-02-1600.webp",
+      "source_sha256": "f6929438c4676c47d855ad2c195d4582fb4efe6dd3fc5b03a97ec40b1e13481b",
+      "width": 1600,
+      "height": 1067,
+      "alt_text": "Séance 1 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/edb566fc5e4f",
+      "source_file": "src/assets/noel-2026/noel-s01-03-1600.webp",
+      "source_sha256": "edb566fc5e4fdbcf5be0d811a7fe0e678bde798e3d23ac35ddf49d358e887c6c",
+      "width": 1600,
+      "height": 1066,
+      "alt_text": "Séance 1 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/078e173d7976",
+      "source_file": "src/assets/noel-2026/noel-s01-04-1600.webp",
+      "source_sha256": "078e173d7976116140aecb5c2d4de94531ccf5a1a9eee3877ca8127d7b60b010",
+      "width": 1600,
+      "height": 1067,
+      "alt_text": "Séance 1 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/4963ffa5ffb0",
+      "source_file": "src/assets/noel-2026/noel-s01-05-1600.webp",
+      "source_sha256": "4963ffa5ffb0afc370355fc706c272f2e57bf39e38a13e7b473154ba2e05e150",
+      "width": 1600,
+      "height": 1067,
+      "alt_text": "Séance 1 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/f519114f832b",
+      "source_file": "src/assets/noel-2026/noel-s01-06-1600.webp",
+      "source_sha256": "f519114f832b48569471536927a62ec5f2d1b262243c9a654d497355db71af69",
+      "width": 1600,
+      "height": 1067,
+      "alt_text": "Séance 1 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/fb7506c08b5e",
+      "source_file": "src/assets/noel-2026/noel-s01-07-1600.webp",
+      "source_sha256": "fb7506c08b5e2cd5cfaea77216a1761541b79e21d0e198072027b1019b58c86a",
+      "width": 1600,
+      "height": 1067,
+      "alt_text": "Séance 1 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/38b17ae71667",
+      "source_file": "src/assets/noel-2026/noel-s01-08-1600.webp",
+      "source_sha256": "38b17ae71667c7dd87ab899b9c45d987745bb18c868ff5765ece454651b5e022",
+      "width": 1600,
+      "height": 1067,
+      "alt_text": "Séance 1 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/bf27127c59b1",
+      "source_file": "src/assets/noel-2026/noel-s01-09-1600.webp",
+      "source_sha256": "bf27127c59b183c95a01ba8b9d972f0b285a4004479b0583d8636f98e8e93f09",
+      "width": 1600,
+      "height": 1067,
+      "alt_text": "Séance 1 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/5095dbb2740e",
+      "source_file": "src/assets/noel-2026/noel-s01-10-1600.webp",
+      "source_sha256": "5095dbb2740e2dd4fb8c0f2d8293ab651df17b474ae0422018cbfb99e2a39b4f",
+      "width": 1600,
+      "height": 1067,
+      "alt_text": "Séance 1 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/37e65773cbf4",
+      "source_file": "src/assets/noel-2026/noel-s01-11-1600.webp",
+      "source_sha256": "37e65773cbf418f0eb0e5c8aa0f3753c1ed34b264636cb00fda2b5c5a89069b2",
+      "width": 1600,
+      "height": 1067,
+      "alt_text": "Séance 1 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/bb7f784eb9a9",
+      "source_file": "src/assets/noel-2026/noel-s01-12-1600.webp",
+      "source_sha256": "bb7f784eb9a9e909cfc0150bda09ce81415913bf519fe215f3914c75465d9925",
+      "width": 1600,
+      "height": 1067,
+      "alt_text": "Séance 1 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/bd84a854e6ae",
+      "source_file": "src/assets/noel-2026/noel-s01-13-1600.webp",
+      "source_sha256": "bd84a854e6ae687e860e5dcc4ade982b1fe347996a75446ae9f09d425aca9326",
+      "width": 1600,
+      "height": 2400,
+      "alt_text": "Séance 1 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/f9131dd0a5ba",
+      "source_file": "src/assets/noel-2026/noel-s02-01-1600.webp",
+      "source_sha256": "f9131dd0a5ba4a115d91052df1ce3e53c87b0cc390c717e2b808be17f30fef2c",
+      "width": 1600,
+      "height": 2400,
+      "alt_text": "Séance 2 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/3a20a48c5f5c",
+      "source_file": "src/assets/noel-2026/noel-s02-02-1600.webp",
+      "source_sha256": "3a20a48c5f5c07c5ef80caf9c5e6bf9802b5005f29e21810aa3c524ca94d45ae",
+      "width": 1600,
+      "height": 1067,
+      "alt_text": "Séance 2 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/2294a151653f",
+      "source_file": "src/assets/noel-2026/noel-s02-03-1600.webp",
+      "source_sha256": "2294a151653f12a44718bae09899c2a59f8e3dfd47e9a7f153b3613feaa1019f",
+      "width": 1600,
+      "height": 1067,
+      "alt_text": "Séance 2 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/a5c62f0f76cb",
+      "source_file": "src/assets/noel-2026/noel-s02-04-1600.webp",
+      "source_sha256": "a5c62f0f76cbcf97d2f0699d6e211dfa592bbad3cbc14adb4f6c81150ec0cb7b",
+      "width": 1600,
+      "height": 1066,
+      "alt_text": "Séance 2 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/582e5c7a0163",
+      "source_file": "src/assets/noel-2026/noel-s02-05-1600.webp",
+      "source_sha256": "582e5c7a01631d5462b60ed61df35b495b143f91a502afadf8d6d375c012c75f",
+      "width": 1600,
+      "height": 2400,
+      "alt_text": "Séance 2 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/4008234ed8c2",
+      "source_file": "src/assets/noel-2026/noel-s02-06-1600.webp",
+      "source_sha256": "4008234ed8c2c4233f224f6bfb9d8b8e74d634b0cfba749f55ff0548edd6246d",
+      "width": 1600,
+      "height": 2400,
+      "alt_text": "Séance 2 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/5fcda1cd17ce",
+      "source_file": "src/assets/noel-2026/noel-s02-07-1600.webp",
+      "source_sha256": "5fcda1cd17ce3023290f3dd1c68ff389dc1bab086568fd50c5fd60ddd6b1d511",
+      "width": 1600,
+      "height": 2400,
+      "alt_text": "Séance 2 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/5d311f1836b1",
+      "source_file": "src/assets/noel-2026/noel-s02-08-1600.webp",
+      "source_sha256": "5d311f1836b1fbda083080dfa61e6d175061f626d99d50fbb6572190aa50515d",
+      "width": 1600,
+      "height": 2400,
+      "alt_text": "Séance 2 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/d27baf807ce1",
+      "source_file": "src/assets/noel-2026/noel-s02-09-1600.webp",
+      "source_sha256": "d27baf807ce171089f2a097af2da63fb75aa051b332114e0383c1649738e5ac8",
+      "width": 1600,
+      "height": 2400,
+      "alt_text": "Séance 2 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/ed31eef79e83",
+      "source_file": "src/assets/noel-2026/noel-s02-10-1600.webp",
+      "source_sha256": "ed31eef79e83c7edd23df34813d434f4c1dcd503fb054842ce1d146b2a18f3ee",
+      "width": 1600,
+      "height": 2400,
+      "alt_text": "Séance 2 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/adfcff0beace",
+      "source_file": "src/assets/noel-2026/noel-s02-11-1600.webp",
+      "source_sha256": "adfcff0beace52db2ac10d14a105dbfa61a56a74170bee35193f80c133c9e68e",
+      "width": 1600,
+      "height": 2400,
+      "alt_text": "Séance 2 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/e800985228a9",
+      "source_file": "src/assets/noel-2026/noel-s03-01-1600.webp",
+      "source_sha256": "e800985228a948ea445967ef4f69fc4f612f01a5b71385742a0670372b40d49c",
+      "width": 1600,
+      "height": 2400,
+      "alt_text": "Séance 3 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/3c619531952a",
+      "source_file": "src/assets/noel-2026/noel-s03-02-1600.webp",
+      "source_sha256": "3c619531952a9986cc6b2979e501fd8de651e1382e7c2fbe85c86ab22ad979d0",
+      "width": 1600,
+      "height": 2400,
+      "alt_text": "Séance 3 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/08d98e655b1e",
+      "source_file": "src/assets/noel-2026/noel-s03-03-1600.webp",
+      "source_sha256": "08d98e655b1ee9eb328a373f30e2b17ac5d3597aa1037dac04d332e4c19a1265",
+      "width": 1600,
+      "height": 2400,
+      "alt_text": "Séance 3 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/1df75450cd93",
+      "source_file": "src/assets/noel-2026/noel-s03-04-1600.webp",
+      "source_sha256": "1df75450cd93424edab223bc9186f3175bd1b018a8f807b19cc6ec8ff994bd04",
+      "width": 1600,
+      "height": 2400,
+      "alt_text": "Séance 3 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/90ab149f5803",
+      "source_file": "src/assets/noel-2026/noel-s03-05-1600.webp",
+      "source_sha256": "90ab149f5803d2ae4f6cf232d8c21eced131e1cf16b1656b84fd94c8f61ae4fc",
+      "width": 1600,
+      "height": 2400,
+      "alt_text": "Séance 3 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/4d01dad60e72",
+      "source_file": "src/assets/noel-2026/noel-s03-06-1600.webp",
+      "source_sha256": "4d01dad60e72fbc273a9bbb6e65b22c261934643f1835f09588d3e032d13f5a1",
+      "width": 1600,
+      "height": 1067,
+      "alt_text": "Séance 3 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/40f92be846f0",
+      "source_file": "src/assets/noel-2026/noel-s03-07-1600.webp",
+      "source_sha256": "40f92be846f01bd9ff3f74904a188fb29ea06a9d0e9335e1509870f047c8b0a5",
+      "width": 1600,
+      "height": 2400,
+      "alt_text": "Séance 3 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/0c56fefd248c",
+      "source_file": "src/assets/noel-2026/noel-s03-08-1600.webp",
+      "source_sha256": "0c56fefd248c4f6a7360d1c2b62cf9a52a93e4a8f1242587c46c9cb68ab1b840",
+      "width": 1600,
+      "height": 1067,
+      "alt_text": "Séance 3 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/7259136e1895",
+      "source_file": "src/assets/noel-2026/noel-s03-09-1600.webp",
+      "source_sha256": "7259136e1895c345bf8a3eced34fa0396ea337cbd091aa005bc069cadebbd14e",
+      "width": 1600,
+      "height": 2400,
+      "alt_text": "Séance 3 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/3e09def58f09",
+      "source_file": "src/assets/noel-2026/noel-s03-10-1600.webp",
+      "source_sha256": "3e09def58f09a08a62eb14fff5006543218ff5e1bd4a35f15ed7df827852d9e1",
+      "width": 1600,
+      "height": 2400,
+      "alt_text": "Séance 3 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/d35a675ae945",
+      "source_file": "src/assets/noel-2026/noel-s03-11-1600.webp",
+      "source_sha256": "d35a675ae94520f5c58e15f8e2a07588f7f067866b691dc90a18a58ab79dd820",
+      "width": 1600,
+      "height": 2400,
+      "alt_text": "Séance 3 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/3b64f3cb5707",
+      "source_file": "src/assets/noel-2026/noel-s03-12-1600.webp",
+      "source_sha256": "3b64f3cb57077828b04b48ffdfa61404ef7269400b8f25681e285a878fe0175f",
+      "width": 1600,
+      "height": 1067,
+      "alt_text": "Séance 3 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/ebe003b635d4",
+      "source_file": "src/assets/noel-2026/noel-s03-13-1600.webp",
+      "source_sha256": "ebe003b635d449146b22962793250b2c1a94e2b9a14752389aed37017dd9a756",
+      "width": 1600,
+      "height": 2400,
+      "alt_text": "Séance 3 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/d2fc080fa42d",
+      "source_file": "src/assets/noel-2026/noel-s03-14-1600.webp",
+      "source_sha256": "d2fc080fa42d7c33b3680293d001a6ee2288cbb2f08b526161e4870167821a7d",
+      "width": 1600,
+      "height": 1067,
+      "alt_text": "Séance 3 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/dbd83bdf2458",
+      "source_file": "src/assets/noel-2026/noel-s03-15-1600.webp",
+      "source_sha256": "dbd83bdf24589819061462b39304e6a7506d6e7606b444643dfe6bbec34e42b0",
+      "width": 1600,
+      "height": 2400,
+      "alt_text": "Séance 3 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/0ae419deda54",
+      "source_file": "src/assets/noel-2026/noel-s03-16-1600.webp",
+      "source_sha256": "0ae419deda54dcc920627b97016eaeb372649a0937fef41e03295049ed5b0852",
+      "width": 1600,
+      "height": 2400,
+      "alt_text": "Séance 3 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/302374c8340c",
+      "source_file": "src/assets/noel-2026/noel-s03-17-1600.webp",
+      "source_sha256": "302374c8340ca7b8c89cf68a2b208f73170daa2c495774a1330ff2d8c19bcaf5",
+      "width": 1600,
+      "height": 2400,
+      "alt_text": "Séance 3 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/1bc8eff07574",
+      "source_file": "src/assets/noel-2026/noel-s03-18-1600.webp",
+      "source_sha256": "1bc8eff0757488dd8784b65ac20b156f02acf497575fd76b6769776212b79f8b",
+      "width": 1600,
+      "height": 2400,
+      "alt_text": "Séance 3 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/6ba0b9eabf7c",
+      "source_file": "src/assets/noel-2026/noel-s03-19-1600.webp",
+      "source_sha256": "6ba0b9eabf7c3bd76d7a5ff6c9c83a1803ccb6f88f4bf5f299d2935237ab1b58",
+      "width": 1600,
+      "height": 2400,
+      "alt_text": "Séance 3 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/7052d5dcb3f0",
+      "source_file": "src/assets/noel-2026/noel-s04-01-1600.webp",
+      "source_sha256": "7052d5dcb3f0ba2a48ea71024bf10a7834284af1dd17d404153f573aeb09177a",
+      "width": 1600,
+      "height": 2400,
+      "alt_text": "Séance 4 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/0156a25d8896",
+      "source_file": "src/assets/noel-2026/noel-s04-02-1600.webp",
+      "source_sha256": "0156a25d889699a42b1a07a9ae904ef48951dc8d5f5764efe50be97b5be21415",
+      "width": 1600,
+      "height": 1067,
+      "alt_text": "Séance 4 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/1e2bc8963604",
+      "source_file": "src/assets/noel-2026/noel-s04-03-1600.webp",
+      "source_sha256": "1e2bc89636047d177fb0d67ddb78777f27fbd7cbc2af176e49ad263ea86c7cf4",
+      "width": 1600,
+      "height": 2400,
+      "alt_text": "Séance 4 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/3f9dbdb19714",
+      "source_file": "src/assets/noel-2026/noel-s04-04-1600.webp",
+      "source_sha256": "3f9dbdb19714d5c6cd2f14b99815858f8d5933e8367ed97312c264ce81bb019d",
+      "width": 1600,
+      "height": 2400,
+      "alt_text": "Séance 4 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/6e8c2f23de1d",
+      "source_file": "src/assets/noel-2026/noel-s04-05-1600.webp",
+      "source_sha256": "6e8c2f23de1da46c88c2b320cf0edaef73df01801d6f57e29399e1cc49dcf560",
+      "width": 1600,
+      "height": 2400,
+      "alt_text": "Séance 4 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/2ef02e890a6c",
+      "source_file": "src/assets/noel-2026/noel-s04-06-1600.webp",
+      "source_sha256": "2ef02e890a6cc3e418a0b3d1a15fcce405d2e41c35614e2d96d416c3cef7d636",
+      "width": 1600,
+      "height": 2400,
+      "alt_text": "Séance 4 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/68af707bbd35",
+      "source_file": "src/assets/noel-2026/noel-s04-07-1600.webp",
+      "source_sha256": "68af707bbd35342818ae1d6185409f81c0e9f7a2262e376879be2ab4d69770e7",
+      "width": 1600,
+      "height": 1067,
+      "alt_text": "Séance 4 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/66a9291ad00a",
+      "source_file": "src/assets/noel-2026/noel-s04-08-1600.webp",
+      "source_sha256": "66a9291ad00a01ff0071203e291526ee3409b7dc5011201637137076b6efa3b5",
+      "width": 1600,
+      "height": 2400,
+      "alt_text": "Séance 4 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/c5a09ff2f6ee",
+      "source_file": "src/assets/noel-2026/noel-s04-09-1600.webp",
+      "source_sha256": "c5a09ff2f6ee74964edef5dd08f4e25bf2b031e0d7e15803805eb6d31909f159",
+      "width": 1600,
+      "height": 1067,
+      "alt_text": "Séance 4 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/948e7a0a9d82",
+      "source_file": "src/assets/noel-2026/noel-s04-10-1600.webp",
+      "source_sha256": "948e7a0a9d823c247ea6875538f9a2aa081af7ad1fa23f6876ec4e23e5deb24b",
+      "width": 1600,
+      "height": 2400,
+      "alt_text": "Séance 4 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/af3a45101985",
+      "source_file": "src/assets/noel-2026/noel-s04-11-1600.webp",
+      "source_sha256": "af3a4510198527fce8039966e49ce8d5870504d17dc639617d99a87f2fcc6b38",
+      "width": 1600,
+      "height": 2400,
+      "alt_text": "Séance 4 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/03779a192d02",
+      "source_file": "src/assets/noel-2026/noel-s04-12-1600.webp",
+      "source_sha256": "03779a192d0288ea27ee6c5aac430964e95fa9c7328a1fd23e4bb182777fde67",
+      "width": 1600,
+      "height": 2400,
+      "alt_text": "Séance 4 — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/3618510da11c",
+      "source_file": "src/assets/noel-2026/noel-decor-01-1600.webp",
+      "source_sha256": "3618510da11c2741a08afb29a2dfec7cad9a0ff1232c65ddf129fcf08513de6c",
+      "width": 1600,
+      "height": 2400,
+      "alt_text": "Décor — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/dc99232de350",
+      "source_file": "src/assets/noel-2026/noel-decor-02-1600.webp",
+      "source_sha256": "dc99232de35083ea11a612d1bb8d3c2949797d51c3a4d95ee0fa9de1c7e9e7a9",
+      "width": 1600,
+      "height": 1067,
+      "alt_text": "Décor — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/9686624f2feb",
+      "source_file": "src/assets/noel-2026/noel-decor-03-1600.webp",
+      "source_sha256": "9686624f2feb522ac62e301e0a9f71a7968f4066af0828d53d13154c9011327d",
+      "width": 1600,
+      "height": 2400,
+      "alt_text": "Décor — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/cb673c99ecd6",
+      "source_file": "src/assets/noel-2026/noel-decor-04-1600.webp",
+      "source_sha256": "cb673c99ecd6309771b7d02f2b290ec96d1d5d366132d9c20bfe6c409317ce72",
+      "width": 1600,
+      "height": 2400,
+      "alt_text": "Décor — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/4257ba4dc437",
+      "source_file": "src/assets/noel-2026/noel-decor-05-1600.webp",
+      "source_sha256": "4257ba4dc4373a95f5b6560bfb33a0aa548b57c936cc6434a1699a07427c4cda",
+      "width": 1600,
+      "height": 2400,
+      "alt_text": "Décor — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/b782f9aabeb8",
+      "source_file": "src/assets/noel-2026/noel-decor-06-1600.webp",
+      "source_sha256": "b782f9aabeb8fa87de20b26aabeccd8ea2710a6c116303bba64a46d0aa35eeac",
+      "width": 1600,
+      "height": 1067,
+      "alt_text": "Décor — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/cfd8c0c514f1",
+      "source_file": "src/assets/noel-2026/noel-decor-07-1600.webp",
+      "source_sha256": "cfd8c0c514f1b67f95b561010e129e06bbd3088757ee094110e94e3c1dcd3eca",
+      "width": 1600,
+      "height": 2400,
+      "alt_text": "Décor — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/f96489b030c9",
+      "source_file": "src/assets/noel-2026/noel-decor-08-1600.webp",
+      "source_sha256": "f96489b030c9336db14fc393fa57ed61a510ddb72ae5952c836370c4f3b8d4c2",
+      "width": 1600,
+      "height": 2400,
+      "alt_text": "Décor — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/d17a74227c1f",
+      "source_file": "src/assets/noel-2026/noel-decor-09-1600.webp",
+      "source_sha256": "d17a74227c1fc9f283b5c14a2fae03c97cf05b4bab47b64d99edd7c6b2a6f32d",
+      "width": 1600,
+      "height": 1067,
+      "alt_text": "Décor — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/1f3295356326",
+      "source_file": "src/assets/noel-2026/noel-decor-10-1600.webp",
+      "source_sha256": "1f3295356326ffea888138aeae2626052dc0a4ab6818a6826d5bad9e1d6dc615",
+      "width": 1600,
+      "height": 1067,
+      "alt_text": "Décor — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/b16ea66dfdd3",
+      "source_file": "src/assets/noel-2026/noel-decor-11-1600.webp",
+      "source_sha256": "b16ea66dfdd3b74b036ec148b0a2cf0727298261e3d3460b2adea7d86993a9bb",
+      "width": 1600,
+      "height": 2400,
+      "alt_text": "Décor — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/d1317c67480a",
+      "source_file": "src/assets/noel-2026/noel-decor-12-1600.webp",
+      "source_sha256": "d1317c67480aa9bcb801a3fc321ccd09ae6f275f230f75cc51c11c8c687f4398",
+      "width": 1600,
+      "height": 2400,
+      "alt_text": "Décor — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/9763b77bc044",
+      "source_file": "src/assets/noel-2026/noel-decor-13-1600.webp",
+      "source_sha256": "9763b77bc044990d0af02f1d1b74086df280b62bd9d80f31441d4050467124be",
+      "width": 1600,
+      "height": 2400,
+      "alt_text": "Décor — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/51d63f252e26",
+      "source_file": "src/assets/noel-2026/noel-decor-14-1600.webp",
+      "source_sha256": "51d63f252e266700e60bbb3d64c52e9eab4098b46957aea021326106a26be9f4",
+      "width": 1600,
+      "height": 2400,
+      "alt_text": "Décor — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/17e399fe10e9",
+      "source_file": "src/assets/noel-2026/noel-decor-15-1600.webp",
+      "source_sha256": "17e399fe10e9c94eb1019c7b6602515c17f77d124c79dbbe7f53b880d24edbed",
+      "width": 1600,
+      "height": 2400,
+      "alt_text": "Décor — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/8b4cb423c341",
+      "source_file": "src/assets/noel-2026/noel-decor-16-1600.webp",
+      "source_sha256": "8b4cb423c3411f4754f0c73bd196127290479c5df4e3511c97dcd2fb4776e419",
+      "width": 1600,
+      "height": 2400,
+      "alt_text": "Décor — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/f661eb0952b4",
+      "source_file": "src/assets/noel-2026/noel-decor-17-1600.webp",
+      "source_sha256": "f661eb0952b417d687833027cb266f10ef10eb896645317a930d4feec7f95e16",
+      "width": 1600,
+      "height": 2400,
+      "alt_text": "Décor — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/980bcdaaa223",
+      "source_file": "src/assets/noel-2026/noel-decor-18-1600.webp",
+      "source_sha256": "980bcdaaa223e9ffb384a663d3eb636706e84af8ca39dfde216016692df4d302",
+      "width": 1600,
+      "height": 2400,
+      "alt_text": "Décor — mini-séances de Noël 2026"
+    },
+    {
+      "source_key": "galleries/evenement/00c88fd7fab6",
+      "source_file": "src/assets/noel-2026/noel-decor-19-1600.webp",
+      "source_sha256": "00c88fd7fab6272c6cb8e3dec4f3387d4129ca7fd11c6d2b4255fa00760a2fb1",
+      "width": 1600,
+      "height": 2400,
+      "alt_text": "Décor — mini-séances de Noël 2026"
+    }
+  ],
+  "placements": [
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-1/47f088a2e913",
+      "source_key": "galleries/evenement/47f088a2e913",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-1",
+      "display_order": 0,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-1/f6929438c467",
+      "source_key": "galleries/evenement/f6929438c467",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-1",
+      "display_order": 1,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-1/edb566fc5e4f",
+      "source_key": "galleries/evenement/edb566fc5e4f",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-1",
+      "display_order": 2,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-1/078e173d7976",
+      "source_key": "galleries/evenement/078e173d7976",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-1",
+      "display_order": 3,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-1/4963ffa5ffb0",
+      "source_key": "galleries/evenement/4963ffa5ffb0",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-1",
+      "display_order": 4,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-1/f519114f832b",
+      "source_key": "galleries/evenement/f519114f832b",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-1",
+      "display_order": 5,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-1/fb7506c08b5e",
+      "source_key": "galleries/evenement/fb7506c08b5e",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-1",
+      "display_order": 6,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-1/38b17ae71667",
+      "source_key": "galleries/evenement/38b17ae71667",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-1",
+      "display_order": 7,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-1/bf27127c59b1",
+      "source_key": "galleries/evenement/bf27127c59b1",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-1",
+      "display_order": 8,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-1/5095dbb2740e",
+      "source_key": "galleries/evenement/5095dbb2740e",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-1",
+      "display_order": 9,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-1/37e65773cbf4",
+      "source_key": "galleries/evenement/37e65773cbf4",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-1",
+      "display_order": 10,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-1/bb7f784eb9a9",
+      "source_key": "galleries/evenement/bb7f784eb9a9",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-1",
+      "display_order": 11,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-1/bd84a854e6ae",
+      "source_key": "galleries/evenement/bd84a854e6ae",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-1",
+      "display_order": 12,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-2/f9131dd0a5ba",
+      "source_key": "galleries/evenement/f9131dd0a5ba",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-2",
+      "display_order": 0,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-2/3a20a48c5f5c",
+      "source_key": "galleries/evenement/3a20a48c5f5c",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-2",
+      "display_order": 1,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-2/2294a151653f",
+      "source_key": "galleries/evenement/2294a151653f",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-2",
+      "display_order": 2,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-2/a5c62f0f76cb",
+      "source_key": "galleries/evenement/a5c62f0f76cb",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-2",
+      "display_order": 3,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-2/582e5c7a0163",
+      "source_key": "galleries/evenement/582e5c7a0163",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-2",
+      "display_order": 4,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-2/4008234ed8c2",
+      "source_key": "galleries/evenement/4008234ed8c2",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-2",
+      "display_order": 5,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-2/5fcda1cd17ce",
+      "source_key": "galleries/evenement/5fcda1cd17ce",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-2",
+      "display_order": 6,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-2/5d311f1836b1",
+      "source_key": "galleries/evenement/5d311f1836b1",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-2",
+      "display_order": 7,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-2/d27baf807ce1",
+      "source_key": "galleries/evenement/d27baf807ce1",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-2",
+      "display_order": 8,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-2/ed31eef79e83",
+      "source_key": "galleries/evenement/ed31eef79e83",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-2",
+      "display_order": 9,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-2/adfcff0beace",
+      "source_key": "galleries/evenement/adfcff0beace",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-2",
+      "display_order": 10,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-3/e800985228a9",
+      "source_key": "galleries/evenement/e800985228a9",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-3",
+      "display_order": 0,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-3/3c619531952a",
+      "source_key": "galleries/evenement/3c619531952a",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-3",
+      "display_order": 1,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-3/08d98e655b1e",
+      "source_key": "galleries/evenement/08d98e655b1e",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-3",
+      "display_order": 2,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-3/1df75450cd93",
+      "source_key": "galleries/evenement/1df75450cd93",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-3",
+      "display_order": 3,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-3/90ab149f5803",
+      "source_key": "galleries/evenement/90ab149f5803",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-3",
+      "display_order": 4,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-3/4d01dad60e72",
+      "source_key": "galleries/evenement/4d01dad60e72",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-3",
+      "display_order": 5,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-3/40f92be846f0",
+      "source_key": "galleries/evenement/40f92be846f0",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-3",
+      "display_order": 6,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-3/0c56fefd248c",
+      "source_key": "galleries/evenement/0c56fefd248c",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-3",
+      "display_order": 7,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-3/7259136e1895",
+      "source_key": "galleries/evenement/7259136e1895",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-3",
+      "display_order": 8,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-3/3e09def58f09",
+      "source_key": "galleries/evenement/3e09def58f09",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-3",
+      "display_order": 9,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-3/d35a675ae945",
+      "source_key": "galleries/evenement/d35a675ae945",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-3",
+      "display_order": 10,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-3/3b64f3cb5707",
+      "source_key": "galleries/evenement/3b64f3cb5707",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-3",
+      "display_order": 11,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-3/ebe003b635d4",
+      "source_key": "galleries/evenement/ebe003b635d4",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-3",
+      "display_order": 12,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-3/d2fc080fa42d",
+      "source_key": "galleries/evenement/d2fc080fa42d",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-3",
+      "display_order": 13,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-3/dbd83bdf2458",
+      "source_key": "galleries/evenement/dbd83bdf2458",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-3",
+      "display_order": 14,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-3/0ae419deda54",
+      "source_key": "galleries/evenement/0ae419deda54",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-3",
+      "display_order": 15,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-3/302374c8340c",
+      "source_key": "galleries/evenement/302374c8340c",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-3",
+      "display_order": 16,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-3/1bc8eff07574",
+      "source_key": "galleries/evenement/1bc8eff07574",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-3",
+      "display_order": 17,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-3/6ba0b9eabf7c",
+      "source_key": "galleries/evenement/6ba0b9eabf7c",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-3",
+      "display_order": 18,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-4/7052d5dcb3f0",
+      "source_key": "galleries/evenement/7052d5dcb3f0",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-4",
+      "display_order": 0,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-4/0156a25d8896",
+      "source_key": "galleries/evenement/0156a25d8896",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-4",
+      "display_order": 1,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-4/1e2bc8963604",
+      "source_key": "galleries/evenement/1e2bc8963604",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-4",
+      "display_order": 2,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-4/3f9dbdb19714",
+      "source_key": "galleries/evenement/3f9dbdb19714",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-4",
+      "display_order": 3,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-4/6e8c2f23de1d",
+      "source_key": "galleries/evenement/6e8c2f23de1d",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-4",
+      "display_order": 4,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-4/2ef02e890a6c",
+      "source_key": "galleries/evenement/2ef02e890a6c",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-4",
+      "display_order": 5,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-4/68af707bbd35",
+      "source_key": "galleries/evenement/68af707bbd35",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-4",
+      "display_order": 6,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-4/66a9291ad00a",
+      "source_key": "galleries/evenement/66a9291ad00a",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-4",
+      "display_order": 7,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-4/c5a09ff2f6ee",
+      "source_key": "galleries/evenement/c5a09ff2f6ee",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-4",
+      "display_order": 8,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-4/948e7a0a9d82",
+      "source_key": "galleries/evenement/948e7a0a9d82",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-4",
+      "display_order": 9,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-4/af3a45101985",
+      "source_key": "galleries/evenement/af3a45101985",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-4",
+      "display_order": 10,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-4/03779a192d02",
+      "source_key": "galleries/evenement/03779a192d02",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-4",
+      "display_order": 11,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-5/3618510da11c",
+      "source_key": "galleries/evenement/3618510da11c",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-5",
+      "display_order": 0,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-5/dc99232de350",
+      "source_key": "galleries/evenement/dc99232de350",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-5",
+      "display_order": 1,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-5/9686624f2feb",
+      "source_key": "galleries/evenement/9686624f2feb",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-5",
+      "display_order": 2,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-5/cb673c99ecd6",
+      "source_key": "galleries/evenement/cb673c99ecd6",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-5",
+      "display_order": 3,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-5/4257ba4dc437",
+      "source_key": "galleries/evenement/4257ba4dc437",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-5",
+      "display_order": 4,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-5/b782f9aabeb8",
+      "source_key": "galleries/evenement/b782f9aabeb8",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-5",
+      "display_order": 5,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-5/cfd8c0c514f1",
+      "source_key": "galleries/evenement/cfd8c0c514f1",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-5",
+      "display_order": 6,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-5/f96489b030c9",
+      "source_key": "galleries/evenement/f96489b030c9",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-5",
+      "display_order": 7,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-5/d17a74227c1f",
+      "source_key": "galleries/evenement/d17a74227c1f",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-5",
+      "display_order": 8,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-5/1f3295356326",
+      "source_key": "galleries/evenement/1f3295356326",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-5",
+      "display_order": 9,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-5/b16ea66dfdd3",
+      "source_key": "galleries/evenement/b16ea66dfdd3",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-5",
+      "display_order": 10,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-5/d1317c67480a",
+      "source_key": "galleries/evenement/d1317c67480a",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-5",
+      "display_order": 11,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-5/9763b77bc044",
+      "source_key": "galleries/evenement/9763b77bc044",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-5",
+      "display_order": 12,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-5/51d63f252e26",
+      "source_key": "galleries/evenement/51d63f252e26",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-5",
+      "display_order": 13,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-5/17e399fe10e9",
+      "source_key": "galleries/evenement/17e399fe10e9",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-5",
+      "display_order": 14,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-5/8b4cb423c341",
+      "source_key": "galleries/evenement/8b4cb423c341",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-5",
+      "display_order": 15,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-5/f661eb0952b4",
+      "source_key": "galleries/evenement/f661eb0952b4",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-5",
+      "display_order": 16,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-5/980bcdaaa223",
+      "source_key": "galleries/evenement/980bcdaaa223",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-5",
+      "display_order": 17,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    },
+    {
+      "placement_key": "events/mini-seances-noel-2026/galerie-5/00c88fd7fab6",
+      "source_key": "galleries/evenement/00c88fd7fab6",
+      "context_type": "event",
+      "event_slug": "mini-seances-noel-2026",
+      "slot": "galerie-5",
+      "display_order": 18,
+      "object_position_x_pct": 50,
+      "object_position_y_pct": 50
+    }
+  ]
+}
