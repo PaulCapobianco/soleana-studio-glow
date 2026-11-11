@@ -69,7 +69,9 @@ export function buildEventJsonLd(event: EventContent, imageUrl: string | null) {
               name: formule.name,
               price: formule.price_eur,
               priceCurrency: "EUR",
-              url: pageUrl,
+              availability: "https://schema.org/InStock",
+              // Lien de réservation de la formule (Pelli) s'il existe, sinon la page de l'événement.
+              url: formule.booking_url.trim() || pageUrl,
             })),
           }
         : {}),
