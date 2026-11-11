@@ -12,6 +12,7 @@ import {
   Settings,
   UserRound,
   CalendarDays,
+  LifeBuoy,
 } from "lucide-react";
 import { getSupabase } from "@/lib/supabase-lazy";
 
@@ -50,6 +51,7 @@ const nav = [
   { to: "/admin/pages-seo", label: "Pages SEO", icon: FileText },
   { to: "/admin/parametres", label: "Paramètres", icon: Settings },
   { to: "/admin/compte", label: "Mon compte", icon: UserRound },
+  { to: "/admin/aide", label: "Aide", icon: LifeBuoy },
 ];
 
 function AdminLayout() {
