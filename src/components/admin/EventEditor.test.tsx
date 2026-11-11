@@ -225,6 +225,19 @@ describe("EventEditor", () => {
     expect(confirm).not.toHaveBeenCalled();
   });
 
+  it("la suppression d'un brouillon demande confirmation et supprime ensuite", async () => {
+    const user = userEvent.setup();
+    const confirm = vi.spyOn(window, "confirm").mockReturnValue(false);
+    const spy = vi.spyOn(admin, "deleteDraftEvent").mockResolvedValue();
+    renderEditor();
+    await user.click(screen.getByRole("button", { name: "Supprimer ce brouillon" }));
+    expect(String(confirm.mock.calls[0][0])).toMatch(/Supprimer ce brouillon/);
+    expect(spy).not.toHaveBeenCalled();
+    confirm.mockReturnValue(true);
+    await user.click(screen.getByRole("button", { name: "Supprimer ce brouillon" }));
+    await waitFor(() => expect(spy).toHaveBeenCalled());
+  });
+
   it("ne publie pas si la personne annule la confirmation", async () => {
     const user = userEvent.setup();
     vi.spyOn(window, "confirm").mockReturnValue(false);

@@ -38,6 +38,7 @@ import { galleryTablesAvailable, listEventPlacements } from "@/lib/events/galler
 import { parseGalleryDefs } from "@/lib/events/galleries";
 import {
   datesChangeConfirmation,
+  deleteDraftConfirmation,
   galleryStatsFrom,
   publishWarnings,
 } from "@/lib/events/publish-checks";
@@ -193,7 +194,7 @@ export function EventEditor({ initial }: { initial: EventRow }) {
 
   const remove = () =>
     run("delete", async () => {
-      if (!window.confirm("Supprimer ce brouillon ? Cette action est définitive.")) return;
+      if (!window.confirm(deleteDraftConfirmation(galleryPhotos.data?.length ?? 0))) return;
       await deleteDraftEvent(row);
       setDirty(row.id, false);
       await qc.invalidateQueries({ queryKey: ["admin-events"] });

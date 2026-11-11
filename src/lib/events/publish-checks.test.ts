@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   datesChange,
   datesChangeConfirmation,
+  deleteDraftConfirmation,
   galleryStatsFrom,
   isPelliUrl,
   publishWarnings,
@@ -199,5 +200,21 @@ describe("galleryStatsFrom", () => {
     expect(
       galleryStatsFrom(defs, [{ slot: "ancienne", alt: "x", published: true }]).emptyGalleries,
     ).toEqual(["Famille", "Décor"]);
+  });
+});
+
+describe("deleteDraftConfirmation", () => {
+  it("sans photo : confirmation simple", () => {
+    expect(deleteDraftConfirmation(0)).toBe(
+      "Supprimer ce brouillon ? Cette action est définitive.",
+    );
+  });
+  it("annonce le nombre de photos, au singulier et au pluriel, et ce qui leur arrive", () => {
+    expect(deleteDraftConfirmation(1)).toMatch(
+      /1 photo : elle sera retirée .* reste dans l'administration des photos/,
+    );
+    expect(deleteDraftConfirmation(12)).toMatch(
+      /12 photos : elles seront retirées .* restent dans l'administration des photos/,
+    );
   });
 });

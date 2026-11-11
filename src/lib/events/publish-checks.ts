@@ -131,3 +131,10 @@ export function galleryStatsFrom(
     hiddenPhotos: photos.filter((photo) => !photo.published).length,
   };
 }
+
+/** Texte de confirmation avant de supprimer un brouillon, avec le nombre de photos concernées. */
+export function deleteDraftConfirmation(photoCount: number): string {
+  if (photoCount <= 0) return "Supprimer ce brouillon ? Cette action est définitive.";
+  const photos = photoCount === 1 ? "1 photo" : `${photoCount} photos`;
+  return `Supprimer ce brouillon ? Ses galeries contiennent ${photos} : ${photoCount === 1 ? "elle sera retirée" : "elles seront retirées"} de l'événement mais ${photoCount === 1 ? "reste" : "restent"} dans l'administration des photos. Cette action est définitive.`;
+}
