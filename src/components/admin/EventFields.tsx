@@ -1,5 +1,5 @@
 import { useEffect, useId, useState, type ReactNode } from "react";
-import { FieldHint } from "@/components/site/admin/FieldHint";
+import { FieldHint } from "@/components/admin/FieldHint";
 import { formatLongDate, isIsoDate } from "@/lib/events/dates";
 import { splitLines } from "@/lib/events/admin";
 

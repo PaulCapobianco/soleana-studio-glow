@@ -2,10 +2,10 @@ import { useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { FieldHint } from "@/components/site/admin/FieldHint";
+import { FieldHint } from "@/components/admin/FieldHint";
 import { friendlySupabaseError } from "@/lib/admin/friendly-error";
 import { toastAdminError } from "@/lib/admin/write-error";
-import { DuplicateEventDialog } from "@/components/site/admin/DuplicateEventDialog";
+import { DuplicateEventDialog } from "@/components/admin/DuplicateEventDialog";
 import {
   createEvent,
   duplicateEvent,

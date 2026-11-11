@@ -8,8 +8,8 @@ import { legacyNoelEvent } from "@/lib/events/legacy-noel";
 import type { EventRow } from "@/lib/events/types";
 import * as galleryAdmin from "@/lib/events/gallery-admin";
 import * as upload from "@/lib/photos/event-upload";
-import { DuplicateEventDialog } from "./admin/DuplicateEventDialog";
-import { EventGalleriesAdmin } from "./admin/EventGalleriesAdmin";
+import { DuplicateEventDialog } from "@/components/admin/DuplicateEventDialog";
+import { EventGalleriesAdmin } from "@/components/admin/EventGalleriesAdmin";
 
 vi.mock("sonner", () => ({
   toast: { error: vi.fn(), success: vi.fn(), warning: vi.fn(), message: vi.fn() },

@@ -9,11 +9,11 @@ import {
   Field,
   LinesField,
   Section,
-} from "@/components/site/admin/EventFields";
-import { FieldHint } from "@/components/site/admin/FieldHint";
-import { AppearanceFields } from "@/components/site/admin/AppearanceFields";
-import { DuplicateEventDialog } from "@/components/site/admin/DuplicateEventDialog";
-import { EventGalleriesAdmin } from "@/components/site/admin/EventGalleriesAdmin";
+} from "@/components/admin/EventFields";
+import { FieldHint } from "@/components/admin/FieldHint";
+import { AppearanceFields } from "@/components/admin/AppearanceFields";
+import { DuplicateEventDialog } from "@/components/admin/DuplicateEventDialog";
+import { EventGalleriesAdmin } from "@/components/admin/EventGalleriesAdmin";
 import { EventPageContent } from "@/components/site/EventPage";
 import { eventAssets } from "@/components/site/event-assets";
 import { buildAppearance } from "@/lib/events/appearance";

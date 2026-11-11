@@ -4,7 +4,7 @@ import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/re
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { generateBrowserPhotoVariants } from "@/lib/photo-storage";
-import { PhotosAdmin } from "@/components/site/admin/PhotosAdmin";
+import { PhotosAdmin } from "@/components/admin/PhotosAdmin";
 import { confirmDelete } from "@/lib/admin/confirm-delete";
 import { toast } from "sonner";
 

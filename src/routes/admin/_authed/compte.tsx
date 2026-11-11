@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { AccountAdmin } from "@/components/site/admin/AccountAdmin";
+import { AccountAdmin } from "@/components/admin/AccountAdmin";
 
 export const Route = createFileRoute("/admin/_authed/compte")({
   head: () => ({
