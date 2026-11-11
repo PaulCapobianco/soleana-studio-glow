@@ -33,3 +33,18 @@ export const buildPageSeo = ({
   ],
   links: noIndex ? [] : [{ rel: "canonical", href: absoluteUrl(path) }],
 });
+
+/**
+ * JSON destiné à un `<script type="application/ld+json">`. TanStack Router insère le contenu tel
+ * quel dans la page : un texte venant de la base contenant `</script>` fermerait la balise et
+ * laisserait du HTML s'exécuter. On échappe `<`, `>`, `&` et les séparateurs U+2028/2029 ; le JSON
+ * reste valide et identique une fois lu par un moteur de recherche.
+ */
+export function safeJsonLd(value: unknown): string {
+  return JSON.stringify(value)
+    .replace(/</g, "\\u003c")
+    .replace(/>/g, "\\u003e")
+    .replace(/&/g, "\\u0026")
+    .replace(/\u2028/g, "\\u2028")
+    .replace(/\u2029/g, "\\u2029");
+}

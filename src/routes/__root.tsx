@@ -13,7 +13,7 @@ import { Toaster } from "sonner";
 import logoSoleanaIcon from "@/assets/logo-soleana-icon.png";
 import inter300 from "@/assets/fonts/Inter-300.woff2";
 import playfair600 from "@/assets/fonts/PlayfairDisplay-600.woff2";
-import { absoluteUrl, DEFAULT_SOCIAL_IMAGE } from "@/lib/seo";
+import { absoluteUrl, DEFAULT_SOCIAL_IMAGE, safeJsonLd } from "@/lib/seo";
 import { loadSiteSettings, SITE_SETTINGS_FALLBACK } from "@/lib/site-settings";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -124,7 +124,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     scripts: [
       {
         type: "application/ld+json",
-        children: JSON.stringify({
+        children: safeJsonLd({
           "@context": "https://schema.org",
           "@type": "ProfessionalService",
           name: "Soleana Studio",

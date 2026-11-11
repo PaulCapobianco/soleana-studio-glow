@@ -4,7 +4,7 @@ import { Reveal } from "@/components/site/Reveal";
 import { CategoryGallerySection } from "@/components/site/CategoryGallerySection";
 import { EventPage } from "@/components/site/EventPage";
 import { eventAssets } from "@/components/site/event-assets";
-import { buildPageSeo } from "@/lib/seo";
+import { buildPageSeo, safeJsonLd } from "@/lib/seo";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 import { getPublishedEvent } from "@/lib/events/queries";
@@ -351,7 +351,7 @@ export const Route = createFileRoute("/$slug")({
           : [
               {
                 type: "application/ld+json",
-                children: JSON.stringify(buildEventJsonLd(event, image)),
+                children: safeJsonLd(buildEventJsonLd(event, image)),
               },
             ],
       };
