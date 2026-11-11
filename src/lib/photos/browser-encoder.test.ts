@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { assertEncodedFormat, validatePhotoSource } from "@/lib/photo-storage";
+import { assertEncodedFormat, validatePhotoSource } from "@/lib/photos/browser-encoder";
 import {
   ACTIVE_PHOTO_QUALITY_PROFILE,
   expectedPhotoWidths,
   PHOTO_QUALITY_PROFILES,
   PHOTO_VARIANT_WIDTHS,
-} from "@/lib/photo-storage-quality";
+} from "@/lib/photos/quality";
 
 const file = (bytes: number[], name: string, type: string) =>
   new File([new Uint8Array(bytes)], name, { type });

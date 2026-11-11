@@ -1,7 +1,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import type { TablesUpdate } from "@/integrations/supabase/types";
 import { AdminValidationError } from "@/lib/admin/friendly-error";
-import { publicImageUrl } from "@/lib/photo-storage";
+import { publicImageUrl } from "@/lib/photos/public-url";
 import { variantsOfFormat } from "@/lib/photos/variants";
 import { newGallerySlot, validateGalleryTitle, type EventGalleryDef } from "./galleries";
 import type { EventRow } from "./types";

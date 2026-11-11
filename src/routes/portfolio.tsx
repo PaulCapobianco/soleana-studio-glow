@@ -2,7 +2,7 @@ import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { SiteShell } from "@/components/site/SiteShell";
 import { PortfolioEditorialSection } from "@/components/site/PortfolioEditorialSection";
 import { buildPageSeo } from "@/lib/seo";
-import { STORAGE_GALLERIES_ENABLED } from "@/lib/photo-storage";
+import { STORAGE_GALLERIES_ENABLED } from "@/lib/photos/flags";
 
 // BUG-02 (0a23b0f) est actif seulement avec VITE_GALLERIES_FROM_STORAGE=true : /portfolio devient une
 // route de mise en page et /portfolio/<categorie> s'affiche dans l'outlet. Interrupteur éteint : le

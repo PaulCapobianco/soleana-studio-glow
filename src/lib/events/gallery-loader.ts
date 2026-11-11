@@ -1,5 +1,5 @@
 import { getSupabase } from "@/lib/supabase-lazy";
-import { loadEventGalleries } from "@/lib/photo-storage";
+import { loadEventGalleries } from "@/lib/photos/gallery-loaders";
 import { buildGalleryGroups, publicGalleries, type EventGalleryGroup } from "./galleries";
 import { parseEventRow } from "./parse";
 import type { EventContent } from "./types";

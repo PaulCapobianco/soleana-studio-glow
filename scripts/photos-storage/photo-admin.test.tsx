@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { generateBrowserPhotoVariants } from "@/lib/photo-storage";
+import { generateBrowserPhotoVariants } from "@/lib/photos/browser-encoder";
 import { PhotosAdmin } from "@/components/admin/PhotosAdmin";
 import { confirmDelete } from "@/lib/admin/confirm-delete";
 import { toast } from "sonner";
@@ -21,7 +21,7 @@ const state = vi.hoisted(() => ({
 
 vi.mock("sonner", () => ({ toast: { success: vi.fn(), error: vi.fn(), warning: vi.fn() } }));
 vi.mock("@/lib/admin/use-dirty-set", () => ({ useDirtySet: () => () => {} }));
-vi.mock("@/lib/photo-storage", () => ({ generateBrowserPhotoVariants: vi.fn(), validatePhotoSource: vi.fn() }));
+vi.mock("@/lib/photos/browser-encoder", () => ({ generateBrowserPhotoVariants: vi.fn(), validatePhotoSource: vi.fn() }));
 vi.mock("@/lib/photos/storage-admin.functions", () => ({
   getPhotoStorageCapacity: vi.fn(async () => ({
     usedBytes: 1_000, objectCount: 6, limitBytes: 2_000, remainingBytes: 1_000,
@@ -104,7 +104,7 @@ beforeEach(async () => {
   state.failVariants = false;
   state.existingPhoto = false;
   state.capacityBlocked = false;
-  vi.mocked((await import("@/lib/photo-storage")).validatePhotoSource).mockResolvedValue("jpeg");
+  vi.mocked((await import("@/lib/photos/browser-encoder")).validatePhotoSource).mockResolvedValue("jpeg");
   vi.mocked(confirmDelete).mockReturnValue(true);
   vi.mocked(generateBrowserPhotoVariants).mockImplementation(async (_, sourceKey) => [
     { blob: new Blob(["avif"], { type: "image/avif" }), format: "avif", width: 400, height: 600, byte_size: 4, sha256: "a".repeat(64), storage_path: `${sourceKey}/aaaaaaaa-400.avif` },

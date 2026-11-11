@@ -5,7 +5,7 @@ import { fetchAllRows } from "@/lib/supabase-pagination";
 import { hasBothFormats, largestVariant } from "@/lib/photos/variants";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
-import { generateBrowserPhotoVariants, validatePhotoSource } from "@/lib/photo-storage";
+import { generateBrowserPhotoVariants, validatePhotoSource } from "@/lib/photos/browser-encoder";
 import { CategoriesAdmin } from "@/components/admin/CategoriesAdmin";
 import { SaveButton } from "@/components/admin/SaveButton";
 import { FieldHint } from "@/components/admin/FieldHint";

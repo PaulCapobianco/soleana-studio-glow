@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { cleanup, render } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { CategoryGallerySection } from "@/components/site/CategoryGallerySection";
-import { buildStorageGalleries } from "@/lib/photo-storage";
+import { buildStorageGalleries } from "@/lib/photos/gallery-loaders";
 
 // publicImageUrl ne passe plus par supabase-js : l'hôte des images vient de VITE_IMAGE_BASE_URL.
 vi.stubEnv("VITE_IMAGE_BASE_URL", "https://images.example");

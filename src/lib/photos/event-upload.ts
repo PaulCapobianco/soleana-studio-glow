@@ -23,7 +23,7 @@ export type EventUploadDeps = {
 
 async function realDeps(): Promise<EventUploadDeps> {
   const [storage, admin] = await Promise.all([
-    import("@/lib/photo-storage"),
+    import("@/lib/photos/browser-encoder"),
     import("@/lib/photos/storage-admin.functions"),
   ]);
   return {

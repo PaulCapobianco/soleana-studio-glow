@@ -3,7 +3,8 @@ import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 
 import { getSupabase } from "@/lib/supabase-lazy";
-import { loadCategoryPhotos, STORAGE_GALLERIES_ENABLED } from "@/lib/photo-storage";
+import { loadCategoryPhotos } from "@/lib/photos/gallery-loaders";
+import { STORAGE_GALLERIES_ENABLED } from "@/lib/photos/flags";
 
 interface CategoryGalleryProps {
   categorySlug: string;

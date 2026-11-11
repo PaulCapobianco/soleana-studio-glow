@@ -10,7 +10,7 @@ vi.mock("@/integrations/supabase/client", () => ({
   },
 }));
 
-import { buildStorageGalleries } from "./photo-storage";
+import { buildStorageGalleries } from "@/lib/photos/gallery-loaders";
 
 // publicImageUrl ne passe plus par supabase-js : l'hôte des images vient de VITE_IMAGE_BASE_URL.
 vi.stubEnv("VITE_IMAGE_BASE_URL", "https://cdn.test");
@@ -70,7 +70,7 @@ describe("galeries d'événement via photo_placements", () => {
   });
 });
 
-import { flattenGalleries, type StorageGalleryPhoto } from "./photo-storage";
+import { flattenGalleries, type StorageGalleryPhoto } from "@/lib/photos/gallery-loaders";
 
 describe("flattenGalleries (pages catégories, BUG-02)", () => {
   const photo = (id: string): StorageGalleryPhoto => ({ id }) as StorageGalleryPhoto;
