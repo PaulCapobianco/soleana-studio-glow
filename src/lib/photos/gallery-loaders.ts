@@ -31,6 +31,9 @@ type PlacementRow = {
   } | null;
 };
 
+const PLACEMENT_SELECT =
+  "slot, display_order, alt_text_override, object_position_x_pct, object_position_y_pct, photo:photos!inner(id, alt_text, photo_variants(width, height, storage_path, format))";
+
 /** Emplacements lus en base -> photos par galerie (slot), prêtes pour CategoryGallerySection. */
 export function buildStorageGalleries(rows: PlacementRow[]): Record<string, StorageGalleryPhoto[]> {
   const bySlot: Record<string, StorageGalleryPhoto[]> = {};
@@ -77,9 +80,7 @@ export async function loadStorageGalleries(
       await getSupabase()
     )
       .from("photo_placements")
-      .select(
-        "slot, display_order, alt_text_override, object_position_x_pct, object_position_y_pct, photo:photos!inner(id, alt_text, photo_variants(width, height, storage_path, format))",
-      )
+      .select(PLACEMENT_SELECT)
       .eq("seo_page_id", seoPageId)
       .eq("context_type", "seo")
       .eq("published", true)
@@ -132,24 +133,27 @@ export async function loadCategoryPhotos(
   const seoSlug = CATEGORY_SEO_SLUG[categorySlug];
   if (!seoSlug) return null;
   try {
+    // Une seule requête (jointure sur la page SEO publiée) au lieu de deux requêtes en série.
     const { data, error } = await (
       await getSupabase()
     )
-      .from("seo_pages")
-      .select("id")
-      .eq("slug", seoSlug)
+      .from("photo_placements")
+      .select(`${PLACEMENT_SELECT}, seo_pages!inner(slug, published)`)
+      .eq("seo_pages.slug", seoSlug)
+      .eq("seo_pages.published", true)
+      .eq("context_type", "seo")
       .eq("published", true)
-      .maybeSingle();
-    if (error || !data) return null;
-    const galleries = await loadStorageGalleries(data.id);
-    return galleries ? flattenGalleries(galleries) : null;
-  } catch {
+      .order("display_order");
+    if (error || !data) {
+      if (error) console.error("[photo_placements] Lecture impossible (catégorie).", error.message);
+      return null;
+    }
+    return flattenGalleries(buildStorageGalleries(data as unknown as PlacementRow[]));
+  } catch (error) {
+    console.error("[photo_placements] Lecture impossible (catégorie).", error);
     return null;
   }
 }
-
-const PLACEMENT_SELECT =
-  "slot, display_order, alt_text_override, object_position_x_pct, object_position_y_pct, photo:photos!inner(id, alt_text, photo_variants(width, height, storage_path, format))";
 
 /**
  * Galeries d'un événement (contexte `event`) : une galerie par `slot` (hero, intro, decor,
