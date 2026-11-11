@@ -1,5 +1,4 @@
 import { useEffect, useId, useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { HiddenUsernameField } from "@/components/site/admin/HiddenUsernameField";
@@ -9,16 +8,9 @@ import { changePassword } from "@/lib/admin/change-password";
 import { getMfaState, normalizeTotpCode, TOTP_CODE, type MfaState } from "@/lib/admin/mfa";
 import { verifyCurrentPassword } from "@/lib/admin/verify-password";
 
-export const Route = createFileRoute("/admin/_authed/compte")({
-  head: () => ({
-    meta: [{ title: "Mon compte — Admin" }, { name: "robots", content: "noindex,nofollow" }],
-  }),
-  component: AccountAdmin,
-});
-
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
-function AccountAdmin() {
+export function AccountAdmin() {
   const [email, setEmail] = useState<string>("");
 
   useEffect(() => {

@@ -13,10 +13,12 @@ import {
   CalendarDays,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { supabase } from "@/integrations/supabase/client";
+import { getSupabase } from "@/lib/supabase-lazy";
 
 export const Route = createFileRoute("/admin/_authed")({
   beforeLoad: async () => {
+    // Chargé à la demande : `beforeLoad` fait partie du JavaScript commun à toutes les pages.
+    const supabase = await getSupabase();
     const { data } = await supabase.auth.getUser();
     if (!data.user) {
       throw redirect({ to: "/admin/login" });
@@ -55,11 +57,13 @@ function AdminLayout() {
   const [email, setEmail] = useState<string>("");
 
   useEffect(() => {
-    void supabase.auth.getUser().then(({ data }) => setEmail(data.user?.email ?? ""));
+    void getSupabase()
+      .then((supabase) => supabase.auth.getUser())
+      .then(({ data }) => setEmail(data.user?.email ?? ""));
   }, []);
 
   async function signOut() {
-    await supabase.auth.signOut();
+    await (await getSupabase()).auth.signOut();
     router.navigate({ to: "/admin/login" });
   }
 
@@ -97,5 +101,3 @@ function AdminLayout() {
     </div>
   );
 }
-
-export { cn };

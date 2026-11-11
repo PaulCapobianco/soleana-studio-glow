@@ -1,4 +1,3 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useState } from "react";
@@ -88,13 +87,6 @@ function formatStorageBytes(value: number | null) {
   if (value < 1_000_000) return `${(value / 1_000).toFixed(0)} kB`;
   return `${(value / 1_000_000).toFixed(2)} MB`;
 }
-
-export const Route = createFileRoute("/admin/_authed/photos")({
-  head: () => ({
-    meta: [{ title: "Photos — Admin" }, { name: "robots", content: "noindex,nofollow" }],
-  }),
-  component: PhotosAdmin,
-});
 
 export function PhotosAdmin() {
   const qc = useQueryClient();
