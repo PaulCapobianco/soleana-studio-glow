@@ -85,12 +85,13 @@ function ConfidentialitePage() {
 
             <LegalSection title="4. Destinataires des données">
               <p>
-                Vos données sont destinées uniquement à Soleana Studio. Elles sont traitées, pour son
-                compte, par les prestataires techniques suivants : Pelli, qui fournit le formulaire
-                de contact, la réservation en ligne et l&apos;espace client ; Supabase, qui héberge la
-                base de données du site ; Cloudflare, qui héberge et sécurise le site. Ces
-                prestataires agissent en qualité de sous-traitants et ne peuvent utiliser vos données
-                qu&apos;aux fins prévues. Vos données ne sont jamais vendues ni cédées à des tiers.
+                Vos données sont destinées uniquement à Soleana Studio. Elles sont traitées, pour
+                son compte, par les prestataires techniques suivants : Pelli, qui fournit le
+                formulaire de contact, la réservation en ligne et l&apos;espace client ; Supabase,
+                qui héberge la base de données du site et les photos qu&apos;elle publie ;
+                Cloudflare, qui héberge et sécurise le site. Ces prestataires agissent en qualité de
+                sous-traitants et ne peuvent utiliser vos données qu&apos;aux fins prévues. Vos
+                données ne sont jamais vendues ni cédées à des tiers.
               </p>
             </LegalSection>
 
@@ -100,9 +101,9 @@ function ConfidentialitePage() {
                   Demandes de contact et de devis sans suite : 3 ans à compter du dernier échange.
                 </li>
                 <li>
-                  Données des clients (coordonnées, échanges, contrat) : pendant toute la durée de la
-                  prestation, puis 5 ans à compter de sa fin, durée de prescription applicable en cas
-                  de litige.
+                  Données des clients (coordonnées, échanges, contrat) : pendant toute la durée de
+                  la prestation, puis 5 ans à compter de sa fin, durée de prescription applicable en
+                  cas de litige.
                 </li>
                 <li>
                   Factures et pièces comptables : 10 ans, conformément à l&apos;obligation légale de
@@ -124,12 +125,12 @@ function ConfidentialitePage() {
 
             <LegalSection title="6. Transferts hors Union européenne">
               <p>
-                La base de données du site est hébergée par Supabase en Irlande, au sein de
-                l&apos;Union européenne. Certains prestataires peuvent traiter des données en dehors de
-                l&apos;Union européenne, notamment Cloudflare, société établie aux États-Unis. Ces
-                transferts sont encadrés par les garanties prévues par le RGPD, telles que le cadre
-                de protection des données UE–États-Unis ou les clauses contractuelles types de la
-                Commission européenne.
+                La base de données du site et les photos publiées sont hébergées par Supabase en
+                Irlande, au sein de l&apos;Union européenne. Certains prestataires peuvent traiter
+                des données en dehors de l&apos;Union européenne, notamment Cloudflare, société
+                établie aux États-Unis. Ces transferts sont encadrés par les garanties prévues par
+                le RGPD, telles que le cadre de protection des données UE–États-Unis ou les clauses
+                contractuelles types de la Commission européenne.
               </p>
             </LegalSection>
 
@@ -152,9 +153,9 @@ function ConfidentialitePage() {
                 vous pouvez introduire une réclamation auprès de la CNIL.
               </p>
               <p className="mt-4">
-                Vous pouvez également retirer votre consentement à tout moment, sans que cela remette
-                en cause les traitements déjà effectués. Nous répondons à votre demande dans un délai
-                d&apos;un mois.
+                Vous pouvez également retirer votre consentement à tout moment, sans que cela
+                remette en cause les traitements déjà effectués. Nous répondons à votre demande dans
+                un délai d&apos;un mois.
               </p>
             </LegalSection>
 
@@ -167,7 +168,7 @@ function ConfidentialitePage() {
                 <a href={`mailto:${settings.email}`} className="text-foreground story-link">
                   {settings.email}
                 </a>
-                . La photo est alors retirée dans les meilleurs délais.
+                . La photo est alors retirée du site et de son stockage dans les meilleurs délais.
               </p>
             </LegalSection>
 
