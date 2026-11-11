@@ -535,3 +535,49 @@ Aucune baisse ; hausse de 4 à 8 points (réseau réel, HTTP/2 et compression de
 6. Si l'admin envoie une photo de test sans aucune ligne CSP dans la console, passer `/admin` en CSP bloquante (`src/lib/security-headers.ts`) ; puis fermer les inscriptions Supabase Auth (audit E-1) et lancer `docs/sql/audit-security-checks.sql`.
 
 **État final** : la production sert la version 32b44504 (`photos-storage-v2` fusionnée avec `refactor-structure`, flag des galeries actif, relais d'images éteint), au vert sur les 35 contrôles de production et sans message de console sur 13 pages, l'admin connecté et Pelli restant à tester à la main.
+
+## Événements : autonomie de la photographe (11 novembre 2026, déploiement autorisé pour la séance)
+Branche `events-autonomie` (créée depuis `photos-storage-v2`), fusionnée `--no-ff` (0444a5f) puis déployée. Aucune migration, aucune écriture Supabase, aucun secret lu, relais d'images jamais activé, `main` non touchée, pages baptême/mariage/anniversaire non touchées, `legacy-noel.ts` non touché. Détail complet : `docs/EVENEMENTS-AUTONOMIE.md`.
+
+### Versions de production et contrôles
+| Moment | Version | Contrôle de production |
+|---|---|---|
+| Avant (relevée avec `wrangler deployments status`, retour arrière) | **32b44504-0437-4e7c-8725-91a72b161cd9** | 41/42 : le seul KO était `/admin/aide` (404, page pas encore déployée), attendu |
+| Après le déploiement (100 %) | **aa2639b2-2ecc-4a1d-91e3-fd8da6a0dea4** | **42/42 OK** (relevé une fois, plus de 30 secondes après le déploiement) |
+Aucun retour arrière. Le script de contrôle passe de 35 à 42 contrôles : sitemap contenant l'événement publié, JSON-LD `Event` valide sur la page Noël, canonical, pas de `noindex` sur Noël, 404 `noindex` d'un événement inconnu ou brouillon, `/admin/aide` protégée (redirige vers la connexion), aucun lien ni contenu d'aide dans la page de connexion, et les 35 contrôles précédents sans régression. **Attention** : après la fin de l'édition de Noël (30 novembre 2026), le JSON-LD de Noël disparaît volontairement et ce contrôle passera à KO.
+Avant le déploiement : build local comparé à la production sur 16 URLs : HTML identique (empreintes et horodatages neutralisés) et en-têtes de sécurité identiques ; **seule différence : la page Noël**, dont les offres des données structurées pointent maintenant vers les liens Pelli de chaque formule et déclarent leur disponibilité.
+Navigateur réel (Chrome headless, production, après déploiement) : 9 pages dont `/admin/login` et `/admin/aide` : **0 message de console, 0 violation CSP** ; galeries `/portfolio/famille` 47 photos, `couple` 80.
+
+### Lighthouse mobile en production (réf. 97, 97, 94, 100)
+| Page | Perf | A11y | BP | SEO | LCP |
+|---|---:|---:|---:|---:|---:|
+| Accueil | 95 | 100 | 100 | 100 | 2,9 s |
+| /portfolio | 97 | 96 | 100 | 100 | 2,6 s |
+| /portfolio/couple | 93 | 100 | 100 | 100 | 3,2 s |
+| Page SEO couple | 100 | 96 | 100 | 100 | 1,1 s |
+Écarts de −2, 0, −1, 0 : dans le bruit de mesure (aucun changement du JavaScript ni du HTML public hors JSON-LD de Noël), rien à consigner comme baisse.
+
+### Frictions trouvées et corrigées (voir le tableau du document)
+Avertissements non bloquants à la publication ; confirmation d'un changement de dates sur un événement publié, avec l'exemple de Noël 2026 ; lien de réservation Pelli obligatoire avec aperçu du bouton ; suppression d'un brouillon avec nombre de photos ; vocabulaire simple (plus de « texte alternatif », « emplacement », « migration ») ; ergonomie iPhone/iPad (champs à 16 px, cibles de 44 px, uniquement dans l'admin) ; page **Aide** intégrée (`/admin/aide`, lien dans le menu) ; offres JSON-LD avec liens Pelli. Déjà en place et vérifiées : garde-fous de publication, dates de report, aperçu, duplication, archivage réversible, teaser d'accueil, SEO des événements, nettoyage des envois interrompus.
+
+### Reste à décider
+Statut « reporté / annulé » (migration proposée, non appliquée : `docs/sql/proposed-event-schedule-status.sql`) ; titres définitifs des galeries de Noël ; limiter ou non les liens de réservation à Pelli (choix actuel : oui).
+
+### Noël : import des 74 photos (préparé, non exécuté)
+Manifeste final (5 galeries, 74 photos, descriptions uniques), générateur de variantes (592 variantes, 61 Mo, simulé), script d'import / publication / retour arrière testé en simulation (refus vérifiés : sans clé, journal prévisionnel, options incompatibles). Commandes exactes et plan de suppression de `legacy-noel.ts` en deux étapes : `docs/EVENEMENTS-AUTONOMIE.md` §5. Rappel : la publication des 74 photos remplace la galerie locale de la page Noël par les galeries de la base (mise en page générique) : à valider visuellement avant de publier.
+
+### À tester à la main avec la photographe (séance de prise en main)
+Je n'ai pas pu tester l'administration connectée ni Pelli dans un navigateur : **rien de ce qui suit n'est vérifié en réel**.
+1. **Double authentification** : Mon compte, activer avec l'application d'authentification, se déconnecter, se reconnecter avec le code ; provoquer le message « double authentification » avec une session sans second facteur et vérifier qu'il explique quoi faire.
+2. **Aide** : ouvrir « Aide » dans le menu ; relire chaque rubrique en suivant les étapes avec elle ; noter tout libellé qui ne correspond pas.
+3. **Création d'un événement de test de bout en bout** : « Nouvel événement » (titre « Essai »), remplir la fiche, ajouter des dates et une date de report, un lien Pelli (tester le bouton d'aperçu du lien), une image de couverture.
+4. **Aperçu** : bouton « Aperçu » avant publication ; vérifier que rien n'est public (`/<adresse>` répond « introuvable »).
+5. **Publication** : lire le cadre « À vérifier » et la confirmation, publier ; ouvrir la page publique ; puis **changer les dates** et vérifier la confirmation et l'affichage ; « Dépublier ».
+6. **Galerie** : créer « Édition précédente », envoyer 2 à 3 photos depuis l'iPhone (puis depuis l'ordinateur), régler la description, l'ordre, « Masquer », le cadrage avec les curseurs ; essayer « Afficher aussi les photos d'une autre édition ».
+7. **Dupliquer** : « Dupliquer » avec chacune des trois options ; vérifier que la copie est un brouillon sans dates.
+8. **Archiver / Remettre en brouillon**, puis **supprimer** le brouillon de test (la confirmation doit annoncer le nombre de photos).
+9. **iPhone / iPad (Safari)** : tous les champs sans zoom à la saisie, boutons faciles à toucher, envoi de photos HEIC, lightbox et galeries du site.
+10. **Pelli sur la page Noël** : cliquer « Afficher le formulaire » et « Réserver cette formule » ; vérifier que le formulaire se charge.
+Si l'envoi d'une photo de test se passe sans aucune ligne « Content Security Policy » dans la console de l'admin, passer `/admin` en CSP bloquante (`src/lib/security-headers.ts`) ; fermer les inscriptions Supabase Auth ; lancer `docs/sql/audit-security-checks.sql`.
+
+**État final** : la production sert la version aa2639b2 (`photos-storage-v2` avec l'autonomie des événements, flag des galeries actif, relais d'images éteint), au vert sur les 42 contrôles de production et sans message de console, l'administration connectée et Pelli restant à tester à la main avec la photographe.
