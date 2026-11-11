@@ -19,3 +19,10 @@ is `src/routes/__root.tsx`.
 | `__root.tsx`             | app shell — wraps every page; preserve `<Outlet />`     |
 
 `routeTree.gen.ts` is auto-generated. Don't edit it by hand.
+
+## Règle de ce projet : un fichier de route n'exporte que `Route`
+
+Exporter autre chose (un composant, un helper) depuis un fichier de route empêche TanStack de
+découper la route : tout son code, avec ses dépendances (client Supabase, éditeur d'admin…), entre
+alors dans le JavaScript commun à toutes les pages publiques. Mettre le composant dans
+`src/components/` et l'importer dans la route (voir `admin/_authed/photos.tsx`).
