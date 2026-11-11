@@ -2,6 +2,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useState } from "react";
 import { fetchAllRows } from "@/lib/supabase-pagination";
+import { hasBothFormats, largestVariant } from "@/lib/photos/variants";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 import { generateBrowserPhotoVariants, validatePhotoSource } from "@/lib/photo-storage";
@@ -352,7 +353,7 @@ export function PhotosAdmin() {
         queryError(error);
         uploadedPaths.push(variant.storage_path);
       }
-      const webp = generated.filter((variant) => variant.format === "webp").at(-1);
+      const webp = largestVariant(generated, "webp");
       if (!webp) throw new Error("Variante WebP absente.");
       const imageUrl = supabase.storage.from("photos").getPublicUrl(webp.storage_path)
         .data.publicUrl;
@@ -906,11 +907,9 @@ function PhotoCard({
             onDirtyChange={(dirty) => onPlacementDirtyChange(placement.id, dirty)}
           />
         ))}
-        {storageReady &&
-          variants.some((variant) => variant.format === "avif") &&
-          variants.some((variant) => variant.format === "webp") && (
-            <NewPlacementForm photoId={item.id} seoPages={seoPages} allPlacements={allPlacements} />
-          )}
+        {storageReady && hasBothFormats(variants) && (
+          <NewPlacementForm photoId={item.id} seoPages={seoPages} allPlacements={allPlacements} />
+        )}
       </div>
     </div>
   );

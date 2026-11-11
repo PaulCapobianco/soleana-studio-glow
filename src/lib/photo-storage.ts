@@ -1,4 +1,5 @@
 import { getSupabase } from "@/lib/supabase-lazy";
+import { matchedAvifWebp } from "@/lib/photos/variants";
 import { IMAGE_PROXY_ENABLED, proxiedImageUrl } from "@/lib/image-proxy";
 import {
   ACTIVE_PHOTO_QUALITY_PROFILE,
@@ -68,20 +69,10 @@ export function buildStorageGalleries(rows: PlacementRow[]): Record<string, Stor
   const ordered = [...rows].sort((a, b) => a.display_order - b.display_order);
   for (const row of ordered) {
     const variants = row.photo?.photo_variants ?? [];
-    const avif = variants
-      .filter((variant) => variant.format === "avif")
-      .sort((a, b) => a.width - b.width);
-    const webp = variants
-      .filter((variant) => variant.format === "webp")
-      .sort((a, b) => a.width - b.width);
     // Une photo incomplète ne doit pas rendre une galerie partiellement utilisable.
-    if (
-      !row.photo ||
-      avif.length === 0 ||
-      avif.length !== webp.length ||
-      avif.some((variant, index) => variant.width !== webp[index].width)
-    )
-      continue;
+    const pair = matchedAvifWebp(variants);
+    if (!row.photo || !pair) continue;
+    const { avif, webp } = pair;
     const largest = webp[webp.length - 1];
     const sourceSet = (items: typeof webp) =>
       items

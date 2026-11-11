@@ -1,5 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
 import { AdminValidationError } from "@/lib/admin/friendly-error";
+import { largestVariant } from "@/lib/photos/variants";
 
 type Variant = {
   storage_path: string;
@@ -102,7 +103,7 @@ export async function uploadEventPhoto(
       if (error) throw error;
       uploaded.push(variant.storage_path);
     }
-    const webp = generated.filter((v) => v.format === "webp").at(-1);
+    const webp = largestVariant(generated, "webp");
     if (!webp) throw new Error("Variante WebP absente.");
     const imageUrl = d.client.storage.from("photos").getPublicUrl(webp.storage_path).data.publicUrl;
 
