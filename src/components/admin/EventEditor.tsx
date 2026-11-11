@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
   CharCounter,
@@ -33,6 +33,14 @@ import {
 import { formatHeroDates, isEditionOver } from "@/lib/events/dates";
 import type { EventRow, EventStatus } from "@/lib/events/types";
 import { EventEditorHeader } from "@/components/admin/EventEditorHeader";
+import { PublishChecklist } from "@/components/admin/PublishChecklist";
+import { galleryTablesAvailable, listEventPlacements } from "@/lib/events/gallery-admin";
+import { parseGalleryDefs } from "@/lib/events/galleries";
+import {
+  datesChangeConfirmation,
+  galleryStatsFrom,
+  publishWarnings,
+} from "@/lib/events/publish-checks";
 import { EventFaqSection, EventFormulesSection } from "@/components/admin/EventListSections";
 import {
   slugify,
@@ -110,6 +118,10 @@ export function EventEditor({ initial }: { initial: EventRow }) {
         toast.error(firstError(errors));
         return;
       }
+      if (status === "published") {
+        const question = datesChangeConfirmation(baseline, values);
+        if (question && !window.confirm(question)) return;
+      }
       applySaved(await saveEvent(row.id, formValuesToUpdate(values)));
       toast.success(
         status === "published"
@@ -126,10 +138,14 @@ export function EventEditor({ initial }: { initial: EventRow }) {
         toast.error(`Impossible de publier : ${firstError(found)}`);
         return;
       }
+      const toCheck = warnings.length
+        ? `\n\nÀ vérifier (vous pouvez publier quand même) :\n${warnings.map((w) => `• ${w}`).join("\n")}`
+        : "";
       if (
         !window.confirm(
           "Publier cet événement ? Sa page sera visible par tout le monde dès maintenant" +
-            (values.show_teaser ? ", et il apparaîtra sur la page d'accueil." : "."),
+            (values.show_teaser ? ", et il apparaîtra sur la page d'accueil." : ".") +
+            toCheck,
         )
       ) {
         return;
@@ -209,6 +225,23 @@ export function EventEditor({ initial }: { initial: EventRow }) {
     [previewEvent, previewAppearance],
   );
   const assets = eventAssets(row.slug);
+  const galleryTables = useQuery({
+    queryKey: ["admin-gallery-tables"],
+    queryFn: galleryTablesAvailable,
+  });
+  const galleryPhotos = useQuery({
+    queryKey: ["admin-event-placements", row.id],
+    queryFn: () => listEventPlacements(row.id),
+    enabled: galleryTables.data === true,
+  });
+  const warnings = publishWarnings(values, {
+    hasCover: Boolean(row.cover_image_url) || Boolean(assets),
+    galleryStats:
+      galleryTables.data && galleryPhotos.data
+        ? galleryStatsFrom(parseGalleryDefs(row.galleries), galleryPhotos.data)
+        : null,
+    now: new Date(),
+  });
   const editionOver = isEditionOver(values.event_dates, values.fallback_dates, new Date());
 
   return (
@@ -231,6 +264,9 @@ export function EventEditor({ initial }: { initial: EventRow }) {
         onDuplicate={askDuplicate}
         onRemove={() => void remove()}
       />
+      {status !== "archived" && (
+        <PublishChecklist warnings={warnings} published={status === "published"} />
+      )}
 
       {preview && (
         <div className="space-y-2">

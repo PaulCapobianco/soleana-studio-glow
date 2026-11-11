@@ -116,3 +116,18 @@ export function datesChangeConfirmation(
   const heading = after.event_dates.length > 0 ? formatHeroDates(after.event_dates) : "aucune date";
   return `Vous changez les dates d'un événement déjà publié. Dès l'enregistrement, la page, l'accueil et Google afficheront : ${heading}. Enregistrer ?`;
 }
+
+/** Statistiques de galeries à partir des définitions de la fiche et des photos placées. */
+export function galleryStatsFrom(
+  defs: readonly { slot: string; title: string }[],
+  photos: readonly { slot: string; alt: string; published: boolean }[],
+): GalleryStats {
+  return {
+    galleries: defs.length,
+    emptyGalleries: defs
+      .filter((def) => !photos.some((photo) => photo.slot === def.slot))
+      .map((def) => def.title),
+    photosWithoutAlt: photos.filter((photo) => !photo.alt.trim()).length,
+    hiddenPhotos: photos.filter((photo) => !photo.published).length,
+  };
+}

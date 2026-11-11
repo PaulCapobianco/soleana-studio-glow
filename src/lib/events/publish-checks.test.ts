@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   datesChange,
   datesChangeConfirmation,
+  galleryStatsFrom,
   isPelliUrl,
   publishWarnings,
   type GalleryStats,
@@ -166,5 +167,37 @@ describe("changement de dates (cas Noël 2026 : du 7 et 11 au 28 et 29 novembre)
   });
   it("retirer toutes les dates est signalé", () => {
     expect(datesChangeConfirmation(base, { ...base, event_dates: [] })).toMatch(/aucune date/);
+  });
+});
+
+describe("galleryStatsFrom", () => {
+  const defs = [
+    { slot: "galerie-1", title: "Famille" },
+    { slot: "galerie-2", title: "Décor" },
+  ];
+  it("compte galeries vides, photos sans description et photos masquées", () => {
+    const photos = [
+      { slot: "galerie-1", alt: "Une famille", published: true },
+      { slot: "galerie-1", alt: "  ", published: false },
+    ];
+    expect(galleryStatsFrom(defs, photos)).toEqual({
+      galleries: 2,
+      emptyGalleries: ["Décor"],
+      photosWithoutAlt: 1,
+      hiddenPhotos: 1,
+    });
+  });
+  it("événement sans galerie : rien à signaler", () => {
+    expect(galleryStatsFrom([], [])).toEqual({
+      galleries: 0,
+      emptyGalleries: [],
+      photosWithoutAlt: 0,
+      hiddenPhotos: 0,
+    });
+  });
+  it("une photo placée dans une galerie inconnue ne rend pas une autre galerie « non vide »", () => {
+    expect(
+      galleryStatsFrom(defs, [{ slot: "ancienne", alt: "x", published: true }]).emptyGalleries,
+    ).toEqual(["Famille", "Décor"]);
   });
 });
