@@ -14,7 +14,9 @@ try {
 } catch (error) {
   if (error.code !== "ENOENT") throw error;
 }
-const previousByKey = new Map((previousManifest?.photos ?? []).map((photo) => [photo.source_key, photo]));
+const previousByKey = new Map(
+  (previousManifest?.photos ?? []).map((photo) => [photo.source_key, photo]),
+);
 const photos = new Map(); // sha256 -> photo
 const placements = [];
 
@@ -37,9 +39,13 @@ for (const gallery of GALLERIES) {
       const previous = previousByKey.get(photo.source_key);
       // Preserve the privately verified source dimensions/fingerprint when the local gallery
       // asset is unchanged; never replace them with the smaller local WebP dimensions.
-      if (previous?.source_sha256 === hash && previous.source_kind === "original" &&
-          Number.isSafeInteger(previous.width) && Number.isSafeInteger(previous.height) &&
-          /^[0-9a-f]{64}$/.test(previous.original_sha256 ?? "")) {
+      if (
+        previous?.source_sha256 === hash &&
+        previous.source_kind === "original" &&
+        Number.isSafeInteger(previous.width) &&
+        Number.isSafeInteger(previous.height) &&
+        /^[0-9a-f]{64}$/.test(previous.original_sha256 ?? "")
+      ) {
         photo.width = previous.width;
         photo.height = previous.height;
         photo.source_kind = previous.source_kind;

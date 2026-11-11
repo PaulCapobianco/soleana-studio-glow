@@ -9,7 +9,13 @@ import { buildStorageGalleries } from "@/lib/photos/gallery-loaders";
 vi.stubEnv("VITE_IMAGE_BASE_URL", "https://images.example");
 
 vi.mock("@/integrations/supabase/client", () => ({
-  supabase: { storage: { from: () => ({ getPublicUrl: (path: string) => ({ data: { publicUrl: `https://images.example/${path}` } }) }) } },
+  supabase: {
+    storage: {
+      from: () => ({
+        getPublicUrl: (path: string) => ({ data: { publicUrl: `https://images.example/${path}` } }),
+      }),
+    },
+  },
 }));
 
 afterEach(cleanup);
@@ -35,7 +41,12 @@ const row = {
 function gallery(photos: Parameters<typeof CategoryGallerySection>[0]["photos"]) {
   return render(
     <QueryClientProvider client={new QueryClient()}>
-      <CategoryGallerySection categorySlugs={[]} subtitle="Séance" title="Galerie" photos={photos} />
+      <CategoryGallerySection
+        categorySlugs={[]}
+        subtitle="Séance"
+        title="Galerie"
+        photos={photos}
+      />
     </QueryClientProvider>,
   );
 }
@@ -44,11 +55,19 @@ describe("Storage des galeries", () => {
   it("associe AVIF et WebP par largeur, avec URL WebP de repli", () => {
     const photo = buildStorageGalleries([row])["gallery-1"][0];
     expect(photo.image_url).toBe("https://images.example/p-800.webp");
-    expect(photo.avif_srcset).toBe("https://images.example/p-400.avif 400w, https://images.example/p-800.avif 800w");
-    expect(photo.webp_srcset).toBe("https://images.example/p-400.webp 400w, https://images.example/p-800.webp 800w");
+    expect(photo.avif_srcset).toBe(
+      "https://images.example/p-400.avif 400w, https://images.example/p-800.avif 800w",
+    );
+    expect(photo.webp_srcset).toBe(
+      "https://images.example/p-400.webp 400w, https://images.example/p-800.webp 800w",
+    );
     expect(photo.object_position).toBe("40% 60%");
     expect(photo.alt_text).toBe("Portrait en lumière naturelle");
-    expect(buildStorageGalleries([{ ...row, photo: { ...row.photo, photo_variants: row.photo.photo_variants.slice(0, 3) } }])).toEqual({});
+    expect(
+      buildStorageGalleries([
+        { ...row, photo: { ...row.photo, photo_variants: row.photo.photo_variants.slice(0, 3) } },
+      ]),
+    ).toEqual({});
   });
 
   it("rend picture pour Storage, mais garde img seul pour les fichiers locaux", () => {
@@ -59,7 +78,16 @@ describe("Storage des galeries", () => {
     expect(storageView.container.querySelector('source[type="image/webp"]')).not.toBeNull();
     storageView.unmount();
 
-    const localView = gallery([{ id: "local", image_url: "/local.webp", alt_text: "Portrait", location: null, title: null, display_order: 0 }]);
+    const localView = gallery([
+      {
+        id: "local",
+        image_url: "/local.webp",
+        alt_text: "Portrait",
+        location: null,
+        title: null,
+        display_order: 0,
+      },
+    ]);
     expect(localView.container.querySelector("picture")).toBeNull();
     expect(localView.container.querySelector("img")?.getAttribute("src")).toBe("/local.webp");
   });

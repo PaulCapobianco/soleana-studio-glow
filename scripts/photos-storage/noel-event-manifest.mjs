@@ -61,7 +61,11 @@ for (const group of GROUPS) {
 const covered = GROUPS.reduce((n, g) => n + base.filter((f) => f.startsWith(g.prefix)).length, 0);
 const report = {
   event_slug: EVENT_SLUG,
-  galleries: GROUPS.map((g) => ({ slot: g.slot, title: g.title, count: placements.filter((p) => p.slot === g.slot).length })),
+  galleries: GROUPS.map((g) => ({
+    slot: g.slot,
+    title: g.title,
+    count: placements.filter((p) => p.slot === g.slot).length,
+  })),
   photos: photos.length,
   placements: placements.length,
   files_in_folder: names.length,

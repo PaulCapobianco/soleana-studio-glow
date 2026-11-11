@@ -25,7 +25,10 @@ export const QUALITY_PROFILES = Object.freeze({
 
 export function getQualityProfile(name) {
   const profile = QUALITY_PROFILES[name];
-  if (!profile) throw new Error(`Profil qualité invalide : ${name ?? "(absent)"}. Le profil définitif est q55.`);
+  if (!profile)
+    throw new Error(
+      `Profil qualité invalide : ${name ?? "(absent)"}. Le profil définitif est q55.`,
+    );
   return profile;
 }
 
@@ -37,6 +40,8 @@ export function expectedWidthsFor(sourceWidth, targetWidths = TARGET_WIDTHS) {
 }
 
 export function expectedVariantCount(photos, targetWidths = TARGET_WIDTHS, formats = FORMATS) {
-  return photos.reduce((total, photo) =>
-    total + expectedWidthsFor(photo.width, targetWidths).length * formats.length, 0);
+  return photos.reduce(
+    (total, photo) => total + expectedWidthsFor(photo.width, targetWidths).length * formats.length,
+    0,
+  );
 }
