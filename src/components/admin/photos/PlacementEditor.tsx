@@ -149,5 +149,3 @@ export function PlacementEditor({
     </div>
   );
 }
-
-type CapacityData = Awaited<ReturnType<typeof getPhotoStorageCapacity>>;
