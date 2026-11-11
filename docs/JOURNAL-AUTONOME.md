@@ -81,3 +81,32 @@ Commit dédié `style: prettier --write on src` : 8 fichiers reformatés, aucun 
 
 ### `src/data/admin-guide.ts`
 Fichier non suivi (221 lignes, guide d'aide de l'admin). **Aucune référence** dans le code et la page `src/routes/admin/_authed/aide.tsx` annoncée dans son en-tête **n'existe pas**. Recommandation : **ne pas le committer seul** (fichier mort). Le committer avec la page d'aide et son lien dans le menu admin, ou le garder hors dépôt.
+
+## Simulation d'import des photos (11 novembre 2026)
+Lancée : `node scripts/photos-storage/import-photos.mjs --plan-only --profile q55` (4 puis 170 photos) et la simulation complète `... --profile q55` (sans `--apply`). Aucune clé exigée : la simulation ne contacte aucun service ; seul un journal prévisionnel est écrit hors dépôt (`../soleana-originaux/storage-variants/journals/dry-run-*.jsonl`). Aucune écriture Supabase, aucun upload, aucun correctif nécessaire.
+
+**Résultat : 170 photos, 1 360 variantes (126,26 Mo), 190 emplacements.**
+- 8 variantes par photo : 4 largeurs (400/800/1200/1600) × AVIF et WebP ; 1 360 chemins Storage uniques.
+- Brouillon : photos `published=false`, `category_id=NULL`, `on_home=false`, `on_portfolio=false` ; placements `published=false` (170 lignes photo et 190 lignes placement de la simulation).
+- Clés Storage : toutes de la forme `galleries/<catégorie>/<12 hex>/<8 hex>-<largeur>.<avif|webp>` ; aucun nom de client ni de fichier.
+- Réutilisations : 20 photos placées deux fois, toutes dans la page Famille (gallery-1 et gallery-2) ; 170 photos pour 190 emplacements.
+- Cadrage : `object_position_x_pct` / `y_pct` présents et compris entre 0 et 100 sur les 190 placements.
+- Ordre : `display_order` contigu 0..n-1 dans les 8 galeries (11, 20, 47, 20, 10, 17, 53, 12). Contrôle par SHA-256 des 190 WebP actuels du dépôt, triés comme le site (`localeCompare` sur le nom sans extension) : 190 sur 190 concordent avec le manifeste.
+- Noël (74 photos) : absent du manifeste, donc exclu.
+
+**Écart de périmètre (à décider par Paul, non modifié)** : la consigne parlait de 190 photos (170 galeries + 4 portfolio + 16 autres). Le manifeste et l'importeur de la phase 1 couvrent **170 photos / 190 emplacements** : les galeries des 4 pages SEO uniquement. Les 4 portfolio, 4 hero accueil, 1 portrait accueil, 9 À propos et 2 fonds (20 photos) ne sont pas dans `manifest-phase1.json` ; `docs/photos-storage-plan.md` les compte dans les « 190 validées » mais prévoit leur import après les galeries (le README précise « pas l'accueil, pas À propos »). « 190 » dans la simulation désigne les emplacements. Étendre le manifeste est une décision produit : je n'y ai pas touché.
+
+### Import réel (Paul, après migrations 00003 et 00004 et contrôle postflight)
+Terminal contrôlé ; la clé service_role se saisit en mémoire, jamais dans un fichier :
+```
+export SUPABASE_URL=https://<projet>.supabase.co
+read -rsp 'Clé service_role : ' SUPABASE_SERVICE_ROLE_KEY; echo; export SUPABASE_SERVICE_ROLE_KEY
+# 1. essai sur 4 photos, contrôle des lignes, puis rollback du journal de cet essai
+node scripts/photos-storage/import-photos.mjs --apply --confirm <projet>.supabase.co --profile q55 --limit 4
+# 2. import complet en brouillon
+node scripts/photos-storage/import-photos.mjs --apply --confirm <projet>.supabase.co --profile q55
+```
+Prérequis : `SUPABASE_URL` et `SUPABASE_SERVICE_ROLE_KEY` ; les 1 360 variantes q55 présentes dans `../soleana-originaux/storage-variants` (`verify-variants.mjs` vert).
+
+### Contrôle postflight
+`docs/photos-storage/postflight-selects.sql` est du SQL en lecture seule, sans commande shell : l'ouvrir dans le SQL Editor Supabase et exécuter chaque bloc séparément, après 00003/00004 puis après chaque import (attendu après import complet : 170 photos, 1 360 variantes, 190 placements, tous non publiés, `category_id` NULL).
