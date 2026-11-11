@@ -40,7 +40,7 @@ export function NotFoundComponent() {
   );
 }
 
-export function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+export function ErrorComponent({ error, reset }: { error: unknown; reset: () => void }) {
   console.error(error);
   const router = useRouter();
   useEffect(() => {
@@ -96,9 +96,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "theme-color", content: "#FAF6EF" },
-      ...(matches.some(
-        (match) => match.globalNotFound || match.status === "notFound" || match.status === "error",
-      )
+      ...(matches.some((match) => match.status === "notFound" || match.status === "error")
         ? [{ name: "robots", content: "noindex,nofollow" }]
         : []),
     ],
