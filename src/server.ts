@@ -2,6 +2,12 @@ import "./lib/error-capture";
 
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
+import {
+  handleImageRequest,
+  IMAGE_PROXY_ENABLED,
+  IMAGE_PROXY_PREFIX,
+  type ImageProxyCache,
+} from "./lib/image-proxy";
 import { securityHeadersFor } from "./lib/security-headers";
 
 type ServerEntry = {
@@ -55,6 +61,17 @@ async function normalizeCatastrophicSsrResponse(response: Response): Promise<Res
 
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
+    // Relais d'images (désactivé par défaut : VITE_IMAGE_PROXY=true au build), avant l'application.
+    if (IMAGE_PROXY_ENABLED && new URL(request.url).pathname.startsWith(IMAGE_PROXY_PREFIX)) {
+      const context = ctx as { waitUntil?: (promise: Promise<unknown>) => void } | undefined;
+      const cacheStorage = (globalThis as { caches?: { default?: ImageProxyCache } }).caches;
+      return handleImageRequest(request, {
+        supabaseUrl: import.meta.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL || "",
+        fetchUpstream: (url, init) => fetch(url, init),
+        cache: cacheStorage?.default ?? null,
+        waitUntil: (promise) => context?.waitUntil?.(promise),
+      });
+    }
     try {
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);

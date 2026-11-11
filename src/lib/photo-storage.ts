@@ -1,4 +1,5 @@
 import { getSupabase } from "@/lib/supabase-lazy";
+import { IMAGE_PROXY_ENABLED, proxiedImageUrl } from "@/lib/image-proxy";
 import {
   ACTIVE_PHOTO_QUALITY_PROFILE,
   expectedPhotoWidths,
@@ -23,6 +24,7 @@ const BUCKET = "photos";
 export function publicImageUrl(storagePath: string): string {
   const base = import.meta.env.VITE_IMAGE_BASE_URL?.replace(/\/+$/, "");
   if (base) return `${base}/${storagePath}`;
+  if (IMAGE_PROXY_ENABLED) return proxiedImageUrl(storagePath);
   // Même résultat que `supabase.storage.from(BUCKET).getPublicUrl(path)`, sans charger supabase-js.
   const projectUrl = (
     import.meta.env.VITE_SUPABASE_URL ||
