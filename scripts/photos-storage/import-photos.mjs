@@ -18,7 +18,7 @@
 import { appendFile, mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { VARIANTS_DIR, readManifest, sha256 } from "./lib.mjs";
-import { buildImportPlan, IMPORT_PHOTO_DEFAULTS, selectImportPhotos } from "./import-plan.mjs";
+import { buildImportPlan, findIncompletePlacement, IMPORT_PHOTO_DEFAULTS, selectImportPhotos } from "./import-plan.mjs";
 import { expectedVariantCount, expectedWidthsFor, GENERATION_VERSION, getQualityProfile } from "./quality-profiles.mjs";
 
 const args = process.argv.slice(2);
@@ -248,6 +248,8 @@ if (publishExisting) {
       "publication des photos importées",
     );
     for (const row of rows) {
+      // Garder la Map en phase avec la base : le contrôle des emplacements lit cet état.
+      photoByKey.get(row.source_key).published = true;
       await journal({ op: "publish_photo", id: row.id, source_key: row.source_key, previous_published: false, created: true });
     }
   }
@@ -264,13 +266,8 @@ if (publishExisting) {
     );
     for (const row of rows) placementByKey.set(row.placement_key, row);
   }
-  for (const placement of selectedPlacements) {
-    const row = placementByKey.get(placement.placement_key);
-    const photo = photoByKey.get(placement.source_key);
-    if (!row || row.photo_id !== photo?.id || !photo.published) {
-      throw new Error(`Emplacement incomplet ou photo non publiée : ${placement.placement_key}`);
-    }
-  }
+  const incomplete = findIncompletePlacement(selectedPlacements, placementByKey, photoByKey);
+  if (incomplete) throw new Error(`Emplacement incomplet ou photo non publiée : ${incomplete}`);
   const unpublishedPlacements = [...placementByKey.values()].filter((row) => !row.published);
   for (let i = 0; i < unpublishedPlacements.length; i += 100) {
     const chunk = unpublishedPlacements.slice(i, i + 100);

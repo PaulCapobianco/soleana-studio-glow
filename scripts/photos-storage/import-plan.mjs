@@ -50,3 +50,17 @@ export function buildImportPlan(manifest, options = {}) {
     targetWidths,
   };
 }
+
+/**
+ * Premier emplacement dont la ligne manque, ne pointe pas la bonne photo, ou dont la photo n'est pas
+ * publiée (null si tout est cohérent). `photoByKey` doit refléter l'état APRÈS la publication des
+ * photos : une lecture faite avant l'UPDATE voit encore published=false et bloquerait à tort.
+ */
+export function findIncompletePlacement(placements, placementByKey, photoByKey) {
+  for (const placement of placements) {
+    const row = placementByKey.get(placement.placement_key);
+    const photo = photoByKey.get(placement.source_key);
+    if (!row || row.photo_id !== photo?.id || !photo.published) return placement.placement_key;
+  }
+  return null;
+}

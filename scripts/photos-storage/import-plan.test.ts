@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { buildImportPlan, IMPORT_PHOTO_DEFAULTS, isLegacyGalleryVisible } from "./import-plan.mjs";
+import { buildImportPlan, findIncompletePlacement, IMPORT_PHOTO_DEFAULTS, isLegacyGalleryVisible } from "./import-plan.mjs";
 
 const manifestPath = path.resolve(import.meta.dirname, "../../docs/photos-storage/manifest-phase1.json");
 const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
@@ -34,5 +34,24 @@ describe("simulation logique de l'import Storage", () => {
     expect(plan.variantCount).toBe(1360);
     expect(plan.variantCountsByWidth).toEqual({ 400: 340, 800: 340, 1200: 340, 1600: 340 });
     expect(plan.placementCount).toBe(190);
+  });
+});
+
+describe("findIncompletePlacement (publication des emplacements)", () => {
+  const placements = [{ placement_key: "p1", source_key: "k1" }];
+  const rows = new Map([["p1", { photo_id: "id1" }]]);
+
+  it("bloque quand la photo lue avant l'UPDATE est encore en brouillon (défaut d'origine)", () => {
+    const stale = new Map([["k1", { id: "id1", published: false }]]);
+    expect(findIncompletePlacement(placements, rows, stale)).toBe("p1");
+  });
+  it("accepte une fois la photo marquée publiée, ou déjà publiée", () => {
+    const fresh = new Map([["k1", { id: "id1", published: true }]]);
+    expect(findIncompletePlacement(placements, rows, fresh)).toBeNull();
+  });
+  it("signale un emplacement absent ou rattaché à une autre photo", () => {
+    const photos = new Map([["k1", { id: "id1", published: true }]]);
+    expect(findIncompletePlacement(placements, new Map(), photos)).toBe("p1");
+    expect(findIncompletePlacement(placements, new Map([["p1", { photo_id: "autre" }]]), photos)).toBe("p1");
   });
 });
