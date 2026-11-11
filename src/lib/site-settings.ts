@@ -1,5 +1,5 @@
 import { useRouterState } from "@tanstack/react-router";
-import { supabase } from "@/integrations/supabase/client";
+import { getSupabase } from "@/lib/supabase-lazy";
 import { isGoogleReviewUrl } from "@/lib/google-review-url";
 
 export type SiteSettings = {
@@ -105,7 +105,9 @@ export function resolveSiteSettings(row: SettingsRow | null | undefined): SiteSe
 /** Lecture publique (rôle anon), jamais bloquante : en cas d'erreur, valeurs de repli. */
 export async function loadSiteSettings(): Promise<SiteSettings> {
   try {
-    const { data, error } = await supabase
+    const { data, error } = await (
+      await getSupabase()
+    )
       .from("site_settings")
       .select("*")
       .eq("id", 1)

@@ -1,4 +1,4 @@
-import { supabase } from "@/integrations/supabase/client";
+import { getSupabase } from "@/lib/supabase-lazy";
 import { loadEventGalleries } from "@/lib/photo-storage";
 import { buildGalleryGroups, publicGalleries, type EventGalleryGroup } from "./galleries";
 import { parseEventRow } from "./parse";
@@ -19,7 +19,9 @@ export async function loadGalleryGroups(event: EventContent): Promise<EventGalle
 
     let previous: Parameters<typeof buildGalleryGroups>[0]["previous"] = null;
     if (event.gallery_reference_event_id) {
-      const { data } = await supabase
+      const { data } = await (
+        await getSupabase()
+      )
         .from("events")
         .select("*")
         .eq("id", event.gallery_reference_event_id)

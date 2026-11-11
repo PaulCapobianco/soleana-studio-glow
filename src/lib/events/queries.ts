@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { supabase } from "@/integrations/supabase/client";
+import { getSupabase } from "@/lib/supabase-lazy";
 import { isEditionOver } from "./dates";
 import { parseEventRow } from "./parse";
 import { buildTeaser } from "./presentation";
@@ -24,7 +24,9 @@ function isMissingTable(error: { code?: string }): boolean {
 export const getPublishedEvent = createServerFn({ method: "GET" })
   .inputValidator(z.object({ slug: z.string().min(1).max(120) }))
   .handler(async ({ data }): Promise<PublicEventPage | null> => {
-    const { data: row, error } = await supabase
+    const { data: row, error } = await (
+      await getSupabase()
+    )
       .from("events")
       .select("*")
       .eq("slug", data.slug)
@@ -77,7 +79,9 @@ function legacyPage(): Promise<PublicEventPage> {
  */
 export const getHomeTeaser = createServerFn({ method: "GET" }).handler(
   async (): Promise<EventTeaserData | null> => {
-    const { data: rows, error } = await supabase
+    const { data: rows, error } = await (
+      await getSupabase()
+    )
       .from("events")
       .select("*")
       .eq("status", "published")
@@ -100,7 +104,9 @@ export const getHomeTeaser = createServerFn({ method: "GET" }).handler(
 export async function listPublishedEventUrls(): Promise<
   { slug: string; updatedAt: string }[] | null
 > {
-  const { data, error } = await supabase
+  const { data, error } = await (
+    await getSupabase()
+  )
     .from("events")
     .select("slug, updated_at")
     .eq("status", "published");

@@ -4,11 +4,13 @@ import { Reveal } from "@/components/site/Reveal";
 import fondPresta from "@/assets/fond_presta.webp";
 import fondPrestaAvif from "@/assets/fond_presta.avif";
 import { buildPageSeo } from "@/lib/seo";
-import { supabase } from "@/integrations/supabase/client";
+import { getSupabase } from "@/lib/supabase-lazy";
 
 export const Route = createFileRoute("/prestations")({
   loader: async () => {
-    const { data, error } = await supabase
+    const { data, error } = await (
+      await getSupabase()
+    )
       .from("services")
       .select("*")
       .eq("active", true)

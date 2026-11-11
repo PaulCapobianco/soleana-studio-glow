@@ -1,4 +1,4 @@
-import { supabase } from "@/integrations/supabase/client";
+import { getSupabase } from "@/lib/supabase-lazy";
 import {
   ACTIVE_PHOTO_QUALITY_PROFILE,
   expectedPhotoWidths,
@@ -23,7 +23,12 @@ const BUCKET = "photos";
 export function publicImageUrl(storagePath: string): string {
   const base = import.meta.env.VITE_IMAGE_BASE_URL?.replace(/\/+$/, "");
   if (base) return `${base}/${storagePath}`;
-  return supabase.storage.from(BUCKET).getPublicUrl(storagePath).data.publicUrl;
+  // Même résultat que `supabase.storage.from(BUCKET).getPublicUrl(path)`, sans charger supabase-js.
+  const projectUrl = (
+    import.meta.env.VITE_SUPABASE_URL ||
+    (typeof process !== "undefined" ? process.env.SUPABASE_URL : "")
+  )?.replace(/\/+$/, "");
+  return encodeURI(`${projectUrl}/storage/v1/object/public/${BUCKET}/${storagePath}`);
 }
 
 export type StorageGalleryPhoto = {
@@ -107,7 +112,9 @@ export async function loadStorageGalleries(
   seoPageId: string,
 ): Promise<Record<string, StorageGalleryPhoto[]> | null> {
   try {
-    const { data, error } = await supabase
+    const { data, error } = await (
+      await getSupabase()
+    )
       .from("photo_placements")
       .select(
         "slot, display_order, alt_text_override, object_position_x_pct, object_position_y_pct, photo:photos!inner(id, alt_text, photo_variants(width, height, storage_path, format))",
@@ -164,7 +171,9 @@ export async function loadCategoryPhotos(
   const seoSlug = CATEGORY_SEO_SLUG[categorySlug];
   if (!seoSlug) return null;
   try {
-    const { data, error } = await supabase
+    const { data, error } = await (
+      await getSupabase()
+    )
       .from("seo_pages")
       .select("id")
       .eq("slug", seoSlug)
@@ -191,7 +200,9 @@ export async function loadEventGalleries(
   eventId: string,
 ): Promise<Record<string, StorageGalleryPhoto[]> | null> {
   try {
-    const { data, error } = await supabase
+    const { data, error } = await (
+      await getSupabase()
+    )
       .from("photo_placements")
       .select(PLACEMENT_SELECT)
       .eq("event_id", eventId)

@@ -3,7 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { supabase } from "@/integrations/supabase/client";
+import { getSupabase } from "@/lib/supabase-lazy";
 
 type GalleryPhoto = {
   id: string;
@@ -104,7 +104,9 @@ export function CategoryGallerySection({
     queryFn: async () => {
       if (normalizedCategorySlugs.length === 0 || manualPhotos !== undefined) return [];
 
-      const { data: categories } = await supabase
+      const { data: categories } = await (
+        await getSupabase()
+      )
         .from("categories")
         .select("id, slug")
         .in("slug", normalizedCategorySlugs);
@@ -112,7 +114,9 @@ export function CategoryGallerySection({
       if (!categories?.length) return [];
 
       const categoryIds = categories.map((category) => category.id);
-      const { data } = await supabase
+      const { data } = await (
+        await getSupabase()
+      )
         .from("photos")
         .select("id, image_url, alt_text, location, title, display_order")
         .in("category_id", categoryIds)

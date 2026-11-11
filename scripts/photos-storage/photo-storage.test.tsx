@@ -5,6 +5,9 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { CategoryGallerySection } from "@/components/site/CategoryGallerySection";
 import { buildStorageGalleries } from "@/lib/photo-storage";
 
+// publicImageUrl ne passe plus par supabase-js : l'hôte des images vient de VITE_IMAGE_BASE_URL.
+vi.stubEnv("VITE_IMAGE_BASE_URL", "https://images.example");
+
 vi.mock("@/integrations/supabase/client", () => ({
   supabase: { storage: { from: () => ({ getPublicUrl: (path: string) => ({ data: { publicUrl: `https://images.example/${path}` } }) }) } },
 }));

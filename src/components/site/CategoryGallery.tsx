@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 
-import { supabase } from "@/integrations/supabase/client";
+import { getSupabase } from "@/lib/supabase-lazy";
 import { loadCategoryPhotos, STORAGE_GALLERIES_ENABLED } from "@/lib/photo-storage";
 
 interface CategoryGalleryProps {
@@ -27,7 +27,9 @@ export function CategoryGallery({ categorySlug }: CategoryGalleryProps) {
   const { data: category } = useQuery({
     queryKey: ["category", categorySlug],
     queryFn: async () => {
-      const { data } = await supabase
+      const { data } = await (
+        await getSupabase()
+      )
         .from("categories")
         .select("*")
         .eq("slug", categorySlug)
@@ -47,7 +49,9 @@ export function CategoryGallery({ categorySlug }: CategoryGalleryProps) {
     queryKey: ["photos", category?.id],
     queryFn: async () => {
       if (!category?.id) return [];
-      const { data } = await supabase
+      const { data } = await (
+        await getSupabase()
+      )
         .from("photos")
         .select("id, image_url, alt_text, location, title")
         .eq("category_id", category.id)

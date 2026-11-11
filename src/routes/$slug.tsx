@@ -5,7 +5,7 @@ import { CategoryGallerySection } from "@/components/site/CategoryGallerySection
 import { EventPage } from "@/components/site/EventPage";
 import { eventAssets } from "@/components/site/event-assets";
 import { buildPageSeo, safeJsonLd } from "@/lib/seo";
-import { supabase } from "@/integrations/supabase/client";
+import { getSupabase } from "@/lib/supabase-lazy";
 import type { Database } from "@/integrations/supabase/types";
 import { getPublishedEvent } from "@/lib/events/queries";
 import { buildEventJsonLd, eventOgImage, eventSeo } from "@/lib/events/presentation";
@@ -294,7 +294,9 @@ const SEO_PAGE_GALLERY: Record<
 
 export const Route = createFileRoute("/$slug")({
   loader: async ({ params }) => {
-    const { data, error } = await supabase
+    const { data, error } = await (
+      await getSupabase()
+    )
       .from("seo_pages")
       .select("*")
       .eq("slug", params.slug)

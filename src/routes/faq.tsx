@@ -4,11 +4,13 @@ import { Reveal } from "@/components/site/Reveal";
 import * as Accordion from "@radix-ui/react-accordion";
 import { ChevronDown } from "lucide-react";
 import { buildPageSeo } from "@/lib/seo";
-import { supabase } from "@/integrations/supabase/client";
+import { getSupabase } from "@/lib/supabase-lazy";
 
 export const Route = createFileRoute("/faq")({
   loader: async () => {
-    const { data, error } = await supabase
+    const { data, error } = await (
+      await getSupabase()
+    )
       .from("faq")
       .select("*")
       .eq("published", true)

@@ -12,6 +12,9 @@ vi.mock("@/integrations/supabase/client", () => ({
 
 import { buildStorageGalleries } from "./photo-storage";
 
+// publicImageUrl ne passe plus par supabase-js : l'hôte des images vient de VITE_IMAGE_BASE_URL.
+vi.stubEnv("VITE_IMAGE_BASE_URL", "https://cdn.test");
+
 const variants = (path: string) =>
   [400, 800, 1600].flatMap((width) =>
     (["avif", "webp"] as const).map((format) => ({
