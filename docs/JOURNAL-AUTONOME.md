@@ -110,3 +110,67 @@ Prérequis : `SUPABASE_URL` et `SUPABASE_SERVICE_ROLE_KEY` ; les 1 360 variantes
 
 ### Contrôle postflight
 `docs/photos-storage/postflight-selects.sql` est du SQL en lecture seule, sans commande shell : l'ouvrir dans le SQL Editor Supabase et exécuter chaque bloc séparément, après 00003/00004 puis après chaque import (attendu après import complet : 170 photos, 1 360 variantes, 190 placements, tous non publiés, `category_id` NULL).
+
+## Préparation de la bascule des galeries vers Storage (11 novembre 2026)
+Rien n'a été modifié en production : aucune écriture Supabase, aucun déploiement, aucun import. Un build local avec l'interrupteur a seulement servi à vérifier que le code compile (`dist/` est ignoré par git).
+
+### 1. Publier photos et placements, sans catégorie
+**Moyen sûr existant, rien à écrire** : `import-photos.mjs --publish-existing` (déjà dans le dépôt, testé en simulation).
+- Il ne touche que les lignes dont la `source_key` / `placement_key` figure dans le manifeste (170 photos, 190 placements), par lots de 100.
+- Il **refuse** de publier si une photo a `category_id` non NULL, `on_home` ou `on_portfolio` vrai.
+- Il ne fait que `published=false → true` (`.eq("published", false)`), vérifie que chaque placement pointe sa photo, et journalise chaque ligne modifiée dans `../soleana-originaux/storage-variants/journals/`.
+- Retour arrière : `rollback-import.mjs` sur ce journal remet `published=false` (lignes `publish_photo` / `publish_placement`) sans rien supprimer.
+- Dans l'admin, la même opération existe photo par photo (bascule « Publié » de l'emplacement) : trop lent pour 190 lignes.
+
+Commandes (Paul ; `SUPABASE_URL` et clé service_role en mémoire, comme pour l'import) :
+```
+node scripts/photos-storage/import-photos.mjs --publish-existing --profile q55            # simulation
+node scripts/photos-storage/import-photos.mjs --publish-existing --profile q55 --limit 4 --apply --confirm <projet>.supabase.co   # essai
+node scripts/photos-storage/import-photos.mjs --publish-existing --profile q55 --apply --confirm <projet>.supabase.co
+```
+Ensuite : `postflight-selects.sql` (170 photos / 190 placements publiés).
+
+**Rattacher la catégorie : à ne PAS faire.** Le code n'en a pas besoin et le rattachement ajouterait un risque :
+- Les galeries SEO lisent `photo_placements` (contexte `seo`, via `seo_page_id` + `slot`) ; les pages `/portfolio/<catégorie>` lisent les mêmes placements via la page SEO de la catégorie (`CATEGORY_SEO_SLUG` dans `src/lib/photo-storage.ts`). `photos.category_id` n'est lu que par le chemin hérité (`CategoryGallery`, `CategoryGallerySection` sans photos manuelles).
+- Poser `category_id` + `published=true` ferait apparaître ces photos dans ce chemin hérité (jusqu'à 9 par galerie, sans cadrage ni AVIF) et l'importeur refuse justement ce cas. La catégorie reste donc portée par la page SEO du placement. Aucun SQL n'est fourni : si un besoin produit apparaît (filtre par catégorie dans l'admin), c'est une décision à part.
+
+**Ce que la publication change en production aujourd'hui : rien de visible.** Avec l'interrupteur éteint, le site public ne lit jamais `photo_placements` ni `photo_variants`, et ses lectures de `photos` filtrent sur `category_id` (NULL ici). Publier avant la préversion est donc sans effet sur le site actuel, et c'est nécessaire : la préversion lit la même base, et la RLS publique masque les brouillons.
+
+### 2. Préversion Cloudflare (sans toucher à la production)
+Build : `VITE_GALLERIES_FROM_STORAGE=true npm run build` (vérifié : passe ; l'interrupteur est lu au build, pas à l'exécution). Les autres `VITE_*` (Supabase) viennent de `.env` comme d'habitude.
+Publication : 
+```
+npx wrangler versions upload --message "preview galeries Storage"
+```
+`versions upload` crée une version **non déployée** : `wrangler deploy` n'est jamais appelé, la route `soleanastudio.fr/*` continue de servir la version active. L'URL de préversion est affichée à la fin (forme `https://<id>-soleana-studio.<sous-domaine>.workers.dev`) ; elle exige que les URL de préversion / workers.dev soient actives pour ce Worker (Cloudflare → Workers → soleana-studio → Settings → Domains & Routes). Ne pas lancer `wrangler versions deploy`. Piège : `npm run deploy:cf` reconstruit *sans* le flag puis déploie en production ; ne pas l'utiliser pour la préversion. Le build suivant sans variable redonne le site actuel.
+Limite : la préversion et la production partagent la même base Supabase ; `sitemap.xml` de la préversion liste les 4 pages `/portfolio/<catégorie>` (absentes du sitemap de production).
+
+### 3. Checklist préversion ↔ site actuel
+Ouvrir côte à côte `https://soleanastudio.fr` et l'URL de préversion, mobile et ordinateur.
+- [ ] Pages galeries SEO : `/photographe-grossesse-marseille`, `-famille-`, `-couple-`, `-portrait-` : même nombre de photos par galerie (grossesse 11 + 20, famille 47 + 20, couple 10 + 17 + 53, portrait 12), même titre, même texte, même mise en page.
+- [ ] Ordre : première photo (mise en avant) et suite identiques ; contrôler au moins la 1re, la 5e et la dernière de chaque galerie ; les 20 photos réutilisées de Famille apparaissent dans les deux galeries.
+- [ ] Textes alternatifs : inspecter 3 `<img>` par page (« Séance photo … - photo N ») ; identiques au site actuel.
+- [ ] Cadrage : vignettes et photo principale cadrées comme avant (`object-position` 50 % 50 % partout au départ) ; tester un portrait vertical dans le cadre 16/10.
+- [ ] Format : `<picture>` AVIF puis WebP, `srcset` 400/800/1200/1600 ; onglet Réseau : AVIF servi sur Chrome/Firefox, WebP sur Safari ancien ; pas de requête vers les fichiers locaux.
+- [ ] Lightbox : ouverture, flèches clavier, fermeture, focus.
+- [ ] `/portfolio` : identique à aujourd'hui (cartes catégories, liens) ; `/portfolio/grossesse`, `/famille`, `/couple`, `/portrait` : s'affichent (404 aujourd'hui), photos dédupliquées, hero et sections inchangés, liens « catégories liées » valides.
+- [ ] `/sitemap.xml` préversion : les 4 URLs `/portfolio/<catégorie>` en plus, rien d'autre de changé ; titres et balises canoniques des 4 pages.
+- [ ] Poids et vitesse : Lighthouse mobile sur une page galerie (LCP, CLS : pas de décalage, dimensions fournies).
+- [ ] Console : aucune erreur `[photo_placements]` (sinon repli local silencieux : à investiguer).
+- [ ] Contrôles non visuels : accueil, À propos, Noël, `/admin` inchangés.
+
+### 4. Ce qui s'affiche avec `VITE_GALLERIES_FROM_STORAGE=true`
+Code lu : `src/routes/$slug.tsx` (loader, `SeoPage`), `src/lib/photo-storage.ts`, `CategoryGallerySection.tsx`, `CategoryGallery.tsx`, `src/routes/portfolio*.tsx`, sitemap, et la politique RLS de `photo_placements`.
+
+**Tant que les photos sont en brouillon (état actuel de la production)** : la RLS publique ne renvoie aucun placement non publié, donc la requête réussit avec **0 ligne**, et `loadStorageGalleries` renvoie `{}` (et non `null`).
+- Les 4 pages SEO affichent leurs galeries **vides** : « Galerie en cours de remplissage… ». Il n'y a **pas** de repli sur les fichiers locaux : le repli (`null`) ne se produit qu'en cas d'erreur de lecture ou de table absente, pas pour une réponse vide (comportement voulu dans le code : « une galerie volontairement vide reste vide »). Textes, titres et SEO de la page restent.
+- `/portfolio/<catégorie>` : s'affiche (BUG-02 actif) avec « Galerie en cours de remplissage... » (aucune photo Storage, repli sur la table `photos` par `category_id`, vide aujourd'hui).
+- Le sitemap liste déjà les 4 pages catégories, donc des pages quasi vides seraient annoncées aux moteurs de recherche.
+- **Conclusion : ne jamais activer l'interrupteur en production avant la publication.** Une préversion avec photos en brouillon montre des galeries vides : publier d'abord (section 1).
+
+**Une fois publiées** (photo `published` ET placement `published` ET page SEO publiée) :
+- Chaque galerie `gallery-N` est remplie, dans l'ordre `display_order`, depuis les placements ; une photo sans variantes AVIF et WebP aux mêmes largeurs est ignorée (la galerie compte alors une photo de moins, à repérer avec le décompte ci-dessus).
+- Rendu : `<picture>` AVIF/WebP, `srcset` 400→1600, `object-position` du placement, texte alternatif du placement (sinon celui de la photo), dimensions de la plus grande variante.
+- Images servies par l'URL publique du bucket Supabase, ou par `VITE_IMAGE_BASE_URL` si définie (non définie : à décider avant la bascule).
+- `/portfolio/<catégorie>` : toutes les photos de la page SEO correspondante, galeries concaténées dans l'ordre des slots, doublons retirés (donc 11+20, 47+20 sans les 20 doublons de Famille → 47 photos distinctes, etc.).
+- Retour arrière : retirer la variable et reconstruire/déployer (les fichiers locaux sont toujours dans le dépôt) ; ou dépublier avec le journal de `rollback-import.mjs`, mais cela laisserait des galeries vides tant que l'interrupteur est actif.
