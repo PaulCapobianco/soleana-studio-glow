@@ -286,3 +286,56 @@ Aucune régression ; aucun correctif de performance appliqué (rien à corriger 
 VITE_GALLERIES_FROM_STORAGE=true npm run deploy:cf
 ```
 (`deploy:cf` = build puis `wrangler deploy` ; npm transmet la variable à Vite.) Retour arrière : `npm run deploy:cf` sans la variable (ou `wrangler rollback` vers 05e26e6a). Ne la lancer qu'après publication des photos : avec des brouillons, les galeries sont vides.
+
+## Phase A et B après publication par Paul (11 novembre 2026)
+Aucune clé disponible dans ma session (comme demandé : lecture publique uniquement, clé anon via `node --env-file=.env`, `.env` jamais lu ni affiché). Aucune écriture Supabase, aucune migration, aucun déploiement de production.
+
+### Phase A : résultats
+| Critère | Attendu | Constaté |
+|---|---|---|
+| Photos | 170, toutes publiées | 170 lisibles par anon, 170 `published=true` ✔ |
+| `category_id` / `on_home` / `on_portfolio` | aucun | 0 / 0 / 0 ✔ |
+| Placements publiés | 190 | **0 lisible par anon ✘** |
+| Variantes lisibles | 1 360 | **0 lisible par anon ✘** (la RLS des variantes exige un placement publié) |
+| Pages SEO publiées | 5 | 5 ✔ |
+| Objets du bucket (1 360) | présents | non recontrôlés (listing refusé à anon) ; contrôle précédent 1 360/1 360 |
+| Site public (flag éteint) | identique | production toujours sur 05e26e6a, 100 % ; page couple 200, sitemap sans `/portfolio/` ✔ |
+
+**Écart de données, à traiter par Paul** : les journaux de publication (`../soleana-originaux/storage-variants/journals/import-2026-11-11T19-43-57-454Z.jsonl` et `…58-576Z.jsonl`) contiennent 4 + 166 lignes `publish_photo` et **aucune** `publish_placement`. Les photos ont été publiées mais pas les 190 placements (étape probablement interrompue ou en erreur : relire la sortie du terminal). Tant que les placements sont en brouillon, la RLS masque placements et variantes : avec le flag, les galeries restent vides. Je n'ai pas les droits d'écriture ; relancer la même commande reprend là où elle s'est arrêtée (`--publish-existing` ne touche que `published=false`) :
+```
+node scripts/photos-storage/import-photos.mjs --publish-existing --profile q55 --apply --confirm kvzzzwjddanwedzotaka.supabase.co
+```
+Puis contrôler : 190 placements et 1 360 variantes visibles en anon (je peux relancer `db.mjs`-équivalent).
+
+**Non exécutés faute de placements visibles** (à refaire une fois publiés) : décompte par galerie (11+20, 47+20, 10+17+53, 12 ; Famille catégorie = 47), ordre vs manifeste, `<picture>`/`srcset`/alt/object-position, GET des URLs d'images (4 en parallèle), console `[photo_placements]`, sitemap +4 URLs, Lighthouse avec vraies photos (références : 86 / 90 / 85). Les mesures Lighthouse avec brouillons restent celles de la séance précédente (86 / 90 / 85 / SEO 100, galerie vide).
+
+### Préversion
+`VITE_GALLERIES_FROM_STORAGE=true` + `wrangler versions upload` → version **64682c0f-5256-437e-b3d7-c56941178d3a** (code de la Phase B incluse). Jamais de `versions deploy`. Production inchangée (05e26e6a, 100 %). `dist/` reconstruit sans le flag. URL de préversion : non affichée par la commande ; Cloudflare → Workers → soleana-studio → Versions → 64682c0f (forme `https://64682c0f-soleana-studio.<sous-domaine>.workers.dev`). La précédente préversion af1a6b4d est obsolète.
+
+### Phase B : fait (3 commits, 267 tests verts, typecheck et build verts)
+1. **Un seul interrupteur** : inchangé, galeries d'événement derrière `VITE_GALLERIES_FROM_STORAGE`.
+2. **Photos « Événement » exposées par catégorie : corrigé** (fff9511). Cause : `uploadEventPhoto` créait la photo avec `category_id` = catégorie « evenement » et `published=true` ; `CategoryGallery` et `CategoryGallerySection` lisent `photos` par `category_id` + `published`, donc ces photos auraient pu apparaître dans l'affichage hérité. Maintenant `category_id = NULL` (`on_home` et `on_portfolio` déjà faux) : la photo n'est visible que par son emplacement `event` (galerie de l'événement, selon le statut de l'événement). Le paramètre `categoryId` est supprimé de l'envoi, de l'admin Photos et de la fiche événement ; `eventCategoryId` supprimé. Test ajouté (`category_id` null, `on_home`/`on_portfolio` faux). Aucune migration. Photos d'événement déjà envoyées avant ce correctif : elles gardent leur catégorie ; à vérifier dans l'admin (aucune, tant que la migration `20261110` n'est pas appliquée et que rien n'a été envoyé).
+3. **Cadrage réglable dans la fiche événement** (8de487a) : curseurs horizontal/vertical par photo avec aperçu, bouton « Enregistrer le cadrage », valeurs 0–100 validées (`normalizeFraming`, message français) ; le site public utilisait déjà `object_position_*`. Tests : bornes, NaN, interface.
+4. **Cohérence de bout en bout** : tests ajoutés (`gallery-admin.test.ts`) sur ordre (trous, extrémités, photo inconnue), titres vides, identifiants de galeries distincts, déplacement borné ; les tests existants couvrent l'envoi multiple, l'échec partiel, « Édition précédente » et l'événement référencé non publié (`EventGalleriesPage.test.tsx`, `EventGalleries.test.tsx`). Les écritures passent déjà par `toastAdminError` (`write-error.ts`). Non couvert par des tests automatisés : la suppression d'événement avec photos (le comportement dépend des clés étrangères en base, à tester à la main).
+5. **Noël, dry-run** (commit `chore(photos): dry-run manifest…`) : `node scripts/photos-storage/noel-event-manifest.mjs` → `docs/photos-storage/manifest-noel-event.json`. **74 photos, 74 emplacements, 592 variantes prévues** : Séance 1 (13), Séance 2 (11), Séance 3 (19), Séance 4 (12), Décor (19) ; les 6 fichiers hero sont ignorés. Aucun import, `legacy-noel.ts` non modifié. **Décisions pour Paul** : (a) titres des galeries (proposés, à valider) ; (b) la source est le WebP 1600 px du dépôt (pas d'original Noël hors dépôt) : acceptable pour un affichage à 1600 px, pas de zoom plus fin ; (c) textes alternatifs génériques à remplacer par de vrais textes ; (d) un script d'import réel pour le contexte `event` reste à écrire (l'importeur actuel ne gère que les pages SEO) ou envoi via l'admin ; (e) la migration `20261110` doit être appliquée avant.
+6. Expiration d'affichage des événements : inchangée.
+
+### Pas de déploiement de production
+La Phase B a livré du code, mais la Phase A n'est pas au vert côté données (placements), et rien n'oblige à déployer : pas de déploiement, donc pas de comparaison de 16 URLs. Le code Phase B n'est donc que dans la préversion et dans le dépôt.
+
+### Non vérifiable sans navigateur
+Rendu visuel, lightbox, curseurs de cadrage, Safari/iPhone, envoi de photo, session aal2, Lighthouse avec photos.
+
+### À tester à la main
+1. Relancer la publication des placements, puis vérifier 190 placements / 1 360 variantes en anon.
+2. Ouvrir la préversion 64682c0f et comparer aux pages SEO actuelles (décomptes, ordre, alt, cadrage, `/portfolio/<catégorie>`, sitemap +4).
+3. Lightbox (ouverture, flèches, Échap, focus), mobile et ordinateur, Safari/iPhone (AVIF/WebP).
+4. Admin avec double authentification : fiche événement de test (créer puis supprimer) : galerie, envoi de 2 photos, ordre, texte alternatif, **cadrage**, publication ; vérifier en base que `category_id` est NULL ; destination « Événement » de l'admin Photos ; suppression d'un événement ayant des photos.
+5. Session sans double authentification : message dédié.
+6. Lighthouse mobile de la préversion avec photos publiées (références 86 / 90 / 85).
+
+### Bascule finale (seulement après 1 à 4 et ta validation)
+```
+VITE_GALLERIES_FROM_STORAGE=true npm run deploy:cf
+```
+Retour arrière : `npm run deploy:cf` sans la variable, ou `wrangler rollback` vers 05e26e6a.
