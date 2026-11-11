@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
+import { loadCategoryPhotos, STORAGE_GALLERIES_ENABLED } from "@/lib/photo-storage";
 
 interface CategoryGalleryProps {
   categorySlug: string;
@@ -35,7 +36,14 @@ export function CategoryGallery({ categorySlug }: CategoryGalleryProps) {
     },
   });
 
-  const { data: photos = [] } = useQuery({
+  // Photos Storage (galeries des pages SEO) quand l'interrupteur est actif ; sinon table photos.
+  const { data: storagePhotos } = useQuery({
+    queryKey: ["category-storage-photos", categorySlug],
+    queryFn: () => loadCategoryPhotos(categorySlug),
+    enabled: STORAGE_GALLERIES_ENABLED,
+  });
+
+  const { data: legacyPhotos = [] } = useQuery({
     queryKey: ["photos", category?.id],
     queryFn: async () => {
       if (!category?.id) return [];
@@ -47,8 +55,16 @@ export function CategoryGallery({ categorySlug }: CategoryGalleryProps) {
         .order("display_order");
       return data || [];
     },
-    enabled: !!category?.id,
+    enabled: !!category?.id && !(STORAGE_GALLERIES_ENABLED && storagePhotos?.length),
   });
+  const photos: {
+    id: string;
+    image_url: string;
+    alt_text: string;
+    location: string | null;
+    title: string | null;
+    srcset?: string;
+  }[] = STORAGE_GALLERIES_ENABLED && storagePhotos?.length ? storagePhotos : legacyPhotos;
 
   if (photos.length === 0) {
     return (
@@ -69,6 +85,12 @@ export function CategoryGallery({ categorySlug }: CategoryGalleryProps) {
           >
             <img
               src={photo.image_url}
+              srcSet={photo.srcset}
+              sizes={
+                photo.srcset
+                  ? "(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                  : undefined
+              }
               alt={photo.alt_text}
               width={1200}
               height={1200}

@@ -131,6 +131,53 @@ export async function loadStorageGalleries(
   }
 }
 
+const CATEGORY_SEO_SLUG: Record<string, string> = {
+  couple: "photographe-couple-marseille",
+  famille: "photographe-famille-marseille",
+  grossesse: "photographe-grossesse-marseille",
+  portrait: "photographe-portrait-marseille",
+};
+
+/** Galeries (par slot) -> liste unique : slots dans l'ordre, une même photo une seule fois. */
+export function flattenGalleries(
+  galleries: Record<string, StorageGalleryPhoto[]>,
+): StorageGalleryPhoto[] {
+  const seen = new Set<string>();
+  const out: StorageGalleryPhoto[] = [];
+  for (const slot of Object.keys(galleries).sort((a, b) => a.localeCompare(b))) {
+    for (const photo of galleries[slot]) {
+      if (seen.has(photo.id)) continue;
+      seen.add(photo.id);
+      out.push(photo);
+    }
+  }
+  return out;
+}
+
+/**
+ * Photos d'une page catégorie du portfolio (BUG-02) : toutes les photos publiées de la page SEO
+ * correspondante, dédupliquées. null si la catégorie est inconnue ou en cas d'erreur.
+ */
+export async function loadCategoryPhotos(
+  categorySlug: string,
+): Promise<StorageGalleryPhoto[] | null> {
+  const seoSlug = CATEGORY_SEO_SLUG[categorySlug];
+  if (!seoSlug) return null;
+  try {
+    const { data, error } = await supabase
+      .from("seo_pages")
+      .select("id")
+      .eq("slug", seoSlug)
+      .eq("published", true)
+      .maybeSingle();
+    if (error || !data) return null;
+    const galleries = await loadStorageGalleries(data.id);
+    return galleries ? flattenGalleries(galleries) : null;
+  } catch {
+    return null;
+  }
+}
+
 const PLACEMENT_SELECT =
   "slot, display_order, alt_text_override, object_position_x_pct, object_position_y_pct, photo:photos!inner(id, alt_text, photo_variants(width, height, storage_path, format))";
 

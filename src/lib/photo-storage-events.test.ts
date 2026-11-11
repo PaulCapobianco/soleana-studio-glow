@@ -66,3 +66,16 @@ describe("galeries d'événement via photo_placements", () => {
     expect(buildStorageGalleries([broken])).toEqual({});
   });
 });
+
+import { flattenGalleries, type StorageGalleryPhoto } from "./photo-storage";
+
+describe("flattenGalleries (pages catégories, BUG-02)", () => {
+  const photo = (id: string): StorageGalleryPhoto => ({ id }) as StorageGalleryPhoto;
+  it("garde l'ordre des slots et déduplique une photo réutilisée", () => {
+    const out = flattenGalleries({
+      "gallery-2": [photo("b"), photo("c")],
+      "gallery-1": [photo("a"), photo("b")],
+    });
+    expect(out.map((p) => p.id)).toEqual(["a", "b", "c"]);
+  });
+});

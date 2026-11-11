@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 import { listPublishedEventUrls } from "@/lib/events/queries";
+import { STORAGE_GALLERIES_ENABLED } from "@/lib/photo-storage";
 import { LEGACY_NOEL_SLUG } from "@/lib/events/legacy-noel";
 
 const SITE_URL = "https://soleanastudio.fr";
@@ -8,8 +9,6 @@ const SITE_URL = "https://soleanastudio.fr";
 const PATHS = [
   "/",
   "/portfolio",
-  // /portfolio/grossesse, /famille, /couple and /portrait are left out on purpose: they
-  // render the generic portfolio until BUG-02 is fixed. Put them back with the fix (0a23b0f).
   "/prestations",
   "/reservation",
   "/a-propos",
@@ -28,6 +27,11 @@ const PATHS = [
   // Add them back once the corresponding seo_pages rows exist.
 ] as const;
 
+// Pages catégories du portfolio : listées seulement quand BUG-02 est actif (VITE_GALLERIES_FROM_STORAGE).
+const CATEGORY_PATHS = STORAGE_GALLERIES_ENABLED
+  ? ["/portfolio/grossesse", "/portfolio/famille", "/portfolio/couple", "/portfolio/portrait"]
+  : [];
+
 export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {
@@ -40,6 +44,7 @@ export const Route = createFileRoute("/sitemap.xml")({
         ];
         const entries = [
           ...PATHS.map((path) => ({ path, lastmod })),
+          ...CATEGORY_PATHS.map((path) => ({ path, lastmod })),
           ...events.map((event) => ({
             path: `/${event.slug}`,
             lastmod: event.updatedAt.split("T")[0],
