@@ -4,7 +4,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { SaveButton } from "@/components/admin/SaveButton";
 import { FieldHint } from "@/components/admin/FieldHint";
 import { useEditableRecord } from "@/lib/admin/use-editable-record";
-import { getPhotoStorageCapacity } from "@/lib/photos/storage-admin.functions";
 import { SeoPage, Placement, GALLERY_SLOTS } from "./types";
 
 export function PlacementEditor({
