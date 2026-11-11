@@ -1,5 +1,6 @@
 import { ErrorText, Field, LinesField, Section } from "@/components/admin/EventFields";
 import { FieldHint } from "@/components/admin/FieldHint";
+import { BookingLinkPreview } from "@/components/admin/BookingLinkPreview";
 import type { EventErrors, EventFormValues } from "@/lib/events/validation";
 
 type SectionProps = {
@@ -60,6 +61,7 @@ export function EventFormulesSection({ values, errors, set }: SectionProps) {
               placeholder="https://soleana-studio.pelli.io/booking/…"
               onChange={(v) => patch({ booking_url: v })}
             />
+            <BookingLinkPreview url={formule.booking_url} label="Réserver" />
             <div className="flex flex-wrap items-center justify-between gap-3 text-xs">
               <label className="flex items-center gap-2">
                 <input
@@ -111,15 +113,18 @@ export function EventFormulesSection({ values, errors, set }: SectionProps) {
         + Ajouter une formule
       </button>
       {values.formules.length === 0 && (
-        <Field
-          label="Lien de réservation unique"
-          hint="à utiliser s'il n'y a pas de formules"
-          type="url"
-          value={values.booking_url}
-          error={errors.booking_url}
-          placeholder="https://soleana-studio.pelli.io/booking/…"
-          onChange={(v) => set("booking_url", v)}
-        />
+        <>
+          <Field
+            label="Lien de réservation unique"
+            hint="à utiliser s'il n'y a pas de formules"
+            type="url"
+            value={values.booking_url}
+            error={errors.booking_url}
+            placeholder="https://soleana-studio.pelli.io/booking/…"
+            onChange={(v) => set("booking_url", v)}
+          />
+          <BookingLinkPreview url={values.booking_url} label="Réserver" />
+        </>
       )}
     </Section>
   );

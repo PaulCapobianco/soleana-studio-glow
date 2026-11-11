@@ -349,6 +349,30 @@ export function EventEditor({ initial }: { initial: EventRow }) {
         title="Dates"
         intro="La page passe automatiquement en « édition terminée » le lendemain de la dernière date (dates de report comprises)."
       >
+        <details className="border border-border bg-background p-3 text-xs text-muted-foreground">
+          <summary className="cursor-pointer font-medium text-foreground">
+            Comment changer les dates ? Comment gérer le mauvais temps ?
+          </summary>
+          <div className="mt-2 space-y-2">
+            <p>
+              <strong>Changer les dates :</strong> cliquez sur « Retirer » à côté des anciennes
+              dates, ajoutez les nouvelles, puis « Enregistrer ». Si l&apos;événement est déjà
+              publié, l&apos;accueil, la page et Google affichent les nouvelles dates tout de suite
+              (une confirmation vous est demandée).
+            </p>
+            <p>
+              <strong>Exemple :</strong> les mini-séances de Noël 2026 ont été décalées du 7 et du
+              11 novembre au 28 et 29 novembre : retirez le 7 et le 11, ajoutez le 28 et le 29,
+              enregistrez.
+            </p>
+            <p>
+              <strong>Mauvais temps :</strong> les dates de report apparaissent sur la page sous la
+              forme « En cas de mauvais temps, les séances sont reportées aux… ». Elles doivent
+              venir après la première date de séance, et l&apos;édition ne se termine qu&apos;après
+              la dernière date de report.
+            </p>
+          </div>
+        </details>
         <DateListField
           label="Dates des séances"
           dates={values.event_dates}
