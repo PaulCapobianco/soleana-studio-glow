@@ -1,6 +1,7 @@
 import { isIsoDate } from "./dates";
 import { isBulletIcon, isMainIcon } from "./icons";
 import { checkAccent, isHexColor, isThemeId } from "./theme";
+import { isPelliUrl } from "./publish-checks";
 
 export type EventFormuleForm = {
   name: string;
@@ -60,6 +61,17 @@ export function isValidBookingUrl(value: string): boolean {
   } catch {
     return false;
   }
+}
+
+/** Message en français si le lien de réservation n'est pas un lien Pelli valide, sinon null. */
+export function bookingUrlProblem(value: string): string | null {
+  if (!isValidBookingUrl(value)) {
+    return "Ce lien n'est pas valide : il doit commencer par https:// (copiez-le depuis Pelli).";
+  }
+  if (!isPelliUrl(value)) {
+    return "Ce lien ne vient pas de Pelli : il doit commencer par https://soleana-studio.pelli.io/ (copiez-le depuis votre espace Pelli).";
+  }
+  return null;
 }
 
 /** « Le Noël de Léa 2027 ! » → « le-noel-de-lea-2027 » */
@@ -123,15 +135,15 @@ export function validateEventDraft(values: EventFormValues): EventErrors {
     ) {
       errors[`formules.${index}.price_eur`] = "Indiquez un prix en euros (nombre entier).";
     }
-    if (formule.booking_url.trim() && !isValidBookingUrl(formule.booking_url.trim())) {
-      errors[`formules.${index}.booking_url`] =
-        "Ce lien n'est pas valide : il doit commencer par https:// (copiez-le depuis Pelli).";
+    if (formule.booking_url.trim()) {
+      const problem = bookingUrlProblem(formule.booking_url.trim());
+      if (problem) errors[`formules.${index}.booking_url`] = problem;
     }
   });
 
-  if (values.booking_url.trim() && !isValidBookingUrl(values.booking_url.trim())) {
-    errors.booking_url =
-      "Ce lien n'est pas valide : il doit commencer par https:// (copiez-le depuis Pelli).";
+  if (values.booking_url.trim()) {
+    const problem = bookingUrlProblem(values.booking_url.trim());
+    if (problem) errors.booking_url = problem;
   }
 
   values.faq.forEach((item, index) => {
