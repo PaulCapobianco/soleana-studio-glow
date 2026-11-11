@@ -127,5 +127,3 @@ export const retryPhotoStorageCleanup = createServerFn({ method: "POST" })
       },
     );
   });
-
-export type PhotoStorageCapacity = Awaited<ReturnType<typeof getPhotoStorageCapacity>>;
