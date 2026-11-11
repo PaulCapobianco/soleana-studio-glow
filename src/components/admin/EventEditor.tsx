@@ -33,6 +33,7 @@ import {
 } from "@/lib/events/admin";
 import { formatHeroDates, isEditionOver } from "@/lib/events/dates";
 import type { EventRow, EventStatus } from "@/lib/events/types";
+import { EventEditorHeader } from "@/components/admin/EventEditorHeader";
 import {
   slugify,
   validateEventDraft,
@@ -40,12 +41,6 @@ import {
   type EventErrors,
   type EventFormValues,
 } from "@/lib/events/validation";
-
-const STATUS_LABEL: Record<EventStatus, string> = {
-  draft: "Brouillon",
-  published: "Publié",
-  archived: "Archivé",
-};
 
 export function EventEditor({ initial }: { initial: EventRow }) {
   const qc = useQueryClient();
@@ -218,124 +213,24 @@ export function EventEditor({ initial }: { initial: EventRow }) {
 
   return (
     <div className="space-y-6" ref={topRef}>
-      <header className="space-y-3">
-        <div className="flex flex-wrap items-center gap-3">
-          <h1 className="font-display text-4xl italic text-primary">
-            {values.title || "Sans titre"}
-          </h1>
-          <span className="border border-border px-2 py-0.5 text-[10px] uppercase tracking-widest">
-            {STATUS_LABEL[status]}
-          </span>
-          {status === "published" && editionOver && (
-            <span className="border border-border px-2 py-0.5 text-[10px] uppercase tracking-widest text-muted-foreground">
-              Édition terminée
-            </span>
-          )}
-        </div>
-        {status === "published" && (
-          <p className="border border-primary/30 bg-primary/5 p-3 text-sm">
-            Cet événement est <strong>publié</strong> : chaque enregistrement est visible tout de
-            suite sur le site.{" "}
-            <a href={`/${row.slug}`} target="_blank" rel="noopener" className="underline">
-              Voir la page
-            </a>
-          </p>
-        )}
-        {status === "archived" && (
-          <p className="border border-border bg-background p-3 text-sm">
-            Cet événement est <strong>archivé</strong> : il n&apos;est plus visible sur le site.
-          </p>
-        )}
-        <div className="flex flex-wrap items-center gap-3 text-xs uppercase tracking-widest">
-          <button
-            type="button"
-            disabled={!isDirty || busy !== null}
-            onClick={() => void save()}
-            className="bg-primary px-5 py-2 text-primary-foreground hover:bg-foreground disabled:cursor-not-allowed disabled:opacity-40"
-          >
-            {busy === "save" ? "Enregistrement…" : "Enregistrer"}
-          </button>
-          {status !== "published" && (
-            <button
-              type="button"
-              disabled={busy !== null}
-              onClick={() => void publish()}
-              className="border border-primary px-5 py-2 text-primary hover:bg-primary hover:text-primary-foreground disabled:opacity-40"
-            >
-              {busy === "publish" ? "Publication…" : "Publier"}
-            </button>
-          )}
-          {status === "published" && (
-            <button
-              type="button"
-              disabled={busy !== null}
-              onClick={() =>
-                void changeStatus(
-                  "draft",
-                  "Dépublier cet événement ? Sa page ne sera plus visible sur le site (ni sur l'accueil) jusqu'à une nouvelle publication.",
-                  "Événement dépublié : il n'est plus visible sur le site.",
-                )
-              }
-              className="border border-border px-5 py-2 hover:bg-background disabled:opacity-40"
-            >
-              Dépublier
-            </button>
-          )}
-          <button
-            type="button"
-            onClick={() => setPreview(preview ? null : "open")}
-            className="border border-border px-5 py-2 hover:bg-background"
-          >
-            {preview ? "Fermer l'aperçu" : "Aperçu"}
-          </button>
-          <button
-            type="button"
-            disabled={busy !== null}
-            onClick={askDuplicate}
-            className="px-2 py-2 text-primary hover:underline disabled:opacity-40"
-          >
-            Dupliquer
-          </button>
-          {status === "archived" ? (
-            <button
-              type="button"
-              disabled={busy !== null}
-              onClick={() => void changeStatus("draft", null, "Remis en brouillon.")}
-              className="px-2 py-2 text-muted-foreground hover:underline disabled:opacity-40"
-            >
-              Remettre en brouillon
-            </button>
-          ) : (
-            <button
-              type="button"
-              disabled={busy !== null}
-              onClick={() =>
-                void changeStatus(
-                  "archived",
-                  status === "published"
-                    ? "Archiver cet événement ? Sa page ne sera plus visible sur le site. Vous pourrez le remettre en brouillon plus tard."
-                    : "Archiver cet événement ?",
-                  "Événement archivé.",
-                )
-              }
-              className="px-2 py-2 text-muted-foreground hover:underline disabled:opacity-40"
-            >
-              Archiver
-            </button>
-          )}
-          {status === "draft" && !row.first_published_at && (
-            <button
-              type="button"
-              disabled={busy !== null}
-              onClick={() => void remove()}
-              className="px-2 py-2 text-destructive hover:underline disabled:opacity-40"
-            >
-              Supprimer ce brouillon
-            </button>
-          )}
-        </div>
-        {isDirty && <p className="text-xs text-orange-700">Modifications non enregistrées.</p>}
-      </header>
+      <EventEditorHeader
+        title={values.title}
+        slug={row.slug}
+        status={status}
+        firstPublishedAt={row.first_published_at}
+        editionOver={editionOver}
+        isDirty={isDirty}
+        busy={busy}
+        previewOpen={Boolean(preview)}
+        onSave={() => void save()}
+        onPublish={() => void publish()}
+        onChangeStatus={(next, confirmMessage, successMessage) =>
+          void changeStatus(next, confirmMessage, successMessage)
+        }
+        onTogglePreview={() => setPreview(preview ? null : "open")}
+        onDuplicate={askDuplicate}
+        onRemove={() => void remove()}
+      />
 
       {preview && (
         <div className="space-y-2">
