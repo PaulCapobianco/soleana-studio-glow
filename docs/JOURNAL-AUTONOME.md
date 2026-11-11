@@ -339,3 +339,55 @@ Rendu visuel, lightbox, curseurs de cadrage, Safari/iPhone, envoi de photo, sess
 VITE_GALLERIES_FROM_STORAGE=true npm run deploy:cf
 ```
 Retour arrière : `npm run deploy:cf` sans la variable, ou `wrangler rollback` vers 05e26e6a.
+
+## Contrôles de la Phase A après publication des placements (11 novembre 2026)
+Lecture publique uniquement (clé anon via `node --env-file=.env`, `.env` jamais lu ni affiché). Aucune écriture Supabase, aucune migration, aucun déploiement. Production toujours sur 05e26e6a (100 %).
+
+### Résultats (tous au vert)
+| Critère | Attendu | Constaté |
+|---|---|---|
+| Photos publiées | 170 | 170 ; `category_id` / `on_home` / `on_portfolio` : 0 / 0 / 0 |
+| Placements | 190 publiés | 190 lus en anon, 0 non publié |
+| Variantes visibles en anon | 1 360 | **1 360** (les 0 d'avant venaient des placements en brouillon : la RLS des variantes exige un placement publié) |
+| Décompte par galerie | 11+20, 47+20, 10+17+53, 12 | exactement ces valeurs, 8 galeries, aucune galerie inattendue |
+| Famille en catégorie | 47 distinctes | 47 distinctes sur 67 placements |
+| Ordre | identique au manifeste | **les 190** `placement_key` et `source_key` à la bonne position (1re, 5e, dernière de chaque galerie, et échantillon complet = tout) |
+| Variantes par photo | AVIF+WebP × 400/800/1200/1600 | présentes pour les 190 emplacements, hauteur et largeur renseignées |
+| Alt / cadrage | comme le manifeste | conformes (50 % / 50 %, « Séance photo … - photo N ») |
+| HTML des 4 pages SEO (flag) | `<picture>` AVIF puis WebP | `<source avif>` puis `<source webp>` + `<img>` en `srcset` 400/800/1200/1600, `object-position:50% 50%`, largeur 1600 × hauteur 2000 (dimensions de la plus grande variante), alt « Séance photo … - photo 1 », `loading=lazy` |
+| URLs d'images du HTML | 200 | **1 360 URL distinctes, 1 360 réponses 206 (GET Range 1 octet), 4 requêtes en parallèle, 0 échec** |
+| Fichiers locaux | aucun | 0 référence à un fichier local de galerie dans les 4 pages |
+| Erreurs `[photo_placements]` | aucune | 0 dans les journaux du serveur local |
+| Sitemap | +4 URLs | 15 URLs en production, 19 avec le flag ; seule différence : `/portfolio/couple`, `/famille`, `/grossesse`, `/portrait` |
+| Site sans flag vs production | identique | 16 URLs : mêmes codes ; HTML identique une fois les noms hachés neutralisés (accueil, à propos, galeries, portfolio, Noël…) ; sitemap identique. Seul écart : `robots.txt` (production 2 762 octets, local 86) : Cloudflare ajoute en production un bloc « Content-Signal » en tête ; notre fichier est le même |
+
+Remarque de lecture : le HTML des pages SEO ne contient que la première photo de chaque galerie en `<picture>` ; les autres s'ouvrent dans la lightbox. Le décompte par galerie a donc été fait sur les données lues par le même code que le site (même requête que `loadStorageGalleries`), pas en comptant des `<img>`. `/portfolio/<catégorie>` charge ses photos côté navigateur : le HTML serveur ne contient ni photos ni message « en cours de remplissage ». Le rendu réel de ces 4 pages reste à voir dans un navigateur ; les données sont exactes (Famille = 47).
+
+### Lighthouse mobile avec les vraies photos (build avec flag, `wrangler dev` local)
+| Page | Perf | A11y | BP | SEO | LCP | Référence |
+|---|---:|---:|---:|---:|---:|---:|
+| Accueil | 86 | 100 | 100 | 100 | 4,3 s | 86 |
+| /portfolio | 90 | 96 | 100 | 100 | 3,7 s | 90 |
+| /portfolio/couple | 85 | 100 | 100 | 100 | 4,4 s | 85 |
+| /photographe-couple-marseille | 100 | 96 | 100 | 100 | 1,1 s | n/m |
+Aucune régression. Aucun correctif appliqué : tout gain restant demanderait de changer le rendu. Accessibilité 96 de la page SEO : un seul audit, contraste du texte doré `#c6966f` sur crème (2,43 pour 10 px ; couleur de la charte, non modifiée). Le LCP de la page galerie reste bas, car l'image du haut est en `loading=lazy`/`fetchpriority=low` : à surveiller sur mobile réel.
+
+### Défaut corrigé : `import-photos.mjs --publish-existing`
+Cause du blocage des placements : après avoir publié les photos, le script contrôlait les emplacements avec `photo.published` lu **avant** l'UPDATE (toujours faux) et s'arrêtait avec « Emplacement incomplet ou photo non publiée » ; les photos étaient publiées, les placements non. Correctif : la Map est mise à jour avec les lignes réellement publiées, et le contrôle est une fonction pure `findIncompletePlacement` (`import-plan.mjs`) testée (état périmé → bloque ; état à jour → passe ; emplacement absent ou autre photo → bloque). 270 tests, typecheck et build verts. Le correctif n'était plus nécessaire en pratique (placements publiés par Paul).
+
+### État final
+`dist/` reconstruit sans le flag. Préversion **64682c0f-5256-437e-b3d7-c56941178d3a** (avec le flag) toujours valable : seuls des scripts hors bundle ont changé depuis. URL : Cloudflare → Workers → soleana-studio → Versions → 64682c0f (non obtenue par ligne de commande). Plus rien ne bloque côté données.
+
+### À tester à la main
+1. Ouvrir la préversion 64682c0f : les 4 pages SEO (1re photo de chaque galerie, lightbox : ouverture, flèches, Échap, focus ; dernière photo de chaque galerie), mobile et ordinateur.
+2. `/portfolio/grossesse`, `/famille`, `/couple`, `/portrait` : les photos apparaissent après chargement (Famille : 47), pas de message « en cours de remplissage » durable ; décalage de mise en page éventuel au chargement.
+3. Safari / iPhone : AVIF ou WebP servi, lightbox.
+4. Console navigateur : aucune erreur `[photo_placements]`.
+5. Admin avec double authentification : fiche événement de test (galerie, envoi de 2 photos, ordre, texte alternatif, cadrage, publication, suppression) ; vérifier `category_id` NULL ; destination « Événement » de l'admin Photos. Sans double authentification : message dédié.
+6. Lighthouse mobile réel (PageSpeed) sur la préversion.
+
+### Bascule finale (après tes validations)
+```
+VITE_GALLERIES_FROM_STORAGE=true npm run deploy:cf
+```
+Retour arrière : `npm run deploy:cf` sans la variable, ou `wrangler rollback` vers 05e26e6a. Penser à appliquer la migration `20261110000000_event_galleries.sql` avant d'utiliser les galeries d'événement.
