@@ -5,6 +5,7 @@ import { FieldHint } from "@/components/site/admin/FieldHint";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 import { friendlySupabaseError } from "@/lib/admin/friendly-error";
+import { toastAdminError } from "@/lib/admin/write-error";
 import {
   PROTECTED_CATEGORY_SLUGS,
   categoryError,
@@ -53,7 +54,7 @@ export function CategoriesAdmin() {
       await qc.invalidateQueries({ queryKey: KEY });
       void qc.invalidateQueries({ queryKey: ["admin-photos"] });
     } catch (err) {
-      toast.error(friendlySupabaseError(categoryError(err)));
+      void toastAdminError(categoryError(err));
     } finally {
       setBusy(null);
     }

@@ -9,7 +9,7 @@ import { CategoriesAdmin } from "@/components/site/admin/CategoriesAdmin";
 import { SaveButton } from "@/components/site/admin/SaveButton";
 import { FieldHint } from "@/components/site/admin/FieldHint";
 import { confirmDelete } from "@/lib/admin/confirm-delete";
-import { friendlySupabaseError } from "@/lib/admin/friendly-error";
+import { toastAdminError } from "@/lib/admin/write-error";
 import { useDirtySet } from "@/lib/admin/use-dirty-set";
 import { useEditableRecord } from "@/lib/admin/use-editable-record";
 import {
@@ -352,11 +352,11 @@ export function PhotosAdmin() {
           uploadedPaths,
           photoId,
         });
-      toast.error(
-        cleanupErrors.length
-          ? "Envoi interrompu ; le nettoyage est incomplet. Demandez une vérification du stockage."
-          : friendlySupabaseError(error),
-      );
+      if (cleanupErrors.length)
+        toast.error(
+          "Envoi interrompu ; le nettoyage est incomplet. Demandez une vérification du stockage.",
+        );
+      else void toastAdminError(error);
     } finally {
       setUploading(false);
     }
@@ -813,7 +813,7 @@ function NewPlacementForm({
       setOrder("");
       qc.invalidateQueries({ queryKey: ["admin-photo-placements"] });
     } catch (error) {
-      toast.error(friendlySupabaseError(error));
+      void toastAdminError(error);
     } finally {
       setSaving(false);
     }

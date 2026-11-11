@@ -18,7 +18,7 @@ import { EventPageContent } from "@/components/site/EventPage";
 import { eventAssets } from "@/components/site/event-assets";
 import { buildAppearance } from "@/lib/events/appearance";
 import { buildTeaser } from "@/lib/events/presentation";
-import { friendlySupabaseError } from "@/lib/admin/friendly-error";
+import { toastAdminError } from "@/lib/admin/write-error";
 import { useDirtySet } from "@/lib/admin/use-dirty-set";
 import {
   type GalleryDuplication,
@@ -95,7 +95,7 @@ export function EventEditor({ initial }: { initial: EventRow }) {
     try {
       await action();
     } catch (err) {
-      toast.error(friendlySupabaseError(err));
+      void toastAdminError(err);
     } finally {
       setBusy(null);
     }

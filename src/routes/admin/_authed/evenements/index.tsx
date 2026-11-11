@@ -4,6 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { FieldHint } from "@/components/site/admin/FieldHint";
 import { friendlySupabaseError } from "@/lib/admin/friendly-error";
+import { toastAdminError } from "@/lib/admin/write-error";
 import { DuplicateEventDialog } from "@/components/site/admin/DuplicateEventDialog";
 import {
   createEvent,
@@ -56,7 +57,7 @@ function EventsAdmin() {
     try {
       await action();
     } catch (err) {
-      toast.error(friendlySupabaseError(err));
+      void toastAdminError(err);
     } finally {
       setBusy(null);
     }

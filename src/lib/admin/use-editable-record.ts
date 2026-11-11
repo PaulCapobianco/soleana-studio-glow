@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { friendlySupabaseError } from "./friendly-error";
+import { toastAdminError } from "./write-error";
 
 type SaveResult<T> = { error: unknown; record?: T } | void;
 
@@ -62,7 +62,7 @@ export function useEditableRecord<T extends Record<string, unknown>>(
     try {
       const result = await onSave(patch);
       if (result && "error" in result && result.error) {
-        toast.error(friendlySupabaseError(result.error));
+        void toastAdminError(result.error);
         return false;
       }
       const saved = result?.record ?? submitted;
@@ -77,7 +77,7 @@ export function useEditableRecord<T extends Record<string, unknown>>(
       toast.success("Modifications enregistrées");
       return true;
     } catch (err) {
-      toast.error(friendlySupabaseError(err));
+      void toastAdminError(err);
       return false;
     } finally {
       savingRef.current = false;

@@ -6,7 +6,7 @@ import type { Database } from "@/integrations/supabase/types";
 import { SaveButton } from "@/components/site/admin/SaveButton";
 import { FieldHint } from "@/components/site/admin/FieldHint";
 import { confirmDelete } from "@/lib/admin/confirm-delete";
-import { friendlySupabaseError } from "@/lib/admin/friendly-error";
+import { toastAdminError } from "@/lib/admin/write-error";
 import { useDirtySet } from "@/lib/admin/use-dirty-set";
 import { useEditableRecord } from "@/lib/admin/use-editable-record";
 
@@ -39,7 +39,7 @@ function FaqAdmin() {
       display_order: nextOrder,
     });
     if (error) {
-      toast.error(friendlySupabaseError(error));
+      void toastAdminError(error);
       return;
     }
     qc.invalidateQueries({ queryKey: ["admin-faq"] });
@@ -108,7 +108,7 @@ function FaqCard({
     if (!confirmDelete("cette question")) return;
     const { error } = await supabase.from("faq").delete().eq("id", item.id);
     if (error) {
-      toast.error(friendlySupabaseError(error));
+      void toastAdminError(error);
       return;
     }
     toast.success("Question supprimée");

@@ -6,7 +6,7 @@ import type { Database } from "@/integrations/supabase/types";
 import { SaveButton } from "@/components/site/admin/SaveButton";
 import { FieldHint } from "@/components/site/admin/FieldHint";
 import { confirmDelete } from "@/lib/admin/confirm-delete";
-import { friendlySupabaseError } from "@/lib/admin/friendly-error";
+import { toastAdminError } from "@/lib/admin/write-error";
 import { useDirtySet } from "@/lib/admin/use-dirty-set";
 import { useEditableRecord } from "@/lib/admin/use-editable-record";
 import { isGoogleReviewUrl } from "@/lib/google-review-url";
@@ -44,7 +44,7 @@ function Reviews() {
       google_review_url: null,
     });
     if (error) {
-      toast.error(friendlySupabaseError(error));
+      void toastAdminError(error);
       return;
     }
     qc.invalidateQueries({ queryKey: ["admin-reviews"] });
@@ -129,7 +129,7 @@ function ReviewCard({
     if (!confirmDelete("cet avis")) return;
     const { error } = await supabase.from("reviews").delete().eq("id", item.id);
     if (error) {
-      toast.error(friendlySupabaseError(error));
+      void toastAdminError(error);
       return;
     }
     toast.success("Avis supprimé");

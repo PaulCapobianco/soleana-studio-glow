@@ -37,3 +37,9 @@ Dernière mise à jour : 11 novembre 2026. Branche de travail : `photos-storage-
 1. Activer la double authentification avec la photographe, puis appliquer les migrations dans l'ordre (étapes 2 à 11 du plan), un contrôle après chacune.
 2. Lancer la simulation puis l'import en brouillon des photos, valider visuellement, puis construire avec `VITE_GALLERIES_FROM_STORAGE=true`.
 3. Vérifier Lighthouse mobile et le sitemap, puis seulement déployer (`npm run deploy:cf`).
+
+## Message clair quand la double authentification manque (session AAL1)
+- Les politiques RLS « Require aal2 » refusaient l'écriture d'un admin connecté sans second facteur, et l'interface affichait « Vous n'avez pas les droits nécessaires » : trompeur.
+- Nouveau helper unique `src/lib/admin/write-error.ts` (`toastAdminError`, `resolveAdminError`) : si l'erreur est un refus RLS (code 42501 ou « row-level security ») **et** que la session n'est pas en aal2, le message devient « Cette action demande la double authentification… » (aucun facteur enregistré) ou « Reconnectez-vous avec votre code à 6 chiffres pour modifier le site. » (facteur enregistré), avec un bouton « Mon compte » (`/admin/compte`). En aal2, ou pour toute autre erreur, le message habituel est conservé.
+- Appliqué à toutes les écritures de l'admin (événements, galeries, photos, catégories, FAQ, avis, prestations, pages SEO, paramètres via `use-editable-record`). Les erreurs de lecture gardent `friendlySupabaseError`.
+- Tests : `src/lib/admin/write-error.test.ts`. Aucun déploiement, aucune migration.

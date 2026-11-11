@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { FieldHint } from "@/components/site/admin/FieldHint";
-import { friendlySupabaseError } from "@/lib/admin/friendly-error";
+import { adminErrorMessage, toastAdminError } from "@/lib/admin/write-error";
 import {
   addGalleryDef,
   eventCategoryId,
@@ -71,7 +71,7 @@ export function EventGalleriesAdmin({
     try {
       await action();
     } catch (error) {
-      toast.error(friendlySupabaseError(error));
+      void toastAdminError(error);
     } finally {
       setBusy(null);
     }
@@ -107,7 +107,7 @@ export function EventGalleriesAdmin({
           done += 1;
           if (result.warning) toast.warning(result.warning);
         } catch (error) {
-          failures.push(`${file.name} : ${friendlySupabaseError(error)}`);
+          failures.push(`${file.name} : ${await adminErrorMessage(error)}`);
         }
       }
       setProgress(null);
@@ -215,7 +215,7 @@ export function EventGalleriesAdmin({
                 setNewTitle("");
                 void saveDefs(next);
               } catch (error) {
-                toast.error(friendlySupabaseError(error));
+                void toastAdminError(error);
               }
             }}
           >

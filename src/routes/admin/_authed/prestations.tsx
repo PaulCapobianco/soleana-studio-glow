@@ -6,7 +6,7 @@ import type { Database } from "@/integrations/supabase/types";
 import { SaveButton } from "@/components/site/admin/SaveButton";
 import { FieldHint } from "@/components/site/admin/FieldHint";
 import { confirmDelete } from "@/lib/admin/confirm-delete";
-import { friendlySupabaseError } from "@/lib/admin/friendly-error";
+import { toastAdminError } from "@/lib/admin/write-error";
 import { useDirtySet } from "@/lib/admin/use-dirty-set";
 import { useEditableRecord } from "@/lib/admin/use-editable-record";
 
@@ -45,7 +45,7 @@ function PrestationsAdmin() {
       display_order: nextOrder,
     });
     if (error) {
-      toast.error(friendlySupabaseError(error));
+      void toastAdminError(error);
       return;
     }
     qc.invalidateQueries({ queryKey: ["admin-services"] });
@@ -120,7 +120,7 @@ function ServiceCard({
     if (!confirmDelete("cette prestation")) return;
     const { error } = await supabase.from("services").delete().eq("id", item.id);
     if (error) {
-      toast.error(friendlySupabaseError(error));
+      void toastAdminError(error);
       return;
     }
     toast.success("Prestation supprimée");
